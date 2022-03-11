@@ -15,12 +15,7 @@ trait WithTestTables
     /**
      * @var array
      */
-    private $tables = [
-        'cities',
-        'countries',
-        'activities',
-        'activity_city',
-    ];
+    private $tables = ['cities', 'countries', 'activities', 'activity_city'];
 
     protected function withNewTables(): void
     {
@@ -155,7 +150,8 @@ trait WithTestTables
         Schema::create('activity_city', function (Blueprint $table) {
             $table->integer('city_id');
             $table->integer('activity_id');
-            $table->integer('popularity')->nullable();
+            $table->integer('popularity')
+                ->nullable();
         });
     }
 }

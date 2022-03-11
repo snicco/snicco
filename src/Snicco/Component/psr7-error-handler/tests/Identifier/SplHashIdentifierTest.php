@@ -22,10 +22,7 @@ final class SplHashIdentifierTest extends TestCase
     public function test_identify_is_spl_hash(): void
     {
         $exception = new Exception('foobar');
-        $this->assertSame(
-            spl_object_hash($exception),
-            (new SplHashIdentifier())->identify($exception)
-        );
+        $this->assertSame(spl_object_hash($exception), (new SplHashIdentifier())->identify($exception));
     }
 
     /**
@@ -42,10 +39,7 @@ final class SplHashIdentifierTest extends TestCase
         $this->assertSame(spl_object_hash($e), $id);
 
         $this->assertSame($id, $identifier->identify($e));
-        $this->assertNotSame(
-            $id,
-            $new_id = $identifier->identify($new_e = new Exception('foobar'))
-        );
+        $this->assertNotSame($id, $new_id = $identifier->identify($new_e = new Exception('foobar')));
 
         sleep(1);
 

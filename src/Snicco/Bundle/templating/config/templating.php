@@ -19,9 +19,7 @@ return [
     ],
 
     // A list of different factories that will be used in the given order to load templates.
-    TemplatingOption::VIEW_FACTORIES => [
-        PHPViewFactory::class,
-    ],
+    TemplatingOption::VIEW_FACTORIES => [PHPViewFactory::class],
 
     /*
      * View composers can be used to add variables to certain views without needing to

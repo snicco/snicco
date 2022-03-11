@@ -71,12 +71,7 @@ final class FactorySessionManager implements SessionManager
     {
         $hashed_validator = $this->hash($session->id()->validator());
 
-        $session->saveUsing(
-            $this->driver,
-            $this->serializer,
-            $hashed_validator,
-            $this->clock->currentTimestamp()
-        );
+        $session->saveUsing($this->driver, $this->serializer, $hashed_validator, $this->clock->currentTimestamp());
 
         $this->event_dispatcher->dispatchAll($session->releaseEvents());
     }
@@ -85,7 +80,8 @@ final class FactorySessionManager implements SessionManager
     {
         return new SessionCookie(
             $this->config->cookieName(),
-            $session->id()->asString(),
+            $session->id()
+                ->asString(),
             $this->config->absoluteLifetimeInSec(),
             $this->config->onlyHttp(),
             $this->config->onlySecure(),

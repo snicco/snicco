@@ -63,10 +63,7 @@ final class ProductionErrorHandler implements HttpErrorHandler
         }
 
         try {
-            $response = $this->createResponse(
-                $info,
-                $this->findBestDisplayer($request, $info)
-            );
+            $response = $this->createResponse($info, $this->findBestDisplayer($request, $info));
         } catch (Throwable $display_error) {
             return $this->handleDisplayError($display_error, $request);
         }
@@ -81,22 +78,17 @@ final class ProductionErrorHandler implements HttpErrorHandler
 
     private function createResponse(ExceptionInformation $info, ExceptionDisplayer $displayer): ResponseInterface
     {
-        $response = $this->response_factory->createResponse(
-            $info->statusCode()
-        );
+        $response = $this->response_factory->createResponse($info->statusCode());
 
-        $response->getBody()->write(
-            $displayer->display($info)
-        );
+        $response->getBody()
+            ->write($displayer->display($info));
 
         return $response->withHeader('content-type', $displayer->supportedContentType());
     }
 
     private function findBestDisplayer(ServerRequestInterface $request, ExceptionInformation $info): ExceptionDisplayer
     {
-        $displayers = array_values(
-            $this->filter->filter($this->displayers, $request, $info)
-        );
+        $displayers = array_values($this->filter->filter($this->displayers, $request, $info));
 
         if (isset($displayers[0])) {
             return $displayers[0];
@@ -123,7 +115,8 @@ final class ProductionErrorHandler implements HttpErrorHandler
         $info = $this->information_provider->createFor($display_error, $request);
         $this->logException($info);
         $res = $this->response_factory->createResponse(500);
-        $res->getBody()->write('Internal Server Error');
+        $res->getBody()
+            ->write('Internal Server Error');
 
         return $res->withHeader('content-type', 'text/plain');
     }

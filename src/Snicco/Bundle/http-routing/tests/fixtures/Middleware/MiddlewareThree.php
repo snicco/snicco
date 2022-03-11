@@ -15,7 +15,8 @@ final class MiddlewareThree extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()->write(':middleware_three');
+        $response->getBody()
+            ->write(':middleware_three');
 
         return $response;
     }

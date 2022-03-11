@@ -139,13 +139,7 @@ final class Route
         array $methods = self::ALL_METHODS,
         string $namespace = ''
     ): Route {
-        return new self(
-            $pattern,
-            $controller,
-            $name,
-            $methods,
-            $namespace
-        );
+        return new self($pattern, $controller, $name, $methods, $namespace);
     }
 
     /**
@@ -245,11 +239,7 @@ final class Route
         Assert::keyNotExists(
             $this->conditions,
             $condition,
-            sprintf(
-                'Condition [%s] was added twice to route [%s].',
-                $condition,
-                $this->getName()
-            )
+            sprintf('Condition [%s] was added twice to route [%s].', $condition, $this->getName())
         );
 
         $this->conditions[$b->class] = $b;
@@ -365,10 +355,7 @@ final class Route
         preg_match_all('/[^{]\w+(?=\??})/', $pattern, $names);
 
         if (! empty($names[0])) {
-            Assert::uniqueValues(
-                $names[0],
-                'Route segment names have to be unique but %s of them %s duplicated.'
-            );
+            Assert::uniqueValues($names[0], 'Route segment names have to be unique but %s of them %s duplicated.');
             $this->segment_names = $names[0];
         }
 
@@ -446,11 +433,7 @@ final class Route
         if (! empty($name)) {
             Assert::stringNotEmpty($name);
             Assert::notStartsWith($name, '.');
-            Assert::notContains(
-                $name,
-                ' ',
-                "Route name for route [{$name}] should not contain whitespaces."
-            );
+            Assert::notContains($name, ' ', "Route name for route [{$name}] should not contain whitespaces.");
         } else {
             $name = $this->pattern . ':' . implode('@', $this->controller);
         }

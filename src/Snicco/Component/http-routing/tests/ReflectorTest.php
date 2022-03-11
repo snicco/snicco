@@ -72,11 +72,8 @@ final class ReflectorTest extends TestCase
      */
     public function test_first_parameter_type_with_closure(): void
     {
-        $this->assertSame(
-            'string',
-            Reflector::firstParameterType(function (string $foo): void {
-            })
-        );
+        $this->assertSame('string', Reflector::firstParameterType(function (string $foo): void {
+        }));
     }
 
     /**

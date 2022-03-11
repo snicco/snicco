@@ -21,10 +21,7 @@ final class ContentType implements DisplayerFilter
     {
         $accept_header = $this->parse($request->getHeaderLine('accept'));
 
-        return array_filter(
-            $displayers,
-            fn ($displayer) => $displayer->supportedContentType() === $accept_header
-        );
+        return array_filter($displayers, fn ($displayer) => $displayer->supportedContentType() === $accept_header);
     }
 
     private function parse(string $accept): string

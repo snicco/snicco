@@ -28,9 +28,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @var class-string<TestExtension>[]
      */
-    private array $extensions = [
-        DummyTestExtension::class,
-    ];
+    private array $extensions = [DummyTestExtension::class];
 
     protected function setUp(): void
     {
@@ -89,7 +87,9 @@ final class WebTestCaseTest extends WebTestCase
 
         $this->assertSame($browser, $this->getBrowser());
 
-        $browser->getResponse()->assertOk()->assertNotDelegated();
+        $browser->getResponse()
+            ->assertOk()
+            ->assertNotDelegated();
     }
 
     /**
@@ -151,7 +151,8 @@ final class WebTestCaseTest extends WebTestCase
         $browser->request('GET', '/full-url');
         $response = $browser->lastResponse();
 
-        $response->assertOk()->assertSeeText('https://sniccowp.test/full-url');
+        $response->assertOk()
+            ->assertSeeText('https://sniccowp.test/full-url');
     }
 
     /**
@@ -160,9 +161,7 @@ final class WebTestCaseTest extends WebTestCase
     public function test_fake_events(): void
     {
         $event_dispatcher = $this->getEventDispatcher();
-        $event_dispatcher->fake([
-            HandlingRequest::class,
-        ]);
+        $event_dispatcher->fake([HandlingRequest::class]);
 
         $event_dispatcher->assertNotDispatched(HandlingRequest::class);
 
@@ -171,7 +170,8 @@ final class WebTestCaseTest extends WebTestCase
         $browser->request('GET', '/full-url');
         $response = $browser->lastResponse();
 
-        $response->assertOk()->assertSeeText('https://sniccowp.test/full-url');
+        $response->assertOk()
+            ->assertSeeText('https://sniccowp.test/full-url');
 
         $event_dispatcher->assertDispatched(HandlingRequest::class);
     }
@@ -195,7 +195,8 @@ final class WebTestCaseTest extends WebTestCase
 
         $response = $browser->lastResponse();
 
-        $response->assertOk()->assertSeeText('Mail sent!');
+        $response->assertOk()
+            ->assertSeeText('Mail sent!');
     }
 
     /**
@@ -217,10 +218,7 @@ final class WebTestCaseTest extends WebTestCase
     {
         $kernel = $this->getKernel();
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->extend('bundles.all', [
-                SessionBundle::class,
-                BetterWPDBBundle::class,
-            ]);
+            $config->extend('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
         $id = $this->withDataInSession([
@@ -249,10 +247,7 @@ final class WebTestCaseTest extends WebTestCase
     {
         $kernel = $this->getKernel();
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->extend('bundles.all', [
-                SessionBundle::class,
-                BetterWPDBBundle::class,
-            ]);
+            $config->extend('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
         $id = $this->withDataInSession([
@@ -288,9 +283,7 @@ final class WebTestCaseTest extends WebTestCase
      */
     public function test_without_middleware(): void
     {
-        $this->withoutMiddleware([
-            MiddlewareThatAlwaysThrowsException::class,
-        ]);
+        $this->withoutMiddleware([MiddlewareThatAlwaysThrowsException::class]);
 
         $browser = $this->getBrowser();
 
@@ -323,9 +316,7 @@ final class WebTestCaseTest extends WebTestCase
         $this->getBootedKernel();
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('::withoutMiddleware] can not be used if the kernel was already booted');
-        $this->withoutMiddleware([
-            MiddlewareThatAlwaysThrowsException::class,
-        ]);
+        $this->withoutMiddleware([MiddlewareThatAlwaysThrowsException::class]);
     }
 
     /**

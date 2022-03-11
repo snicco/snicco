@@ -36,9 +36,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
     public function throws_an_exception_if_a_route_is_created_after_the_fallback_route(): void
     {
         $this->expectExceptionMessage(LogicException::class);
-        $this->expectExceptionMessage(
-            'Route [route1] was registered after a fallback route was defined.'
-        );
+        $this->expectExceptionMessage('Route [route1] was registered after a fallback route was defined.');
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->fallback([RoutingTestController::class, 'fallback']);
@@ -68,10 +66,7 @@ final class FallbackRouteTest extends HttpRunnerTestCase
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 
-        $this->assertResponseBody(
-            'fallback:foo.bar',
-            $this->frontendRequest('/foo.bar')
-        );
+        $this->assertResponseBody('fallback:foo.bar', $this->frontendRequest('/foo.bar'));
 
         // These are excluded by default
         $this->assertEmptyBody($this->frontendRequest('/favicon.ico'));
@@ -88,24 +83,12 @@ final class FallbackRouteTest extends HttpRunnerTestCase
             $configurator->fallback([RoutingTestController::class, 'fallback'], ['foo', 'bar']);
         });
 
-        $this->assertResponseBody(
-            '',
-            $this->frontendRequest('/foobar')
-        );
-        $this->assertResponseBody(
-            '',
-            $this->frontendRequest('/foo')
-        );
-        $this->assertResponseBody(
-            '',
-            $this->frontendRequest('/bar')
-        );
+        $this->assertResponseBody('', $this->frontendRequest('/foobar'));
+        $this->assertResponseBody('', $this->frontendRequest('/foo'));
+        $this->assertResponseBody('', $this->frontendRequest('/bar'));
 
         $this->assertResponseBody('fallback:baz', $this->frontendRequest('/baz'));
-        $this->assertResponseBody(
-            'fallback:robots.txt',
-            $this->frontendRequest('/robots.txt')
-        );
+        $this->assertResponseBody('fallback:robots.txt', $this->frontendRequest('/robots.txt'));
     }
 
     /**
@@ -131,18 +114,9 @@ final class FallbackRouteTest extends HttpRunnerTestCase
             $configurator->fallback([RoutingTestController::class, 'fallback'], ['foo|bar', 'baz']);
         });
 
-        $this->assertResponseBody(
-            '',
-            $this->frontendRequest('/foo')
-        );
-        $this->assertResponseBody(
-            '',
-            $this->frontendRequest('/bar')
-        );
-        $this->assertResponseBody(
-            '',
-            $this->frontendRequest('/baz')
-        );
+        $this->assertResponseBody('', $this->frontendRequest('/foo'));
+        $this->assertResponseBody('', $this->frontendRequest('/bar'));
+        $this->assertResponseBody('', $this->frontendRequest('/baz'));
 
         $this->assertResponseBody('fallback:biz', $this->frontendRequest('/biz'));
     }
@@ -156,7 +130,8 @@ final class FallbackRouteTest extends HttpRunnerTestCase
             $configurator->fallback([RoutingTestController::class, 'fallback']);
         });
 
-        $this->runNewPipeline($this->frontendRequest('/wp-admin/foo'))->assertDelegated();
+        $this->runNewPipeline($this->frontendRequest('/wp-admin/foo'))
+            ->assertDelegated();
     }
 
     /**

@@ -69,10 +69,7 @@ final class DebugBundle implements Bundle
         $defaults = require dirname(__DIR__) . '/config/debug.php';
 
         if (! is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
-            $copied = copy(
-                dirname(__DIR__) . '/config/debug.php',
-                $to
-            );
+            $copied = copy(dirname(__DIR__) . '/config/debug.php', $to);
             if (false === $copied) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not copy default debug.php config.');
@@ -90,47 +87,54 @@ final class DebugBundle implements Bundle
     private function registerHttpDebugServices(Kernel $kernel): void
     {
         // private
-        $kernel->container()->factory(Run::class, function () {
-            $whoops = new Run();
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
+        $kernel->container()
+            ->factory(Run::class, function () {
+                $whoops = new Run();
+                $whoops->allowQuit(false);
+                $whoops->writeToOutput(false);
 
-            return $whoops;
-        });
+                return $whoops;
+            });
 
-        $kernel->container()->shared(PrettyPageHandler::class, function () use ($kernel) {
-            $handler = new FilterablePrettyPageHandler();
-            $handler->handleUnconditionally(true);
+        $kernel->container()
+            ->shared(PrettyPageHandler::class, function () use ($kernel) {
+                $handler = new FilterablePrettyPageHandler();
+                $handler->handleUnconditionally(true);
 
-            $handler->setEditor($kernel->config()->getString('debug.' . DebugOption::EDITOR));
+                $handler->setEditor($kernel->config()->getString('debug.' . DebugOption::EDITOR));
 
-            $handler->setApplicationRootPath($kernel->directories()->baseDir());
+                $handler->setApplicationRootPath($kernel->directories()->baseDir());
 
-            $handler->setApplicationPaths(
-                $kernel->config()->getListOfStrings('debug.' . DebugOption::APPLICATION_PATHS)
-            );
+                $handler->setApplicationPaths(
+                    $kernel->config()
+                        ->getListOfStrings('debug.' . DebugOption::APPLICATION_PATHS)
+                );
 
-            return $handler;
-        });
+                return $handler;
+            });
 
-        $kernel->container()->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
-            $whoops = $kernel->container()->make(Run::class);
-            $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
+        $kernel->container()
+            ->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
+                $whoops = $kernel->container()
+                    ->make(Run::class);
+                $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
 
-            return new WhoopsHtmlDisplayer($whoops);
-        });
+                return new WhoopsHtmlDisplayer($whoops);
+            });
 
-        $kernel->container()->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
-            $whoops = $kernel->container()->make(Run::class);
+        $kernel->container()
+            ->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
+                $whoops = $kernel->container()
+                    ->make(Run::class);
 
-            $handler = new JsonResponseHandler();
-            $handler->addTraceToOutput(true);
-            $handler->setJsonApi(true);
+                $handler = new JsonResponseHandler();
+                $handler->addTraceToOutput(true);
+                $handler->setJsonApi(true);
 
-            $whoops->pushHandler($handler);
+                $whoops->pushHandler($handler);
 
-            return new WhoopsJsonDisplayer($whoops);
-        });
+                return new WhoopsJsonDisplayer($whoops);
+            });
     }
 
     /**

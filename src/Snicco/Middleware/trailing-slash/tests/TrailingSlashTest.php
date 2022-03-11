@@ -23,10 +23,13 @@ final class TrailingSlashTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(true), $request);
 
         $response->assertNextMiddlewareNotCalled();
-        $response->assertableResponse()->assertRedirect();
-        $response->assertableResponse()->assertStatus(301);
+        $response->assertableResponse()
+            ->assertRedirect();
+        $response->assertableResponse()
+            ->assertStatus(301);
 
-        $response->assertableResponse()->assertRedirectPath('/bar/');
+        $response->assertableResponse()
+            ->assertRedirectPath('/bar/');
     }
 
     /**
@@ -39,7 +42,8 @@ final class TrailingSlashTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(true), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -52,7 +56,9 @@ final class TrailingSlashTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
 
         $response->assertNextMiddlewareNotCalled();
-        $response->assertableResponse()->assertRedirectPath('/bar')->assertStatus(301);
+        $response->assertableResponse()
+            ->assertRedirectPath('/bar')
+            ->assertStatus(301);
     }
 
     /**
@@ -65,7 +71,8 @@ final class TrailingSlashTest extends MiddlewareTestCase
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -77,11 +84,13 @@ final class TrailingSlashTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware(new TrailingSlash(false), $request);
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
 
         $response = $this->runMiddleware(new TrailingSlash(true), $request);
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -89,14 +98,17 @@ final class TrailingSlashTest extends MiddlewareTestCase
      */
     public function a_request_to_the_home_page_is_not_affected_if_is_has_no_trailing_slash(): void
     {
-        $request = $this->psrServerRequestFactory()->createServerRequest('GET', 'https://foo.com', []);
+        $request = $this->psrServerRequestFactory()
+            ->createServerRequest('GET', 'https://foo.com', []);
 
         $response = $this->runMiddleware(new TrailingSlash(false), new Request($request));
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
 
         $response = $this->runMiddleware(new TrailingSlash(true), new Request($request));
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 }

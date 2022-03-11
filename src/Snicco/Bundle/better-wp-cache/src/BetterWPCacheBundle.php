@@ -39,21 +39,26 @@ final class BetterWPCacheBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        $kernel->container()->shared(CacheItemPoolInterface::class, function () use ($kernel) {
-            /** @var non-empty-string $group */
-            $group = $kernel->config()->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
+        $kernel->container()
+            ->shared(CacheItemPoolInterface::class, function () use ($kernel) {
+                /** @var non-empty-string $group */
+                $group = $kernel->config()
+                    ->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
 
-            return CacheFactory::psr6($group);
-        });
-        $kernel->container()->shared(CacheInterface::class, function () use ($kernel) {
-            /** @var non-empty-string $group */
-            $group = $kernel->config()->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
+                return CacheFactory::psr6($group);
+            });
+        $kernel->container()
+            ->shared(CacheInterface::class, function () use ($kernel) {
+                /** @var non-empty-string $group */
+                $group = $kernel->config()
+                    ->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
 
-            return CacheFactory::psr16($group);
-        });
-        $kernel->container()->shared(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
-            return CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class));
-        });
+                return CacheFactory::psr16($group);
+            });
+        $kernel->container()
+            ->shared(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
+                return CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class));
+            });
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -70,7 +75,8 @@ final class BetterWPCacheBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
-        $destination = $kernel->directories()->configDir() . '/better-wp-cache.php';
+        $destination = $kernel->directories()
+            ->configDir() . '/better-wp-cache.php';
         if (is_file($destination)) {
             return;
         }

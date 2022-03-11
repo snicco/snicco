@@ -42,11 +42,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_runs_only_in_dev(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->boot();
 
         $this->assertFalse($kernel->usesBundle(DebugBundle::ALIAS));
@@ -57,11 +53,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_runs_only_in_dev_if_debug_is_enabled(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(false),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(false), $this->directories);
         $kernel->boot();
 
         $this->assertFalse($kernel->usesBundle(DebugBundle::ALIAS));
@@ -72,11 +64,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_runs_in_dev_with_debug_enabled(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(true),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(true), $this->directories);
         $kernel->boot();
 
         $this->assertTrue($kernel->usesBundle(DebugBundle::ALIAS));
@@ -87,23 +75,16 @@ final class DebugBundleTest extends TestCase
      */
     public function test_whoops_displayers_are_prepended_if_the_http_routing_bundle_is_used(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [
-                StubDisplayer::class,
-            ]);
+            $config->set('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [StubDisplayer::class]);
         });
 
         $kernel->boot();
 
-        $displayers = $kernel->config()->getListOfStrings(
-            HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS)
-        );
+        $displayers = $kernel->config()
+            ->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS));
 
         $this->assertSame([
             WhoopsHtmlDisplayer::class,
@@ -117,25 +98,18 @@ final class DebugBundleTest extends TestCase
      */
     public function whoops_displayers_are_not_prepended_if_the_http_routing_bundle_is_not_used(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('bundles', [
-                DebugBundle::class,
-            ]);
+            $config->set('bundles', [DebugBundle::class]);
         });
 
         $kernel->boot();
 
         $this->expectException(MissingConfigKey::class);
 
-        $kernel->config()->getListOfStrings(
-            'http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS
-        );
+        $kernel->config()
+            ->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS);
     }
 
     /**
@@ -143,11 +117,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_whoops_displayer_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
@@ -159,11 +129,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_use_whoops_for_text_html_requests(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
@@ -171,7 +137,8 @@ final class DebugBundleTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('/GET', '/foo'))
             ->withHeader('accept', 'text/html');
@@ -194,11 +161,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_use_whoops_for_json_requests(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
@@ -206,7 +169,8 @@ final class DebugBundleTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('/GET', '/foo'))
             ->withHeader('accept', 'application/json');
@@ -235,11 +199,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_not_use_whoops_for_json_requests_in_non_debug_mode(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(false),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(false), $this->directories);
 
         $kernel->boot();
 
@@ -247,7 +207,8 @@ final class DebugBundleTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('/GET', '/foo'))
             ->withHeader('accept', 'application/json');
@@ -268,11 +229,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_not_use_whoops_for_other_accept_headers(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(true),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(true), $this->directories);
 
         $kernel->boot();
 
@@ -280,14 +237,16 @@ final class DebugBundleTest extends TestCase
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('/GET', '/foo'))
             ->withHeader('accept', 'text/plain');
 
-        $response = $pipeline->send($request)->through([])->then(function () {
-            throw new RuntimeException('debug stuff');
-        });
+        $response = $pipeline->send($request)
+            ->through([])->then(function () {
+                throw new RuntimeException('debug stuff');
+            });
 
         $body = (string) $response->getBody();
 
@@ -299,25 +258,23 @@ final class DebugBundleTest extends TestCase
      */
     public function test_error_handler_will_not_use_whoops_if_debug_turned_off(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(false),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(false), $this->directories);
         $kernel->boot();
 
         /**
          * @var MiddlewarePipeline $pipeline
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = Request::fromPsr(new ServerRequest('/GET', '/foo'))
             ->withHeader('accept', 'text/html');
 
-        $response = $pipeline->send($request)->through([])->then(function () {
-            throw new RuntimeException('debug stuff');
-        });
+        $response = $pipeline->send($request)
+            ->through([])->then(function () {
+                throw new RuntimeException('debug stuff');
+            });
 
         $body = (string) $response->getBody();
 
@@ -330,11 +287,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_debug_editor_defaults_to_phpstorm(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
@@ -346,15 +299,12 @@ final class DebugBundleTest extends TestCase
      */
     public function test_application_paths_defaults_are_set(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
-        $paths = $kernel->config()->getListOfStrings('debug.application_paths');
+        $paths = $kernel->config()
+            ->getListOfStrings('debug.application_paths');
 
         $this->assertNotEmpty($paths);
         $this->assertNotContains(__DIR__ . '/fixtures/vendor', $paths);
@@ -365,11 +315,7 @@ final class DebugBundleTest extends TestCase
      */
     public function test_application_paths_defaults_are_not_set_if_already_present(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('debug.' . DebugOption::APPLICATION_PATHS, [__DIR__]);
@@ -377,7 +323,8 @@ final class DebugBundleTest extends TestCase
 
         $kernel->boot();
 
-        $paths = $kernel->config()->getListOfStrings('debug.application_paths');
+        $paths = $kernel->config()
+            ->getListOfStrings('debug.application_paths');
 
         $this->assertSame([__DIR__], $paths);
     }
@@ -387,11 +334,7 @@ final class DebugBundleTest extends TestCase
      */
     public function the_default_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/debug.php'));
 
@@ -404,10 +347,7 @@ final class DebugBundleTest extends TestCase
          */
         $config = require $this->directories->configDir() . '/debug.php';
 
-        $this->assertSame(
-            require dirname(__DIR__, 1) . '/config/debug.php',
-            $config
-        );
+        $this->assertSame(require dirname(__DIR__, 1) . '/config/debug.php', $config);
     }
 
     /**
@@ -415,11 +355,7 @@ final class DebugBundleTest extends TestCase
      */
     public function the_default_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/debug.php',
@@ -445,11 +381,7 @@ final class DebugBundleTest extends TestCase
      */
     public function the_default_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/debug.php'));
 

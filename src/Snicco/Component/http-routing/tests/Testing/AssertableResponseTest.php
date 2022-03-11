@@ -486,7 +486,8 @@ final class AssertableResponseTest extends TestCase
     public function test_assert_location_can_pass(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->createResponse()->withHeader('location', '/foo/bar?baz=biz')
+            $this->response_factory->createResponse()
+                ->withHeader('location', '/foo/bar?baz=biz')
         );
 
         $response->assertLocation('/foo/bar?baz=biz');
@@ -498,7 +499,8 @@ final class AssertableResponseTest extends TestCase
     public function test_assert_location_can_fail(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->createResponse()->withHeader('location', '/foo/bar?baz=biz')
+            $this->response_factory->createResponse()
+                ->withHeader('location', '/foo/bar?baz=biz')
         );
 
         $this->expectFailureWithMessageContaining(
@@ -512,9 +514,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_get_assertable_cookie_fails_if_set_cookie_header_is_not_present(): void
     {
-        $response = new AssertableResponse(
-            $this->response_factory->createResponse()
-        );
+        $response = new AssertableResponse($this->response_factory->createResponse());
 
         $this->expectFailureWithMessageContaining(
             'Response does not have header [set-cookie]',
@@ -528,7 +528,8 @@ final class AssertableResponseTest extends TestCase
     public function test_get_assertable_cookie_fails_if_the_cookie_is_not_present(): void
     {
         $response = new AssertableResponse(
-            $this->response_factory->createResponse()->withAddedHeader('set-cookie', 'foo=bar')
+            $this->response_factory->createResponse()
+                ->withAddedHeader('set-cookie', 'foo=bar')
         );
 
         $this->expectFailureWithMessageContaining(
@@ -586,9 +587,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_redirect_can_pass(): void
     {
-        $response = new AssertableResponse(
-            $this->response_factory->redirect('/foo/bar', 301)
-        );
+        $response = new AssertableResponse($this->response_factory->redirect('/foo/bar', 301));
 
         $response->assertRedirect();
         $response->assertRedirect('/foo/bar');
@@ -600,18 +599,14 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_redirect_can_fail(): void
     {
-        $response = new AssertableResponse(
-            $this->response_factory->html('foo')
-        );
+        $response = new AssertableResponse($this->response_factory->html('foo'));
 
         $this->expectFailureWithMessageContaining(
             'Status code [200] is not a redirection status code.',
             fn () => $response->assertRedirect()
         );
 
-        $response = new AssertableResponse(
-            $this->response_factory->redirect('/foo/bar', 301)
-        );
+        $response = new AssertableResponse($this->response_factory->redirect('/foo/bar', 301));
 
         $this->expectFailureWithMessageContaining(
             "Expected location header to be [/foo/baz].\nGot [/foo/bar]",
@@ -629,9 +624,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_redirect_path_can_pass(): void
     {
-        $response = new AssertableResponse(
-            $this->response_factory->redirect('/foo/bar?baz=biz', 301)
-        );
+        $response = new AssertableResponse($this->response_factory->redirect('/foo/bar?baz=biz', 301));
 
         $response->assertRedirectPath('/foo/bar');
         $response->assertRedirectPath('/foo/bar', 301);
@@ -642,9 +635,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_redirect_path_can_fail(): void
     {
-        $response = new AssertableResponse(
-            $this->response_factory->redirect('/foo/bar?baz=biz', 301)
-        );
+        $response = new AssertableResponse($this->response_factory->redirect('/foo/bar?baz=biz', 301));
 
         $this->expectFailureWithMessageContaining(
             'Redirect path [/foo/baz] does not match location header [/foo/bar?baz=biz].',
@@ -662,9 +653,7 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_content_type_can_pass(): void
     {
-        $response = new AssertableResponse(
-            $this->response_factory->html('foo')
-        );
+        $response = new AssertableResponse($this->response_factory->html('foo'));
 
         $response->assertContentType('text/html');
         $response->assertContentType('text/html', 'UTF-8');
@@ -686,9 +675,7 @@ final class AssertableResponseTest extends TestCase
             fn () => $response->assertContentType('text/html')
         );
 
-        $response = new AssertableResponse(
-            $this->response_factory->html('foo')
-        );
+        $response = new AssertableResponse($this->response_factory->html('foo'));
 
         $this->expectFailureWithMessageContaining(
             'Expected content-type [text/html; charset=bogus] but received [text/html; charset=UTF-8]',
@@ -919,9 +906,7 @@ final class AssertableResponseTest extends TestCase
     {
         $response = new AssertableResponse($this->response_factory->createResponse()->withHeader('foo', 'bar'));
 
-        $this->assertSame([
-            'bar',
-        ], $response->getHeader('foo'));
+        $this->assertSame(['bar'], $response->getHeader('foo'));
     }
 
     private function expectFailureWithMessageContaining(string $message, Closure $test): void

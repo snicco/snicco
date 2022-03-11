@@ -8,9 +8,5 @@ use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [
-        BetterWPHooksBundle::class,
-        BetterWPMailBundle::class,
-        HttpRoutingBundle::class,
-    ],
+    Environment::ALL => [BetterWPHooksBundle::class, BetterWPMailBundle::class, HttpRoutingBundle::class],
 ];

@@ -29,7 +29,8 @@ final class RedirectController extends Controller
     {
         [$location, $status_code, $query] = array_slice($args, -3);
 
-        return $this->respondWith()->redirectTo($location, $status_code, $query);
+        return $this->respondWith()
+            ->redirectTo($location, $status_code, $query);
     }
 
     /**
@@ -44,7 +45,8 @@ final class RedirectController extends Controller
     {
         [$location, $status_code] = array_slice($args, -2);
 
-        return $this->respondWith()->externalRedirect($location, $status_code);
+        return $this->respondWith()
+            ->externalRedirect($location, $status_code);
     }
 
     /**
@@ -59,6 +61,7 @@ final class RedirectController extends Controller
     {
         [$route, $arguments, $status_code] = array_slice($args, -3);
 
-        return $this->respondWith()->redirectToRoute($route, $arguments, $status_code);
+        return $this->respondWith()
+            ->redirectToRoute($route, $arguments, $status_code);
     }
 }

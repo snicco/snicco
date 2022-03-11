@@ -163,9 +163,7 @@ final class MailBoxTest extends WPTestCase
     public function test_exception_if_no_valid_argument(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            '$address has to be string,array or an instance of WP_User. Got [integer].'
-        );
+        $this->expectExceptionMessage('$address has to be string,array or an instance of WP_User. Got [integer].');
 
         Mailbox::create(1);
     }
@@ -206,10 +204,9 @@ final class MailBoxTest extends WPTestCase
 
     private function createAdmin(array $data): WP_User
     {
-        return $this->factory()->user->create_and_get(
-            array_merge($data, [
+        return $this->factory()
+            ->user->create_and_get(array_merge($data, [
                 'role' => 'administrator',
-            ])
-        );
+            ]));
     }
 }

@@ -35,10 +35,7 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         $this->assertFalse($result);
 
         try {
-            $this->better_wpdb->preparedQuery(
-                'apparently not a valid SQL statement',
-                ['calvin@web.de', 1]
-            );
+            $this->better_wpdb->preparedQuery('apparently not a valid SQL statement', ['calvin@web.de', 1]);
             $this->fail('No exception thrown for bad query [apparently not a valid SQL statement].');
         } catch (QueryException $e) {
             $this->assertStringContainsString('apparently not a valid SQL statement', $e->getMessage());

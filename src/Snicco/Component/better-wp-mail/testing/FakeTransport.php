@@ -68,12 +68,7 @@ final class FakeTransport implements Transport
         PHPUnit::assertSame(
             0,
             $times,
-            sprintf(
-                'Email of type [%s] was sent [%d] %s.',
-                $email_class,
-                $times,
-                $times > 1 ? 'times' : 'time'
-            )
+            sprintf('Email of type [%s] was sent [%d] %s.', $email_class, $times, $times > 1 ? 'times' : 'time')
         );
     }
 
@@ -106,7 +101,8 @@ final class FakeTransport implements Transport
         $this->assertSent(
             $email_class,
             function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()->has($expected_recipient);
+                return $envelope->recipients()
+                    ->has($expected_recipient);
             }
         );
     }
@@ -140,10 +136,7 @@ final class FakeTransport implements Transport
             PHPUnit::assertSame(
                 1,
                 count($matching),
-                sprintf(
-                    '[%d] emails were sent that match the provided condition.',
-                    count($matching)
-                )
+                sprintf('[%d] emails were sent that match the provided condition.', count($matching))
             );
         }
     }
@@ -158,7 +151,8 @@ final class FakeTransport implements Transport
         $matching = $this->sentEmailsThatMatchCondition(
             $email_class,
             function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()->has($expected_recipient);
+                return $envelope->recipients()
+                    ->has($expected_recipient);
             }
         );
 
@@ -255,9 +249,7 @@ final class FakeTransport implements Transport
         }
 
         foreach ((array) $attachments as $attachment) {
-            $wp_mail = $wp_mail->addAttachment(
-                $attachment
-            );
+            $wp_mail = $wp_mail->addAttachment($attachment);
         }
 
         $this->recordMail($wp_mail, new Envelope($from, $recipients));

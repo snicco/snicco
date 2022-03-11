@@ -47,10 +47,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
             $configurator->get('foo', '/foo', RoutingTestController::class);
         }, new FileRouteCache($this->route_cache_file));
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('foo')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('foo'));
     }
 
     /**
@@ -62,10 +59,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
             $configurator->get('foo', '/foo', RoutingTestController::class);
         }, new FileRouteCache($this->route_cache_file));
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('foo')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('foo'));
 
         $this->assertTrue(is_file($this->route_cache_file));
     }

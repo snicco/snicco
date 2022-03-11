@@ -68,9 +68,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         /** @psalm-suppress MixedAssignment */
         $this->error_data = json_decode(
-            (string) file_get_contents(
-                dirname(__DIR__) . '/resources/en_US.error.json'
-            ),
+            (string) file_get_contents(dirname(__DIR__) . '/resources/en_US.error.json'),
             true,
             JSON_THROW_ON_ERROR
         );
@@ -198,17 +196,11 @@ final class ProductionErrorHandlerTest extends TestCase
         $e = new Exception('Secret message here.');
 
         $response = $this->createErrorHandler([new PlainTextExceptionDisplayer(false)])
-            ->handle(
-                $e,
-                $this->base_request->withHeader('Accept', 'text/plain'),
-            );
+            ->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
 
         // default handler handles this.
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertStringContainsString(
-            '<h1>500 - Internal Server Error</h1>',
-            (string) $response->getBody()
-        );
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', (string) $response->getBody());
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
     }
 
@@ -225,10 +217,7 @@ final class ProductionErrorHandlerTest extends TestCase
             new JsonExceptionDisplayer(),
         ]);
 
-        $response = $handler->handle(
-            $e,
-            $this->base_request->withHeader('Accept', 'text/plain'),
-        );
+        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
 
         $body = (string) $response->getBody();
 
@@ -242,10 +231,7 @@ final class ProductionErrorHandlerTest extends TestCase
             new JsonExceptionDisplayer(),
         ]);
 
-        $response = $handler->handle(
-            $e,
-            $this->base_request->withHeader('Accept', 'text/plain'),
-        );
+        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
 
         $body = (string) $response->getBody();
 
@@ -255,16 +241,9 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $e = new Exception('Secret message here.');
         $handler = $this->createErrorHandler(
-            [
-                new PlainTextExceptionDisplayer(),
-                new PlainTextExceptionDisplayer2(),
-                new JsonExceptionDisplayer(),
-            ]
+            [new PlainTextExceptionDisplayer(), new PlainTextExceptionDisplayer2(), new JsonExceptionDisplayer()]
         );
-        $response = $handler->handle(
-            $e,
-            $this->base_request->withHeader('Accept', 'application/json'),
-        );
+        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'application/json'),);
 
         $body = (string) $response->getBody();
 
@@ -287,10 +266,7 @@ final class ProductionErrorHandlerTest extends TestCase
      */
     public function headers_are_added_to_the_response_if_a_http_exception_was_handled(): void
     {
-        $handler = $this->createErrorHandler(
-            [],
-            [new TooManyRequestsTransformer()]
-        );
+        $handler = $this->createErrorHandler([], [new TooManyRequestsTransformer()]);
 
         $e = new SlowDown('slow down.');
 
@@ -306,10 +282,7 @@ final class ProductionErrorHandlerTest extends TestCase
      */
     public function the_content_type_header_can_not_be_overwritten_by_a_transformer(): void
     {
-        $handler = $this->createErrorHandler(
-            [new PlainTextExceptionDisplayer()],
-            [new TransformContentType()]
-        );
+        $handler = $this->createErrorHandler([new PlainTextExceptionDisplayer()], [new TransformContentType()]);
 
         $e = new Exception('foobar');
 
@@ -350,11 +323,7 @@ final class ProductionErrorHandlerTest extends TestCase
      */
     public function an_exception_during_logging_will_be_logged(): void
     {
-        $logger = new RequestAwareLogger(
-            $test_logger = new TestLogger(),
-            [],
-            new RequestLogContextWithException()
-        );
+        $logger = new RequestAwareLogger($test_logger = new TestLogger(), [], new RequestLogContextWithException());
 
         $handler = new ProductionErrorHandler(
             $this->response_factory,
@@ -370,10 +339,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->assertTrue($test_logger->hasCriticalRecords());
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
-        $this->assertStringContainsString(
-            '<h1>500 - Internal Server Error</h1>',
-            (string) $response->getBody()
-        );
+        $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', (string) $response->getBody());
     }
 
     /**
@@ -381,9 +347,7 @@ final class ProductionErrorHandlerTest extends TestCase
      */
     public function an_exception_during_displaying_will_be_converted_into_a_minimal_500_error(): void
     {
-        $logger = new RequestAwareLogger(
-            $test_logger = new TestLogger(),
-        );
+        $logger = new RequestAwareLogger($test_logger = new TestLogger(),);
 
         $handler = new ProductionErrorHandler(
             $this->response_factory,
@@ -399,14 +363,9 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('text/plain', $response->getHeaderLine('content-type'));
-        $this->assertSame(
-            'Internal Server Error',
-            (string) $response->getBody()
-        );
+        $this->assertSame('Internal Server Error', (string) $response->getBody());
 
-        $this->assertTrue(
-            $test_logger->hasCriticalThatMatches('/display type error/')
-        );
+        $this->assertTrue($test_logger->hasCriticalThatMatches('/display type error/'));
     }
 
     /**
@@ -418,11 +377,7 @@ final class ProductionErrorHandlerTest extends TestCase
         array $transformers = [],
         LoggerInterface $logger = null
     ): ProductionErrorHandler {
-        $filters = new Delegating(
-            new Verbosity(false),
-            new ContentType(),
-            new CanDisplay()
-        );
+        $filters = new Delegating(new Verbosity(false), new ContentType(), new CanDisplay());
 
         $logger = new RequestAwareLogger($logger ?: new NullLogger(), []);
 

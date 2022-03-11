@@ -9,12 +9,11 @@ use Illuminate\Database\ConnectionResolverInterface as IlluminateConnectionResol
 use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
 
 /**
- * This class is an adapter around to illuminate-connection-resolver.
- * WordPress will ALWAYS open a mysqli connection. We will use this connection as the default
- * connection in order to not open up an unneeded secondary PDO connection to the same database.
- * Any database name that is NOT the default name will be passed to eloquent. This way we get the
- * best of both worlds. The developer can use secondary db connections with for example postgres or
- * mongo if needed, but we don't open another connection by default.
+ * This class is an adapter around to illuminate-connection-resolver. WordPress will ALWAYS open a mysqli connection. We
+ * will use this connection as the default connection in order to not open up an unneeded secondary PDO connection to
+ * the same database. Any database name that is NOT the default name will be passed to eloquent. This way we get the
+ * best of both worlds. The developer can use secondary db connections with for example postgres or mongo if needed, but
+ * we don't open another connection by default.
  *
  * @psalm-internal Snicco\Component\Eloquent
  *
@@ -41,12 +40,13 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
     }
 
     /**
-     * Handle calls from the DB Facade and proxy them to the default connection
-     * if the user did not request a specific connection via the DB::connection() method;.
+     * Handle calls from the DB Facade and proxy them to the default connection if the user did not request a specific
+     * connection via the DB::connection() method;.
      */
     public function __call(string $method, array $parameters)
     {
-        return $this->connection()->{$method}(...$parameters);
+        return $this->connection()
+            ->{$method}(...$parameters);
     }
 
     /**

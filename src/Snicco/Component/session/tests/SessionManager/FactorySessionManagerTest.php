@@ -183,7 +183,8 @@ final class FactorySessionManagerTest extends TestCase
         $manager->save($session);
 
         $new_session = $manager->start(new CookiePool([
-            $this->cookie_name => $session->id()->asString(),
+            $this->cookie_name => $session->id()
+                ->asString(),
         ]));
         // id stays the same
         $this->assertTrue($new_session->id()->sameAs($session->id()));
@@ -235,7 +236,8 @@ final class FactorySessionManagerTest extends TestCase
         $manager->save($session);
 
         $new_session = $manager->start(new CookiePool([
-            $this->cookie_name => $session->id()->asString(),
+            $this->cookie_name => $session->id()
+                ->asString(),
         ]));
         // id stays the same
         $this->assertTrue($new_session->id()->sameAs($session->id()));
@@ -325,7 +327,8 @@ final class FactorySessionManagerTest extends TestCase
         $old_id = $this->writeSessionWithData([
             'foo' => 'bar',
         ]);
-        $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+        $old_session = $this->getSessionManager()
+            ->start(CookiePool::fromSuperGlobals());
 
         $test_clock = new TestClock();
         $test_clock->travelIntoFuture($this->rotation_interval);
@@ -361,14 +364,16 @@ final class FactorySessionManagerTest extends TestCase
         $old_id = $this->writeSessionWithData([
             'foo' => 'bar',
         ]);
-        $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+        $old_session = $this->getSessionManager()
+            ->start(CookiePool::fromSuperGlobals());
 
         $test_clock = new TestClock();
         $test_clock->travelIntoFuture(4);
 
         $manager = $this->getSessionManager($test_clock);
         $new_session = $manager->start(new CookiePool([
-            $this->cookie_name => $old_session->id()->asString(),
+            $this->cookie_name => $old_session->id()
+                ->asString(),
         ]));
         $manager->save($new_session);
         $new_id = $new_session->id();
@@ -458,7 +463,8 @@ final class FactorySessionManagerTest extends TestCase
         $old_id = $this->writeSessionWithData([
             'foo' => 'bar',
         ]);
-        $old_session = $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+        $old_session = $this->getSessionManager()
+            ->start(CookiePool::fromSuperGlobals());
 
         $clock = new TestClock();
         $clock->travelIntoFuture($this->rotation_interval + 1);
@@ -492,7 +498,8 @@ final class FactorySessionManagerTest extends TestCase
         $_COOKIE[$this->cookie_name] = $tampered;
 
         try {
-            $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+            $this->getSessionManager()
+                ->start(CookiePool::fromSuperGlobals());
             $this->fail('Invalid session validator accepted.');
         } catch (RuntimeException $e) {
             $this->assertStringContainsString(
@@ -518,7 +525,8 @@ final class FactorySessionManagerTest extends TestCase
         $_COOKIE[$this->cookie_name] = $tampered;
 
         try {
-            $this->getSessionManager()->start(CookiePool::fromSuperGlobals());
+            $this->getSessionManager()
+                ->start(CookiePool::fromSuperGlobals());
             $this->fail('Invalid session validator accepted.');
         } catch (RuntimeException $e) {
             $this->assertStringContainsString(

@@ -40,31 +40,15 @@ final class VerbosityTest extends TestCase
         ];
 
         $e = new RuntimeException();
-        $info = new ExceptionInformation(
-            500,
-            'foo_id',
-            'foo_title',
-            'foo_details',
-            $e,
-            $e,
-            $this->request
-        );
+        $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
         $request = new ServerRequest('GET', '/foo');
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
 
         $this->assertSame([$d1, $d2, $d3, $d4], array_values($filtered));
 
         $filter = new Verbosity(false);
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
 
         $this->assertSame([$d3, $d4], array_values($filtered));
     }

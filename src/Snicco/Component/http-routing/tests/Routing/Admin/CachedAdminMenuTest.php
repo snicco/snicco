@@ -24,10 +24,7 @@ final class CachedAdminMenuTest extends TestCase
         $item1 = new AdminMenuItem('foo_title', 'foo_slug', 'foo_slug');
         $item2 = new AdminMenuItem('bar_title', 'bar_slug', 'bar_slug');
 
-        $menu = new CachedAdminMenu([
-            serialize($item1),
-            serialize($item2),
-        ]);
+        $menu = new CachedAdminMenu([serialize($item1), serialize($item2)]);
 
         $this->assertCount(2, $menu->items());
 
@@ -54,11 +51,7 @@ final class CachedAdminMenuTest extends TestCase
         $item1 = new AdminMenuItem('foo_title', 'foo_slug', 'foo_slug');
         $item2 = new AdminMenuItem('bar_title', 'bar_slug', 'bar_slug');
 
-        $menu = new CachedAdminMenu([
-            serialize($item1),
-            serialize($item2),
-            serialize('foo'),
-        ]);
+        $menu = new CachedAdminMenu([serialize($item1), serialize($item2), serialize('foo')]);
 
         $menu->items();
     }

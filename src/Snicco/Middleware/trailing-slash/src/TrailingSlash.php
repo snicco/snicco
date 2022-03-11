@@ -47,6 +47,7 @@ final class TrailingSlash extends Middleware
             ? $path . '/'
             : rtrim($path, '/');
 
-        return $this->responseFactory()->redirect($redirect_to, 301);
+        return $this->responseFactory()
+            ->redirect($redirect_to, 301);
     }
 }

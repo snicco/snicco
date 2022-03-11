@@ -193,10 +193,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(
-            FooEvent::class,
-            [ClassListener::class, 'customHandleMethod']
-        );
+        $dispatcher->listen(FooEvent::class, [ClassListener::class, 'customHandleMethod']);
 
         $dispatcher->dispatch(new FooEvent('FOOBAR'));
 
@@ -227,10 +224,7 @@ final class EventDispatcherTest extends TestCase
 
         $this->expectException(InvalidListener::class);
         $this->expectExceptionMessage(
-            sprintf(
-                'The listener [%s] does not define the __invoke() method.',
-                ListenerWithoutMethod::class
-            ),
+            sprintf('The listener [%s] does not define the __invoke() method.', ListenerWithoutMethod::class),
         );
 
         $dispatcher->listen('foo_event', ListenerWithoutMethod::class);
@@ -259,11 +253,7 @@ final class EventDispatcherTest extends TestCase
 
         $this->expectException(InvalidListener::class);
         $this->expectExceptionMessage(
-            sprintf(
-                'The listener class [%s] does not have a [%s] method.',
-                ClassListener::class,
-                'bogus'
-            )
+            sprintf('The listener class [%s] does not have a [%s] method.', ClassListener::class, 'bogus')
         );
 
         $dispatcher->listen('foo_event', [ClassListener::class, 'bogus']);
@@ -278,9 +268,7 @@ final class EventDispatcherTest extends TestCase
         $dispatcher = $this->getDispatcher();
 
         $this->expectException(InvalidListener::class);
-        $this->expectExceptionMessage(
-            'The listener [BogusClass] is not a valid class.'
-        );
+        $this->expectExceptionMessage('The listener [BogusClass] is not a valid class.');
 
         $dispatcher->listen('foo_event', ['BogusClass', 'bogus']);
     }
@@ -294,9 +282,7 @@ final class EventDispatcherTest extends TestCase
         $dispatcher = $this->getDispatcher();
 
         $this->expectException(InvalidListener::class);
-        $this->expectExceptionMessage(
-            'Listeners must be a string, array or closure.'
-        );
+        $this->expectExceptionMessage('Listeners must be a string, array or closure.');
 
         $dispatcher->listen('foo_event', 1);
     }
@@ -396,11 +382,7 @@ final class EventDispatcherTest extends TestCase
 
         $dispatcher->dispatch(new FooEvent('FOOBAR'));
         $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
-        $this->assertListenerRun(
-            FooEvent::class,
-            ClassListener2::class,
-            'FOOBAR'
-        );
+        $this->assertListenerRun(FooEvent::class, ClassListener2::class, 'FOOBAR');
 
         $this->resetListenersResponses();
 
@@ -553,8 +535,6 @@ final class EventDispatcherTest extends TestCase
 
     private function getDispatcher(): EventDispatcher
     {
-        return new BaseEventDispatcher(
-            new NewableListenerFactory()
-        );
+        return new BaseEventDispatcher(new NewableListenerFactory());
     }
 }

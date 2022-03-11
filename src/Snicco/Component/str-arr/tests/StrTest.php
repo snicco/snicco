@@ -109,10 +109,7 @@ final class StrTest extends TestCase
         $this->assertSame('LaravelPHPFramework', Str::studly('laravel_p_h_p_framework'));
         $this->assertSame('LaravelPhpFramework', Str::studly('laravel_php_framework'));
         $this->assertSame('LaravelPhPFramework', Str::studly('laravel-phP-framework'));
-        $this->assertSame(
-            'LaravelPhpFramework',
-            Str::studly('laravel  -_-  php   -_-   framework   ')
-        );
+        $this->assertSame('LaravelPhpFramework', Str::studly('laravel  -_-  php   -_-   framework   '));
 
         $this->assertSame('FooBar', Str::studly('fooBar'));
         $this->assertSame('FooBar', Str::studly('foo_bar'));
@@ -362,10 +359,7 @@ final class StrTest extends TestCase
     public function replace_first(): void
     {
         $this->assertSame('fooqux foobar', Str::replaceFirst('bar', 'qux', 'foobar foobar'));
-        $this->assertSame(
-            'foo/qux? foo/bar?',
-            Str::replaceFirst('bar?', 'qux?', 'foo/bar? foo/bar?')
-        );
+        $this->assertSame('foo/qux? foo/bar?', Str::replaceFirst('bar?', 'qux?', 'foo/bar? foo/bar?'));
         $this->assertSame('foo foobar', Str::replaceFirst('bar', '', 'foobar foobar'));
         $this->assertSame('foobar foobar', Str::replaceFirst('xxx', 'yyy', 'foobar foobar'));
         $this->assertSame('foobar foobar', Str::replaceFirst('', 'yyy', 'foobar foobar'));
@@ -384,7 +378,7 @@ final class StrTest extends TestCase
         $this->assertSame('foo', Str::pregReplace($str, '/^\.+|\.+$/', ''));
 
         $this->assertSame('Malmo', Str::pregReplace('Malmööö', '/[ö].+/', 'o'));
-        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o', ));
+        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o',));
     }
 
     /**

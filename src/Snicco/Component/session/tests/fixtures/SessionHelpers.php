@@ -22,11 +22,7 @@ trait SessionHelpers
 {
     public function newSession(?SessionId $id = null, array $data = [], int $now = null): Session
     {
-        return new ReadWriteSession(
-            $id ?? SessionId::new(),
-            $data,
-            $now ?? time()
-        );
+        return new ReadWriteSession($id ?? SessionId::new(), $data, $now ?? time());
     }
 
     public function getSessionManager(

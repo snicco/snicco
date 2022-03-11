@@ -70,19 +70,23 @@ final class RouteAttributesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo', [], 'GET');
         $response = $this->runNewPipeline($request);
-        $response->assertOk()->assertBodyExact(RoutingTestController::static);
+        $response->assertOk()
+            ->assertBodyExact(RoutingTestController::static);
 
         $request = $this->frontendRequest('/foo', [], 'HEAD');
         $response = $this->runNewPipeline($request);
-        $response->assertOk()->assertNotDelegated();
+        $response->assertOk()
+            ->assertNotDelegated();
 
         $request = $this->frontendRequest('/foo/bar', [], 'GET');
         $response = $this->runNewPipeline($request);
-        $response->assertOk()->assertBodyExact('dynamic:bar');
+        $response->assertOk()
+            ->assertBodyExact('dynamic:bar');
 
         $request = $this->frontendRequest('/foo/bar', [], 'HEAD');
         $response = $this->runNewPipeline($request);
-        $response->assertOk()->assertNotDelegated();
+        $response->assertOk()
+            ->assertNotDelegated();
     }
 
     /**
@@ -183,12 +187,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
     public function a_route_can_match_specific_methods(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->match(
-                ['GET', 'POST'],
-                'foo',
-                '/foo',
-                RoutingTestController::class
-            );
+            $configurator->match(['GET', 'POST'], 'foo', '/foo', RoutingTestController::class);
         });
 
         $request = $this->frontendRequest('/foo', [], 'GET');
@@ -208,16 +207,8 @@ final class RouteAttributesTest extends HttpRunnerTestCase
     public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'static',
-                '/foo/baz',
-                [RoutingTestController::class, 'static']
-            );
-            $configurator->get(
-                'dynamic',
-                '/foo/{dynamic}',
-                [RoutingTestController::class, 'dynamic']
-            );
+            $configurator->get('static', '/foo/baz', [RoutingTestController::class, 'static']);
+            $configurator->get('dynamic', '/foo/{dynamic}', [RoutingTestController::class, 'dynamic']);
         });
 
         $request = $this->frontendRequest('/foo/baz');
@@ -252,10 +243,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo');
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:foo_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:foo_middleware', $request);
     }
 
     /**

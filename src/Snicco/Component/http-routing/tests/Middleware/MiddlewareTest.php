@@ -55,9 +55,11 @@ final class MiddlewareTest extends TestCase
         $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $url = $this->url()->to('/foo');
+                $url = $this->url()
+                    ->to('/foo');
 
-                return $this->responseFactory()->html($url);
+                return $this->responseFactory()
+                    ->html($url);
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -75,7 +77,8 @@ final class MiddlewareTest extends TestCase
         $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respondWith()->redirectTo('/foo', 303);
+                return $this->respondWith()
+                    ->redirectTo('/foo', 303);
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -101,7 +104,8 @@ final class MiddlewareTest extends TestCase
         $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo'),
             new class($rf) implements RequestHandlerInterface {
                 private ResponseFactory $factory;
 
@@ -128,7 +132,8 @@ final class MiddlewareTest extends TestCase
         $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respondWith()->refresh();
+                return $this->respondWith()
+                    ->refresh();
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -149,7 +154,8 @@ final class MiddlewareTest extends TestCase
             // Handle method is made public.
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                return $this->respondWith()->refresh();
+                return $this->respondWith()
+                    ->refresh();
             }
         };
         $middleware->setContainer($this->pimple_psr);
@@ -178,7 +184,8 @@ final class MiddlewareTest extends TestCase
         $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo'),
             new class($rf) implements RequestHandlerInterface {
                 private ResponseFactory $factory;
 
@@ -205,9 +212,11 @@ final class MiddlewareTest extends TestCase
         $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $url = $this->url()->to('/foo');
+                $url = $this->url()
+                    ->to('/foo');
 
-                return $this->responseFactory()->html($url);
+                return $this->responseFactory()
+                    ->html($url);
             }
         };
 
@@ -228,9 +237,11 @@ final class MiddlewareTest extends TestCase
         $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
-                $url = $this->url()->to('/foo');
+                $url = $this->url()
+                    ->to('/foo');
 
-                return $this->responseFactory()->html($url);
+                return $this->responseFactory()
+                    ->html($url);
             }
         };
 

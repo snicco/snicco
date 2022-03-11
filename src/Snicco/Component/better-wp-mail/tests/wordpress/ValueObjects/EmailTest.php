@@ -199,11 +199,7 @@ final class EmailTest extends WPTestCase
 
         $this->assertCount(0, $email->attachments());
 
-        $email = $email->addAttachment(
-            $this->attachment_dir . '/php-elephant.jpg',
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addAttachment($this->attachment_dir . '/php-elephant.jpg', 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -225,11 +221,7 @@ final class EmailTest extends WPTestCase
 
         $contents = file_get_contents($this->attachment_dir . '/php-elephant.jpg');
 
-        $email = $email->addBinaryAttachment(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryAttachment($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -245,11 +237,7 @@ final class EmailTest extends WPTestCase
 
         $contents = fopen($this->attachment_dir . '/php-elephant.jpg', 'r');
 
-        $email = $email->addBinaryAttachment(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryAttachment($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -269,11 +257,7 @@ final class EmailTest extends WPTestCase
 
         $this->assertCount(0, $email->attachments());
 
-        $email = $email->addEmbed(
-            $this->attachment_dir . '/php-elephant.jpg',
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addEmbed($this->attachment_dir . '/php-elephant.jpg', 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -295,11 +279,7 @@ final class EmailTest extends WPTestCase
 
         $contents = file_get_contents($this->attachment_dir . '/php-elephant.jpg');
 
-        $email = $email->addBinaryEmbed(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryEmbed($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -315,11 +295,7 @@ final class EmailTest extends WPTestCase
 
         $contents = fopen($this->attachment_dir . '/php-elephant.jpg', 'r');
 
-        $email = $email->addBinaryEmbed(
-            $contents,
-            'elephant',
-            'image/jpg'
-        );
+        $email = $email->addBinaryEmbed($contents, 'elephant', 'image/jpg');
 
         $this->assertCount(1, $email->attachments());
 
@@ -412,7 +388,8 @@ final class EmailTest extends WPTestCase
         $this->assertSame('Foo', $email->textBody());
         $this->assertSame('<h1>Foo</h1>', $email->htmlBody());
 
-        $email = (new Email())->withHtmlBody('<h1>Foo</h1>')->withTextBody('Foo custom');
+        $email = (new Email())->withHtmlBody('<h1>Foo</h1>')
+            ->withTextBody('Foo custom');
         $this->assertSame('Foo custom', $email->textBody());
         $this->assertSame('<h1>Foo</h1>', $email->htmlBody());
     }

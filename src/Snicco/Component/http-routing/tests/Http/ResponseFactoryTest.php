@@ -104,7 +104,8 @@ final class ResponseFactoryTest extends TestCase
      */
     public function test_to_response_for_psr7_response(): void
     {
-        $response = $this->psrResponseFactory()->createResponse();
+        $response = $this->psrResponseFactory()
+            ->createResponse();
         $result = $this->factory->toResponse($response);
         $this->assertNotSame($result, $response);
         $this->assertInstanceOf(Response::class, $result);

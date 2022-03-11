@@ -36,7 +36,8 @@ final class DatabaseFactoriesTest extends WPTestCase
         Model::unsetEventDispatcher();
         Model::unsetConnectionResolver();
 
-        ($eloquent = new WPEloquentStandalone())->bootstrap();
+        ($eloquent = new WPEloquentStandalone())
+            ->bootstrap();
         $eloquent->withDatabaseFactories(
             'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Model',
             'Snicco\\Component\\Eloquent\\Tests\\fixtures\\Factory',
@@ -178,16 +179,11 @@ final class DatabaseFactoriesTest extends WPTestCase
     {
         $countries = Country::factory()
             ->count(6)
-            ->state(
-                new Sequence(
-                    [
-                        'continent' => 'Narnia',
-                    ],
-                    [
-                        'continent' => 'Westeros',
-                    ],
-                )
-            )
+            ->state(new Sequence([
+                'continent' => 'Narnia',
+            ], [
+                'continent' => 'Westeros',
+            ],))
             ->create();
 
         $table = $this->assertDbTable('wp_countries');
@@ -286,11 +282,9 @@ final class DatabaseFactoriesTest extends WPTestCase
     {
         $cities = City::factory()
             ->count(3)
-            ->for(
-                Country::factory()->state([
-                    'name' => 'Narnia',
-                ])
-            )
+            ->for(Country::factory()->state([
+                'name' => 'Narnia',
+            ]))
             ->create();
 
         $table = $this->assertDbTable('wp_countries');
@@ -364,12 +358,9 @@ final class DatabaseFactoriesTest extends WPTestCase
     public function test_many_to_many_with_attached(): void
     {
         $city = City::factory()
-            ->hasAttached(
-                Activity::factory()->count(3),
-                [
-                    'popularity' => 10,
-                ]
-            )
+            ->hasAttached(Activity::factory()->count(3), [
+                'popularity' => 10,
+            ])
             ->create();
 
         $table = $this->assertDbTable('wp_activities');

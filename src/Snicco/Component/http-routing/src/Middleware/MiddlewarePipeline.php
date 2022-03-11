@@ -87,7 +87,10 @@ final class MiddlewarePipeline
 
     private function run(): Response
     {
-        Assert::notNull($this->current_request, 'You cant run a middleware pipeline twice without calling send() first.');
+        Assert::notNull(
+            $this->current_request,
+            'You cant run a middleware pipeline twice without calling send() first.'
+        );
         Assert::notNull($this->request_handler);
 
         $stack = $this->lazyNext();

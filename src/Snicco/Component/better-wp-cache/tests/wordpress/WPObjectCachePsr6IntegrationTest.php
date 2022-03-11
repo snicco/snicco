@@ -317,7 +317,8 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $this->assertTrue($return, 'clear() must return true if cache was cleared. ');
         $this->assertFalse(
-            $this->cache->getItem('key')->isHit(),
+            $this->cache->getItem('key')
+                ->isHit(),
             'No item should be a hit after the cache is cleared. '
         );
         $this->assertFalse($this->cache->hasItem('key2'), 'The cache pool should be empty after it is cleared.');
@@ -475,7 +476,8 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             'Deferred items should be considered as a part of the cache even before they are committed'
         );
         $this->assertTrue(
-            $this->cache->getItem('key')->isHit(),
+            $this->cache->getItem('key')
+                ->isHit(),
             'Deferred items should be a hit even before they are committed'
         );
         $this->assertTrue($this->cache->getItem('key2')->isHit());
@@ -527,7 +529,8 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
             'You must be able to delete a deferred item before committed. '
         );
         $this->assertFalse(
-            $this->cache->getItem('key')->isHit(),
+            $this->cache->getItem('key')
+                ->isHit(),
             'You must be able to delete a deferred item before committed. '
         );
 
@@ -550,7 +553,8 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $cache = $this->createCachePool();
         $this->assertTrue(
-            $cache->getItem('key')->isHit(),
+            $cache->getItem('key')
+                ->isHit(),
             'A deferred item should automatically be committed on CachePool::__destruct().'
         );
     }

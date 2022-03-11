@@ -31,11 +31,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_routing_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/routing.php'));
 
@@ -54,11 +50,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_routing_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/routing.php',
@@ -80,10 +72,7 @@ final class DefaultsAreCopiedTest extends TestCase
             ],
             require $this->directories->configDir() . '/routing.php'
         );
-        $this->assertSame(
-            'foo.com',
-            $kernel->config()->get('routing.' . RoutingOption::HOST)
-        );
+        $this->assertSame('foo.com', $kernel->config()->get('routing.' . RoutingOption::HOST));
     }
 
     /**
@@ -91,11 +80,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_routing_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/routing.php'));
 
@@ -109,11 +94,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_middleware_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/middleware.php'));
 
@@ -132,11 +113,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_middleware_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/middleware.php',
@@ -158,10 +135,7 @@ final class DefaultsAreCopiedTest extends TestCase
             ],
             require $this->directories->configDir() . '/middleware.php'
         );
-        $this->assertSame(
-            ['frontend'],
-            $kernel->config()->get('middleware.' . MiddlewareOption::ALWAYS_RUN)
-        );
+        $this->assertSame(['frontend'], $kernel->config()->get('middleware.' . MiddlewareOption::ALWAYS_RUN));
     }
 
     /**
@@ -169,11 +143,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_middleware_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/middleware.php'));
 
@@ -187,11 +157,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_error_handling_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(
     ): void {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/http_error_handling.php'));
 
@@ -210,11 +176,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_error_handling_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/http_error_handling.php',
@@ -238,7 +200,8 @@ final class DefaultsAreCopiedTest extends TestCase
         );
         $this->assertSame(
             'custom.request',
-            $kernel->config()->get('http_error_handling.' . HttpErrorHandlingOption::LOG_PREFIX)
+            $kernel->config()
+                ->get('http_error_handling.' . HttpErrorHandlingOption::LOG_PREFIX)
         );
     }
 
@@ -247,11 +210,7 @@ final class DefaultsAreCopiedTest extends TestCase
      */
     public function the_default_error_handling_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/http_error_handling.php'));
 

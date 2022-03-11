@@ -35,7 +35,8 @@ final class ViewEngine
      */
     public function render($view, array $context = []): string
     {
-        $view = $this->make($view)->with($context);
+        $view = $this->make($view)
+            ->with($context);
 
         return $view->render();
     }
@@ -70,12 +71,9 @@ final class ViewEngine
             sprintf(
                 "None of the used view factories can render the any of the views [%s].\nTried with:\n%s",
                 implode(',', $views),
-                implode(
-                    "\n",
-                    array_map(function (ViewFactory $v) {
-                        return get_class($v);
-                    }, $this->view_factories)
-                )
+                implode("\n", array_map(function (ViewFactory $v) {
+                    return get_class($v);
+                }, $this->view_factories))
             )
         );
     }

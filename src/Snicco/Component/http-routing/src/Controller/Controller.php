@@ -48,10 +48,7 @@ abstract class Controller
         $middleware_for_method = [];
 
         foreach ($middleware as $controller_middleware) {
-            $middleware_for_method = array_merge(
-                $middleware_for_method,
-                $controller_middleware->toArray()
-            );
+            $middleware_for_method = array_merge($middleware_for_method, $controller_middleware->toArray());
         }
 
         return $middleware_for_method;
@@ -107,11 +104,7 @@ abstract class Controller
 
     final protected function respondWith(): ResponseUtils
     {
-        return new ResponseUtils(
-            $this->url(),
-            $this->responseFactory(),
-            $this->currentRequest()
-        );
+        return new ResponseUtils($this->url(), $this->responseFactory(), $this->currentRequest());
     }
 
     /**

@@ -30,10 +30,7 @@ final class Authenticate extends Middleware
 
         throw new HttpException(
             401,
-            sprintf(
-                'Missing authentication for request path [%s].',
-                $request->getUri()->getPath()
-            )
+            sprintf('Missing authentication for request path [%s].', $request->getUri()->getPath())
         );
     }
 }

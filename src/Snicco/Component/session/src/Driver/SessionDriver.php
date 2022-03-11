@@ -13,8 +13,8 @@ use Snicco\Component\Session\ValueObject\SerializedSession;
 interface SessionDriver
 {
     /**
-     * Returns the data of the session with the given selector.
-     * It is NOT required to check if the session can still be considered active.
+     * Returns the data of the session with the given selector. It is NOT required to check if the session can still be
+     * considered active.
      *
      * @throws BadSessionID
      * @throws CouldNotReadSessionContent

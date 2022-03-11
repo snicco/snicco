@@ -25,11 +25,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
         $this->assertFalse($this->psr_container->has(Request::class));
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'route1',
-                '/foo',
-                [RoutingTestController::class, 'onlyRequest']
-            );
+            $configurator->get('route1', '/foo', [RoutingTestController::class, 'onlyRequest']);
         });
 
         $request = $this->frontendRequest('/foo');
@@ -42,11 +38,7 @@ final class RouteActionDependencyInjectionTest extends HttpRunnerTestCase
     public function its_not_required_to_have_class_dependencies(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'r1',
-                'teams/{team}/{player}',
-                [RoutingTestController::class, 'twoParams']
-            );
+            $configurator->get('r1', 'teams/{team}/{player}', [RoutingTestController::class, 'twoParams']);
         });
 
         $request = $this->frontendRequest('/teams/dortmund/calvin');

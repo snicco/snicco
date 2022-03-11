@@ -16,8 +16,8 @@ use function is_int;
 use function sprintf;
 
 /**
- * This class needs to double-check every method call to mysqli for errors because by default
- * WordPress configures mysqli to not throw exceptions and also sets the mysql mode to non-strict.
+ * This class needs to double-check every method call to mysqli for errors because by default WordPress configures
+ * mysqli to not throw exceptions and also sets the mysql mode to non-strict.
  *
  * @psalm-internal Snicco\Component\Eloquent
  *
@@ -223,19 +223,11 @@ final class MysqliDriver implements MysqliDriverInterface
         try {
             $success = $stmt->bind_param($types, ...$bindings);
         } catch (mysqli_sql_exception $e) {
-            throw new QueryException(
-                $sql,
-                $copy,
-                $this->lastException()
-            );
+            throw new QueryException($sql, $copy, $this->lastException());
         }
 
         if (! $success) {
-            throw new QueryException(
-                $sql,
-                $copy,
-                $this->lastException()
-            );
+            throw new QueryException($sql, $copy, $this->lastException());
         }
 
         return $stmt;
@@ -271,11 +263,7 @@ final class MysqliDriver implements MysqliDriverInterface
                 throw $this->lastException();
             }
         } catch (mysqli_sql_exception $e) {
-            throw new QueryException(
-                $sql,
-                $bindings,
-                $e
-            );
+            throw new QueryException($sql, $bindings, $e);
         }
 
         return $success;

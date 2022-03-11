@@ -33,15 +33,9 @@ final class EncryptedDriverTest extends TestCase
     {
         $array_driver = new InMemoryDriver();
 
-        $driver = new EncryptedDriver(
-            $array_driver,
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($array_driver, new TestSessionEncryptor());
 
-        $driver->write(
-            'session1',
-            SerializedSession::fromString('foo_data', 'validator', time())
-        );
+        $driver->write('session1', SerializedSession::fromString('foo_data', 'validator', time()));
 
         $all = $array_driver->all();
 
@@ -61,10 +55,7 @@ final class EncryptedDriverTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAll');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->destroyAll();
     }
 
@@ -76,10 +67,7 @@ final class EncryptedDriverTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAllForUserId');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->destroyAllForUserId(1);
     }
 
@@ -91,10 +79,7 @@ final class EncryptedDriverTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('getAllForUserId');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->getAllForUserId(1);
     }
 
@@ -106,29 +91,20 @@ final class EncryptedDriverTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('destroyAllForUserIdExcept');
 
-        $driver = new EncryptedDriver(
-            $this->notUserSessionDriver(),
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
         $driver->destroyAllForUserIdExcept('s', 1);
     }
 
     protected function createDriver(Clock $clock): SessionDriver
     {
-        return new EncryptedDriver(
-            new InMemoryDriver($clock),
-            new TestSessionEncryptor()
-        );
+        return new EncryptedDriver(new InMemoryDriver($clock), new TestSessionEncryptor());
     }
 
     protected function createUserSessionDriver(array $user_sessions): UserSessionsDriver
     {
         $array_driver = new InMemoryDriver();
 
-        $driver = new EncryptedDriver(
-            $array_driver,
-            new TestSessionEncryptor()
-        );
+        $driver = new EncryptedDriver($array_driver, new TestSessionEncryptor());
 
         foreach ($user_sessions as $selector => $user_session) {
             $array_driver->write($selector, $user_session);

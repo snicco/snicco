@@ -175,12 +175,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
     private function validateKey($key): void
     {
         if (! is_string($key)) {
-            throw new Psr6InvalidArgumentException(
-                sprintf(
-                    'Cache key must be string, "%s" given',
-                    gettype($key)
-                )
-            );
+            throw new Psr6InvalidArgumentException(sprintf('Cache key must be string, "%s" given', gettype($key)));
         }
         if ('' === $key) {
             throw new Psr6InvalidArgumentException('Cache key cannot be an empty string');
@@ -219,7 +214,8 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
      */
     private function internalHas(string $key): bool
     {
-        return $this->internalGet($key)->isHit();
+        return $this->internalGet($key)
+            ->isHit();
     }
 
     /**

@@ -110,21 +110,10 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
      */
     public function bindings_get_prepared_correctly(): void
     {
-        $result = $this->getMysqliConnection()->prepareBindings([
-            true,
-            false,
-            'string',
-            10,
-            new DateTime('07.04.2021 15:00'),
-        ]);
+        $result = $this->getMysqliConnection()
+            ->prepareBindings([true, false, 'string', 10, new DateTime('07.04.2021 15:00')]);
 
-        $this->assertSame([
-            1,
-            0,
-            'string',
-            10,
-            '2021-04-07 15:00:00',
-        ], $result);
+        $this->assertSame([1, 0, 'string', 10, '2021-04-07 15:00:00'], $result);
     }
 
     /**
@@ -135,7 +124,8 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
         global $wpdb;
         $wpdb->prefix = 'my_prefix';
 
-        $config = $this->getMysqliConnection()->getConfig();
+        $config = $this->getMysqliConnection()
+            ->getConfig();
 
         $this->assertEquals([
             'driver' => 'mysql',

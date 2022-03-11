@@ -52,15 +52,11 @@ final class ViewComposerCollection
 
         /** @psalm-suppress DocblockTypeContradiction */
         if (! is_string($composer)) {
-            throw new InvalidArgumentException(
-                'A view composer has to be a closure or a class name.'
-            );
+            throw new InvalidArgumentException('A view composer has to be a closure or a class name.');
         }
 
         if (! class_exists($composer)) {
-            throw new InvalidArgumentException(
-                "[{$composer}] is not a valid class."
-            );
+            throw new InvalidArgumentException("[{$composer}] is not a valid class.");
         }
 
         if (! in_array(ViewComposer::class, (array) class_implements($composer), true)) {
@@ -76,10 +72,8 @@ final class ViewComposerCollection
     }
 
     /**
-     * Composes the context the passed view in the following order.
-     * => global context
-     * => view composer context
-     * => local context.
+     * Composes the context the passed view in the following order. => global context => view composer context => local
+     * context.
      *
      * @template T of View
      *

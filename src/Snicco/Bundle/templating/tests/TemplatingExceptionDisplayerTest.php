@@ -57,31 +57,15 @@ final class TemplatingExceptionDisplayerTest extends TestCase
      */
     public function test_can_display(): void
     {
-        $this->assertTrue(
-            $this->displayer->canDisplay(
-                $this->getInformation(500, 'foo_id')
-            )
-        );
+        $this->assertTrue($this->displayer->canDisplay($this->getInformation(500, 'foo_id')));
 
-        $this->assertFalse(
-            $this->displayer->canDisplay(
-                $this->getInformation(404, 'bar_id')
-            )
-        );
+        $this->assertFalse($this->displayer->canDisplay($this->getInformation(404, 'bar_id')));
 
         // errors.403
-        $this->assertTrue(
-            $this->displayer->canDisplay(
-                $this->getInformation(403, 'baz_id')
-            )
-        );
+        $this->assertTrue($this->displayer->canDisplay($this->getInformation(403, 'baz_id')));
 
         // exceptions.406
-        $this->assertTrue(
-            $this->displayer->canDisplay(
-                $this->getInformation(406, 'biz_id')
-            )
-        );
+        $this->assertTrue($this->displayer->canDisplay($this->getInformation(406, 'biz_id')));
     }
 
     /**

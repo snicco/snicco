@@ -40,10 +40,11 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
             new InMemoryDriver(),
             new JsonSerializer()
         );
-        $this->request_with_session = $this->frontendRequest()->withAttribute(
-            MutableSession::class,
-            $this->session = $session_manager->start(new CookiePool([]))
-        )->withAttribute(ImmutableSession::class, ReadOnlySession::fromSession($this->session));
+        $this->request_with_session = $this->frontendRequest()
+            ->withAttribute(
+                MutableSession::class,
+                $this->session = $session_manager->start(new CookiePool([]))
+            )->withAttribute(ImmutableSession::class, ReadOnlySession::fromSession($this->session));
     }
 
     /**
@@ -69,7 +70,8 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->request_with_session);
         $response->assertNextMiddlewareCalled();
 
-        $view_response = $response->assertableResponse()->getPsrResponse();
+        $view_response = $response->assertableResponse()
+            ->getPsrResponse();
         $this->assertInstanceOf(ViewResponse::class, $view_response);
 
         $this->assertEquals([
@@ -77,10 +79,7 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
             'session' => ReadOnlySession::fromSession($this->session),
             'errors' => new SessionErrors([
                 'default' => [
-                    'key1' => [
-                        'error1',
-                        'error2',
-                    ],
+                    'key1' => ['error1', 'error2'],
                 ],
             ]),
         ], $view_response->viewData());

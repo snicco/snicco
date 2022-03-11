@@ -30,13 +30,10 @@ final class ViewEngineMailRenderer implements MailRenderer
         try {
             $view = $this->getView($template_name);
 
-            return $view->with($context)->render();
+            return $view->with($context)
+                ->render();
         } catch (ViewCantBeRendered $e) {
-            throw new CouldNotRenderMailContent(
-                $e->getMessage(),
-                0,
-                $e
-            );
+            throw new CouldNotRenderMailContent($e->getMessage(), 0, $e);
         }
     }
 

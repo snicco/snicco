@@ -18,26 +18,34 @@ final class HttpRunnerTestController extends Controller
 
     public function noResponse(): DelegatedResponse
     {
-        return $this->responseFactory()->delegate(false);
+        return $this->responseFactory()
+            ->delegate(false);
     }
 
     public function adminRedirect(): RedirectResponse
     {
-        return $this->respondWith()->redirectTo('/foo');
+        return $this->respondWith()
+            ->redirectTo('/foo');
     }
 
     public function clientError(): Response
     {
-        return $this->responseFactory()->html('no way')->withStatus(403);
+        return $this->responseFactory()
+            ->html('no way')
+            ->withStatus(403);
     }
 
     public function serverError(): Response
     {
-        return $this->responseFactory()->html('server error')->withStatus(500);
+        return $this->responseFactory()
+            ->html('server error')
+            ->withStatus(500);
     }
 
     public function stream(): Response
     {
-        return $this->responseFactory()->html('foo')->withHeader('content-disposition', 'attachment');
+        return $this->responseFactory()
+            ->html('foo')
+            ->withHeader('content-disposition', 'attachment');
     }
 }

@@ -23,10 +23,7 @@ final class MysqliFactory
 
         $reconnect = new MysqliReconnect($this->getReconnect($wp));
 
-        return new MysqliConnection(
-            new MysqliDriver($wp->mysqli(), $reconnect),
-            $wp,
-        );
+        return new MysqliConnection(new MysqliDriver($wp->mysqli(), $reconnect), $wp,);
     }
 
     /**
@@ -35,7 +32,8 @@ final class MysqliFactory
     private function getReconnect(WPDatabaseSettingsAPI $wp): Closure
     {
         return function () use ($wp) {
-            $success = $wp->wpdb()->check_connection(false);
+            $success = $wp->wpdb()
+                ->check_connection(false);
             if (! $success) {
                 throw new RuntimeException('Cant reconnect to wpdb.');
             }

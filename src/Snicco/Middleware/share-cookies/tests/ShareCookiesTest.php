@@ -23,16 +23,11 @@ final class ShareCookiesTest extends MiddlewareTestCase
             return $response->withCookie(new Cookie('foo', 'bar'));
         });
 
-        $response = $this->runMiddleware(
-            new ShareCookies(),
-            $this->frontendRequest()
-        );
+        $response = $this->runMiddleware(new ShareCookies(), $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertHeader(
-            'Set-Cookie',
-            'foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly'
-        );
+        $response->assertableResponse()
+            ->assertHeader('Set-Cookie', 'foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly');
     }
 
     /**
@@ -48,21 +43,13 @@ final class ShareCookiesTest extends MiddlewareTestCase
                 ->withCookie($cookie2);
         });
 
-        $response = $this->runMiddleware(
-            new ShareCookies(),
-            $this->frontendRequest()
-        );
+        $response = $this->runMiddleware(new ShareCookies(), $this->frontendRequest());
 
-        $cookie_header = $response->assertableResponse()->getHeader('Set-Cookie');
+        $cookie_header = $response->assertableResponse()
+            ->getHeader('Set-Cookie');
 
-        $this->assertSame(
-            'foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly',
-            $cookie_header[0]
-        );
-        $this->assertSame(
-            'baz=biz; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly',
-            $cookie_header[1]
-        );
+        $this->assertSame('foo=bar; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly', $cookie_header[0]);
+        $this->assertSame('baz=biz; Path=/; SameSite=Lax; Secure; HostOnly; HttpOnly', $cookie_header[1]);
     }
 
     /**
@@ -74,12 +61,10 @@ final class ShareCookiesTest extends MiddlewareTestCase
             return $response->withoutCookie('foo');
         });
 
-        $response = $this->runMiddleware(
-            new ShareCookies(),
-            $this->frontendRequest()
-        );
+        $response = $this->runMiddleware(new ShareCookies(), $this->frontendRequest());
 
-        $cookie_header = $response->assertableResponse()->getHeader('Set-Cookie');
+        $cookie_header = $response->assertableResponse()
+            ->getHeader('Set-Cookie');
         $this->assertSame(
             'foo=deleted; Path=/; Expires=Thu, 01-Jan-1970 00:00:01 GMT; SameSite=Lax; Secure; HostOnly; HttpOnly',
             $cookie_header[0]
@@ -91,12 +76,10 @@ final class ShareCookiesTest extends MiddlewareTestCase
      */
     public function everything_works_if_the_response_has_no_cookies_added(): void
     {
-        $response = $this->runMiddleware(
-            new ShareCookies(),
-            $this->frontendRequest()
-        );
+        $response = $this->runMiddleware(new ShareCookies(), $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertHeaderMissing('set-cookie');
+        $response->assertableResponse()
+            ->assertHeaderMissing('set-cookie');
     }
 }

@@ -20,11 +20,7 @@ final class AdminMenuItemTest extends TestCase
      */
     public function the_menu_item_can_be_constructed_just_with_a_route(): void
     {
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
         $item = AdminMenuItem::fromRoute($route);
 
@@ -35,11 +31,7 @@ final class AdminMenuItemTest extends TestCase
         $this->assertNull($item->icon());
         $this->assertNull($item->position());
 
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my-page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my-page');
 
         $item = AdminMenuItem::fromRoute($route);
 
@@ -56,19 +48,12 @@ final class AdminMenuItemTest extends TestCase
      */
     public function extra_arguments_can_be_passed_and_while_take_precedence_over_attributes_inflected_from_the_route(
     ): void {
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
         // Only page  title
-        $item = AdminMenuItem::fromRoute(
-            $route,
-            [
-                AdminMenuItem::PAGE_TITLE => 'My explicit page title',
-            ]
-        );
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::PAGE_TITLE => 'My explicit page title',
+        ]);
 
         $this->assertSame('My explicit page title', $item->menuTitle());
         $this->assertSame('My explicit page title', $item->pageTitle());
@@ -77,11 +62,7 @@ final class AdminMenuItemTest extends TestCase
         $this->assertNull($item->icon());
         $this->assertNull($item->position());
 
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
         // menu and page title explicitly
         $item = AdminMenuItem::fromRoute(
@@ -97,18 +78,11 @@ final class AdminMenuItemTest extends TestCase
         $this->assertSame('/wp-admin/admin.php/foo', $item->slug()->asString());
 
         // Only menu title
-        $route = Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        $route = Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
 
-        $item = AdminMenuItem::fromRoute(
-            $route,
-            [
-                AdminMenuItem::MENU_TITLE => 'My explicit menu title',
-            ]
-        );
+        $item = AdminMenuItem::fromRoute($route, [
+            AdminMenuItem::MENU_TITLE => 'My explicit menu title',
+        ]);
 
         $this->assertSame('My explicit menu title', $item->menuTitle());
         $this->assertSame('My explicit menu title', $item->pageTitle());
@@ -244,16 +218,12 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [], );
+        $item = AdminMenuItem::fromRoute($route, [],);
         $item->parentSlug();
     }
 
     private function getRoute(): Route
     {
-        return Route::create(
-            '/wp-admin/admin.php/foo',
-            RoutingTestController::class,
-            'admin.my_page'
-        );
+        return Route::create('/wp-admin/admin.php/foo', RoutingTestController::class, 'admin.my_page');
     }
 }

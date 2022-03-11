@@ -64,7 +64,7 @@ final class HttpKernelRunner
      * Sets up the runner to send a response an appropriate (later) time based on the request type.
      *
      * @note Unless you are 100% sure what you are doing you should not change the hooks.
-     *       You have been warned.
+     * You have been warned.
      */
     public function listen(bool $is_admin, string $frontend_hook = 'wp_loaded', string $api_hook = 'init'): void
     {
@@ -80,9 +80,7 @@ final class HttpKernelRunner
             }, PHP_INT_MIN);
         } else {
             add_action($frontend_hook, function () use ($psr_request) {
-                $this->dispatchFrontendRequest(
-                    Request::fromPsr($psr_request, Request::TYPE_FRONTEND)
-                );
+                $this->dispatchFrontendRequest(Request::fromPsr($psr_request, Request::TYPE_FRONTEND));
             }, PHP_INT_MIN);
         }
     }

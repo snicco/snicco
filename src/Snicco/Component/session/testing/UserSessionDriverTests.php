@@ -35,14 +35,8 @@ trait UserSessionDriverTests
 
         $user_sessions = $this->createUserSessionDriver($sessions);
 
-        $user_sessions->write(
-            'session_no_user1',
-            SerializedSession::fromString('foo', 'val1', time())
-        );
-        $user_sessions->write(
-            'session_no_user2',
-            SerializedSession::fromString('foo', 'val1', time())
-        );
+        $user_sessions->write('session_no_user1', SerializedSession::fromString('foo', 'val1', time()));
+        $user_sessions->write('session_no_user2', SerializedSession::fromString('foo', 'val1', time()));
 
         PHPUnit::assertCount(1, $user_sessions->getAllForUserId(1));
         PHPUnit::assertCount(1, $user_sessions->getAllForUserId(2));

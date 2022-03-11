@@ -21,7 +21,8 @@ final class ShareCookies extends Middleware
 
     public function addCookiesToResponse(Response $response): ResponseInterface
     {
-        $cookie_headers = $response->cookies()->toHeaders();
+        $cookie_headers = $response->cookies()
+            ->toHeaders();
 
         if ([] === $cookie_headers) {
             return $response;

@@ -6,7 +6,5 @@ use Snicco\Bundle\BetterWPCache\BetterWPCacheBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [
-        BetterWPCacheBundle::class,
-    ],
+    Environment::ALL => [BetterWPCacheBundle::class],
 ];

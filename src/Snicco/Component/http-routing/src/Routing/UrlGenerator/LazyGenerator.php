@@ -29,7 +29,8 @@ final class LazyGenerator implements UrlGenerator
 
     public function to(string $path, array $extra = [], int $type = self::ABSOLUTE_PATH, ?bool $https = null): string
     {
-        return $this->lazyGenerator()->to($path, $extra, $type, $https);
+        return $this->lazyGenerator()
+            ->to($path, $extra, $type, $https);
     }
 
     public function toRoute(
@@ -38,12 +39,14 @@ final class LazyGenerator implements UrlGenerator
         int $type = self::ABSOLUTE_PATH,
         ?bool $https = null
     ): string {
-        return $this->lazyGenerator()->toRoute($name, $arguments, $type, $https);
+        return $this->lazyGenerator()
+            ->toRoute($name, $arguments, $type, $https);
     }
 
     public function toLogin(array $arguments = [], int $type = self::ABSOLUTE_PATH): string
     {
-        return $this->lazyGenerator()->toLogin($arguments, $type);
+        return $this->lazyGenerator()
+            ->toLogin($arguments, $type);
     }
 
     private function lazyGenerator(): UrlGenerator

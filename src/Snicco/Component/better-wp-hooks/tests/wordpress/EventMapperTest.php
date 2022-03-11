@@ -47,9 +47,7 @@ final class EventMapperTest extends WPTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->dispatcher = new BaseEventDispatcher(
-            new NewableListenerFactory()
-        );
+        $this->dispatcher = new BaseEventDispatcher(new NewableListenerFactory());
         $this->event_mapper = new EventMapper($this->dispatcher, new WPHookAPI());
         $this->resetListenersResponses();
     }
@@ -517,9 +515,7 @@ final class EventMapperTest extends WPTestCase
     public function a_mapped_event_has_to_have_on_of_the_valid_interfaces(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'has to implement either'
-        );
+        $this->expectExceptionMessage('has to implement either');
         $this->event_mapper->map('foobar', NormalEvent::class);
     }
 
@@ -530,10 +526,7 @@ final class EventMapperTest extends WPTestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            sprintf(
-                'Tried to map the event class [%s] twice to the [foobar] filter.',
-                EventFilter1::class
-            )
+            sprintf('Tried to map the event class [%s] twice to the [foobar] filter.', EventFilter1::class)
         );
         $this->event_mapper->map('foobar', EventFilter1::class);
         $this->event_mapper->map('foobar', EventFilter1::class);
@@ -546,10 +539,7 @@ final class EventMapperTest extends WPTestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
-            sprintf(
-                'Tried to map the event class [%s] twice to the [foobar] hook.',
-                FooActionEvent::class
-            )
+            sprintf('Tried to map the event class [%s] twice to the [foobar] hook.', FooActionEvent::class)
         );
         $this->event_mapper->map('foobar', FooActionEvent::class);
         $this->event_mapper->map('foobar', FooActionEvent::class);
@@ -564,12 +554,7 @@ final class EventMapperTest extends WPTestCase
     public function cant_map_to_a_non_existing_class(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'The event class [%s] does not exist.',
-                'Bogus'
-            )
-        );
+        $this->expectExceptionMessage(sprintf('The event class [%s] does not exist.', 'Bogus'));
         $this->event_mapper->map('foobar', 'Bogus');
     }
 

@@ -10,8 +10,6 @@ final class BadSessionID extends InvalidArgumentException
 {
     public static function forSelector(string $id, string $driver): BadSessionID
     {
-        return new self(
-            "The session selector [{$id}] does not exist in the [{$driver}] driver."
-        );
+        return new self("The session selector [{$id}] does not exist in the [{$driver}] driver.");
     }
 }

@@ -120,15 +120,18 @@ abstract class WebTestCase extends WPTestCase
             throw new LogicException('You are not using the session-bundle in your bundles.php config.');
         }
 
-        $cookie_name = $kernel->container()->make(SessionConfig::class)->cookieName();
+        $cookie_name = $kernel->container()
+            ->make(SessionConfig::class)->cookieName();
 
-        $session_manager = $kernel->container()->make(SessionManager::class);
+        $session_manager = $kernel->container()
+            ->make(SessionManager::class);
         $session = $session_manager->start(new CookiePool($this->cookies));
         $session->put($data);
         $session_manager->save($session);
 
         $this->withCookies([
-            $cookie_name => $session->id()->asString(),
+            $cookie_name => $session->id()
+                ->asString(),
         ]);
 
         return $session->id();
@@ -143,15 +146,16 @@ abstract class WebTestCase extends WPTestCase
 
         foreach ($middleware as $class) {
             $kernel->afterRegister(function (Kernel $kernel) use ($class) {
-                $kernel->container()->instance(
-                    $class,
-                    new class() extends Middleware {
-                        protected function handle(Request $request, NextMiddleware $next): ResponseInterface
-                        {
-                            return $next($request);
+                $kernel->container()
+                    ->instance(
+                        $class,
+                        new class() extends Middleware {
+                            protected function handle(Request $request, NextMiddleware $next): ResponseInterface
+                            {
+                                return $next($request);
+                            }
                         }
-                    }
-                );
+                    );
             });
         }
     }
@@ -160,21 +164,23 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(
-                HttpErrorHandler::class,
-                new TestErrorHandler()
-            );
+            $kernel->container()
+                ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
     }
 
     final protected function getEventDispatcher(): TestableEventDispatcher
     {
-        return $this->getBootedKernel()->container()->make(TestableEventDispatcher::class);
+        return $this->getBootedKernel()
+            ->container()
+            ->make(TestableEventDispatcher::class);
     }
 
     final protected function getMailTransport(): FakeTransport
     {
-        $transport = $this->getBootedKernel()->container()->make(Transport::class);
+        $transport = $this->getBootedKernel()
+            ->container()
+            ->make(Transport::class);
         Assert::isInstanceOf($transport, FakeTransport::class);
 
         return $transport;
@@ -199,7 +205,8 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
         $kernel->afterRegister(function (Kernel $kernel) use ($id, $instance) {
-            $kernel->container()->instance($id, $instance);
+            $kernel->container()
+                ->instance($id, $instance);
         });
     }
 
@@ -241,13 +248,17 @@ abstract class WebTestCase extends WPTestCase
         }
 
         $this->withServerVariables([
-            'HTTP_HOST' => $kernel->config()->getString('routing.' . RoutingOption::HOST),
-            'HTTPS' => $kernel->config()->getBoolean('routing.' . RoutingOption::USE_HTTPS),
+            'HTTP_HOST' => $kernel->config()
+                ->getString('routing.' . RoutingOption::HOST),
+            'HTTPS' => $kernel->config()
+                ->getBoolean('routing.' . RoutingOption::USE_HTTPS),
         ]);
 
         return new Browser(
-            $kernel->container()->make(HttpKernel::class),
-            $kernel->container()->make(Psr17FactoryDiscovery::class),
+            $kernel->container()
+                ->make(HttpKernel::class),
+            $kernel->container()
+                ->make(Psr17FactoryDiscovery::class),
             AdminAreaPrefix::fromString($kernel->config()->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX)),
             UrlPath::fromString($kernel->config()->getString('routing.' . RoutingOption::API_PREFIX)),
             $this->server,

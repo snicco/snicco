@@ -53,9 +53,7 @@ final class KernelBootstrappersTest extends TestCase
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
                 'app' => [
-                    'bootstrappers' => [
-                        Bootstrap1::class,
-                    ],
+                    'bootstrappers' => [Bootstrap1::class],
                 ],
             ])
         );
@@ -97,9 +95,7 @@ final class KernelBootstrappersTest extends TestCase
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
                 'app' => [
-                    'bootstrappers' => [
-                        BootstrapperWithExceptionInBoostrap::class,
-                    ],
+                    'bootstrappers' => [BootstrapperWithExceptionInBoostrap::class],
                 ],
             ])
         );
@@ -134,7 +130,8 @@ class BundleInfo implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()->make(BundleInfo::class)->booted = true;
+        $kernel->container()
+            ->make(BundleInfo::class)->booted = true;
     }
 
     public function alias(): string

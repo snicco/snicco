@@ -37,14 +37,9 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
     {
         try {
             $this->connection->insert('foo', ['bar']);
-            $this->fail(
-                'No exception thrown when inserting a value that is to big for a column'
-            );
+            $this->fail('No exception thrown when inserting a value that is to big for a column');
         } catch (QueryException $e) {
-            $this->assertStringContainsString(
-                'error: You have an error in your SQL syntax',
-                $e->getMessage()
-            );
+            $this->assertStringContainsString('error: You have an error in your SQL syntax', $e->getMessage());
         }
     }
 
@@ -59,10 +54,7 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
             ]);
             $this->fail('No query exception thrown');
         } catch (QueryException $e) {
-            $this->assertStringStartsWith(
-                'error: You have an error in your SQL syntax',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('error: You have an error in your SQL syntax', $e->getMessage());
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame([
                 'foo' => 'bar',
@@ -81,10 +73,7 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
             ]);
             $this->fail('No query exception thrown');
         } catch (QueryException $e) {
-            $this->assertStringStartsWith(
-                'error: You have an error in your SQL syntax',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('error: You have an error in your SQL syntax', $e->getMessage());
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame([
                 'foo' => 'bar',
@@ -101,10 +90,7 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
             $this->connection->unprepared('foobar');
             $this->fail('No query exception thrown');
         } catch (QueryException $e) {
-            $this->assertStringStartsWith(
-                'error: You have an error in your SQL syntax',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('error: You have an error in your SQL syntax', $e->getMessage());
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame([], $e->getBindings());
         }
@@ -143,10 +129,7 @@ final class MysqliConnectionErrorHandlingTest extends WPTestCase
             ]);
             $this->fail('no exception thrown');
         } catch (QueryException $e) {
-            $this->assertStringStartsWith(
-                'error: You have an error in your SQL syntax',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('error: You have an error in your SQL syntax', $e->getMessage());
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame([
                 'foo' => 'bar',

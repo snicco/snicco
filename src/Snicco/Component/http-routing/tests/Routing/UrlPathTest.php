@@ -90,10 +90,7 @@ final class UrlPathTest extends TestCase
     {
         $expected = Str::endsWith($append_path, '/')
             ? trim($append_path, '/') . '/'
-            : trim(
-                $append_path,
-                '/'
-            );
+            : trim($append_path, '/');
 
         $path = UrlPath::fromString('/foo');
         $this->assertSame('/foo/' . $expected, $path->append($append_path)->asString());
@@ -143,13 +140,7 @@ final class UrlPathTest extends TestCase
 
     public function providePath(): array
     {
-        return [
-            ['foo', '/foo'],
-            ['/foo', '/foo'],
-            ['//foo', '/foo'],
-            ['/foo/', '/foo/'],
-            ['/foo//', '/foo/'],
-        ];
+        return [['foo', '/foo'], ['/foo', '/foo'], ['//foo', '/foo'], ['/foo/', '/foo/'], ['/foo//', '/foo/']];
     }
 
     public function prependProvider(): Generator

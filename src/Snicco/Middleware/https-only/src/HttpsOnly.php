@@ -39,9 +39,11 @@ final class HttpsOnly extends Middleware
              *
              * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
              */
-            $location = $uri->withScheme('https')->__toString();
+            $location = $uri->withScheme('https')
+                ->__toString();
 
-            return $this->responseFactory()->redirect($location, 301);
+            return $this->responseFactory()
+                ->redirect($location, 301);
         }
 
         return $next($request);

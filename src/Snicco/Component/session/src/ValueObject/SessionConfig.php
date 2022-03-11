@@ -82,9 +82,7 @@ final class SessionConfig
         }
 
         if (! in_array($same_site, $req = ['Lax', 'Strict', 'None; Secure'], true)) {
-            throw new InvalidArgumentException(
-                sprintf('same_site must be one of [%s].', implode(', ', $req))
-            );
+            throw new InvalidArgumentException(sprintf('same_site must be one of [%s].', implode(', ', $req)));
         }
         $this->same_site = $same_site;
 
@@ -95,9 +93,7 @@ final class SessionConfig
 
         $gc_percentage = $config['garbage_collection_percentage'] ?? -1;
         if ($gc_percentage < 0 || $gc_percentage > 100) {
-            throw new InvalidArgumentException(
-                'The garbage collection percentage has to be between 0 and 100.'
-            );
+            throw new InvalidArgumentException('The garbage collection percentage has to be between 0 and 100.');
         }
         $this->gc_percentage = $gc_percentage;
 

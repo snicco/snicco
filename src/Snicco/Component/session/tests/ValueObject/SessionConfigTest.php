@@ -192,22 +192,13 @@ final class SessionConfigTest extends TestCase
     public function test_gc_lottery(): void
     {
         $this->defaults['garbage_collection_percentage'] = 5;
-        $this->assertInstanceOf(
-            SessionLottery::class,
-            (new SessionConfig($this->defaults))->gcLottery()
-        );
+        $this->assertInstanceOf(SessionLottery::class, (new SessionConfig($this->defaults))->gcLottery());
 
         $this->defaults['garbage_collection_percentage'] = 0;
-        $this->assertInstanceOf(
-            SessionLottery::class,
-            (new SessionConfig($this->defaults))->gcLottery()
-        );
+        $this->assertInstanceOf(SessionLottery::class, (new SessionConfig($this->defaults))->gcLottery());
 
         $this->defaults['garbage_collection_percentage'] = 100;
-        $this->assertInstanceOf(
-            SessionLottery::class,
-            (new SessionConfig($this->defaults))->gcLottery()
-        );
+        $this->assertInstanceOf(SessionLottery::class, (new SessionConfig($this->defaults))->gcLottery());
 
         $this->expectException(InvalidArgumentException::class);
         unset($this->defaults['garbage_collection_percentage']);

@@ -169,10 +169,7 @@ final class ArrTest extends TestCase
             Arr::get($array, null);
             $this->fail('Expected exception to be thrown.');
         } catch (InvalidArgumentException $e) {
-            $this->assertStringStartsWith(
-                '$key has to be a string or an integer',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('$key has to be a string or an integer', $e->getMessage());
         }
 
         // test non accessible value throws exception
@@ -180,10 +177,7 @@ final class ArrTest extends TestCase
             Arr::get(null, 'foo');
             $this->fail('Expected exception to be thrown.');
         } catch (InvalidArgumentException $e) {
-            $this->assertStringStartsWith(
-                '$array has to be an array or instance of ArrayAccess',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('$array has to be an array or instance of ArrayAccess', $e->getMessage());
         }
 
         // Test numeric keys
@@ -207,12 +201,9 @@ final class ArrTest extends TestCase
             ],
         ];
         $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', 'dayle'));
-        $this->assertSame(
-            'dayle',
-            Arr::get($array, 'names.otherDeveloper', function () {
-                return 'dayle';
-            })
-        );
+        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', function () {
+            return 'dayle';
+        }));
 
         // test keys with dots have priority
         $array = [
@@ -255,10 +246,7 @@ final class ArrTest extends TestCase
             Arr::exists('foo', 1);
             $this->fail('Expected exception to be thrown for non array in Arr::exists().');
         } catch (InvalidArgumentException $e) {
-            $this->assertStringStartsWith(
-                '$array has to be an array or instance of ArrayAccess',
-                $e->getMessage()
-            );
+            $this->assertStringStartsWith('$array has to be an array or instance of ArrayAccess', $e->getMessage());
         }
     }
 
@@ -339,20 +327,13 @@ final class ArrTest extends TestCase
      */
     public function test_first(): void
     {
-        $array = [
-            100,
-            200,
-            300,
-        ];
+        $array = [100, 200, 300];
 
         // Callback is null and array is empty
         $this->assertNull(Arr::first([]));
         $this->assertSame('foo', Arr::first([], null, 'foo'));
 
-        $this->assertSame(
-            'bar',
-            Arr::first([], null, 'bar')
-        );
+        $this->assertSame('bar', Arr::first([], null, 'bar'));
 
         // Callback is null and array is not empty
         $this->assertEquals(100, Arr::first($array));
@@ -396,9 +377,7 @@ final class ArrTest extends TestCase
 
         // exception for count bigger than available
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'You requested [4] items, but there are only [3] items available.'
-        );
+        $this->expectExceptionMessage('You requested [4] items, but there are only [3] items available.');
         Arr::random(['foo', 'bar', 'baz'], 4);
     }
 
@@ -645,15 +624,12 @@ final class ArrTest extends TestCase
             'foo' => 'bar',
         ], Arr::except($array, 'baz'));
 
-        $this->assertEquals(
-            [
-                'foo' => 'bar',
-                'baz' => [
-                    'bang' => 'boom',
-                ],
+        $this->assertEquals([
+            'foo' => 'bar',
+            'baz' => [
+                'bang' => 'boom',
             ],
-            Arr::except($array, 'baz.biz')
-        );
+        ], Arr::except($array, 'baz.biz'));
 
         $this->assertEquals(
             [
@@ -868,15 +844,12 @@ final class ArrTest extends TestCase
         ];
         $name = Arr::pull($array, 'emails.joe@example.com');
         $this->assertNull($name);
-        $this->assertEquals(
-            [
-                'emails' => [
-                    'joe@example.com' => 'Joe',
-                    'jane@localhost' => 'Jane',
-                ],
+        $this->assertEquals([
+            'emails' => [
+                'joe@example.com' => 'Joe',
+                'jane@localhost' => 'Jane',
             ],
-            $array
-        );
+        ], $array);
     }
 
     /**
@@ -1014,16 +987,13 @@ final class ArrTest extends TestCase
      */
     public function test_merge_recursive(): void
     {
-        $this->assertEquals(
-            [
-                'foo' => 'baz',
-            ],
-            Arr::mergeRecursive([
-                'foo' => 'bar',
-            ], [
-                'foo' => 'baz',
-            ])
-        );
+        $this->assertEquals([
+            'foo' => 'baz',
+        ], Arr::mergeRecursive([
+            'foo' => 'bar',
+        ], [
+            'foo' => 'baz',
+        ]));
 
         $this->assertEquals(
             [
@@ -1130,18 +1100,12 @@ final class ArrTest extends TestCase
         $this->assertSame('Taylor', Arr::dataGet($array, '0.users.0.name'));
         $this->assertNull(Arr::dataGet($array, '0.users.3'));
         $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', 'Not found'));
-        $this->assertSame(
-            'Not found',
-            Arr::dataGet($array, '0.users.3', function () {
-                return 'Not found';
-            })
-        );
+        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', function () {
+            return 'Not found';
+        }));
         $this->assertSame('Taylor', Arr::dataGet($dottedArray, ['users', 'first.name']));
         $this->assertNull(Arr::dataGet($dottedArray, ['users', 'middle.name']));
-        $this->assertSame(
-            'Not found',
-            Arr::dataGet($dottedArray, ['users', 'last.name'], 'Not found')
-        );
+        $this->assertSame('Not found', Arr::dataGet($dottedArray, ['users', 'last.name'], 'Not found'));
         $this->assertEquals(56, Arr::dataGet($arrayAccess, 'price'));
         $this->assertSame('John', Arr::dataGet($arrayAccess, 'user.name'));
         $this->assertSame('void', Arr::dataGet($arrayAccess, 'foo', 'void'));
@@ -1176,10 +1140,7 @@ final class ArrTest extends TestCase
         ];
 
         $this->assertEquals(['taylor', 'abigail', 'dayle'], Arr::dataGet($array, '*.name'));
-        $this->assertEquals(
-            ['taylorotwell@gmail.com', null, null],
-            Arr::dataGet($array, '*.email', 'irrelevant')
-        );
+        $this->assertEquals(['taylorotwell@gmail.com', null, null], Arr::dataGet($array, '*.email', 'irrelevant'));
 
         $array = [
             'users' => [
@@ -1257,10 +1218,7 @@ final class ArrTest extends TestCase
             ['taylor', 'abigail', 'abigail', 'dayle', 'dayle', 'taylor'],
             Arr::dataGet($array, 'posts.*.comments.*.author')
         );
-        $this->assertEquals(
-            [4, 3, 2, null, null, 1],
-            Arr::dataGet($array, 'posts.*.comments.*.likes')
-        );
+        $this->assertEquals([4, 3, 2, null, null, 1], Arr::dataGet($array, 'posts.*.comments.*.likes'));
         $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name', 'irrelevant'));
         $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name'));
     }

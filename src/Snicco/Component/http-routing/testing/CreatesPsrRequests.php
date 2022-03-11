@@ -61,13 +61,10 @@ trait CreatesPsrRequests
         }
 
         $request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest(
-                $method,
-                $uri,
-                array_merge([
+            $this->psrServerRequestFactory()
+                ->createServerRequest($method, $uri, array_merge([
                     'REQUEST_METHOD' => $method,
-                ], $server),
-            ),
+                ], $server),),
             $type
         );
 
@@ -78,6 +75,7 @@ trait CreatesPsrRequests
 
     private function createUri(string $uri): UriInterface
     {
-        return $this->psrUriFactory()->createUri($uri);
+        return $this->psrUriFactory()
+            ->createUri($uri);
     }
 }

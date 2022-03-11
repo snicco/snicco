@@ -161,10 +161,7 @@ final class WPEloquentStandalone
             new ConnectionFactory($this->illuminate_container)
         );
 
-        return new WPConnectionResolver(
-            $illuminate_database_manager,
-            new MysqliFactory()
-        );
+        return new WPConnectionResolver($illuminate_database_manager, new MysqliFactory());
     }
 
     private function bindDBFacade(ConnectionResolverInterface $connection_resolver): void

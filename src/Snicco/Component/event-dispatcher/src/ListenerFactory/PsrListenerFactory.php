@@ -27,7 +27,10 @@ final class PsrListenerFactory implements ListenerFactory
         try {
             $obj = $this->psr_container->get($listener_class);
             if (! is_object($obj)) {
-                throw new InvalidArgumentException(sprintf('$this->psr_container->get($listener_class) should return an object. Got [%s]', gettype($obj)));
+                throw new InvalidArgumentException(sprintf(
+                    '$this->psr_container->get($listener_class) should return an object. Got [%s]',
+                    gettype($obj)
+                ));
             }
 
             return $obj;

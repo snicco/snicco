@@ -21,7 +21,8 @@ class BazMiddleware extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()->write(':' . $this->baz);
+        $response->getBody()
+            ->write(':' . $this->baz);
 
         return $response;
     }

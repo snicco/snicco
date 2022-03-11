@@ -44,11 +44,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function test_alias(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
@@ -60,11 +56,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function test_view_engine_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
@@ -76,17 +68,14 @@ final class TemplatingBundleTest extends TestCase
      */
     public function test_global_context_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertCanBeResolved(GlobalViewContext::class, $kernel);
 
         /** @var GlobalViewContext $context */
-        $context = $kernel->container()->get(GlobalViewContext::class);
+        $context = $kernel->container()
+            ->get(GlobalViewContext::class);
         $this->assertTrue(isset($context->get()['view']));
         $this->assertFalse(isset($context->get()['url']));
         $this->assertInstanceOf(ViewEngine::class, $context->get()['view']);
@@ -97,11 +86,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_url_generator_is_added_to_the_global_context_if_routing_bundle_is_used(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
@@ -110,7 +95,8 @@ final class TemplatingBundleTest extends TestCase
         $this->assertCanBeResolved(GlobalViewContext::class, $kernel);
 
         /** @var GlobalViewContext $context */
-        $context = $kernel->container()->get(GlobalViewContext::class);
+        $context = $kernel->container()
+            ->get(GlobalViewContext::class);
         $this->assertTrue(isset($context->get()['url']));
         $this->assertInstanceOf(UrlGenerator::class, $context->get()['url']);
     }
@@ -120,11 +106,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function test_view_composer_collection_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertCanBeResolved(ViewComposerCollection::class, $kernel);
@@ -135,23 +117,18 @@ final class TemplatingBundleTest extends TestCase
      */
     public function creating_a_view_with_composers_and_global_context_works(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('templating.directories', [
-                __DIR__ . '/fixtures/templates',
-            ]);
+            $config->set('templating.directories', [__DIR__ . '/fixtures/templates']);
         });
 
         $std_class = new stdClass();
         $kernel->afterRegister(function (Kernel $kernel) use ($std_class) {
-            $kernel->container()->shared(ViewComposerWithDependency::class, function () use ($std_class) {
-                return new ViewComposerWithDependency($std_class);
-            });
+            $kernel->container()
+                ->shared(ViewComposerWithDependency::class, function () use ($std_class) {
+                    return new ViewComposerWithDependency($std_class);
+                });
         });
 
         $kernel->boot();
@@ -160,20 +137,23 @@ final class TemplatingBundleTest extends TestCase
          * @var ViewComposerCollection $composers
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $composers = $kernel->container()->make(ViewComposerCollection::class);
+        $composers = $kernel->container()
+            ->make(ViewComposerCollection::class);
         $composers->addComposer('*', ViewComposerWithDependency::class);
 
         /**
          * @var ViewEngine $engine
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $engine = $kernel->container()->make(ViewEngine::class);
+        $engine = $kernel->container()
+            ->make(ViewEngine::class);
 
         /**
          * @var GlobalViewContext $global_context
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $global_context = $kernel->container()->make(GlobalViewContext::class);
+        $global_context = $kernel->container()
+            ->make(GlobalViewContext::class);
         $global_context->add('foo', 'bar');
 
         $view = $engine->make('errors.403');
@@ -193,11 +173,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function view_composers_can_be_added_in_the_configuration(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('templating', [
@@ -214,7 +190,8 @@ final class TemplatingBundleTest extends TestCase
          * @var ViewEngine $engine
          * @psalm-suppress UnnecessaryVarAnnotation
          */
-        $engine = $kernel->container()->make(ViewEngine::class);
+        $engine = $kernel->container()
+            ->make(ViewEngine::class);
 
         $foo_view_string = $engine->render('foo');
 
@@ -226,11 +203,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_templating_middleware_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [
@@ -250,11 +223,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_templating_middleware_is_not_bound_if_the_http_routing_bundle_is_not_used(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertNotBound(TemplatingMiddleware::class, $kernel);
@@ -265,19 +234,11 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_view_engine_exception_displayer_can_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
         $this->assertNotBound(TemplatingExceptionDisplayer::class, $kernel);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
                 Environment::ALL => [
@@ -297,23 +258,16 @@ final class TemplatingBundleTest extends TestCase
      */
     public function config_defaults_are_set(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('templating', []);
         });
 
         $kernel->boot();
 
-        $this->assertSame([
-            PHPViewFactory::class,
-        ], $kernel->config()->getListOfStrings('templating.factories'));
+        $this->assertSame([PHPViewFactory::class], $kernel->config()->getListOfStrings('templating.factories'));
 
-        $this->assertSame([
-        ], $kernel->config()->getListOfStrings('templating.directories'));
+        $this->assertSame([], $kernel->config()->getListOfStrings('templating.directories'));
     }
 
     /**
@@ -321,11 +275,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function test_exception_if_directories_not_readable(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('templating.directories', [__DIR__ . '/bogus']);
         });
@@ -341,11 +291,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_default_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/templating.php'));
 
@@ -358,10 +304,7 @@ final class TemplatingBundleTest extends TestCase
          */
         $config = require $this->directories->configDir() . '/templating.php';
 
-        $this->assertSame(
-            require dirname(__DIR__) . '/config/templating.php',
-            $config
-        );
+        $this->assertSame(require dirname(__DIR__) . '/config/templating.php', $config);
     }
 
     /**
@@ -369,11 +312,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_default_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/templating.php',
@@ -402,11 +341,7 @@ final class TemplatingBundleTest extends TestCase
      */
     public function the_default_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/templating.php'));
 

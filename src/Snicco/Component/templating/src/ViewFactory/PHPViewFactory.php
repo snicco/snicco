@@ -27,11 +27,7 @@ final class PHPViewFactory implements ViewFactory
 
     public function make(string $view): PHPView
     {
-        return new PHPView(
-            $this,
-            $view,
-            $this->finder->filePath($view)
-        );
+        return new PHPView($this, $view, $this->finder->filePath($view));
     }
 
     /**
@@ -67,12 +63,9 @@ final class PHPViewFactory implements ViewFactory
                         return ! $value instanceof ChildContent;
                     })
                 )
-                ->with(
-                    '__content',
-                    new ChildContent(function () use ($view) {
-                        $this->requireView($view);
-                    })
-                );
+                ->with('__content', new ChildContent(function () use ($view) {
+                    $this->requireView($view);
+                }));
 
             $this->render($parent);
 
@@ -84,10 +77,7 @@ final class PHPViewFactory implements ViewFactory
 
     private function requireView(View $view): void
     {
-        $this->finder->includeFile(
-            $view->path(),
-            $view->context()
-        );
+        $this->finder->includeFile($view->path(), $view->context());
     }
 
     /**

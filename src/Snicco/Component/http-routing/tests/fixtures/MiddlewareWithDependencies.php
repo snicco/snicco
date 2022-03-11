@@ -27,7 +27,8 @@ class MiddlewareWithDependencies extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()->write(':' . $this->foo->value . $this->bar->value);
+        $response->getBody()
+            ->write(':' . $this->foo->value . $this->bar->value);
 
         return $response;
     }

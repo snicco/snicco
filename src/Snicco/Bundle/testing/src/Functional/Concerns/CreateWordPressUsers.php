@@ -42,11 +42,10 @@ trait CreateWordPressUsers
 
     final protected function createUserWithRole(string $user_role, array $args = []): WP_User
     {
-        $user = $this->userFactory()->create_and_get(
-            array_merge([
+        $user = $this->userFactory()
+            ->create_and_get(array_merge([
                 'role' => $user_role,
-            ], $args)
-        );
+            ], $args));
         Assert::isInstanceOf($user, WP_User::class);
 
         return $user;

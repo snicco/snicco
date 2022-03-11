@@ -46,8 +46,7 @@ final class FileRouteCacheTest extends TestCase
                     'foo' => 'bar',
                 ],
                 'url_matcher' => [],
-                'admin_menu' => [
-                ],
+                'admin_menu' => [],
             ];
         });
 
@@ -56,8 +55,7 @@ final class FileRouteCacheTest extends TestCase
                 'foo' => 'bar',
             ],
             'url_matcher' => [],
-            'admin_menu' => [
-            ],
+            'admin_menu' => [],
         ], $res);
 
         $this->assertTrue(is_file($this->test_cache_file));
@@ -78,8 +76,7 @@ final class FileRouteCacheTest extends TestCase
                     'foo' => 'bar',
                 ],
                 'url_matcher' => [],
-                'admin_menu' => [
-                ],
+                'admin_menu' => [],
             ];
         });
 
@@ -91,8 +88,7 @@ final class FileRouteCacheTest extends TestCase
                     'foo' => 'bar',
                 ],
                 'url_matcher' => [],
-                'admin_menu' => [
-                ],
+                'admin_menu' => [],
             ],
             $cache->get(function () {
                 throw new RuntimeException('Data not loaded from cache.');

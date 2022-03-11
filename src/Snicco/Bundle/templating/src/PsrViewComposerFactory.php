@@ -38,7 +38,11 @@ final class PsrViewComposerFactory implements ViewComposerFactory
         try {
             $instance = $this->container->get($composer);
             if (! $instance instanceof $composer) {
-                throw new BadViewComposer(sprintf('PSR container did not return instance [%s] but [%s]', ViewComposer::class, gettype($instance)));
+                throw new BadViewComposer(sprintf(
+                    'PSR container did not return instance [%s] but [%s]',
+                    ViewComposer::class,
+                    gettype($instance)
+                ));
             }
             /**
              * @psalm-var  T $instance

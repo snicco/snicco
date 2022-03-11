@@ -37,22 +37,13 @@ final class MailerEventsTest extends WPTestCase
     {
         $count = 0;
 
-        add_filter(
-            WelcomeEmail::class,
-            function (SendingEmail $email) use (&$count) {
-                ++$count;
-            }
-        );
+        add_filter(WelcomeEmail::class, function (SendingEmail $email) use (&$count) {
+            ++$count;
+        });
 
-        $mailer = new Mailer(
-            new WPMailTransport(),
-            new FilesystemRenderer(),
-            $this->getEventDispatcher()
-        );
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), $this->getEventDispatcher());
 
-        $email = (new WelcomeEmail())->withTo(
-            'c@web.de'
-        );
+        $email = (new WelcomeEmail())->withTo('c@web.de');
 
         $mailer->send($email);
 
@@ -76,15 +67,10 @@ final class MailerEventsTest extends WPTestCase
             }
         );
 
-        $mailer = new Mailer(
-            new WPMailTransport(),
-            new FilesystemRenderer(),
-            $this->getEventDispatcher()
-        );
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), $this->getEventDispatcher());
 
-        $email = (new WelcomeEmail())->withTo(
-            'c@web.de'
-        )->withHtmlBody('foo');
+        $email = (new WelcomeEmail())->withTo('c@web.de')
+            ->withHtmlBody('foo');
         $mailer->send($email);
 
         $data = $this->getSentMails()[0];
@@ -105,15 +91,10 @@ final class MailerEventsTest extends WPTestCase
             ++$count;
         });
 
-        $mailer = new Mailer(
-            new WPMailTransport(),
-            new FilesystemRenderer(),
-            $this->getEventDispatcher()
-        );
+        $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), $this->getEventDispatcher());
 
-        $email = (new WelcomeEmail())->withTo(
-            'Calvin Alkan <c@web.de>'
-        )->withHtmlBody('foo');
+        $email = (new WelcomeEmail())->withTo('Calvin Alkan <c@web.de>')
+            ->withHtmlBody('foo');
         $mailer->send($email);
 
         $this->assertSame(1, $count, 'Message event not fired.');

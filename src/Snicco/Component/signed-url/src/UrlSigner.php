@@ -26,10 +26,8 @@ final class UrlSigner
 
     private HMAC $hasher;
 
-    public function __construct(
-        SignedUrlStorage $storage,
-        HMAC $hasher
-    ) {
+    public function __construct(SignedUrlStorage $storage, HMAC $hasher)
+    {
         $this->storage = $storage;
         $this->hasher = $hasher;
     }
@@ -88,13 +86,7 @@ final class UrlSigner
             ? $domain_and_scheme . $path_with_query
             : $path_with_query;
 
-        $signed_url = SignedUrl::create(
-            $url,
-            $target,
-            $identifier,
-            $expires_at,
-            $max_usage
-        );
+        $signed_url = SignedUrl::create($url, $target, $identifier, $expires_at, $max_usage);
 
         $this->storage->store($signed_url);
 
@@ -126,9 +118,7 @@ final class UrlSigner
     private function validateUrlParts(array $parsed, string $target): void
     {
         if ('/' === $parsed['path'] && '/' !== $target && 0 !== strpos($target, 'http')) {
-            throw new InvalidArgumentException(
-                "{$target} is not a valid path."
-            );
+            throw new InvalidArgumentException("{$target} is not a valid path.");
         }
 
         /** @var string $qs */
@@ -161,9 +151,7 @@ final class UrlSigner
 
         // Should not be possible ever.
         // @codeCoverageIgnoreStart
-        throw new InvalidArgumentException(
-            'Invalid path provided.'
-        );
+        throw new InvalidArgumentException('Invalid path provided.');
         // @codeCoverageIgnoreEnd
     }
 

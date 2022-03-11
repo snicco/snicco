@@ -36,11 +36,7 @@ final class FastRouteSyntaxConverter
             $match_only_trailing = true;
         }
 
-        $url = $this->convertOptionalSegments(
-            $route_url,
-            $route->getOptionalSegmentNames(),
-            $match_only_trailing
-        );
+        $url = $this->convertOptionalSegments($route_url, $route->getOptionalSegmentNames(), $match_only_trailing);
 
         foreach ($route->getRequirements() as $param_name => $pattern) {
             $url = $this->addCustomRegexToSegments($param_name, $pattern, $url);

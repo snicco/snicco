@@ -40,9 +40,7 @@ final class BladeViewFactory implements ViewFactory
     public function make(string $view): BladeView
     {
         try {
-            $view = $this->view_factory->first(
-                [$this->normalizeNames($view)]
-            );
+            $view = $this->view_factory->first([$this->normalizeNames($view)]);
             /** @var View $view */
             return new BladeView($view);
         } catch (InvalidArgumentException $e) {

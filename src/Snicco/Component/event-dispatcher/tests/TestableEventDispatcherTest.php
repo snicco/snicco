@@ -189,11 +189,7 @@ final class TestableEventDispatcherTest extends TestCase
     public function the_return_type_is_correct_for_object_events(): void
     {
         $this->fake_dispatcher->listen(EventStub::class, function (EventStub $event) {
-            $this->respondedToEvent(
-                EventStub::class,
-                'closure1',
-                $event->val1 . $event->val2
-            );
+            $this->respondedToEvent(EventStub::class, 'closure1', $event->val1 . $event->val2);
         });
         $this->fake_dispatcher->fake(EventStub::class);
 

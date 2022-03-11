@@ -100,13 +100,9 @@ final class StdErrLoggerTest extends TestCase
 
         $date = new DateTimeImmutable('12-12-2020');
 
-        $logger->log(
-            LogLevel::ERROR,
-            'calvin did something at {date}',
-            [
-                'date' => $date,
-            ]
-        );
+        $logger->log(LogLevel::ERROR, 'calvin did something at {date}', [
+            'date' => $date,
+        ]);
 
         $this->assertStringContainsString(
             'calvin did something at 12-Dec-2020 00:00:00 UTC',
@@ -134,10 +130,7 @@ final class StdErrLoggerTest extends TestCase
             ]
         );
 
-        $this->assertStringContainsString(
-            'object_to_string',
-            $this->getLogContent()
-        );
+        $this->assertStringContainsString('object_to_string', $this->getLogContent());
     }
 
     /**
@@ -147,18 +140,11 @@ final class StdErrLoggerTest extends TestCase
     {
         $logger = new StdErrLogger();
 
-        $logger->log(
-            LogLevel::ERROR,
-            '{object_here}',
-            [
-                'object_here' => new stdClass(),
-            ]
-        );
+        $logger->log(LogLevel::ERROR, '{object_here}', [
+            'object_here' => new stdClass(),
+        ]);
 
-        $this->assertStringContainsString(
-            'object stdClass',
-            $this->getLogContent()
-        );
+        $this->assertStringContainsString('object stdClass', $this->getLogContent());
     }
 
     /**
@@ -168,18 +154,11 @@ final class StdErrLoggerTest extends TestCase
     {
         $logger = new StdErrLogger();
 
-        $logger->log(
-            LogLevel::ERROR,
-            '{arr}',
-            [
-                'arr' => [],
-            ]
-        );
+        $logger->log(LogLevel::ERROR, '{arr}', [
+            'arr' => [],
+        ]);
 
-        $this->assertStringContainsString(
-            'array',
-            $this->getLogContent()
-        );
+        $this->assertStringContainsString('array', $this->getLogContent());
     }
 
     /**
@@ -191,10 +170,7 @@ final class StdErrLoggerTest extends TestCase
 
         $logger->log(LogLevel::CRITICAL, 'something', []);
 
-        $this->assertStringContainsString(
-            'request.CRITICAL something',
-            $this->getLogContent()
-        );
+        $this->assertStringContainsString('request.CRITICAL something', $this->getLogContent());
     }
 
     /**
@@ -215,14 +191,8 @@ final class StdErrLoggerTest extends TestCase
         );
 
         $log_content = $this->getLogContent();
-        $this->assertStringContainsString(
-            'user calvin did something that calvin should not do.',
-            $log_content
-        );
-        $this->assertStringContainsString(
-            "Context: ['foo', 'user_id' => 1]",
-            $log_content
-        );
+        $this->assertStringContainsString('user calvin did something that calvin should not do.', $log_content);
+        $this->assertStringContainsString("Context: ['foo', 'user_id' => 1]", $log_content);
     }
 
     /**
@@ -301,13 +271,9 @@ final class StdErrLoggerTest extends TestCase
 
         $exception = new LogicException('message');
 
-        $logger->log(
-            LogLevel::CRITICAL,
-            'here {exception}',
-            [
-                'exception' => $exception,
-            ]
-        );
+        $logger->log(LogLevel::CRITICAL, 'here {exception}', [
+            'exception' => $exception,
+        ]);
 
         $this->assertStringContainsString('request.CRITICAL here LogicException: message', $this->getLogContent());
     }

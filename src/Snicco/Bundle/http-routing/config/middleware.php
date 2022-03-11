@@ -28,9 +28,7 @@ return [
         RoutingConfigurator::FRONTEND_MIDDLEWARE => [],
         RoutingConfigurator::ADMIN_MIDDLEWARE => [],
         RoutingConfigurator::API_MIDDLEWARE => [],
-        RoutingConfigurator::GLOBAL_MIDDLEWARE => [
-            SetUserId::class,
-        ],
+        RoutingConfigurator::GLOBAL_MIDDLEWARE => [SetUserId::class],
         //        'custom_group1' => [
         //            'foo',
         //            'custom_group2'

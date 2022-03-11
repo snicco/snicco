@@ -24,7 +24,8 @@ final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 
         $request = $this->frontendRequest();
 
-        $response = $this->runMiddleware($middleware, $request)->assertNextMiddlewareCalled();
+        $response = $this->runMiddleware($middleware, $request)
+            ->assertNextMiddlewareCalled();
         $response->assertNextMiddlewareCalled();
 
         $this->assertTrue($this->receivedRequest()->getAttribute(StatefulRequest::ALLOW_WRITE_SESSION_FOR_READ_VERBS));
@@ -37,11 +38,13 @@ final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
     {
         $middleware = new AllowMutableSessionForReadVerbs();
 
-        $request = $this->frontendRequest()->withAttribute(ImmutableSession::class, 'irrelevant');
+        $request = $this->frontendRequest()
+            ->withAttribute(ImmutableSession::class, 'irrelevant');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("A session has already been set on the request.\nMake sure that ");
 
-        $this->runMiddleware($middleware, $request)->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $request)
+            ->assertNextMiddlewareCalled();
     }
 }

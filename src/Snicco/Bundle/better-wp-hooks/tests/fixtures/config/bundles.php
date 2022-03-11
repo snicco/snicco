@@ -6,7 +6,5 @@ use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [
-        BetterWPHooksBundle::class,
-    ],
+    Environment::ALL => [BetterWPHooksBundle::class],
 ];

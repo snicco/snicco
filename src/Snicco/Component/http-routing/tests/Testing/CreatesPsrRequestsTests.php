@@ -49,10 +49,7 @@ final class CreatesPsrRequestsTests extends TestCase
         $request = $this->frontendRequest('http://foobar.com:8080/foo?bar=baz#section1');
         $this->assertInstanceOf(Request::class, $request);
 
-        $this->assertEquals(
-            'http://foobar.com:8080/foo?bar=baz#section1',
-            (string) $request->getUri()
-        );
+        $this->assertEquals('http://foobar.com:8080/foo?bar=baz#section1', (string) $request->getUri());
         $this->assertEquals([
             'bar' => 'baz',
         ], $request->getQueryParams());
@@ -104,12 +101,9 @@ final class CreatesPsrRequestsTests extends TestCase
      */
     public function test_admin_request(): void
     {
-        $request = $this->adminRequest(
-            '/wp-admin/admin.php?page=foo&city=foo bar',
-            [
-                'X-FOO' => 'BAR',
-            ]
-        );
+        $request = $this->adminRequest('/wp-admin/admin.php?page=foo&city=foo bar', [
+            'X-FOO' => 'BAR',
+        ]);
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertEquals(
@@ -131,18 +125,12 @@ final class CreatesPsrRequestsTests extends TestCase
      */
     public function test_api_request(): void
     {
-        $request = $this->apiRequest(
-            '/foo/bar?page=foo&city=foo bar',
-            [
-                'X-FOO' => 'BAR',
-            ]
-        );
+        $request = $this->apiRequest('/foo/bar?page=foo&city=foo bar', [
+            'X-FOO' => 'BAR',
+        ]);
 
         $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals(
-            'https://foo.com/foo/bar?page=foo&city=foo%20bar',
-            (string) $request->getUri()
-        );
+        $this->assertEquals('https://foo.com/foo/bar?page=foo&city=foo%20bar', (string) $request->getUri());
         $this->assertEquals([
             'city' => 'foo bar',
             'page' => 'foo',

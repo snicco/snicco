@@ -43,9 +43,7 @@ return [
      * An array of classes implementing the MailRenderer interface.
      * The first renderer that supports a given mail template will be used to render the template body.
      */
-    MailOption::RENDERER => [
-        FilesystemRenderer::class,
-    ],
+    MailOption::RENDERER => [FilesystemRenderer::class],
 
     /*
      * The name of a class implementing the Transport interface.

@@ -48,7 +48,8 @@ final class BladeView implements View
         try {
             $view = $this->cloneView();
 
-            return $view->with($this->context)->render();
+            return $view->with($this->context)
+                ->render();
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
                 "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",

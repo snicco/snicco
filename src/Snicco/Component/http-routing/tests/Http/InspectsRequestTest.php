@@ -189,10 +189,7 @@ final class InspectsRequestTest extends TestCase
         $this->assertTrue($request->isSendingJson());
 
         $request = $this->frontendRequest('/', [], 'POST')
-            ->withAddedHeader(
-                'Content-Type',
-                'application/x-www-form-urlencoded'
-            );
+            ->withAddedHeader('Content-Type', 'application/x-www-form-urlencoded');
         $this->assertFalse($request->isSendingJson());
     }
 

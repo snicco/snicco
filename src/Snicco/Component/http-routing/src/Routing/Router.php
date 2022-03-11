@@ -102,12 +102,7 @@ final class Router
     {
         if (! isset($this->url_generator)) {
             $this->url_generator = new LazyGenerator(function () {
-                return new Generator(
-                    $this->routes(),
-                    $this->context,
-                    $this->admin_area,
-                    $this->url_encoder,
-                );
+                return new Generator($this->routes(), $this->context, $this->admin_area, $this->url_encoder,);
             });
         }
 
@@ -135,9 +130,7 @@ final class Router
     private function routingConfigurator(): Configurator
     {
         if (! isset($this->routing_configurator)) {
-            $this->routing_configurator = new Configurator(
-                $this->admin_area->urlPrefix(),
-            );
+            $this->routing_configurator = new Configurator($this->admin_area->urlPrefix(),);
         }
 
         return $this->routing_configurator;

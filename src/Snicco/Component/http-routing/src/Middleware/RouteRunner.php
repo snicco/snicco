@@ -49,10 +49,7 @@ final class RouteRunner extends Middleware
             return $this->delegate($request);
         }
 
-        $action = new ControllerAction(
-            $route->getController(),
-            $this->container,
-        );
+        $action = new ControllerAction($route->getController(), $this->container,);
 
         $middleware = $this->middleware_resolver->resolveForRoute($route, $action);
 
@@ -64,15 +61,10 @@ final class RouteRunner extends Middleware
                 /** @var Routing\Route\Route $route */
                 $route = $result->route();
 
-                $response = $action->execute(
-                    $request,
-                    array_merge(
-                        $segments,
-                        $route->getDefaults()
-                    )
-                );
+                $response = $action->execute($request, array_merge($segments, $route->getDefaults()));
 
-                return $this->responseFactory()->toResponse($response);
+                return $this->responseFactory()
+                    ->toResponse($response);
             });
     }
 
@@ -81,14 +73,16 @@ final class RouteRunner extends Middleware
         $middleware = $this->middleware_resolver->resolveForRequestWithoutRoute($request);
 
         if (! count($middleware)) {
-            return $this->responseFactory()->delegate();
+            return $this->responseFactory()
+                ->delegate();
         }
 
         return $this->pipeline
             ->send($request)
             ->through($middleware)
             ->then(function () {
-                return $this->responseFactory()->delegate();
+                return $this->responseFactory()
+                    ->delegate();
             });
     }
 }

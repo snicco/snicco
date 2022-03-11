@@ -41,11 +41,9 @@ final class VerifyWPNonce extends Middleware
                 return $response;
             }
 
-            return $response->withViewData(
-                [
-                    'wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path),
-                ]
-            );
+            return $response->withViewData([
+                'wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path),
+            ]);
         }
 
         $nonce = (string) $request->post(self::inputKey(), '');

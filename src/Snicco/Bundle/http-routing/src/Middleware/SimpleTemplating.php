@@ -42,8 +42,6 @@ final class SimpleTemplating extends Middleware
         })();
 
         // Wrap the response inside a normal response so that other middleware does not render it again.
-        return (new Response($response))->withBody(
-            $this->responseFactory()->createStream($body)
-        );
+        return (new Response($response))->withBody($this->responseFactory()->createStream($body));
     }
 }

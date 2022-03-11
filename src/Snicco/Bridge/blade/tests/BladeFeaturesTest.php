@@ -242,7 +242,8 @@ final class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The service directive is not supported. Dont use it. Its evil.',
-                ($e->getPrevious()) ? $e->getPrevious()->getMessage() : $e->getMessage()
+                ($e->getPrevious()) ? $e->getPrevious()
+                    ->getMessage() : $e->getMessage()
             );
         }
     }
@@ -260,7 +261,8 @@ final class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The csrf directive is not supported as it requires the entire laravel framework.',
-                ($e->getPrevious()) ? $e->getPrevious()->getMessage() : $e->getMessage()
+                ($e->getPrevious()) ? $e->getPrevious()
+                    ->getMessage() : $e->getMessage()
             );
         }
     }
@@ -278,7 +280,8 @@ final class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The method directive is not supported because form-method spoofing is not supported in WordPress.',
-                ($e->getPrevious()) ? $e->getPrevious()->getMessage() : $e->getMessage()
+                ($e->getPrevious()) ? $e->getPrevious()
+                    ->getMessage() : $e->getMessage()
             );
         }
     }

@@ -9,8 +9,7 @@ use Snicco\Component\BetterWPHooks\Exception\CantCreateMappedEvent;
 use Snicco\Component\EventDispatcher\Event;
 
 /**
- * The MappedEventFactory is responsible for transforming arbitrary primitive values into
- * an {@see Event} object.
+ * The MappedEventFactory is responsible for transforming arbitrary primitive values into an {@see Event} object.
  *
  * @see ParameterBasedHookFactory
  */

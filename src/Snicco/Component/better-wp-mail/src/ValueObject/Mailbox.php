@@ -19,9 +19,8 @@ use function sprintf;
 use const FILTER_VALIDATE_EMAIL;
 
 /**
- * Represents an "email mailbox". By default, the domain part is validated using the filter_var.
- * For better validation it is recommended to use
- * https://github.com/egulias/EmailValidator.
+ * Represents an "email mailbox". By default, the domain part is validated using the filter_var. For better validation
+ * it is recommended to use https://github.com/egulias/EmailValidator.
  */
 final class Mailbox
 {
@@ -77,12 +76,7 @@ final class Mailbox
             }
 
             if (! preg_match(self::PATTERN, $address, $matches)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        '[%s] is not a valid address',
-                        $address
-                    )
-                );
+                throw new InvalidArgumentException(sprintf('[%s] is not a valid address', $address));
             }
 
             return new self($matches['address'], $matches['name']);
@@ -98,10 +92,7 @@ final class Mailbox
 
         if (! $address instanceof WP_User) {
             throw new InvalidArgumentException(
-                sprintf(
-                    '$address has to be string,array or an instance of WP_User. Got [%s].',
-                    gettype($address)
-                )
+                sprintf('$address has to be string,array or an instance of WP_User. Got [%s].', gettype($address))
             );
         }
 

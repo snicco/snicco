@@ -224,11 +224,7 @@ final class AssertableResponse
 
         $count = count($headers);
 
-        PHPUnit::assertNotEquals(
-            0,
-            $count,
-            "Response does not have cookie matching name [{$cookie_name}]."
-        );
+        PHPUnit::assertNotEquals(0, $count, "Response does not have cookie matching name [{$cookie_name}].");
 
         PHPUnit::assertSame(1, $count, "The cookie [{$cookie_name}] was sent [{$count}] times.");
 
@@ -355,11 +351,7 @@ final class AssertableResponse
             strip_tags($this->streamed_content)
             : $this->streamed_content;
 
-        PHPUnit::assertStringContainsString(
-            $value,
-            $compare_to,
-            "Response body does not contain [{$value}]."
-        );
+        PHPUnit::assertStringContainsString($value, $compare_to, "Response body does not contain [{$value}].");
 
         return $this;
     }
@@ -370,11 +362,7 @@ final class AssertableResponse
             strip_tags($this->streamed_content)
             : $this->streamed_content;
 
-        PHPUnit::assertStringNotContainsString(
-            $value,
-            $compare_to,
-            "Response body contains [{$value}]."
-        );
+        PHPUnit::assertStringNotContainsString($value, $compare_to, "Response body contains [{$value}].");
 
         return $this;
     }

@@ -52,10 +52,7 @@ abstract class BladeTestCase extends TestCase
         $this->blade_cache = __DIR__ . '/fixtures/cache';
         $this->blade_views = __DIR__ . '/fixtures/views';
 
-        $this->composers = new ViewComposerCollection(
-            null,
-            $global_view_context = new GlobalViewContext()
-        );
+        $this->composers = new ViewComposerCollection(null, $global_view_context = new GlobalViewContext());
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
         $this->blade = $blade;

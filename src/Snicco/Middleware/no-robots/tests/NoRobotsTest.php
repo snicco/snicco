@@ -22,7 +22,8 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $header = $response->assertableResponse()->getHeader('X-Robots-Tag');
+        $header = $response->assertableResponse()
+            ->getHeader('X-Robots-Tag');
 
         $this->assertContains('noindex', $header);
         $this->assertContains('nofollow', $header);
@@ -39,7 +40,8 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $header = $response->assertableResponse()->getHeader('X-Robots-Tag');
+        $header = $response->assertableResponse()
+            ->getHeader('X-Robots-Tag');
 
         $this->assertNotContains('noindex', $header);
         $this->assertContains('nofollow', $header);
@@ -56,7 +58,8 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $header = $response->assertableResponse()->getHeader('X-Robots-Tag');
+        $header = $response->assertableResponse()
+            ->getHeader('X-Robots-Tag');
 
         $this->assertContains('noindex', $header);
         $this->assertNotContains('nofollow', $header);
@@ -73,7 +76,9 @@ final class NoRobotsTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $header = $response->assertableResponse()->getPsrResponse()->getHeader('X-Robots-Tag');
+        $header = $response->assertableResponse()
+            ->getPsrResponse()
+            ->getHeader('X-Robots-Tag');
 
         $this->assertContains('noindex', $header);
         $this->assertContains('nofollow', $header);

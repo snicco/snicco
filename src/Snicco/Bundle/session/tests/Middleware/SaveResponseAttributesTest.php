@@ -37,10 +37,8 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
             new InMemoryDriver(),
             new JsonSerializer()
         );
-        $this->request = $this->frontendRequest()->withAttribute(
-            MutableSession::class,
-            $this->session = $session_manager->start(new CookiePool([]))
-        );
+        $this->request = $this->frontendRequest()
+            ->withAttribute(MutableSession::class, $this->session = $session_manager->start(new CookiePool([])));
     }
 
     /**
@@ -52,10 +50,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
 
         $this->withNextMiddlewareResponse(function (Response $response) {
             return $response->withErrors([
-                'foo' => [
-                    'bar',
-                    'baz',
-                ],
+                'foo' => ['bar', 'baz'],
             ], 'name1');
         });
 
@@ -66,10 +61,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
 
         $this->assertSame([
             'name1' => [
-                'foo' => [
-                    'bar',
-                    'baz',
-                ],
+                'foo' => ['bar', 'baz'],
             ],
         ], $errors);
     }

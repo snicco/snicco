@@ -16,8 +16,7 @@ use stdClass;
 interface Responsable
 {
     /**
-     * Convert an object to a something type
-     * that can be processed be the response factory.
+     * Convert an object to a something type that can be processed be the response factory.
      *
      * @return array|JsonSerializable|Psr7Response|Responsable|Response|stdClass|string
      *
