@@ -99,7 +99,7 @@ final class AuthenticateWithWordPressTest extends WebTestCase
         $this->assertIsGuest();
     }
 
-    protected function createKernel(): Closure
+    protected function createKernel(): callable
     {
         return require dirname(__DIR__, 2) . '/fixtures/test-kernel.php';
     }

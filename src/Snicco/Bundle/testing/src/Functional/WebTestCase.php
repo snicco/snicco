@@ -78,9 +78,9 @@ abstract class WebTestCase extends WPTestCase
     }
 
     /**
-     * @return Closure(Environment):Kernel
+     * @return callable(Environment):Kernel
      */
-    abstract protected function createKernel(): Closure;
+    abstract protected function createKernel(): callable;
 
     /**
      * @return class-string<TestExtension>[]
