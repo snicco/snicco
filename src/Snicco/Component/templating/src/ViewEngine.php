@@ -17,7 +17,7 @@ final class ViewEngine
     /**
      * @var ViewFactory[]
      */
-    private array $view_factories = [];
+    private array $view_factories;
 
     public function __construct(ViewFactory ...$view_factories)
     {
@@ -30,8 +30,8 @@ final class ViewEngine
      * @param string|string[]      $view
      * @param array<string, mixed> $context
      *
-     * @throws ViewNotFound
      * @throws ViewCantBeRendered
+     * @throws ViewNotFound
      */
     public function render($view, array $context = []): string
     {

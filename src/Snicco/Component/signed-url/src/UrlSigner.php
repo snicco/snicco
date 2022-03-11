@@ -37,8 +37,8 @@ final class UrlSigner
      * @param positive-int     $lifetime_in_sec
      * @param positive-int     $max_usage
      *
-     * @throws UnavailableStorage
      * @throws Exception          if random_bytes can't be generated
+     * @throws UnavailableStorage
      */
     public function sign(
         string $target,

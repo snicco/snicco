@@ -86,8 +86,8 @@ final class EventMapper
     /**
      * @param class-string<MappedHook> $map_to
      *
-     * @throws LogicException           If the hook is already mapped to the same event class
      * @throws InvalidArgumentException If $map_to is not either a MappedAction or MappedFilter
+     * @throws LogicException           If the hook is already mapped to the same event class
      */
     private function validate(string $wordpress_hook_name, string $map_to): void
     {

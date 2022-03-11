@@ -21,8 +21,8 @@ final class RoutingMiddleware extends Middleware
     }
 
     /**
-     * @throws MethodNotAllowed
      * @throws BadRouteConfiguration
+     * @throws MethodNotAllowed
      */
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
