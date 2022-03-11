@@ -123,9 +123,9 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      *
-     * @return T
+     * @psalm-return T
      */
-    final public function make(string $id)
+    final public function make(string $id) :object
     {
         /**
          * @var mixed $res

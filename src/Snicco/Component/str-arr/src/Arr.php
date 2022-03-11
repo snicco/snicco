@@ -153,7 +153,6 @@ class Arr
      * @param array           $array Passed by reference
      * @param string|string[] $keys
      *
-     * @see
      */
     public static function forget(array &$array, $keys): void
     {
@@ -212,9 +211,9 @@ class Arr
     }
 
     /**
-     * @psalm-assert-if-true array $value
-     *
      * @param mixed $value
+     *
+     * @psalm-assert-if-true array $value
      */
     public static function accessible($value): bool
     {
@@ -225,6 +224,7 @@ class Arr
      * Flattens a multi-dimensional array into a single level.
      *
      * @return list<mixed>
+     *
      * @psalm-suppress MixedAssignment
      */
     public static function flatten(iterable $array, int $depth = 50): array
@@ -261,6 +261,7 @@ class Arr
      * Set an array item to a given value using "dot" notation.
      *
      * @param mixed $value
+     *
      * @psalm-suppress MixedAssignment
      */
     public static function set(array &$array, string $key, $value): array
@@ -568,7 +569,7 @@ class Arr
      *
      * @param Default $default
      *
-     * @return TVal
+     * @psalm-return TVal
      */
     private static function returnDefault($default)
     {
