@@ -77,7 +77,7 @@ final class WritableConfigTest extends TestCase
 
         $this->config->extend('foo', 'bar');
 
-        $this->assertEquals('bar', $this->config->get('foo'));
+        $this->assertSame('bar', $this->config->get('foo'));
     }
 
     /**
@@ -148,10 +148,10 @@ final class WritableConfigTest extends TestCase
         ]);
 
         $config->extend('foo.bar', 'biz');
-        $this->assertEquals('baz', $config->get('foo.bar'));
+        $this->assertSame('baz', $config->get('foo.bar'));
 
         $config->extend('foo.boo', 'bam');
-        $this->assertEquals('bam', $config->get('foo.boo'));
+        $this->assertSame('bam', $config->get('foo.boo'));
 
         $config->extend('foo.baz', [
             'bam' => 'boom',
@@ -162,7 +162,7 @@ final class WritableConfigTest extends TestCase
         ], $config->get('foo.baz'));
 
         $config->extend('foo.baz.biz', 'bogus');
-        $this->assertEquals('boo', $config->get('foo.baz.biz'));
+        $this->assertSame('boo', $config->get('foo.baz.biz'));
     }
 
     /**

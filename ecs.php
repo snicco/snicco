@@ -119,7 +119,7 @@ return static function (ContainerConfigurator $configurator): void {
         ],
     ]);
 
-    // This breaks assertions that compare object equality but not reference.
+    // Handle this with rector where we can skip it.
     $services->remove(PhpUnitStrictFixer::class);
 
     // Allow class names inside same class

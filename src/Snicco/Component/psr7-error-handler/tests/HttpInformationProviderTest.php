@@ -51,8 +51,8 @@ final class HttpInformationProviderTest extends TestCase
         $information = $provider->createFor($e, $this->server_request);
 
         $this->assertInstanceOf(ExceptionInformation::class, $information);
-        $this->assertEquals(404, $information->statusCode());
-        $this->assertEquals('foobar_exception', $information->identifier());
+        $this->assertSame(404, $information->statusCode());
+        $this->assertSame('foobar_exception', $information->identifier());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('Not Found', $information->safeTitle());
         $this->assertSame(
@@ -95,8 +95,8 @@ final class HttpInformationProviderTest extends TestCase
 
         $information = $provider->createFor($e, $this->server_request);
 
-        $this->assertEquals(401, $information->statusCode());
-        $this->assertEquals('foobar_e', $information->identifier());
+        $this->assertSame(401, $information->statusCode());
+        $this->assertSame('foobar_e', $information->identifier());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('Unauthorized', $information->safeTitle());
         $this->assertSame('You need to log-in first.', $information->safeDetails());
@@ -125,8 +125,8 @@ final class HttpInformationProviderTest extends TestCase
 
         $information = $provider->createFor($e, $this->server_request);
 
-        $this->assertEquals(500, $information->statusCode());
-        $this->assertEquals('foo_id', $information->identifier());
+        $this->assertSame(500, $information->statusCode());
+        $this->assertSame('foo_id', $information->identifier());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('Internal Server Error', $information->safeTitle());
     }

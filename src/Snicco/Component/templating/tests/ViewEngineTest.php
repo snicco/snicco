@@ -112,10 +112,10 @@ final class ViewEngineTest extends TestCase
     public function a_nested_view_can_be_rendered_with_dot_notation(): void
     {
         $view = $this->view_engine->make('components.input');
-        $this->assertEquals('input-component', $view->render());
+        $this->assertSame('input-component', $view->render());
 
         $view = $this->view_engine->make('components.input.php');
-        $this->assertEquals('input-component', $view->render());
+        $this->assertSame('input-component', $view->render());
     }
 
     /**
