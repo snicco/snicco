@@ -65,10 +65,12 @@ final class QueryInfo
     private function replacePlaceholders(string $sql_with_placeholders, array $bindings): string
     {
         $bindings = array_map(function ($binding): string {
-            if (is_int($binding) || is_float($binding)) {
+            if (is_int($binding)) {
                 return (string) $binding;
             }
-
+            if (is_float($binding)) {
+                return (string) $binding;
+            }
             if (null === $binding) {
                 return 'null';
             }

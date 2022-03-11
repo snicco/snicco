@@ -158,10 +158,12 @@ final class FastRouteDispatcher implements UrlMatcher
         $allowed_methods = [];
 
         foreach ($this->static_route_map as $method => $uri_map) {
-            if ($request_method === $method || ! isset($uri_map[$path])) {
+            if ($request_method === $method) {
                 continue;
             }
-
+            if (! isset($uri_map[$path])) {
+                continue;
+            }
             $res = $this->dispatchStaticRoute($method, $path, $request);
 
             if ($res->isMatch()) {

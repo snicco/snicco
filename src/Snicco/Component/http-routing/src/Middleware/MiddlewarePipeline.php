@@ -62,10 +62,12 @@ final class MiddlewarePipeline
     public function through(array $middleware): MiddlewarePipeline
     {
         foreach ($middleware as $m) {
-            if ($m instanceof MiddlewareInterface || $m instanceof MiddlewareBlueprint) {
+            if ($m instanceof MiddlewareInterface) {
                 continue;
             }
-
+            if ($m instanceof MiddlewareBlueprint) {
+                continue;
+            }
             Reflector::assertInterfaceString($m, MiddlewareInterface::class);
         }
 

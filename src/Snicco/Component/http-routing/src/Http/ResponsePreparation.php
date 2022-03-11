@@ -71,11 +71,12 @@ final class ResponsePreparation
         $header = $this->getCacheControlHeader($response, $headers_sent_with_php);
 
         if ('' === $header) {
-            if ($response->hasHeader('Last-Modified') || $response->hasHeader('Expires')) {
-                // allows for heuristic expiration (RFC 7234 Section 4.2.2) in the case of "Last-Modified"
+            if ($response->hasHeader('Last-Modified')) {
                 return $response->withHeader('Cache-Control', 'private, must-revalidate');
             }
-
+            if ($response->hasHeader('Expires')) {
+                return $response->withHeader('Cache-Control', 'private, must-revalidate');
+            }
             // conservative by default
             return $response->withHeader('Cache-Control', 'no-cache, private');
         }

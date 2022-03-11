@@ -99,10 +99,14 @@ final class WPDBSessionDriver implements UserSessionsDriver
                 'last_activity' => $current_timestamp,
             ]
         );
-
-        if (0 === $rows && ! $this->exists($selector)) {
-            throw BadSessionID::forSelector($selector, self::class);
+        if (0 !== $rows) {
+            return;
         }
+        if ($this->exists($selector)) {
+            return;
+        }
+
+        throw BadSessionID::forSelector($selector, self::class);
     }
 
     public function destroyAll(): void

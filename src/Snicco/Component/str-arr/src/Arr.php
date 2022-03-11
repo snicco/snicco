@@ -330,8 +330,10 @@ class Arr
         self::checkIsArray($array, 'has');
         $keys = self::toArray($keys);
         self::checkAllStringKeys($keys, 'has');
-
-        if ([] === $keys || [] === $array) {
+        if ([] === $keys) {
+            return false;
+        }
+        if ([] === $array) {
             return false;
         }
 
@@ -556,15 +558,20 @@ class Arr
      */
     private static function checkKeyStringInt($key, string $called_method): void
     {
-        if (! is_string($key) && ! is_int($key)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
-                    self::class . '::' . $called_method . '()',
-                    gettype($key)
-                )
-            );
+        if (is_string($key)) {
+            return;
         }
+        if (is_int($key)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
+                self::class . '::' . $called_method . '()',
+                gettype($key)
+            )
+        );
     }
 
     /**

@@ -200,13 +200,16 @@ final class PHPFileRouteLoader implements RouteLoader
 
             /** @var SplFileInfo $file_info */
             foreach ($file_infos as $file_info) {
-                if (
-                    $file_info->isFile()
-                    && $file_info->isReadable()
-                    && preg_match(self::SEARCH_PATTERN, $file_info->getFilename())
-                ) {
-                    $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
+                if (! $file_info->isFile()) {
+                    continue;
                 }
+                if (! $file_info->isReadable()) {
+                    continue;
+                }
+                if (! preg_match(self::SEARCH_PATTERN, $file_info->getFilename())) {
+                    continue;
+                }
+                $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
             }
         }
 

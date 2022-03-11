@@ -36,7 +36,11 @@ final class DebugBundle implements Bundle
 
     public function shouldRun(Environment $env): bool
     {
-        return $env->isDevelop() && $env->isDebug();
+        if (! $env->isDevelop()) {
+            return false;
+        }
+
+        return $env->isDebug();
     }
 
     public function configure(WritableConfig $config, Kernel $kernel): void

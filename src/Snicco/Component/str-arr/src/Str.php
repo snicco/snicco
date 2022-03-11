@@ -84,9 +84,14 @@ class Str
     public static function contains(string $subject, $needles): bool
     {
         foreach ((array) $needles as $needle) {
-            if ('' !== $needle && false !== mb_strpos($subject, $needle)) {
-                return true;
+            if ('' === $needle) {
+                continue;
             }
+            if (false === mb_strpos($subject, $needle)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
@@ -215,7 +220,10 @@ class Str
      */
     public static function betweenLast(string $subject, string $from, string $to): string
     {
-        if ('' === $from || '' === $to) {
+        if ('' === $from) {
+            return $subject;
+        }
+        if ('' === $to) {
             return $subject;
         }
 
@@ -252,7 +260,10 @@ class Str
      */
     public static function betweenFirst(string $subject, string $from, string $to): string
     {
-        if ('' === $from || '' === $to) {
+        if ('' === $from) {
+            return $subject;
+        }
+        if ('' === $to) {
             return $subject;
         }
 

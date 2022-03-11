@@ -75,8 +75,10 @@ final class Reflector
         $reflection = self::reflectionFunction($callable);
 
         $parameters = $reflection->getParameters();
-
-        if ([] === $parameters || ! $parameters[0] instanceof ReflectionParameter) {
+        if ([] === $parameters) {
+            return null;
+        }
+        if (! $parameters[0] instanceof ReflectionParameter) {
             return null;
         }
 

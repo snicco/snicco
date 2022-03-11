@@ -108,12 +108,17 @@ final class Mailer
         if (null === $mail->textBody() && null === $mail->htmlBody() && [] === $mail->attachments()) {
             throw new LogicException('An email must have a text or an HTML body or attachments.');
         }
-
-        if (! count($mail->cc()) && ! count($mail->to()) && ! count($mail->bcc())) {
-            throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
+        if (count($mail->cc()) > 0) {
+            return $mail;
+        }
+        if (count($mail->to()) > 0) {
+            return $mail;
+        }
+        if (count($mail->bcc()) > 0) {
+            return $mail;
         }
 
-        return $mail;
+        throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
     }
 
     // We make a clone of the objects so that no hooked listener can modify them and event other
