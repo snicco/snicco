@@ -61,8 +61,8 @@ final class SignedUrlValidator
         }
 
         $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
-        $identifier = (string) ($arr[0] ?? '');
-        $provided_signature = (string) ($arr[1] ?? '');
+        $identifier = $arr[0] ?? '';
+        $provided_signature = $arr[1] ?? '';
 
         // Rebuild the parts from the provided url
         // if anything has been changed at all the resulting signature will not match the

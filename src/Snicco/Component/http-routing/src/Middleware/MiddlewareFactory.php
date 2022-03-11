@@ -11,6 +11,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
+use function get_class;
+use function gettype;
+use function is_object;
 use function sprintf;
 
 /**

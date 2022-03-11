@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Middleware;
 
 use Closure;
-use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,6 +13,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Reflector;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
+
+use Webmozart\Assert\Assert;
 
 use function array_map;
 use function call_user_func;
@@ -36,12 +37,9 @@ final class MiddlewarePipeline
     private ?Request $current_request = null;
 
     /**
-     * @var Closure(Request):ResponseInterface
-     *
-     * @psalm-var Closure(Request=):ResponseInterface $request_handler
-     * @psalm-suppress PropertyNotSetInConstructor
+     * @var Closure(Request):ResponseInterface|null
      */
-    private Closure $request_handler;
+    private ?Closure $request_handler = null;
 
     public function __construct(ContainerInterface $container, HttpErrorHandler $error_handler)
     {
@@ -78,7 +76,6 @@ final class MiddlewarePipeline
 
     /**
      * @param Closure(Request):ResponseInterface $request_handler
-     * @param Closure(Request=):ResponseInterface $request_handler
      */
     public function then(Closure $request_handler): Response
     {
@@ -90,11 +87,8 @@ final class MiddlewarePipeline
 
     private function run(): Response
     {
-        if (! isset($this->current_request)) {
-            throw new LogicException(
-                'You cant run a middleware pipeline twice without calling send() first.'
-            );
-        }
+        Assert::notNull($this->current_request, 'You cant run a middleware pipeline twice without calling send() first.');
+        Assert::notNull($this->request_handler);
 
         $stack = $this->lazyNext();
 
@@ -128,6 +122,8 @@ final class MiddlewarePipeline
         $middleware = array_shift($this->middleware);
 
         if (null === $middleware) {
+            Assert::notNull($this->request_handler);
+
             return call_user_func($this->request_handler, $request);
         }
 

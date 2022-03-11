@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Throwable;
 
+use function is_array;
+use function is_string;
+
 use function json_decode;
 use function sprintf;
 

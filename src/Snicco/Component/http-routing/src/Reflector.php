@@ -15,6 +15,7 @@ use ReflectionParameter;
 
 use function class_exists;
 use function class_implements;
+use function count;
 use function in_array;
 use function interface_exists;
 use function is_string;

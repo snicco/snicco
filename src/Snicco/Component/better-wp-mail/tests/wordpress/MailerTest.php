@@ -21,6 +21,7 @@ use WP_Error;
 use WP_User;
 
 use function array_merge;
+use function array_values;
 use function dirname;
 use function file_get_contents;
 use function sprintf;
@@ -1068,7 +1069,9 @@ final class MailerTest extends WPTestCase
      */
     private function getSentMails(): array
     {
-        /** @var list<array{header: string, body:string, subject:string}> $mails */
-        return $this->php_mailer->mock_sent;
+        /** @var array<array{header: string, body:string, subject:string}> $mails */
+        $mails = $this->php_mailer->mock_sent;
+
+        return array_values($mails);
     }
 }

@@ -13,6 +13,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Routing;
 
+use function count;
+
 final class RouteRunner extends Middleware
 {
     private MiddlewarePipeline $pipeline;

@@ -32,14 +32,20 @@ final class ResponseTest extends TestCase
         $this->response = $this->factory->createResponse();
     }
 
-    public function test_is_psr_response(): void
+    /**
+     * @test
+     */
+    public function is_psr_response(): void
     {
         $response = $this->factory->createResponse();
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function test_is_immutable(): void
+    /**
+     * @test
+     */
+    public function is_immutable(): void
     {
         $response1 = $this->factory->createResponse();
         $response2 = $response1->withHeader('foo', 'bar');
@@ -49,7 +55,10 @@ final class ResponseTest extends TestCase
         $this->assertFalse($response1->hasHeader('foo'));
     }
 
-    public function test_magic_set_throws_exception(): void
+    /**
+     * @test
+     */
+    public function magic_set_throws_exception(): void
     {
         $response1 = $this->factory->createResponse();
 
@@ -59,7 +68,10 @@ final class ResponseTest extends TestCase
         $response1->foo = 'bar';
     }
 
-    public function test_html(): void
+    /**
+     * @test
+     */
+    public function html(): void
     {
         $stream = $this->factory->createStream('foo');
 
@@ -69,7 +81,10 @@ final class ResponseTest extends TestCase
         $this->assertSame('foo', $response->getBody()->__toString());
     }
 
-    public function test_json(): void
+    /**
+     * @test
+     */
+    public function json(): void
     {
         $stream = $this->factory->createStream(json_encode([
             'foo' => 'bar',
@@ -83,7 +98,10 @@ final class ResponseTest extends TestCase
         ], json_decode($response->getBody()->__toString(), true));
     }
 
-    public function test_no_index(): void
+    /**
+     * @test
+     */
+    public function no_index(): void
     {
         $response = $this->response->withNoIndex();
         $this->assertSame('noindex', $response->getHeaderLine('x-robots-tag'));
@@ -92,7 +110,10 @@ final class ResponseTest extends TestCase
         $this->assertSame('googlebot: noindex', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function test_no_follow(): void
+    /**
+     * @test
+     */
+    public function no_follow(): void
     {
         $response = $this->response->withNoFollow();
         $this->assertSame('nofollow', $response->getHeaderLine('x-robots-tag'));
@@ -101,7 +122,10 @@ final class ResponseTest extends TestCase
         $this->assertSame('googlebot: nofollow', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function test_no_robots(): void
+    /**
+     * @test
+     */
+    public function no_robots(): void
     {
         $response = $this->response->withNoRobots();
         $this->assertSame('none', $response->getHeaderLine('x-robots-tag'));
@@ -110,7 +134,10 @@ final class ResponseTest extends TestCase
         $this->assertSame('googlebot: none', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function test_no_archive(): void
+    /**
+     * @test
+     */
+    public function no_archive(): void
     {
         $response = $this->response->withNoArchive();
         $this->assertSame('noarchive', $response->getHeaderLine('x-robots-tag'));
@@ -119,7 +146,10 @@ final class ResponseTest extends TestCase
         $this->assertSame('googlebot: noarchive', $response->getHeaderLine('x-robots-tag'));
     }
 
-    public function test_is_informational(): void
+    /**
+     * @test
+     */
+    public function is_informational(): void
     {
         $response = $this->response->withStatus(100);
         $this->assertTrue($response->isInformational());

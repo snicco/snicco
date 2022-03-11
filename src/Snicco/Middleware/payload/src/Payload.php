@@ -11,6 +11,7 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Webmozart\Assert\Assert;
 
+use function in_array;
 use function strpos;
 
 abstract class Payload extends Middleware

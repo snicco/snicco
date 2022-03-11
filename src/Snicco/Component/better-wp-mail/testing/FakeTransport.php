@@ -16,6 +16,7 @@ use Snicco\Component\BetterWPMail\WPMailAPI;
 
 use function count;
 use function func_get_args;
+use function get_class;
 use function is_array;
 use function is_string;
 use function parse_url;

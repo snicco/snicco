@@ -10,6 +10,7 @@ use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 use Snicco\Component\BetterWPMail\Testing\WPMail;
 
 use function add_filter;
+use function count;
 use function dirname;
 use function get_option;
 use function wp_mail;

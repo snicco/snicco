@@ -16,6 +16,8 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
+use function call_user_func;
+
 /**
  * @internal
  */

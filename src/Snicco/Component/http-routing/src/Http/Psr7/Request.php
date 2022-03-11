@@ -417,14 +417,14 @@ final class Request implements ServerRequestInterface
 
     public function realMethod(): string
     {
-        /** @var string $method */
-        return Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
+        $method = Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
+        Assert::stringNotEmpty($method);
+
+        return $method;
     }
 
     /**
      * @param string|string[] $keys
-     *
-     * @psalm-suppress MixedAssignment
      */
     public function only($keys): array
     {
@@ -436,6 +436,7 @@ final class Request implements ServerRequestInterface
         $keys = Arr::toArray($keys);
 
         foreach ($keys as $key) {
+            /** @var mixed $value */
             $value = Arr::dataGet($input, $key, $placeholder);
 
             if ($value !== $placeholder) {

@@ -16,6 +16,7 @@ use Snicco\Component\EventDispatcher\GenericEvent;
 
 use function call_user_func_array;
 use function count;
+use function in_array;
 use function is_array;
 use function is_bool;
 
@@ -146,12 +147,12 @@ final class TestableEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param Closure(mixed):bool|string $event_name
+     * @param string|Closure(mixed):bool $event_name
      * @param null|Closure(mixed...):bool $condition
      *
      * @throws ReflectionException
      */
-    public function assertNotDispatched($event_name, ?Closure $condition = null)
+    public function assertNotDispatched($event_name, ?Closure $condition = null): void
     {
         if ($event_name instanceof Closure) {
             $this->assertNotDispatched(ClosureTypeHint::first($event_name), $event_name);

@@ -15,6 +15,7 @@ use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
 use Illuminate\Database\Schema\MySqlBuilder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade;
+use InvalidArgumentException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\WPEloquentStandalone;
 
@@ -153,7 +154,11 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
 
     private function getMysqliConnection(): MysqliConnection
     {
-        /** @var MysqliConnection $connection */
-        return DB::connection();
+        $c = DB::connection();
+        if (! $c instanceof MysqliConnection) {
+            throw new InvalidArgumentException('Wrong connection type.');
+        }
+
+        return $c;
     }
 }

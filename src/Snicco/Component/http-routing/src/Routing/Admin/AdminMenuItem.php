@@ -10,6 +10,7 @@ use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
 use Webmozart\Assert\Assert;
 
+use function count;
 use function mb_convert_case;
 
 final class AdminMenuItem

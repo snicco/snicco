@@ -18,6 +18,8 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use stdClass;
 
+use function dirname;
+
 /**
  * @internal
  */

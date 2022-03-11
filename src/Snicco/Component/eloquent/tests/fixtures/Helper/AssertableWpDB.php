@@ -7,19 +7,15 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Helper;
 use PHPUnit\Framework\Assert as PHPUnit;
 use wpdb;
 
-use const ARRAY_A;
+use function is_float;
+use function is_int;
+use function is_string;
 
 class AssertableWpDB
 {
-    /**
-     * @var string
-     */
-    private $table;
+    private string $table;
 
-    /**
-     * @var wpdb
-     */
-    private $wpdb;
+    private wpdb $wpdb;
 
     public function __construct(string $table)
     {
@@ -104,16 +100,16 @@ class AssertableWpDB
     }
 
     /**
-     * @param (int|string)[] $expected
-     * @param array{id: 1, first_name?: 'calvin', last_name?: 'alkan', price?: 10} $expected
+     * @param array<string,scalar> $expected
+     * @param array<string,scalar> $conditions
      */
     public function assertRecordEquals(array $conditions, array $expected): void
     {
         [$wheres, $values] = $this->compile($conditions);
 
         $record = $this->wpdb->get_row(
-            $this->wpdb->prepare("SELECT * FROM {$this->table} WHERE {$wheres} LIMIT 1", $values),
-            ARRAY_A
+            (string) $this->wpdb->prepare("SELECT * FROM {$this->table} WHERE {$wheres} LIMIT 1", $values),
+            'ARRAY_A'
         );
 
         PHPUnit::assertSame($expected, $record, 'The record does not exists as specified.');

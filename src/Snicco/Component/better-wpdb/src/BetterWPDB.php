@@ -26,6 +26,7 @@ use function count;
 use function implode;
 use function is_array;
 use function is_bool;
+use function is_float;
 use function is_int;
 use function is_scalar;
 use function is_string;
@@ -315,8 +316,11 @@ final class BetterWPDB
      */
     public function selectAll(string $sql, array $bindings): array
     {
-        /** @var list<array<string, bool|float|int|string|null>> $val */
-        return $this->select($sql, $bindings)->fetch_all(MYSQLI_ASSOC);
+        $val = $this->select($sql, $bindings)->fetch_all(MYSQLI_ASSOC);
+        /**
+         * @var array<array<string, bool|float|int|string|null>> $val
+         */
+        return array_values($val);
     }
 
     /**
@@ -333,11 +337,15 @@ final class BetterWPDB
     {
         $stmt = $this->select($sql, $bindings);
 
-        if ($stmt->num_rows < 1) {
+        $res = $stmt->fetch_assoc();
+
+        if (! is_array($res)) {
             throw new NoMatchingRowFound('No matching row found', $sql, $bindings);
         }
-        /** @var array<string, float|int|string|null> $res */
-        return $stmt->fetch_assoc();
+        /**
+         * @var array<string, float|int|string|null> $res
+         */
+        return $res;
     }
 
     /**

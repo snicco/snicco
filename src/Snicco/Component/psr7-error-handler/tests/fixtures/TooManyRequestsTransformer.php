@@ -14,7 +14,7 @@ final class TooManyRequestsTransformer implements ExceptionTransformer
     {
         if ($e instanceof SlowDown) {
             return HttpException::fromPrevious(429, $e, [
-                'X-Retry-After' => 10,
+                'X-Retry-After' => '10',
             ]);
         }
 

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\LazyCollection;
+use InvalidArgumentException;
 use Snicco\Component\Eloquent\Illuminate\MysqliConnection;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WithTestTables;
 use Snicco\Component\Eloquent\Tests\fixtures\Helper\WPDBTestHelpers;
@@ -190,7 +191,11 @@ final class MysqliConnectionPretendingTest extends WPTestCase
 
     private function getMysqliConnection(): MysqliConnection
     {
-        /** @var MysqliConnection $connection */
-        return DB::connection();
+        $c = DB::connection();
+        if (! $c instanceof MysqliConnection) {
+            throw new InvalidArgumentException('Wrong connection type.');
+        }
+
+        return $c;
     }
 }

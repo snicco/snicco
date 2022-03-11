@@ -8,6 +8,8 @@ use RuntimeException;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 
+use function is_array;
+
 /**
  * @psalm-internal Snicco\Component\Templating
  */
@@ -57,10 +59,12 @@ final class PHPView implements View
     }
 
     /**
-     * @psalm-mutation-free
+     * @param array<string, mixed>|string $key
+     * @param mixed                       $value
      *
-     * @param mixed      $key
-     * @param mixed|null $value
+     * @return static
+     *
+     * @psalm-mutation-free
      */
     public function with($key, $value = null): View
     {

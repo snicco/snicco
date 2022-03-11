@@ -367,7 +367,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched and the condition passed.', EventStub::class),
             fn () => $this->fake_dispatcher->assertNotDispatched(
-                function (EventStub $event_stub) {
+                function (EventStub $event_stub): bool {
                     return 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2;
                 }
             )

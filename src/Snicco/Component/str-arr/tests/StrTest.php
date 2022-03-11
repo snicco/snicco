@@ -20,6 +20,7 @@ use RuntimeException;
 use Snicco\Component\StrArr\Str;
 
 use function random_int;
+use function strlen;
 
 /**
  * @internal
@@ -355,7 +356,10 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::is('Dusseldorf', 'Dü*'));
     }
 
-    public function test_replace_first(): void
+    /**
+     * @test
+     */
+    public function replace_first(): void
     {
         $this->assertSame('fooqux foobar', Str::replaceFirst('bar', 'qux', 'foobar foobar'));
         $this->assertSame(

@@ -8,6 +8,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 
+use function array_slice;
+
 /**
  * @psalm-internal Snicco\Component\HttpRouting
  *

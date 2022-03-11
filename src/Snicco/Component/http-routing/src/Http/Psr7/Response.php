@@ -10,6 +10,7 @@ use Psr\Http\Message\StreamInterface;
 use Snicco\Component\HttpRouting\Http\Cookie;
 use Snicco\Component\HttpRouting\Http\Cookies;
 
+use function in_array;
 use function sprintf;
 
 class Response implements ResponseInterface

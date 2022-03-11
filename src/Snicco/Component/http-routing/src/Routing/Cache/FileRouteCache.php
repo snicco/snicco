@@ -8,6 +8,7 @@ use Closure;
 use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
 
+use function is_array;
 use function var_export;
 
 final class FileRouteCache implements RouteCache

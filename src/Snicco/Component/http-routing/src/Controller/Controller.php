@@ -15,6 +15,8 @@ use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\StrArr\Arr;
 
+use Webmozart\Assert\Assert;
+
 use function array_filter;
 use function array_merge;
 use function sprintf;
@@ -31,11 +33,10 @@ abstract class Controller
     private ?Request $current_request = null;
 
     /**
-     * @psalm-mutation-free
-     *
-     * @interal
-     *
      * @return class-string<MiddlewareInterface>[]
+     *
+     * @psalm-mutation-free
+     * @psalm-internal Snicco\Component\HttpRouting
      */
     final public function getMiddleware(string $controller_method): array
     {
@@ -58,8 +59,6 @@ abstract class Controller
 
     /**
      * @psalm-internal Snicco\Component\HttpRouting
-     *
-     * @interal
      */
     final public function setContainer(ContainerInterface $container): void
     {
@@ -68,8 +67,6 @@ abstract class Controller
 
     /**
      * @psalm-internal Snicco\Component\HttpRouting
-     *
-     * @interal
      */
     final public function setCurrentRequest(Request $request): void
     {
@@ -79,8 +76,10 @@ abstract class Controller
     final protected function url(): UrlGenerator
     {
         try {
-            /** @var UrlGenerator $url */
-            return $this->container->get(UrlGenerator::class);
+            $url = $this->container->get(UrlGenerator::class);
+            Assert::isInstanceOf($url, UrlGenerator::class);
+
+            return $url;
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The UrlGenerator is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",
@@ -93,8 +92,10 @@ abstract class Controller
     final protected function responseFactory(): ResponseFactory
     {
         try {
-            /** @var ResponseFactory $factory */
-            return $this->container->get(ResponseFactory::class);
+            $res = $this->container->get(ResponseFactory::class);
+            Assert::isInstanceOf($res, ResponseFactory::class);
+
+            return $res;
         } catch (ContainerExceptionInterface $e) {
             throw new LogicException(
                 "The ResponseFactory is not bound correctly in the psr container.\nMessage: {$e->getMessage()}",

@@ -101,7 +101,7 @@ final class SessionStorage implements SignedUrlStorage
             return 0;
         }
 
-        return (int) ($stored[$identifier]['left_usages'] ?? 0);
+        return $stored[$identifier]['left_usages'] ?? 0;
     }
 
     /**

@@ -14,6 +14,8 @@ use Snicco\Component\Eloquent\Mysqli\MysqliDriverInterface;
 use Snicco\Component\Eloquent\Mysqli\PDOAdapter;
 use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
 
+use function is_array;
+
 /**
  * @psalm-internal Snicco\Component\Eloquent
  * @psalm-suppress PropertyNotSetInConstructor

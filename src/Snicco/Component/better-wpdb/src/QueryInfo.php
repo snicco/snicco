@@ -57,6 +57,9 @@ final class QueryInfo
     /**
      * @param non-empty-string $sql_with_placeholders
      *
+     * @psalm-suppress LessSpecificReturnStatement
+     * @psalm-suppress MoreSpecificReturnType
+     *
      * @return non-empty-string
      */
     private function replacePlaceholders(string $sql_with_placeholders, array $bindings): string
@@ -73,9 +76,10 @@ final class QueryInfo
             return "'{$binding}'";
         }, $bindings);
 
-        /** @var non-empty-string $sql */
         return (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
-            /** @var string[] $bindings */
+            /**
+             * @var string[] $bindings
+             */
             return (string) (array_shift($bindings));
         }, $sql_with_placeholders);
     }

@@ -84,21 +84,22 @@ final class ReadWriteSession implements Session
     }
 
     /**
-     * @psalm-suppress MixedAssignment
-     *
-     * @param mixed      $key
-     * @param mixed|null $value
+     * @param string|array<string,mixed> $key
+     * @param mixed|null                 $value
      */
     public function put($key, $value = null): void
     {
         $this->checkIfLocked();
 
-        if (! is_array($key)) {
+        if (is_string($key)) {
             $key = [
                 $key => $value,
             ];
         }
 
+        /**
+         * @var mixed $array_value
+         */
         foreach ($key as $array_key => $array_value) {
             Arr::set($this->attributes, $array_key, $array_value);
         }

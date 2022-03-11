@@ -7,6 +7,8 @@ namespace Snicco\Component\HttpRouting\Controller;
 use Psr\Http\Server\MiddlewareInterface;
 use Snicco\Component\StrArr\Arr;
 
+use function in_array;
+
 final class ControllerMiddleware
 {
     /**

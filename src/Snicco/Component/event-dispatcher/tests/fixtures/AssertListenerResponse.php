@@ -6,6 +6,9 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures;
 
 use PHPUnit\Framework\Assert;
 
+use function get_class;
+use function is_object;
+
 /**
  * @api
  */

@@ -10,6 +10,8 @@ use Snicco\Component\Kernel\Configuration\ConfigLoader;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
 use Snicco\Component\Kernel\ValueObject\Directories;
 
+use function dirname;
+
 use const DIRECTORY_SEPARATOR;
 
 /**

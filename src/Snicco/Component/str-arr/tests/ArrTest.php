@@ -17,12 +17,13 @@ namespace Snicco\Component\StrArr\Tests;
 
 use ArrayAccess;
 use ArrayObject;
-use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReturnTypeWillChange;
 use Snicco\Component\StrArr\Arr;
 use stdClass;
+
+use function array_key_exists;
 
 /**
  * @internal
@@ -1262,19 +1263,6 @@ final class ArrTest extends TestCase
         );
         $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name', 'irrelevant'));
         $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name'));
-    }
-
-    /**
-     * @template TKey
-     * @template TVal
-     *
-     * @param TKey                    $key
-     * @param TVal                    $val
-     * @param Closure(TVal,TKey):bool $closure
-     */
-    private function test_psalm($key, $val, Closure $closure): bool
-    {
-        return $closure($val, $key);
     }
 }
 
