@@ -401,16 +401,16 @@ final class ReadWriteSession implements Session
 
     public function userId()
     {
-        /**
-         * @var mixed $user_id
-         */
+        /** @var mixed $user_id */
         $user_id = $this->get('_user_id');
         if (is_string($user_id)) {
             return $user_id;
         }
+
         if (is_int($user_id)) {
             return $user_id;
         }
+
         if (null === $user_id) {
             return null;
         }
@@ -436,6 +436,7 @@ final class ReadWriteSession implements Session
         if ($is_dirty) {
             return true;
         }
+
         if (null !== $this->invalidated_id) {
             return true;
         }

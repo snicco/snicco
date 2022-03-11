@@ -32,12 +32,9 @@ final class ResponseFactoryTest extends TestCase
 
     private ResponseFactory $factory;
 
-    private string $app_domain;
-
     protected function setUp(): void
     {
         parent::setUp();
-        $this->app_domain = 'foo.com';
         $this->factory = $this->createResponseFactory();
     }
 

@@ -103,6 +103,7 @@ final class Request implements ServerRequestInterface
         if (false === $user_agent) {
             return null;
         }
+
         if ('' === $user_agent) {
             return null;
         }
@@ -716,9 +717,11 @@ rawurldecode(strtr($part, [
         if ('*/*' === $accept_header) {
             return true;
         }
+
         if ('*' === $accept_header) {
             return true;
         }
+
         $tok = strtok($match_against, '/');
 
         if (false === $tok) {

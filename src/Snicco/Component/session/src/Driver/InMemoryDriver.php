@@ -104,9 +104,11 @@ final class InMemoryDriver implements UserSessionsDriver
             if ($data['user_id'] !== $user_id) {
                 continue;
             }
+
             if ($s === $selector) {
                 continue;
             }
+
             unset($this->storage[$s]);
         }
     }

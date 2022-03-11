@@ -46,10 +46,9 @@ final class TemplatingBundle implements Bundle
 
         foreach ($config->getListOfStrings('templating.directories') as $directory) {
             if (! is_readable($directory)) {
-                throw new InvalidArgumentException(sprintf(
-                    'templating.directories: Directory [%s] is not readable.',
-                    $directory
-                ));
+                throw new InvalidArgumentException(
+                    sprintf('templating.directories: Directory [%s] is not readable.', $directory)
+                );
             }
         }
 
@@ -94,39 +93,38 @@ final class TemplatingBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException(sprintf(
-                'Could not copy the default templating config to destination [%s]',
-                $destination
-            ));
+            throw new RuntimeException(
+                sprintf('Could not copy the default templating config to destination [%s]', $destination)
+            );
             // @codeCoverageIgnoreEnd
         }
     }
 
     private function bindViewEngine(Kernel $kernel): void
     {
-        $kernel->container()
-            ->shared(ViewEngine::class, function () use ($kernel): ViewEngine {
-                $class_names = $kernel->config()
-                    ->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
+        $container = $kernel->container();
+        $config = $kernel->config();
+        $container->shared(ViewEngine::class, function () use ($container, $config): ViewEngine {
+            /** @var class-string<ViewFactory>[] $class_names */
+            $class_names = $config->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
 
-                $factories = array_map(
-                    fn (string $class_name): ViewFactory => /** @var class-string<ViewFactory> $class_name */
-$kernel->container()
-    ->make($class_name),
-                    $class_names
-                );
+            $factories = array_map(
+                fn (string $class_name): ViewFactory => $container->make($class_name),
+                $class_names
+            );
 
-                return new ViewEngine(...$factories);
-            });
+            return new ViewEngine(...$factories);
+        });
     }
 
     private function bindPHPViewFactory(Kernel $kernel): void
     {
         $kernel->container()
             ->shared(PHPViewFactory::class, fn (): PHPViewFactory => new PHPViewFactory(
-                new PHPViewFinder($kernel->config()->getListOfStrings(
-                    'templating.' . TemplatingOption::DIRECTORIES
-                )),
+                new PHPViewFinder(
+                    $kernel->config()
+                        ->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)
+                ),
                 $kernel->container()
                     ->make(ViewComposerCollection::class),
             ));
@@ -146,9 +144,10 @@ $kernel->container()
         $kernel->container()
             ->shared(
                 TemplatingExceptionDisplayer::class,
-                fn (): TemplatingExceptionDisplayer => new TemplatingExceptionDisplayer($kernel->container()->make(
-                    ViewEngine::class
-                ))
+                fn (): TemplatingExceptionDisplayer => new TemplatingExceptionDisplayer(
+                    $kernel->container()
+                        ->make(ViewEngine::class)
+                )
             );
     }
 
@@ -162,10 +161,12 @@ $kernel->container()
                         ->make(GlobalViewContext::class)
                 );
 
-                /** @var array<class-string<ViewComposer>, list<string>> */
                 $composers = $kernel->config()
                     ->getArray('templating.' . TemplatingOption::VIEW_COMPOSERS);
 
+                /**
+                 * @var array<class-string<ViewComposer>,list<string>> $composers
+                 */
                 foreach ($composers as $class => $views) {
                     $composer_collection->addComposer($views, $class);
                 }

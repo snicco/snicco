@@ -229,7 +229,8 @@ trait DIContainerContractTest
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Expected an instance of Snicco\Component\Kernel\Testing\Foo');
-        $container[Foo::class];
+        // @noRector
+        $container->make(Foo::class);
     }
 
     /**

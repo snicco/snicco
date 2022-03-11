@@ -314,6 +314,7 @@ final class Kernel
         if ($environment->isProduction()) {
             return new PHPFileCache();
         }
+
         if ($environment->isStaging()) {
             return new PHPFileCache();
         }

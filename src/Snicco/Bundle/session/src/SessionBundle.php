@@ -198,9 +198,11 @@ final class SessionBundle implements Bundle
                 )
             );
         }
+
         if (WPObjectCacheDriver::class !== $driver) {
             return;
         }
+
         if ($kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
             return;
         }

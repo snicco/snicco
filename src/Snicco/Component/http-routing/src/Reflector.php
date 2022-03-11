@@ -78,6 +78,7 @@ final class Reflector
         if ([] === $parameters) {
             return null;
         }
+
         if (! $parameters[0] instanceof ReflectionParameter) {
             return null;
         }

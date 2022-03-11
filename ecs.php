@@ -33,6 +33,7 @@ return static function (ContainerConfigurator $configurator): void {
         __DIR__ . '/monorepo-builder.php',
         __DIR__ . '/tests',
         __DIR__ . '/ecs.php',
+        __DIR__ . '/rector.php',
     ]);
     $parameters->set(Option::PARALLEL, true);
 

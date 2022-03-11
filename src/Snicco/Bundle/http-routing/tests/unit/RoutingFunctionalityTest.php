@@ -37,8 +37,6 @@ final class RoutingFunctionalityTest extends TestCase
 
     private string $expected_route_cache_file;
 
-    private string $cache_dir;
-
     protected function setUp(): void
     {
         parent::setUp();

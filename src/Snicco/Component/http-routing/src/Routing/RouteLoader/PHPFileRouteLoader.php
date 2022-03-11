@@ -96,7 +96,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getRouteAttributes($name);
 
-            /** @var Closure(WebRoutingConfigurator) $closure */
+            /** @psalm-var Closure(WebRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
 
             $configurator->group($closure, $attributes);
@@ -104,7 +104,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
         if ($frontend_routes) {
             $attributes = $this->options->getRouteAttributes(self::FRONTEND_ROUTE_FILENAME);
-            /** @var Closure(WebRoutingConfigurator) $closure */
+            /** @psalm-var Closure(WebRoutingConfigurator) $closure */
             $closure = $this->requireFile($frontend_routes, $attributes);
             $configurator->group($closure, $attributes);
         }
@@ -120,7 +120,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getRouteAttributes($name);
 
-            /** @var Closure(AdminRoutingConfigurator) $closure */
+            /** @psalm-var Closure(AdminRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes, true);
 
             $configurator->group($closure, $attributes);
@@ -151,7 +151,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getApiRouteAttributes($name, $version);
 
-            /** @var Closure(WebRoutingConfigurator) $closure */
+            /** @psalm-var Closure(WebRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes);
 
             $configurator->group($closure, $attributes);
@@ -167,12 +167,14 @@ final class PHPFileRouteLoader implements RouteLoader
      * } $attributes
      *
      * @throws ReflectionException
-     * @psalm-suppress UnresolvableInclude
      */
     private function requireFile(string $file, array $attributes = [], bool $is_admin_file = false): Closure
     {
         $this->validateAttributes($attributes);
 
+        /**
+         * @psalm-suppress UnresolvableInclude
+         */
         $closure = require $file;
 
         Assert::isInstanceOf($closure, Closure::class, sprintf('Route file [%s] did not return a closure.', $file));
@@ -203,12 +205,15 @@ final class PHPFileRouteLoader implements RouteLoader
                 if (! $file_info->isFile()) {
                     continue;
                 }
+
                 if (! $file_info->isReadable()) {
                     continue;
                 }
+
                 if (! preg_match(self::SEARCH_PATTERN, $file_info->getFilename())) {
                     continue;
                 }
+
                 $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
             }
         }
@@ -304,7 +309,6 @@ final class PHPFileRouteLoader implements RouteLoader
 
     /**
      * @return array{0:string, 1:?string}
-     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     private function parseNameAndVersion(string $filename): array
     {
@@ -316,6 +320,9 @@ final class PHPFileRouteLoader implements RouteLoader
         if (1 === $res) {
             Assert::keyExists($match, 1);
 
+            /**
+             * @psalm-suppress PossiblyUndefinedIntArrayOffset
+             */
             return [Str::beforeFirst($filename, self::VERSION_FLAG), $match[1]];
         }
 

@@ -68,9 +68,11 @@ final class QueryInfo
             if (is_int($binding)) {
                 return (string) $binding;
             }
+
             if (is_float($binding)) {
                 return (string) $binding;
             }
+
             if (null === $binding) {
                 return 'null';
             }

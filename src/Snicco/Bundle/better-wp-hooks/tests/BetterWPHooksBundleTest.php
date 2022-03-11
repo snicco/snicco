@@ -133,7 +133,7 @@ class ListenerDependency
 
 class Listener
 {
-    private ListenerDependency $dependency;
+    public ListenerDependency $dependency;
 
     public function __construct(ListenerDependency $dependency)
     {

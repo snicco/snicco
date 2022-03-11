@@ -102,6 +102,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
         if (0 !== $rows) {
             return;
         }
+
         if ($this->exists($selector)) {
             return;
         }

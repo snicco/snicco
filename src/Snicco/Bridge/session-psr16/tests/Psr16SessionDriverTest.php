@@ -79,6 +79,7 @@ final class Psr16SessionDriverTest extends TestCase
     {
         $driver = new Psr16SessionDriver(new ArrayCachePool(), 10);
 
+        // @noRector
         $driver->gc(10);
 
         $this->assertTrue(true);

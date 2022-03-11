@@ -62,6 +62,7 @@ final class WPAdminArea implements AdminArea
         if (! $page) {
             return $request->path();
         }
+
         if (! is_string($page)) {
             return $request->path();
         }
