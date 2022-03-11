@@ -262,9 +262,9 @@ final class EventMapperTest extends WPTestCase
      */
     public function the_priority_can_be_customized_for_a_mapped_filter(): void
     {
-        add_filter('filter', fn (string $value) => $value . '_wp_filtered_1', 4, 1000);
+        add_filter('filter', fn (string $value): string => $value . '_wp_filtered_1', 4, 1000);
 
-        add_filter('filter', fn (string $value) => $value . '_wp_filtered_2', 6, 1000);
+        add_filter('filter', fn (string $value): string => $value . '_wp_filtered_2', 6, 1000);
 
         $this->event_mapper->map('filter', EventFilterWithNoArgs::class, 5);
 
@@ -285,9 +285,9 @@ final class EventMapperTest extends WPTestCase
      */
     public function two_different_custom_events_can_be_mapped_to_a_wordpress_filter(): void
     {
-        add_filter('filter', fn (string $value) => $value . '_wp_filtered_1_', 4, 1000);
+        add_filter('filter', fn (string $value): string => $value . '_wp_filtered_1_', 4, 1000);
 
-        add_filter('filter', fn (string $value) => $value . '_wp_filtered_2_', 6, 1000);
+        add_filter('filter', fn (string $value): string => $value . '_wp_filtered_2_', 6, 1000);
 
         $this->event_mapper->map('filter', EventFilter1::class, 5);
         $this->event_mapper->map('filter', EventFilter2::class, 7);

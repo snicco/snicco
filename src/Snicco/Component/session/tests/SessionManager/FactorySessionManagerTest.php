@@ -19,7 +19,6 @@ use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionCookie;
 use Snicco\Component\Session\ValueObject\SessionId;
-use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
 use Snicco\Component\TestableClock\TestClock;
 
@@ -554,7 +553,7 @@ final class FactorySessionManagerTest extends TestCase
      * } $config
      */
     private function getSessionManager(
-        Clock $clock = null,
+        ?TestClock $clock = null,
         array $config = null,
         SessionEventDispatcher $event_dispatcher = null
     ): FactorySessionManager {

@@ -82,6 +82,6 @@ final class NegotiateContent extends Middleware
 
     private function next(ContentLanguage $language, NextMiddleware $next): NextMiddleware
     {
-        return new NextMiddleware(fn (Request $request) => $language->process($request, $next));
+        return new NextMiddleware(fn (Request $request): ResponseInterface => $language->process($request, $next));
     }
 }

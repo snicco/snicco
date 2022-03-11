@@ -14,6 +14,6 @@ final class CanDisplay implements DisplayerFilter
 {
     public function filter(array $displayers, RequestInterface $request, ExceptionInformation $info): array
     {
-        return array_filter($displayers, fn (ExceptionDisplayer $displayer) => $displayer->canDisplay($info));
+        return array_filter($displayers, fn (ExceptionDisplayer $displayer): bool => $displayer->canDisplay($info));
     }
 }

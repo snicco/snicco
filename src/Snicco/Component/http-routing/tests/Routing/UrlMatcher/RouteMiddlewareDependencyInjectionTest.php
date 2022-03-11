@@ -99,7 +99,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->pimple[Bar::class] = fn (): Bar => $bar;
 
         $this->pimple[MiddlewareWithClassAndParamDependencies::class] = $this->pimple->protect(
-            fn (string $foo, string $bar) => new MiddlewareWithClassAndParamDependencies(
+            fn (string $foo, string $bar): \Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher\MiddlewareWithClassAndParamDependencies => new MiddlewareWithClassAndParamDependencies(
                 $this->pimple[Foo::class],
                 $this->pimple[Bar::class],
                 $foo,

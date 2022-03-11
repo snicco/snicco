@@ -29,20 +29,12 @@ use function rtrim;
 
 final class WPEloquentStandalone
 {
-    /**
-     * @var Application|Container
-     */
-    private $illuminate_container;
+    private Container $illuminate_container;
 
     private array $connection_configuration;
 
     private bool $enable_global_facades;
 
-    /**
-     * @psalm-suppress InvalidArgument
-     *
-     * @param mixed[] $connection_configuration
-     */
     public function __construct(array $connection_configuration = [], bool $enable_global_facades = true)
     {
         $this->illuminate_container = Container::getInstance();
@@ -55,6 +47,7 @@ final class WPEloquentStandalone
         }
 
         if ($enable_global_facades && ! Facade::getFacadeApplication() instanceof IlluminateContainer) {
+            /** @psalm-suppress InvalidArgument */
             Facade::setFacadeApplication($this->illuminate_container);
         }
 
@@ -106,7 +99,7 @@ final class WPEloquentStandalone
         $this->bindEventDispatcher($event_dispatcher);
     }
 
-    public function bootstrap(): ConnectionResolverInterface
+    public function bootstrap(): WPConnectionResolver
     {
         $this->bindConfig();
         $this->bindTransactionManager();
@@ -123,7 +116,7 @@ final class WPEloquentStandalone
 
     private function bindEventDispatcher(Dispatcher $event_dispatcher): void
     {
-        $this->illuminate_container->singleton('events', fn () => $event_dispatcher);
+        $this->illuminate_container->singleton('events', fn (): Dispatcher => $event_dispatcher);
         Eloquent::setEventDispatcher($event_dispatcher);
     }
 
@@ -146,14 +139,15 @@ final class WPEloquentStandalone
 
     private function bindTransactionManager(): void
     {
-        $this->illuminate_container->singletonIf('db.transactions', fn () => new DatabaseTransactionsManager());
+        $this->illuminate_container->singletonIf(
+            'db.transactions',
+            fn (): DatabaseTransactionsManager => new DatabaseTransactionsManager()
+        );
     }
 
-    /**
-     * @psalm-suppress PossiblyInvalidArgument
-     */
     private function newConnectionResolver(): WPConnectionResolver
     {
+        /** @psalm-suppress InvalidArgument */
         $illuminate_database_manager = new DatabaseManager(
             $this->illuminate_container,
             new ConnectionFactory($this->illuminate_container)
@@ -164,6 +158,6 @@ final class WPEloquentStandalone
 
     private function bindDBFacade(ConnectionResolverInterface $connection_resolver): void
     {
-        $this->illuminate_container->singletonIf('db', fn () => $connection_resolver);
+        $this->illuminate_container->singletonIf('db', fn (): ConnectionResolverInterface => $connection_resolver);
     }
 }

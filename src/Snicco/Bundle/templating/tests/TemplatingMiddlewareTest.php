@@ -94,7 +94,7 @@ final class TemplatingMiddlewareTest extends TestCase
         $response = $pipeline
             ->send($request)
             ->through([TemplatingMiddleware::class])
-            ->then(fn () => new Response(200, [
+            ->then(fn (): Response => new Response(200, [
                 'location' => '/foo',
             ]));
 

@@ -132,7 +132,7 @@ class Str
 
         $parts = explode(' ', str_replace(['-', '_'], ' ', $value));
 
-        $parts = array_map(fn ($string) => self::ucfirst($string), $parts);
+        $parts = array_map(fn ($string): string => self::ucfirst($string), $parts);
 
         return self::$studly_cache[$key] = implode('', $parts);
     }

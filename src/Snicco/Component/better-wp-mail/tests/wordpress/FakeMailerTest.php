@@ -114,7 +114,7 @@ final class FakeMailerTest extends WPTestCase
 
         $this->fake_transport->assertSent(
             TestMail::class,
-            fn (TestMail $email, Envelope $envelope) => $email->to()
+            fn (TestMail $email, Envelope $envelope): bool => $email->to()
                 ->has('c@web.de')
                 && 'm@web.de' === $envelope->sender()
                     ->address()
@@ -139,7 +139,7 @@ final class FakeMailerTest extends WPTestCase
             ),
             fn () => $this->fake_transport->assertSent(
                 TestMail::class,
-                fn (TestMail $email) => $email->to()
+                fn (TestMail $email): bool => $email->to()
                     ->has('c@web.de')
             )
         );
@@ -362,7 +362,7 @@ final class FakeMailerTest extends WPTestCase
             ]
         );
 
-        $this->fake_transport->assertSent(WPMail::class, fn (WPMail $email) => $email->to()
+        $this->fake_transport->assertSent(WPMail::class, fn (WPMail $email): bool => $email->to()
             ->has('calvin@web.de')
             && $email->cc()
                 ->has('Jane Doe <jane@web.de>')

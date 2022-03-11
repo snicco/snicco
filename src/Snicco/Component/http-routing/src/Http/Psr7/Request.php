@@ -177,7 +177,7 @@ final class Request implements ServerRequestInterface
 
         return implode(
             '/',
-            array_map(fn ($part) => // Make sure that %2F stays %2F
+            array_map(fn ($part): string => // Make sure that %2F stays %2F
 rawurldecode(strtr($part, [
     '%2F' => '%252F',
 ])), explode('/', $path))

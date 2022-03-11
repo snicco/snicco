@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\LazyHttpErrorHandler;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
@@ -88,7 +89,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareBlueprint::from(PipelineTestMiddleware1::class)])
-            ->then(fn (ServerRequestInterface $request) => $this->response_factory->html(
+            ->then(fn (ServerRequestInterface $request): Response => $this->response_factory->html(
                 (string) $request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE)
             ));
 
@@ -106,7 +107,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([$foo, MiddlewareBlueprint::from(BarMiddleware::class, ['BAR'])])
-            ->then(fn () => $this->response_factory->html('handler'));
+            ->then(fn (): Response => $this->response_factory->html('handler'));
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame('handler:BAR:FOO', $response->getBody()->__toString());
@@ -122,7 +123,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([FooMiddleware::class, MiddlewareBlueprint::from(BarMiddleware::class, ['BAR'])])
-            ->then(fn () => $this->response_factory->html('handler'));
+            ->then(fn (): Response => $this->response_factory->html('handler'));
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame('handler:BAR:FOO', $response->getBody()->__toString());
@@ -141,7 +142,7 @@ final class MiddlewarePipelineTest extends TestCase
                     [PipelineTestMiddleware1::class, PipelineTestMiddleware2::class]
                 )
             )
-            ->then(fn (ServerRequestInterface $request) => $this->response_factory->html(
+            ->then(fn (ServerRequestInterface $request): Response => $this->response_factory->html(
                 (string) $request->getAttribute(PipelineTestMiddleware1::ATTRIBUTE) .
                 (string) $request->getAttribute(PipelineTestMiddleware2::ATTRIBUTE)
             ));
@@ -184,7 +185,7 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareWithDependencies::class])
-            ->then(fn () => $this->response_factory->html('handler'));
+            ->then(fn (): Response => $this->response_factory->html('handler'));
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame('handler:FOOBAR', $response->getBody()->__toString());
@@ -198,14 +199,14 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareBlueprint::from(FooMiddleware::class, ['FOO_M'])])
-            ->then(fn () => $this->response_factory->html('foo_handler'));
+            ->then(fn (): Response => $this->response_factory->html('foo_handler'));
 
         $this->assertSame('foo_handler:FOO_M', (string) $response->getBody());
 
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareBlueprint::from(FooMiddleware::class, ['FOO_M_DIFFERENT'])])
-            ->then(fn () => $this->response_factory->html('foo_handler'));
+            ->then(fn (): Response => $this->response_factory->html('foo_handler'));
 
         $this->assertSame('foo_handler:FOO_M_DIFFERENT', (string) $response->getBody());
     }
@@ -268,13 +269,13 @@ final class MiddlewarePipelineTest extends TestCase
     {
         $response = $this->pipeline->send($this->request)
             ->through([])
-            ->then(fn () => $this->response_factory->html('foo'));
+            ->then(fn (): Response => $this->response_factory->html('foo'));
 
         $this->assertSame('foo', $response->getBody()->__toString());
 
         $this->expectExceptionMessage('You cant run a middleware pipeline twice without calling send() first.');
 
-        $this->pipeline->then(fn () => $this->response_factory->createResponse());
+        $this->pipeline->then(fn (): Response => $this->response_factory->createResponse());
     }
 
     /**
@@ -284,7 +285,7 @@ final class MiddlewarePipelineTest extends TestCase
     {
         $this->expectExceptionMessage('You cant run a middleware pipeline twice without calling send() first.');
 
-        $this->pipeline->then(fn () => $this->response_factory->html('foo'));
+        $this->pipeline->then(fn (): Response => $this->response_factory->html('foo'));
     }
 
     /**
@@ -295,14 +296,14 @@ final class MiddlewarePipelineTest extends TestCase
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareBlueprint::from(FooMiddleware::class)])
-            ->then(fn () => $this->response_factory->html('foo'));
+            ->then(fn (): Response => $this->response_factory->html('foo'));
 
         $this->assertSame('foo:foo_middleware', $response->getBody()->__toString());
 
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareBlueprint::from(BarMiddleware::class)])
-            ->then(fn () => $this->response_factory->html('foo'));
+            ->then(fn (): Response => $this->response_factory->html('foo'));
 
         $this->assertSame('foo:bar_middleware', $response->getBody()->__toString());
     }

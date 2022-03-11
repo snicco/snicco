@@ -579,7 +579,7 @@ final class BetterWPDB
      */
     private function buildInsertSql(string $table, array $column_names): string
     {
-        $column_names = array_map(fn ($column_name) => $this->escIdentifier($column_name), $column_names);
+        $column_names = array_map(fn ($column_name): string => $this->escIdentifier($column_name), $column_names);
         $columns = implode(',', $column_names);
         $table = $this->escIdentifier($table);
         $placeholders = str_repeat('?,', count($column_names) - 1) . '?';

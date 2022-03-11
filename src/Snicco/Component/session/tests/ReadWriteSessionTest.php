@@ -217,7 +217,7 @@ final class ReadWriteSessionTest extends TestCase
     {
         $session = $this->newSession();
 
-        $session->putIfMissing('foo', fn () => 'bar');
+        $session->putIfMissing('foo', fn (): string => 'bar');
         $this->assertSame('bar', $session->get('foo'));
 
         $session->put('baz', 'biz');
@@ -815,7 +815,7 @@ final class ReadWriteSessionTest extends TestCase
 
         $this->expectException(SessionIsLocked::class);
 
-        $session->putIfMissing('foo', fn () => 'bar');
+        $session->putIfMissing('foo', fn (): string => 'bar');
     }
 
     /**

@@ -60,10 +60,12 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
             ],
         ]);
 
-        $this->withNextMiddlewareResponse(fn (Response $response) => (new ViewResponse('foo_view', $response))
-            ->withViewData([
-                'foo' => 'bar',
-            ]));
+        $this->withNextMiddlewareResponse(
+            fn (Response $response): ViewResponse => (new ViewResponse('foo_view', $response))
+                ->withViewData([
+                    'foo' => 'bar',
+                ])
+        );
 
         $response = $this->runMiddleware($middleware, $this->request_with_session);
         $response->assertNextMiddlewareCalled();
@@ -100,10 +102,12 @@ final class ShareSessionWithViewsTest extends MiddlewareTestCase
     {
         $middleware = new ShareSessionWithViews();
 
-        $this->withNextMiddlewareResponse(fn (Response $response) => (new ViewResponse('foo_view', $response))
-            ->withViewData([
-                'foo' => 'bar',
-            ]));
+        $this->withNextMiddlewareResponse(
+            fn (Response $response): ViewResponse => (new ViewResponse('foo_view', $response))
+                ->withViewData([
+                    'foo' => 'bar',
+                ])
+        );
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('No session has been set on the request.');

@@ -8,7 +8,7 @@ use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareTwo;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
-return function (WebRoutingConfigurator $router) {
+return function (WebRoutingConfigurator $router): void {
     $router->get('frontend1', '/frontend', RoutingBundleTestController::class);
 
     $router->get('delegate', '/delegate');

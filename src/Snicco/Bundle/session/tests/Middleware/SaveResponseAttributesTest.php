@@ -48,7 +48,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         $middleware = new SaveResponseAttributes();
 
-        $this->withNextMiddlewareResponse(fn (Response $response) => $response->withErrors([
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withErrors([
             'foo' => ['bar', 'baz'],
         ], 'name1'));
 
@@ -71,7 +71,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         $middleware = new SaveResponseAttributes();
 
-        $this->withNextMiddlewareResponse(fn (Response $response) => $response->withFlashMessages([
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withFlashMessages([
             'foo' => 'bar',
             'baz' => 'biz',
         ]));
@@ -90,7 +90,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         $middleware = new SaveResponseAttributes();
 
-        $this->withNextMiddlewareResponse(fn (Response $response) => $response->withOldInput([
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withOldInput([
             'foo' => 'bar',
             'baz' => 'biz',
         ]));

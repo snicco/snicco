@@ -40,7 +40,7 @@ final class FileRouteCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->test_cache_file));
 
-        $res = $cache->get(fn () => [
+        $res = $cache->get(fn (): array => [
             'route_collection' => [
                 'foo' => 'bar',
             ],
@@ -68,7 +68,7 @@ final class FileRouteCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->test_cache_file));
 
-        $cache->get(fn () => [
+        $cache->get(fn (): array => [
             'route_collection' => [
                 'foo' => 'bar',
             ],

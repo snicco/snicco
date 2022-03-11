@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\MustMatchRoute\Tests;
 
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Snicco\Middleware\MustMatchRoute\MustMatchRoute;
@@ -18,7 +20,7 @@ final class MustMatchRouteTest extends MiddlewareTestCase
      */
     public function test_exception_for_delegated_response(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->delegate());
+        $this->withNextMiddlewareResponse(fn (): DelegatedResponse => $this->responseFactory()->delegate());
 
         $middleware = new MustMatchRoute();
 
@@ -35,7 +37,7 @@ final class MustMatchRouteTest extends MiddlewareTestCase
      */
     public function test_no_exception_for_handled_response(): void
     {
-        $this->withNextMiddlewareResponse(fn () => $this->responseFactory()->html('foo'));
+        $this->withNextMiddlewareResponse(fn (): Response => $this->responseFactory()->html('foo'));
 
         $middleware = new MustMatchRoute();
 

@@ -37,7 +37,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = new TestView('foo_view');
 
-        $collection->addComposer('foo_view', fn (View $view) => $view->with([
+        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -57,7 +57,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = new TestView('foo_view');
 
-        $collection->addComposer('bar_view', fn (View $view) => $view->with([
+        $collection->addComposer('bar_view', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -75,11 +75,11 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = new TestView('foo_view');
 
-        $collection->addComposer('foo_view', fn (View $view) => $view->with([
+        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
-        $collection->addComposer('foo_view', fn (View $view) => $view->with([
+        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
             'bar' => 'baz',
         ]));
 
@@ -98,7 +98,7 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $collection->addComposer(['view_one', 'view_two'], fn (View $view) => $view->with([
+        $collection->addComposer(['view_one', 'view_two'], fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
@@ -125,7 +125,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = new TestView('foo_view');
 
-        $collection->addComposer('foo_view', fn (View $view) => $view->with([
+        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -207,7 +207,7 @@ final class ViewComposerCollectionTest extends TestCase
         $view = new TestView('foo_view');
         $view = $view->with('foo', 'bar');
 
-        $collection->addComposer('foo_view', fn (View $view) => $view->with([
+        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -228,7 +228,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = new TestView('foo_view');
 
-        $collection->addComposer('foo_view', fn (View $view) => $view->with([
+        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -246,7 +246,7 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $collection->addComposer('foo*', fn (View $view) => $view->with([
+        $collection->addComposer('foo*', fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
@@ -279,7 +279,7 @@ final class ViewComposerCollectionTest extends TestCase
     public function global_context_can_be_a_closure(): void
     {
         $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
-        $global_context->add('foo', fn () => 'bar');
+        $global_context->add('foo', fn (): string => 'bar');
 
         $view = new TestView('foo_view');
 

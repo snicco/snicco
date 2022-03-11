@@ -29,7 +29,7 @@ final class BetterWPDBBundle implements Bundle
         $kernel->container()
             ->shared(
                 BetterWPDB::class,
-                fn () => BetterWPDB::fromWpdb($kernel->container()[QueryLogger::class] ?? null)
+                fn (): BetterWPDB => BetterWPDB::fromWpdb($kernel->container()[QueryLogger::class] ?? null)
             );
     }
 

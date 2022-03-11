@@ -39,7 +39,7 @@ final class DefaultHeadersTest extends MiddlewareTestCase
      */
     public function header_values_are_not_overwritten(): void
     {
-        $this->withNextMiddlewareResponse(fn (Response $response) => $response->withHeader('foo', 'bar'));
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withHeader('foo', 'bar'));
 
         $response = $this->runMiddleware(new DefaultHeaders([
             'foo' => 'baz',

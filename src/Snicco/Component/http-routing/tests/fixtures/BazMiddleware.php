@@ -12,7 +12,7 @@ class BazMiddleware extends Middleware
 {
     private string $baz;
 
-    public function __construct($baz = 'baz_middleware')
+    public function __construct(string $baz = 'baz_middleware')
     {
         $this->baz = $baz;
     }

@@ -7,7 +7,7 @@ use Snicco\Bundle\Testing\Tests\wordpress\fixtures\MiddlewareThatAlwaysThrowsExc
 use Snicco\Bundle\Testing\Tests\wordpress\fixtures\WebTestCaseController;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 
-return function (WebRoutingConfigurator $router) {
+return function (WebRoutingConfigurator $router): void {
     $router->get('foo', '/foo', WebTestCaseController::class);
     $router->get('query-params-as-json', '/query-params-as-json', [WebTestCaseController::class, 'queryParams']);
     $router->get('cookies-as-json', '/cookies-as-json', [WebTestCaseController::class, 'cookiesAsJson']);

@@ -59,7 +59,10 @@ final class BetterWPCacheBundle implements Bundle
         $kernel->container()
             ->shared(
                 TaggableCacheItemPoolInterface::class,
-                fn () => CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class))
+                fn (): TaggableCacheItemPoolInterface => CacheFactory::taggable(
+                    $kernel->container()
+                        ->make(CacheItemPoolInterface::class)
+                )
             );
     }
 

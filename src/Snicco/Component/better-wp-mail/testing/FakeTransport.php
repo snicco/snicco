@@ -70,7 +70,7 @@ final class FakeTransport implements Transport
 
     public function assertNotSent(string $email_class): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($email_class, fn () => true));
+        $times = count($this->sentEmailsThatMatchCondition($email_class, fn (): bool => true));
 
         PHPUnit::assertSame(
             0,
@@ -81,7 +81,7 @@ final class FakeTransport implements Transport
 
     public function assertSentTimes(string $mailable_class, int $expected): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn () => true));
+        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn (): bool => true));
 
         PHPUnit::assertSame(
             $expected,

@@ -23,7 +23,7 @@ final class Verbosity implements DisplayerFilter
     {
         return array_filter(
             $displayers,
-            fn (ExceptionDisplayer $d) => $this->show_verbose_filters || ! $d->isVerbose()
+            fn (ExceptionDisplayer $d): bool => $this->show_verbose_filters || ! $d->isVerbose()
         );
     }
 }

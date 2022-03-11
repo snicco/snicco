@@ -10,8 +10,6 @@ use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $configurator): void {
@@ -26,6 +24,7 @@ return static function (ContainerConfigurator $configurator): void {
     $parameters->set(Option::PARALLEL, true);
     $parameters->set(Option::PHP_VERSION_FEATURES, '7.4');
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
+    $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
     $parameters->set(Option::SKIP, [
         StringifyStrNeedlesRector::class => [
             __DIR__ . '/src/Snicco/Bundle/http-routing/src/StdErrLogger.php',
@@ -53,8 +52,7 @@ return static function (ContainerConfigurator $configurator): void {
     // Maybe revisit later.
     $services->remove(AddArrayReturnDocTypeRector::class);
 
-//    $configurator->import(SetList::TYPE_DECLARATION);
-//    $configurator->import(SetList::TYPE_DECLARATION_STRICT);
+    $configurator->import(SetList::TYPE_DECLARATION_STRICT);
 //    $configurator->import(SetList::EARLY_RETURN);
 //
 //    // Trimmed Privatisation list
