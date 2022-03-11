@@ -36,10 +36,7 @@ final class AuthenticateTest extends MiddlewareTestCase
         $middleware = new Authenticate(new WPAPI(false));
 
         try {
-            $this->runMiddleware(
-                $middleware,
-                $request
-            );
+            $this->runMiddleware($middleware, $request);
             $this->fail('An exception should have been thrown');
         } catch (HttpException $e) {
             $this->assertSame(401, $e->statusCode());

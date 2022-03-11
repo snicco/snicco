@@ -18,13 +18,10 @@ final class RoutingResultTest extends TestCase
      */
     public function captured_segments_are_returned_as_is(): void
     {
-        $result = RoutingResult::match(
-            $route = $this->route(),
-            $arr = [
-                'foo' => 'foo%20bar',
-                'bar' => '1',
-            ]
-        );
+        $result = RoutingResult::match($route = $this->route(), $arr = [
+            'foo' => 'foo%20bar',
+            'bar' => '1',
+        ]);
 
         $this->assertSame($route, $result->route());
         $this->assertSame($arr, $result->capturedSegments());

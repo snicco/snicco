@@ -29,9 +29,7 @@ final class EventDispatcherWithContainerTest extends TestCase
 
         $pimple[Dependency::class] = new Dependency('FOOBAR');
 
-        $event_dispatcher = new BaseEventDispatcher(
-            new PsrListenerFactory($container)
-        );
+        $event_dispatcher = new BaseEventDispatcher(new PsrListenerFactory($container));
 
         $event = new stdClass();
         $event->value = 'foo';

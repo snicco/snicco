@@ -52,11 +52,7 @@ final class JsonToArray extends Payload
             return $res;
         } catch (Throwable $e) {
             throw new CantParseRequestBody(
-                sprintf(
-                    "Cant decode json body [%s].\n[%s]",
-                    $json,
-                    $e->getMessage()
-                ),
+                sprintf("Cant decode json body [%s].\n[%s]", $json, $e->getMessage()),
                 $e
             );
         }

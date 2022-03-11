@@ -47,7 +47,8 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($request);
 
-        $response->assertStatus(301)->assertLocation('/bar?baz=biz');
+        $response->assertStatus(301)
+            ->assertLocation('/bar?baz=biz');
     }
 
     /**
@@ -65,7 +66,8 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($request);
 
-        $response->assertStatus(307)->assertLocation('/bar?baz=biz');
+        $response->assertStatus(307)
+            ->assertLocation('/bar?baz=biz');
     }
 
     /**
@@ -127,6 +129,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('base/biz');
         $response = $this->runNewPipeline($request);
-        $response->assertOk()->assertSeeText(RoutingTestController::static);
+        $response->assertOk()
+            ->assertSeeText(RoutingTestController::static);
     }
 }

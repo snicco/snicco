@@ -70,9 +70,6 @@ final class SessionId
         $selector = Base64UrlSafe::encode(random_bytes(16));
         $validator = Base64UrlSafe::encode(random_bytes(16));
 
-        return [
-            $selector,
-            $validator,
-        ];
+        return [$selector, $validator];
     }
 }

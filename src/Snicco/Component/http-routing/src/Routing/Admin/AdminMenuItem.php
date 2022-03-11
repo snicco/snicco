@@ -70,10 +70,7 @@ final class AdminMenuItem
         $this->position = $position;
 
         if (null !== $parent_slug) {
-            Assert::stringNotEmpty(
-                $parent_slug,
-                '$parent_slug has to be null or non empty string.'
-            );
+            Assert::stringNotEmpty($parent_slug, '$parent_slug has to be null or non empty string.');
         }
         $this->parent_slug = $parent_slug;
     }

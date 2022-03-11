@@ -40,19 +40,15 @@ final class Redirect extends Middleware
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (isset($this->redirects[$request->path()])) {
-            return $this->responseFactory()->redirect(
-                $this->redirects[$request->path()]['to'],
-                $this->redirects[$request->path()]['status']
-            );
+            return $this->responseFactory()
+                ->redirect($this->redirects[$request->path()]['to'], $this->redirects[$request->path()]['status']);
         }
 
         $path_qs = $request->path() . '?' . $request->queryString();
 
         if (isset($this->redirects[$path_qs])) {
-            return $this->responseFactory()->redirect(
-                $this->redirects[$path_qs]['to'],
-                $this->redirects[$path_qs]['status']
-            );
+            return $this->responseFactory()
+                ->redirect($this->redirects[$path_qs]['to'], $this->redirects[$path_qs]['status']);
         }
 
         return $next($request);
@@ -69,9 +65,7 @@ final class Redirect extends Middleware
         $_r = [];
         foreach ($redirects as $status => $redirect) {
             if (! in_array($status, $arr, true)) {
-                throw new InvalidArgumentException(
-                    sprintf('$status must be one of [%s].', implode(',', $arr))
-                );
+                throw new InvalidArgumentException(sprintf('$status must be one of [%s].', implode(',', $arr)));
             }
 
             foreach ($redirect as $from => $to) {

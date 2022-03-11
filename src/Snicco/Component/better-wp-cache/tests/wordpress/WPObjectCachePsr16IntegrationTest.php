@@ -25,8 +25,8 @@ use function sprintf;
 
 /**
  * The test methods in this class are copied from
- * https://github.com/php-cache/integration-tests/blob/master/src/SimpleCacheTest.php. We can't
- * extend the provided test case because we already need to extend WPTestCase.
+ * https://github.com/php-cache/integration-tests/blob/master/src/SimpleCacheTest.php. We can't extend the provided test
+ * case because we already need to extend WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
  *
@@ -61,12 +61,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
      */
     public static function invalidKeys()
     {
-        return array_merge(
-            self::invalidArrayKeys(),
-            [
-                [2],
-            ]
-        );
+        return array_merge(self::invalidArrayKeys(), [[2]]);
     }
 
     /**
@@ -123,10 +118,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
      */
     public static function validKeys()
     {
-        return [
-            ['AbC19_.'],
-            ['1234567890123456789012345678901234567890123456789012345678901234'],
-        ];
+        return [['AbC19_.'], ['1234567890123456789012345678901234567890123456789012345678901234']];
     }
 
     /**
@@ -214,11 +206,10 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
     }
 
     /**
-     * Advance time perceived by the cache for the purposes of testing TTL.
-     * The default implementation sleeps for the specified duration,
-     * but subclasses are encouraged to override this,
-     * adjusting a mocked time possibly set up in {@link createSimpleCache()},
-     * to speed up the tests.
+     * Advance time perceived by the cache for the purposes of testing TTL. The default implementation sleeps for the
+     * specified duration, but subclasses are encouraged to override this, adjusting a mocked time possibly set up in.
+     *
+     * {@link createSimpleCache()}, to speed up the tests.
      *
      * @param int $seconds
      */
@@ -271,10 +262,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->assertTrue(
-            $this->cache->delete('key'),
-            'Deleting a value that does not exist should return true'
-        );
+        $this->assertTrue($this->cache->delete('key'), 'Deleting a value that does not exist should return true');
         $this->cache->set('key', 'value');
         $this->assertTrue($this->cache->delete('key'), 'Delete must return true on success');
         $this->assertNull($this->cache->get('key'), 'Values must be deleted on delete()');
@@ -469,10 +457,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->assertTrue(
-            $this->cache->deleteMultiple([]),
-            'Deleting a empty array should return true'
-        );
+        $this->assertTrue($this->cache->deleteMultiple([]), 'Deleting a empty array should return true');
         $this->assertTrue(
             $this->cache->deleteMultiple(['key']),
             'Deleting a value that does not exist should return true'
@@ -480,10 +465,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
         $this->cache->set('key0', 'value0');
         $this->cache->set('key1', 'value1');
-        $this->assertTrue(
-            $this->cache->deleteMultiple(['key0', 'key1']),
-            'Delete must return true on success'
-        );
+        $this->assertTrue($this->cache->deleteMultiple(['key0', 'key1']), 'Delete must return true on success');
         $this->assertNull($this->cache->get('key0'), 'Values must be deleted on deleteMultiple()');
         $this->assertNull($this->cache->get('key1'), 'Values must be deleted on deleteMultiple()');
     }
@@ -502,10 +484,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             yield 1 => 'key1';
         };
         $this->cache->set('key0', 'value0');
-        $this->assertTrue(
-            $this->cache->deleteMultiple($gen()),
-            'Deleting a generator should return true'
-        );
+        $this->assertTrue($this->cache->deleteMultiple($gen()), 'Deleting a generator should return true');
 
         $this->assertNull($this->cache->get('key0'), 'Values must be deleted on deleteMultiple()');
         $this->assertNull($this->cache->get('key1'), 'Values must be deleted on deleteMultiple()');
@@ -762,10 +741,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         $this->cache->set('key', 5);
         $this->cache->set('key', null);
 
-        $this->assertNull(
-            $this->cache->get('key'),
-            'Setting null to a key must overwrite previous value'
-        );
+        $this->assertNull($this->cache->get('key'), 'Setting null to a key must overwrite previous value');
     }
 
     /**
@@ -779,14 +755,8 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
         $this->cache->set('key', '5');
         $result = $this->cache->get('key');
-        $this->assertTrue(
-            '5' === $result,
-            'Wrong data type. If we store a string we must get an string back.'
-        );
-        $this->assertTrue(
-            is_string($result),
-            'Wrong data type. If we store a string we must get an string back.'
-        );
+        $this->assertTrue('5' === $result, 'Wrong data type. If we store a string we must get an string back.');
+        $this->assertTrue(is_string($result), 'Wrong data type. If we store a string we must get an string back.');
     }
 
     /**
@@ -800,14 +770,8 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
         $this->cache->set('key', 5);
         $result = $this->cache->get('key');
-        $this->assertTrue(
-            5 === $result,
-            'Wrong data type. If we store an int we must get an int back.'
-        );
-        $this->assertTrue(
-            is_int($result),
-            'Wrong data type. If we store an int we must get an int back.'
-        );
+        $this->assertTrue(5 === $result, 'Wrong data type. If we store an int we must get an int back.');
+        $this->assertTrue(is_int($result), 'Wrong data type. If we store an int we must get an int back.');
     }
 
     /**
@@ -822,10 +786,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         $float = 1.23456789;
         $this->cache->set('key', $float);
         $result = $this->cache->get('key');
-        $this->assertTrue(
-            is_float($result),
-            'Wrong data type. If we store float we must get an float back.'
-        );
+        $this->assertTrue(is_float($result), 'Wrong data type. If we store float we must get an float back.');
         $this->assertEquals($float, $result);
     }
 
@@ -840,15 +801,9 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
         $this->cache->set('key', false);
         $result = $this->cache->get('key');
-        $this->assertTrue(
-            is_bool($result),
-            'Wrong data type. If we store boolean we must get an boolean back.'
-        );
+        $this->assertTrue(is_bool($result), 'Wrong data type. If we store boolean we must get an boolean back.');
         $this->assertFalse($result);
-        $this->assertTrue(
-            $this->cache->has('key'),
-            'has() should return true when true are stored. '
-        );
+        $this->assertTrue($this->cache->has('key'), 'has() should return true when true are stored. ');
     }
 
     /**
@@ -866,10 +821,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         ];
         $this->cache->set('key', $array);
         $result = $this->cache->get('key');
-        $this->assertTrue(
-            is_array($result),
-            'Wrong data type. If we store array we must get an array back.'
-        );
+        $this->assertTrue(is_array($result), 'Wrong data type. If we store array we must get an array back.');
         $this->assertEquals($array, $result);
     }
 
@@ -886,10 +838,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         $object->a = 'foo';
         $this->cache->set('key', $object);
         $result = $this->cache->get('key');
-        $this->assertTrue(
-            is_object($result),
-            'Wrong data type. If we store object we must get an object back.'
-        );
+        $this->assertTrue(is_object($result), 'Wrong data type. If we store object we must get an object back.');
         $this->assertEquals($object, $result);
     }
 
@@ -1026,10 +975,6 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
         $obj->foo = 'changed';
 
         $cacheObject = $this->cache->get('key');
-        $this->assertEquals(
-            'value',
-            $cacheObject->foo,
-            'Object in cache should not have their values changed.'
-        );
+        $this->assertEquals('value', $cacheObject->foo, 'Object in cache should not have their values changed.');
     }
 }

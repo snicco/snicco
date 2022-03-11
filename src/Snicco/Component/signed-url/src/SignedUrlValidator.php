@@ -48,9 +48,7 @@ final class SignedUrlValidator
      */
     public function validate(string $request_target, string $request_context = ''): void
     {
-        [$path, $query_string, $query_as_array] = $this->parse(
-            $request_target
-        );
+        [$path, $query_string, $query_as_array] = $this->parse($request_target);
 
         if (! isset($query_as_array[SignedUrl::SIGNATURE_KEY])) {
             throw new InvalidSignature("Missing signature parameter for path [{$path}].");
@@ -74,9 +72,7 @@ final class SignedUrlValidator
             '?' .
             $this->queryStringWithoutSignature($query_string);
 
-        $expected_signature = Base64UrlSafe::encode(
-            $this->hmac->create($plaint_text_signature)
-        );
+        $expected_signature = Base64UrlSafe::encode($this->hmac->create($plaint_text_signature));
 
         $this->validateSignature($expected_signature, $provided_signature, $path);
         $this->validateExpiration((int) ($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
@@ -100,11 +96,7 @@ final class SignedUrlValidator
 
     private function queryStringWithoutSignature(string $query_string): string
     {
-        $qs = preg_replace(
-            '/(^|&)' . SignedUrl::SIGNATURE_KEY . '=[^&]+/',
-            '',
-            $query_string
-        );
+        $qs = preg_replace('/(^|&)' . SignedUrl::SIGNATURE_KEY . '=[^&]+/', '', $query_string);
 
         if (null === $qs) {
             // @codeCoverageIgnoreStart
@@ -140,11 +132,7 @@ final class SignedUrlValidator
         try {
             $this->storage->consume($identifier);
         } catch (BadIdentifier $e) {
-            throw new SignedUrlUsageExceeded(
-                "Signed url usages exceeded for path [{$path}].",
-                $e->getCode(),
-                $e
-            );
+            throw new SignedUrlUsageExceeded("Signed url usages exceeded for path [{$path}].", $e->getCode(), $e);
         }
     }
 }

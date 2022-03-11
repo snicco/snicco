@@ -23,8 +23,6 @@ final class BadRouteParameter extends InvalidArgumentException
         string $required_segment,
         string $route_name
     ): InvalidArgumentException {
-        return new self(
-            "Required parameter [{$required_segment}] is missing for route [{$route_name}]."
-        );
+        return new self("Required parameter [{$required_segment}] is missing for route [{$route_name}].");
     }
 }

@@ -43,9 +43,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
         $factory = new NewableInstanceViewComposerFactory();
 
         $this->expectException(BadViewComposer::class);
-        $this->expectExceptionMessage(
-            'The view composer class [ComplexComposer] is not a newable.'
-        );
+        $this->expectExceptionMessage('The view composer class [ComplexComposer] is not a newable.');
 
         $factory->create('ComplexComposer');
     }

@@ -55,10 +55,8 @@ final class BundleTest
     public function withoutHttpErrorHandling(Kernel $kernel): void
     {
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(
-                HttpErrorHandler::class,
-                new TestErrorHandler()
-            );
+            $kernel->container()
+                ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
     }
 

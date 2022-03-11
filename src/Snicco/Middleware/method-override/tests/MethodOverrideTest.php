@@ -40,9 +40,10 @@ final class MethodOverrideTest extends MiddlewareTestCase
      */
     public function the_method_cant_be_overwritten_for_anything_but_post_requests(): void
     {
-        $request = $this->frontendRequest('/foo')->withParsedBody([
-            '_method' => 'PUT',
-        ]);
+        $request = $this->frontendRequest('/foo')
+            ->withParsedBody([
+                '_method' => 'PUT',
+            ]);
 
         $response = $this->runMiddleware($this->middleware, $request);
 

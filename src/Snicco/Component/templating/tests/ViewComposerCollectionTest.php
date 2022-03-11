@@ -201,11 +201,7 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            sprintf(
-                'Class [%s] does not implement [%s]',
-                ComposerWithoutInterface::class,
-                ViewComposer::class
-            )
+            sprintf('Class [%s] does not implement [%s]', ComposerWithoutInterface::class, ViewComposer::class)
         );
 
         $collection = $this->newViewComposerCollection();

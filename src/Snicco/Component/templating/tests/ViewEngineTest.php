@@ -53,10 +53,7 @@ final class ViewEngineTest extends TestCase
             $this->global_view_context
         );
 
-        $this->php_view_factory = new PHPViewFactory(
-            new PHPViewFinder([$this->view_dir]),
-            $this->composers
-        );
+        $this->php_view_factory = new PHPViewFactory(new PHPViewFinder([$this->view_dir]), $this->composers);
 
         $this->view_engine = new ViewEngine($this->php_view_factory);
     }
@@ -354,10 +351,7 @@ final class ViewEngineTest extends TestCase
         $engine = new ViewEngine(
             new PHPViewFactory(
                 new PHPViewFinder(
-                    [
-                        __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view2',
-                        $this->view_dir,
-                    ]
+                    [__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view2', $this->view_dir]
                 ),
                 $this->composers
             )
@@ -372,10 +366,7 @@ final class ViewEngineTest extends TestCase
      */
     public function extended_parents_view_are_also_passed_through_view_composers(): void
     {
-        $this->composers->addComposer(
-            'post-layout',
-            fn (View $view) => $view->with('sidebar', 'hi')
-        );
+        $this->composers->addComposer('post-layout', fn (View $view) => $view->with('sidebar', 'hi'));
 
         $view = $this->view_engine->make('partials.post-title');
         $view = $view->with('post_title', 'Foobar');

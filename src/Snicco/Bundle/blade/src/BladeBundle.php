@@ -37,16 +37,19 @@ final class BladeBundle implements Bundle
 
         $container = $kernel->container();
         $container->shared(BladeViewFactory::class, function () use ($kernel) {
-            $composers = $kernel->container()->make(ViewComposerCollection::class);
+            $composers = $kernel->container()
+                ->make(ViewComposerCollection::class);
 
-            $dir = $kernel->directories()->cacheDir() . '/blade';
+            $dir = $kernel->directories()
+                ->cacheDir() . '/blade';
             if (! is_dir($dir)) {
                 mkdir($dir, 0775);
             }
 
             $blade = new BladeStandalone(
                 $dir,
-                $kernel->config()->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES),
+                $kernel->config()
+                    ->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES),
                 $composers
             );
 

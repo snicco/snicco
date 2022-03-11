@@ -40,10 +40,7 @@ final class BetterWPHooksBundle implements Bundle
 
         $container->shared(EventDispatcher::class, function () use ($kernel, $container, $hook_api) {
             $listener_factory = new PsrListenerFactory($container);
-            $dispatcher = new WPEventDispatcher(
-                new BaseEventDispatcher($listener_factory),
-                $hook_api
-            );
+            $dispatcher = new WPEventDispatcher(new BaseEventDispatcher($listener_factory), $hook_api);
             if ($kernel->env()->isTesting() && class_exists(TestableEventDispatcher::class)) {
                 $dispatcher = new TestableEventDispatcher($dispatcher);
             }
@@ -60,10 +57,7 @@ final class BetterWPHooksBundle implements Bundle
 
         $container->shared(
             EventMapper::class,
-            fn () => new EventMapper(
-                $container->make(EventDispatcher::class),
-                $hook_api
-            )
+            fn () => new EventMapper($container->make(EventDispatcher::class), $hook_api)
         );
     }
 

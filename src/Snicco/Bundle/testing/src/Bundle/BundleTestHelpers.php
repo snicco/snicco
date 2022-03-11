@@ -51,7 +51,8 @@ trait BundleTestHelpers
     {
         try {
             /** @var T $resolved */
-            $resolved = $kernel->container()->get($class);
+            $resolved = $kernel->container()
+                ->get($class);
         } catch (ContainerExceptionInterface $e) {
             PHPUnit::fail("Class [{$class}] could not be resolved.\nMessage: " . $e->getMessage());
         }
@@ -61,7 +62,8 @@ trait BundleTestHelpers
     final protected function assertNotBound(string $identifier, Kernel $kernel): void
     {
         try {
-            $kernel->container()->get($identifier);
+            $kernel->container()
+                ->get($identifier);
             PHPUnit::fail("Identifier [{$identifier}] was bound in the container.");
         } catch (NotFoundExceptionInterface $e) {
             PHPUnit::assertStringContainsString($identifier, $e->getMessage());

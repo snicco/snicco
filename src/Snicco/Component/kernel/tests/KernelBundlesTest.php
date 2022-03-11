@@ -193,9 +193,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleWithCustomEnv::class,
-                    ],
+                    Environment::ALL => [BundleWithCustomEnv::class],
                 ],
             ])
         );
@@ -213,9 +211,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleWithCustomEnv::class,
-                    ],
+                    Environment::ALL => [BundleWithCustomEnv::class],
                 ],
             ])
         );
@@ -226,11 +222,13 @@ final class KernelBundlesTest extends TestCase
         $app2->boot();
 
         $this->assertTrue(
-            $app2->container()[BundleWithCustomEnv::class]->booted,
+            $app2->container()[BundleWithCustomEnv::class]
+                ->booted,
             'bundle was not booted when it should be.'
         );
         $this->assertTrue(
-            $app2->container()[BundleWithCustomEnv::class]->registered,
+            $app2->container()[BundleWithCustomEnv::class]
+                ->registered,
             'bundle was not registered when it should be.'
         );
     }
@@ -254,10 +252,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleDuplicate1::class,
-                        BundleDuplicate2::class,
-                    ],
+                    Environment::ALL => [BundleDuplicate1::class, BundleDuplicate2::class],
                 ],
             ])
         );
@@ -276,9 +271,7 @@ final class KernelBundlesTest extends TestCase
             Directories::fromDefaults($this->base_dir),
             new FixedConfigCache([
                 'bundles' => [
-                    Environment::ALL => [
-                        BundleThatConfigures::class,
-                    ],
+                    Environment::ALL => [BundleThatConfigures::class],
                 ],
             ])
         );
@@ -287,7 +280,8 @@ final class KernelBundlesTest extends TestCase
 
         // configure is not called.
         try {
-            $app->config()->get('app.configured_value');
+            $app->config()
+                ->get('app.configured_value');
             $this->fail('Bundle::configure should not be called for a cached configuration.');
         } catch (MissingConfigKey $e) {
             $this->assertStringContainsString('app.configured_value', $e->getMessage());
@@ -328,7 +322,8 @@ class BundleThatConfigures implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()[self::class]->booted = true;
+        $kernel->container()[self::class]
+            ->booted = true;
     }
 
     public function shouldRun(Environment $env): bool
@@ -356,7 +351,8 @@ class BundleWithCustomEnv implements Bundle
 
     public function bootstrap(Kernel $kernel): void
     {
-        $kernel->container()[self::class]->booted = true;
+        $kernel->container()[self::class]
+            ->booted = true;
     }
 
     public function alias(): string

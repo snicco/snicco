@@ -108,13 +108,7 @@ final class Generator implements UrlGenerator
         $extra = array_diff_key($arguments, array_flip($route->getSegmentNames()));
 
         // Replace required segments
-        $route_path = $this->replaceSegments(
-            $required_segments,
-            $requirements,
-            $arguments,
-            $route_path,
-            $name,
-        );
+        $route_path = $this->replaceSegments($required_segments, $requirements, $arguments, $route_path, $name,);
 
         // Replace optional segments
         $route_path = $this->replaceSegments(
@@ -206,11 +200,7 @@ final class Generator implements UrlGenerator
             $fragment = Str::substr($path_with_query_and_fragment, $fragment_pos + 1);
         }
 
-        return [
-            $path,
-            $query_string,
-            $fragment,
-        ];
+        return [$path, $query_string, $fragment];
     }
 
     private function formatPath(string $path): string
@@ -293,10 +283,7 @@ final class Generator implements UrlGenerator
             $has_value = array_key_exists($segment, $provided_arguments);
 
             if (! $has_value && ! $optional) {
-                throw BadRouteParameter::becauseRequiredParameterIsMissing(
-                    $segment,
-                    $name
-                );
+                throw BadRouteParameter::becauseRequiredParameterIsMissing($segment, $name);
             }
 
             $replacement = $provided_arguments[$segment] ?? '';
@@ -305,12 +292,7 @@ final class Generator implements UrlGenerator
                 $pattern = $requirements[$segment];
 
                 if (! preg_match('/^' . $pattern . '$/', $replacement)) {
-                    throw BadRouteParameter::becauseRegexDoesntMatch(
-                        $replacement,
-                        $segment,
-                        $pattern,
-                        $name
-                    );
+                    throw BadRouteParameter::becauseRegexDoesntMatch($replacement, $segment, $pattern, $name);
                 }
             }
 
@@ -333,10 +315,7 @@ final class Generator implements UrlGenerator
         return array_map(function ($value) {
             if (! is_string($value) && ! is_int($value)) {
                 throw new InvalidArgumentException(
-                    sprintf(
-                        'Replacements must be string or integer. Got [%s].',
-                        gettype($value)
-                    )
+                    sprintf('Replacements must be string or integer. Got [%s].', gettype($value))
                 );
             }
 

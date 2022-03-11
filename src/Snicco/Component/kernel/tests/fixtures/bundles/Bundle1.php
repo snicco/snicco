@@ -31,9 +31,7 @@ class Bundle1 implements Bundle
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         if (! $kernel->usesBundle('bundle2')) {
-            throw new RuntimeException(
-                'The knowledge about bundle2 should be available in configure()'
-            );
+            throw new RuntimeException('The knowledge about bundle2 should be available in configure()');
         }
 
         if ($config->has('bundle2.configured')) {

@@ -61,7 +61,8 @@ final class FakeTransportTest extends WPTestCase
         wp_mail('calvin@web.de', 'subject', 'message');
 
         $fake_transport->assertSent(WPMail::class, function (WPMail $WPMail): bool {
-            return $WPMail->from()->has('wordpress@foobar.com');
+            return $WPMail->from()
+                ->has('wordpress@foobar.com');
         });
     }
 

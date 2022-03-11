@@ -55,25 +55,19 @@ final class RoutingFunctionalityTest extends TestCase
      */
     public function routes_are_loaded_at_runtime_in_non_prod_staging_environment(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/frontend');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -86,25 +80,19 @@ final class RoutingFunctionalityTest extends TestCase
      */
     public function routes_are_cached_in_production(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
 
         $kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/frontend');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -119,25 +107,19 @@ final class RoutingFunctionalityTest extends TestCase
     public function redirect_routes_work(): void
     {
         $container = new PimpleContainerAdapter();
-        $kernel = new Kernel(
-            $container,
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($container, Environment::dev(), $this->directories);
 
         $kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/foo');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -149,25 +131,19 @@ final class RoutingFunctionalityTest extends TestCase
      */
     public function delegated_responses_work(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/delegate');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -179,26 +155,19 @@ final class RoutingFunctionalityTest extends TestCase
      */
     public function view_responses_are_transformed(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/view');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                SimpleTemplating::class,
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
 
@@ -212,26 +181,19 @@ final class RoutingFunctionalityTest extends TestCase
      */
     public function non_view_responses_are_not_affected(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
 
         $kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/foo');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                SimpleTemplating::class,
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('no routing performed');
             });
 

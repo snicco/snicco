@@ -102,9 +102,7 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         }
 
         if ($response instanceof Responsable) {
-            return $this->toResponse(
-                $response->toResponsable()
-            );
+            return $this->toResponse($response->toResponsable());
         }
 
         throw new InvalidArgumentException('Invalid response returned by a route.');
@@ -136,9 +134,8 @@ final class ResponseFactory implements Psr17ResponseFactory, Psr17StreamFactory
         /** @var string $stream */
         $stream = json_encode($data, $options | JSON_THROW_ON_ERROR, $depth);
 
-        return $this->createResponse($status_code)->withJson(
-            $this->createStream($stream)
-        );
+        return $this->createResponse($status_code)
+            ->withJson($this->createStream($stream));
     }
 
     public function redirect(string $location, int $status_code = 302): RedirectResponse

@@ -163,17 +163,9 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $closure = require $file;
 
-        Assert::isInstanceOf(
-            $closure,
-            Closure::class,
-            "Route file [{$file}] did not return a closure."
-        );
+        Assert::isInstanceOf($closure, Closure::class, "Route file [{$file}] did not return a closure.");
 
-        $this->validateClosureTypeHint(
-            $closure,
-            $file,
-            $is_admin_file
-        );
+        $this->validateClosureTypeHint($closure, $file, $is_admin_file);
 
         return $closure;
     }
@@ -222,10 +214,7 @@ final class PHPFileRouteLoader implements RouteLoader
         foreach ($attributes as $key => $value) {
             switch ($key) {
                 case RoutingConfigurator::MIDDLEWARE_KEY:
-                    Assert::isArray(
-                        $value,
-                        'Middleware for route-loading options has to be an array of strings.'
-                    );
+                    Assert::isArray($value, 'Middleware for route-loading options has to be an array of strings.');
                     Assert::allString(
                         $value,
                         'Middleware for route-loading options has to be an array of strings.'
@@ -247,20 +236,14 @@ final class PHPFileRouteLoader implements RouteLoader
                 case RoutingConfigurator::NAMESPACE_KEY:
                     Assert::stringNotEmpty(
                         $value,
-                        sprintf(
-                            '[%s] has to be a non-empty string.',
-                            RoutingConfigurator::NAMESPACE_KEY
-                        )
+                        sprintf('[%s] has to be a non-empty string.', RoutingConfigurator::NAMESPACE_KEY)
                     );
 
                     break;
                 case RoutingConfigurator::NAME_KEY:
                     Assert::stringNotEmpty(
                         $value,
-                        sprintf(
-                            '[%s] has to be a non-empty string.',
-                            RoutingConfigurator::NAME_KEY
-                        )
+                        sprintf('[%s] has to be a non-empty string.', RoutingConfigurator::NAME_KEY)
                     );
 
                     break;
@@ -287,7 +270,8 @@ final class PHPFileRouteLoader implements RouteLoader
             throw InvalidRouteClosureReturned::becauseTheFirstParameterIsNotTypeHinted($filepath);
         }
 
-        $name = $param->getType()->getName();
+        $name = $param->getType()
+            ->getName();
 
         Assert::oneOf(
             $name,

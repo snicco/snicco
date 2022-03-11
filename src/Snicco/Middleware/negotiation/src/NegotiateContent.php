@@ -53,10 +53,7 @@ final class NegotiateContent extends Middleware
         $response = $content_type->process($request, $this->next($language, $next));
 
         if (406 === $response->getStatusCode()) {
-            throw new HttpException(
-                406,
-                "Failed content negotiation for path [{$request->path()}]."
-            );
+            throw new HttpException(406, "Failed content negotiation for path [{$request->path()}].");
         }
 
         return $response;

@@ -39,9 +39,7 @@ final class SessionStorage implements SignedUrlStorage
         // @codeCoverageIgnoreEnd
         } else {
             // @codeCoverageIgnoreStart
-            throw new InvalidArgumentException(
-                '$storage must be an array or instance of ArrayAccess'
-            );
+            throw new InvalidArgumentException('$storage must be an array or instance of ArrayAccess');
             // @codeCoverageIgnoreEnd
         }
         $this->clock = $clock ?? SystemClock::fromUTC();

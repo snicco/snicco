@@ -141,9 +141,10 @@ abstract class HttpRunnerTestCase extends TestCase
             $this->routing = $this->newRoutingFacade();
         }
         $pipeline = $this->newPipeline();
-        $response = $pipeline->send($request)->then(function () {
-            throw new RuntimeException('Middleware pipeline exhausted.');
-        });
+        $response = $pipeline->send($request)
+            ->then(function () {
+                throw new RuntimeException('Middleware pipeline exhausted.');
+            });
 
         return new AssertableResponse($response);
     }
@@ -296,10 +297,7 @@ abstract class HttpRunnerTestCase extends TestCase
 
         $this->pimple[RouteRunner::class] = function () use ($error_handler): RouteRunner {
             return new RouteRunner(
-                new MiddlewarePipeline(
-                    $this->psr_container,
-                    $error_handler,
-                ),
+                new MiddlewarePipeline($this->psr_container, $error_handler,),
                 new MiddlewareResolver(
                     $this->always_run,
                     $this->middleware_aliases,

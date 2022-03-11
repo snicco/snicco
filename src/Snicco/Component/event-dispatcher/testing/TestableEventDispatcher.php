@@ -137,10 +137,7 @@ final class TestableEventDispatcher implements EventDispatcher
 
         if ($condition instanceof Closure) {
             PHPUnit::assertNotEmpty(
-                $this->getDispatched(
-                    $event_name,
-                    $condition
-                ),
+                $this->getDispatched($event_name, $condition),
                 "The event [{$event_name}] was dispatched but the provided condition did not pass."
             );
         }
@@ -175,11 +172,7 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         $count = count($this->getDispatched($event_name));
 
-        PHPUnit::assertSame(
-            $times,
-            $count,
-            "The event [{$event_name}] was dispatched [{$count}] time[s]."
-        );
+        PHPUnit::assertSame($times, $count, "The event [{$event_name}] was dispatched [{$count}] time[s].");
     }
 
     public function resetDispatchedEvents(): void

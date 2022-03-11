@@ -42,10 +42,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-array');
 
-        $this->better_wpdb->bulkInsert('test_table', [
-            [
-            ],
-        ]);
+        $this->better_wpdb->bulkInsert('test_table', [[]]);
     }
 
     /**
@@ -57,11 +54,7 @@ final class BetterWPDB_bulkInsert_Test extends BetterWPDBTestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty-string');
-        $this->better_wpdb->delete('test_table', [
-            [
-                'foo',
-            ],
-        ]);
+        $this->better_wpdb->delete('test_table', [['foo']]);
     }
 
     /**

@@ -24,7 +24,8 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function absolute_paths_are_used_by_default(): void
     {
-        $url = $this->generator()->to('foo');
+        $url = $this->generator()
+            ->to('foo');
         $this->assertSame('/foo', $url);
     }
 
@@ -33,10 +34,12 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function a_valid_absolute_url_will_be_returned_as_is(): void
     {
-        $url = $this->generator()->to('https://foobar.com/foo');
+        $url = $this->generator()
+            ->to('https://foobar.com/foo');
         $this->assertSame('https://foobar.com/foo', $url);
 
-        $url = $this->generator()->to('mailto:calvin@web.de');
+        $url = $this->generator()
+            ->to('mailto:calvin@web.de');
         $this->assertSame('mailto:calvin@web.de', $url);
     }
 
@@ -45,7 +48,8 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function absolute_urls_can_be_used(): void
     {
-        $url = $this->generator()->to('foo', [], UrlGenerator::ABSOLUTE_URL);
+        $url = $this->generator()
+            ->to('foo', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
 
@@ -54,18 +58,16 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function query_arguments_can_be_added(): void
     {
-        $url = $this->generator()->to('foo', [
-            'bar' => 'baz',
-        ]);
+        $url = $this->generator()
+            ->to('foo', [
+                'bar' => 'baz',
+            ]);
         $this->assertSame('/foo?bar=baz', $url);
 
-        $url = $this->generator()->to(
-            '/foo',
-            [
+        $url = $this->generator()
+            ->to('/foo', [
                 'bar' => 'baz',
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+            ], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo?bar=baz', $url);
     }
 
@@ -74,23 +76,22 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function existing_query_arguments_are_preserved(): void
     {
-        $url = $this->generator()->to('foo?boom=bam', [
-            'bar' => 'baz',
-        ]);
+        $url = $this->generator()
+            ->to('foo?boom=bam', [
+                'bar' => 'baz',
+            ]);
         $this->assertSame('/foo?boom=bam&bar=baz', $url);
 
-        $url = $this->generator()->to(
-            'foo?boom=bam',
-            [
+        $url = $this->generator()
+            ->to('foo?boom=bam', [
                 'bar' => 'baz',
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+            ], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo?boom=bam&bar=baz', $url);
 
-        $url = $this->generator()->to('foo?', [
-            'bar' => 'baz',
-        ]);
+        $url = $this->generator()
+            ->to('foo?', [
+                'bar' => 'baz',
+            ]);
         $this->assertSame('/foo?bar=baz', $url);
     }
 
@@ -102,18 +103,16 @@ final class GeneratorTest extends HttpRunnerTestCase
         $m = rawurlencode('münchen');
         $expected = '/foo?city=' . $m . '&bar=baz';
 
-        $url = $this->generator()->to('foo?city=münchen', [
-            'bar' => 'baz',
-        ]);
+        $url = $this->generator()
+            ->to('foo?city=münchen', [
+                'bar' => 'baz',
+            ]);
         $this->assertSame($expected, $url);
 
-        $url = $this->generator()->to(
-            'foo?city=münchen',
-            [
+        $url = $this->generator()
+            ->to('foo?city=münchen', [
                 'bar' => 'baz',
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+            ], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com' . $expected, $url);
     }
 
@@ -122,18 +121,16 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function an_existing_fragment_is_preserved(): void
     {
-        $url = $this->generator()->to('foo#section1', [
-            'bar' => 'baz',
-        ]);
+        $url = $this->generator()
+            ->to('foo#section1', [
+                'bar' => 'baz',
+            ]);
         $this->assertSame('/foo?bar=baz#section1', $url);
 
-        $url = $this->generator()->to(
-            'foo#section1',
-            [
+        $url = $this->generator()
+            ->to('foo#section1', [
                 'bar' => 'baz',
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+            ], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo?bar=baz#section1', $url);
     }
 
@@ -142,7 +139,8 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function an_existing_fragment_is_url_encoded(): void
     {
-        $url = $this->generator()->to('foo#münchen');
+        $url = $this->generator()
+            ->to('foo#münchen');
         $this->assertSame('/foo#' . rawurlencode('münchen'), $url);
     }
 
@@ -151,20 +149,18 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function fragments_can_be_added_as_an_argument(): void
     {
-        $url = $this->generator()->to('foo', [
-            'bar' => 'baz',
-            '_fragment' => 'section1',
-        ]);
-        $this->assertSame('/foo?bar=baz#section1', $url);
-
-        $url = $this->generator()->to(
-            'foo',
-            [
+        $url = $this->generator()
+            ->to('foo', [
                 'bar' => 'baz',
                 '_fragment' => 'section1',
-            ],
-            UrlGenerator::ABSOLUTE_URL
-        );
+            ]);
+        $this->assertSame('/foo?bar=baz#section1', $url);
+
+        $url = $this->generator()
+            ->to('foo', [
+                'bar' => 'baz',
+                '_fragment' => 'section1',
+            ], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo?bar=baz#section1', $url);
     }
 
@@ -173,9 +169,10 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function an_existing_fragment_is_overwritten_by_a_provided_fragment(): void
     {
-        $url = $this->generator()->to('foo#section1', [
-            '_fragment' => 'section2',
-        ]);
+        $url = $this->generator()
+            ->to('foo#section1', [
+                '_fragment' => 'section2',
+            ]);
         $this->assertSame('/foo#section2', $url);
     }
 
@@ -208,9 +205,10 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function query_arguments_will_be_encoded(): void
     {
-        $url = $this->generator()->to('/bands', [
-            's' => 'AC DC',
-        ]);
+        $url = $this->generator()
+            ->to('/bands', [
+                's' => 'AC DC',
+            ]);
 
         $this->assertSame('/bands?s=AC%20DC', $url);
     }
@@ -235,10 +233,7 @@ final class GeneratorTest extends HttpRunnerTestCase
         $g = $this->generator($context);
 
         $this->assertSame('/foo', $g->to('foo'));
-        $this->assertSame(
-            'https://foo.com:4000/foo',
-            $g->to('foo', [], UrlGenerator::ABSOLUTE_URL)
-        );
+        $this->assertSame('https://foo.com:4000/foo', $g->to('foo', [], UrlGenerator::ABSOLUTE_URL));
     }
 
     /**
@@ -250,10 +245,7 @@ final class GeneratorTest extends HttpRunnerTestCase
         $g = $this->generator($context);
 
         $this->assertSame('/foo', $g->to('foo'));
-        $this->assertSame(
-            'http://foo.com:8080/foo',
-            $g->to('foo', [], UrlGenerator::ABSOLUTE_URL, false)
-        );
+        $this->assertSame('http://foo.com:8080/foo', $g->to('foo', [], UrlGenerator::ABSOLUTE_URL, false));
     }
 
     /**
@@ -270,10 +262,12 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->post('bar_route', '/bar');
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo_route');
+        $url = $routing->urlGenerator()
+            ->toRoute('foo_route');
         $this->assertSame('/foo', $url);
 
-        $url = $routing->urlGenerator()->toRoute('bar_route');
+        $url = $routing->urlGenerator()
+            ->toRoute('bar_route');
         $this->assertSame('/bar', $url);
     }
 
@@ -298,7 +292,8 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('foo_route', '/foo');
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo_route', [], UrlGenerator::ABSOLUTE_URL);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo_route', [], UrlGenerator::ABSOLUTE_URL);
         $this->assertSame('https://foobar.com/foo', $url);
     }
 
@@ -310,9 +305,10 @@ final class GeneratorTest extends HttpRunnerTestCase
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->name('foo')
                 ->group(function (WebRoutingConfigurator $configurator) {
-                    $configurator->name('bar')->group(function (WebRoutingConfigurator $configurator) {
-                        $configurator->get('baz', '/baz');
-                    });
+                    $configurator->name('bar')
+                        ->group(function (WebRoutingConfigurator $configurator) {
+                            $configurator->get('baz', '/baz');
+                        });
                     $configurator->get('biz', '/biz');
                 });
         });
@@ -353,9 +349,10 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('foo', '/foo/{required}');
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'bar',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'bar',
+            ]);
         $this->assertSame('/foo/bar', $url);
     }
 
@@ -369,26 +366,30 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('bar', 'bar/{required}/{optional?}/');
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'bar',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'bar',
+            ]);
         $this->assertSame('/foo/bar', $url);
 
-        $url = $routing->urlGenerator()->toRoute('bar', [
-            'required' => 'baz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('bar', [
+                'required' => 'baz',
+            ]);
         $this->assertSame('/bar/baz/', $url);
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'bar',
-            'optional' => 'baz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'bar',
+                'optional' => 'baz',
+            ]);
         $this->assertSame('/foo/bar/baz', $url);
 
-        $url = $routing->urlGenerator()->toRoute('bar', [
-            'required' => 'baz',
-            'optional' => 'biz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('bar', [
+                'required' => 'baz',
+                'optional' => 'biz',
+            ]);
         $this->assertSame('/bar/baz/biz/', $url);
     }
 
@@ -400,9 +401,10 @@ final class GeneratorTest extends HttpRunnerTestCase
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('foo', 'foo/{optional?}');
         });
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'optional' => 'bar',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'optional' => 'bar',
+            ]);
         $this->assertSame('/foo/bar', $url);
     }
 
@@ -416,17 +418,19 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('bar', 'bar/{required}/{opt1?}/{opt2?}');
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'opt1' => 'bar',
-            'opt2' => 'baz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'opt1' => 'bar',
+                'opt2' => 'baz',
+            ]);
         $this->assertSame('/foo/bar/baz/', $url);
 
-        $url = $routing->urlGenerator()->toRoute('bar', [
-            'required' => 'biz',
-            'opt1' => 'bar',
-            'opt2' => 'baz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('bar', [
+                'required' => 'biz',
+                'opt1' => 'bar',
+                'opt2' => 'baz',
+            ]);
         $this->assertSame('/bar/biz/bar/baz', $url);
     }
 
@@ -442,18 +446,20 @@ final class GeneratorTest extends HttpRunnerTestCase
                 ]);
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'aaa',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'aaa',
+            ]);
         $this->assertSame('/foo/aaa', $url);
 
         $this->expectExceptionMessage(
             'Parameter [required] for route [foo] must match [[a]+] to generate an URL. Given [bbb].'
         );
 
-        $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'bbb',
-        ]);
+        $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'bbb',
+            ]);
     }
 
     /**
@@ -469,13 +475,15 @@ final class GeneratorTest extends HttpRunnerTestCase
         });
 
         // without param
-        $url = $routing->urlGenerator()->toRoute('foo');
+        $url = $routing->urlGenerator()
+            ->toRoute('foo');
         $this->assertSame('/foo', $url);
 
         // regex is good
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'optional' => 'aa',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'optional' => 'aa',
+            ]);
         $this->assertSame('/foo/aa', $url);
 
         // regex is bad
@@ -483,9 +491,10 @@ final class GeneratorTest extends HttpRunnerTestCase
             'Parameter [optional] for route [foo] must match [[a]+] to generate an URL. Given [bb].'
         );
 
-        $routing->urlGenerator()->toRoute('foo', [
-            'optional' => 'bb',
-        ]);
+        $routing->urlGenerator()
+            ->toRoute('foo', [
+                'optional' => 'bb',
+            ]);
     }
 
     /**
@@ -514,22 +523,25 @@ final class GeneratorTest extends HttpRunnerTestCase
                 ]);
         });
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'bar',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'bar',
+            ]);
         $this->assertSame('/foo/bar', $url);
 
-        $url = $routing->urlGenerator()->toRoute('bar', [
-            'required' => 'baz',
-            'optional' => 'biz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('bar', [
+                'required' => 'baz',
+                'optional' => 'biz',
+            ]);
         $this->assertSame('/bar/baz/biz', $url);
 
-        $url = $routing->urlGenerator()->toRoute('foobar', [
-            'required' => 'bar',
-            'optional1' => 'boo',
-            'optional2' => 'biz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foobar', [
+                'required' => 'bar',
+                'optional1' => 'boo',
+                'optional2' => 'biz',
+            ]);
         $this->assertSame('/baz/bar/boo/biz', $url);
     }
 
@@ -544,7 +556,8 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('foo', 'foo/{required}');
         });
 
-        $routing->urlGenerator()->toRoute('foo');
+        $routing->urlGenerator()
+            ->toRoute('foo');
     }
 
     /**
@@ -553,7 +566,8 @@ final class GeneratorTest extends HttpRunnerTestCase
     public function exceptions_are_thrown_for_missing_route_names(): void
     {
         $this->expectException(RouteNotFound::class);
-        $this->generator()->toRoute('foo');
+        $this->generator()
+            ->toRoute('foo');
     }
 
     /**
@@ -566,7 +580,8 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('route1', 'bar');
         });
 
-        $url = $routing->urlGenerator()->toRoute('route1');
+        $url = $routing->urlGenerator()
+            ->toRoute('route1');
         $this->assertSame('/bar', $url);
     }
 
@@ -580,20 +595,24 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('foo', '/foo/{required}');
         });
 
-        $url = $routing->urlGenerator()->toRoute('static');
+        $url = $routing->urlGenerator()
+            ->toRoute('static');
         $this->assertSame('/static', $url);
 
-        $url = $routing->urlGenerator()->toRoute('static');
+        $url = $routing->urlGenerator()
+            ->toRoute('static');
         $this->assertSame('/static', $url);
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'bar',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'bar',
+            ]);
         $this->assertSame('/foo/bar', $url);
 
-        $url = $routing->urlGenerator()->toRoute('foo', [
-            'required' => 'baz',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => 'baz',
+            ]);
         $this->assertSame('/foo/baz', $url);
     }
 
@@ -610,18 +629,20 @@ final class GeneratorTest extends HttpRunnerTestCase
                 ]);
         });
 
-        $url = $routing->urlGenerator()->toRoute('teams', [
-            'team' => 'manchesterunitedx',
-            'player' => 'aacalvin',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('teams', [
+                'team' => 'manchesterunitedx',
+                'player' => 'aacalvin',
+            ]);
         $this->assertSame('/teams/manchesterunitedx/aacalvin', $url);
 
         // Fails because not starting with m.
         try {
-            $routing->urlGenerator()->toRoute('teams', [
-                'team' => 'lanchesterunited',
-                'player' => 'aacalvin',
-            ]);
+            $routing->urlGenerator()
+                ->toRoute('teams', [
+                    'team' => 'lanchesterunited',
+                    'player' => 'aacalvin',
+                ]);
             $this->fail('Invalid constraint created a route.');
         } catch (BadRouteParameter $e) {
             $this->assertStringContainsString(
@@ -632,10 +653,11 @@ final class GeneratorTest extends HttpRunnerTestCase
 
         // Fails because not using united.
         try {
-            $routing->urlGenerator()->toRoute('teams', [
-                'team' => 'manchestercityx',
-                'player' => 'aacalvin',
-            ]);
+            $routing->urlGenerator()
+                ->toRoute('teams', [
+                    'team' => 'manchestercityx',
+                    'player' => 'aacalvin',
+                ]);
             $this->fail('Invalid constraint created a route.');
         } catch (BadRouteParameter $e) {
             $this->assertStringContainsString(
@@ -646,10 +668,11 @@ final class GeneratorTest extends HttpRunnerTestCase
 
         // Fails because not using x or y at the end.
         try {
-            $routing->urlGenerator()->toRoute('teams', [
-                'team' => 'manchesterunitedz',
-                'player' => 'aacalvin',
-            ]);
+            $routing->urlGenerator()
+                ->toRoute('teams', [
+                    'team' => 'manchesterunitedz',
+                    'player' => 'aacalvin',
+                ]);
             $this->fail('Invalid constraint created a route.');
         } catch (BadRouteParameter $e) {
             $this->assertStringContainsString(
@@ -660,10 +683,11 @@ final class GeneratorTest extends HttpRunnerTestCase
 
         // Fails because optional parameter is present but doesn't match regex, uses only one a
         try {
-            $routing->urlGenerator()->toRoute('teams', [
-                'team' => 'manchesterunitedx',
-                'player' => 'acalvin',
-            ]);
+            $routing->urlGenerator()
+                ->toRoute('teams', [
+                    'team' => 'manchesterunitedx',
+                    'player' => 'acalvin',
+                ]);
             $this->fail('Invalid constraint created a route.');
         } catch (BadRouteParameter $e) {
             $this->assertStringContainsString(
@@ -682,9 +706,10 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('r1', '/foo/{bar?}/{baz?}');
         });
 
-        $url = $routing->urlGenerator()->toRoute('r1', [
-            'param1' => 'foo',
-        ]);
+        $url = $routing->urlGenerator()
+            ->toRoute('r1', [
+                'param1' => 'foo',
+            ]);
 
         $this->assertEquals('/foo?param1=foo', $url);
     }
@@ -698,16 +723,17 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('teams', '/{team}/{player}');
         });
 
-        $url = $routing->urlGenerator()->toRoute(
-            'teams',
-            [
-                'team' => 'bayernmünchen',
-                'player' => 'calvin alkan',
-                'foo' => 'bar',
-                'baz' => 'biz',
-                '_fragment' => 'section1',
-            ]
-        );
+        $url = $routing->urlGenerator()
+            ->toRoute(
+                'teams',
+                [
+                    'team' => 'bayernmünchen',
+                    'player' => 'calvin alkan',
+                    'foo' => 'bar',
+                    'baz' => 'biz',
+                    '_fragment' => 'section1',
+                ]
+            );
 
         $expected = '/'
             . rawurlencode('bayernmünchen')
@@ -734,9 +760,10 @@ final class GeneratorTest extends HttpRunnerTestCase
         ]));
         $this->assertSame(
             'https://foobar.com/login1?foo=bar',
-            $routing->urlGenerator()->toLogin([
-                'foo' => 'bar',
-            ], UrlGenerator::ABSOLUTE_URL)
+            $routing->urlGenerator()
+                ->toLogin([
+                    'foo' => 'bar',
+                ], UrlGenerator::ABSOLUTE_URL)
         );
     }
 
@@ -755,9 +782,10 @@ final class GeneratorTest extends HttpRunnerTestCase
         ]));
         $this->assertSame(
             'https://foobar.com/login2?foo=bar',
-            $routing->urlGenerator()->toLogin([
-                'foo' => 'bar',
-            ], UrlGenerator::ABSOLUTE_URL)
+            $routing->urlGenerator()
+                ->toLogin([
+                    'foo' => 'bar',
+                ], UrlGenerator::ABSOLUTE_URL)
         );
     }
 
@@ -793,9 +821,10 @@ final class GeneratorTest extends HttpRunnerTestCase
         ]));
         $this->assertSame(
             'https://foobar.com/wp-login.php?foo=bar',
-            $this->generator()->toLogin([
-                'foo' => 'bar',
-            ], UrlGenerator::ABSOLUTE_URL)
+            $this->generator()
+                ->toLogin([
+                    'foo' => 'bar',
+                ], UrlGenerator::ABSOLUTE_URL)
         );
     }
 
@@ -812,8 +841,9 @@ final class GeneratorTest extends HttpRunnerTestCase
             $configurator->get('foo', 'foo/{required}');
         });
 
-        $routing->urlGenerator()->toRoute('foo', [
-            'required' => [],
-        ]);
+        $routing->urlGenerator()
+            ->toRoute('foo', [
+                'required' => [],
+            ]);
     }
 }

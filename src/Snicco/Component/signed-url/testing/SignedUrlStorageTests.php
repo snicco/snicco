@@ -23,15 +23,9 @@ trait SignedUrlStorageTests
     {
         $storage = $this->createStorage($clock = new TestClock());
 
-        $storage->store(
-            $foo_url =
-                $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 2, 10)
-        );
+        $storage->store($foo_url = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 2, 10));
 
-        $storage->store(
-            $bar_url =
-                $this->createSignedUrl('/bar?signature=bar_signature', 'bar_signature', 3, 10)
-        );
+        $storage->store($bar_url = $this->createSignedUrl('/bar?signature=bar_signature', 'bar_signature', 3, 10));
 
         $this->advanceTime(2, $clock);
 
@@ -74,9 +68,7 @@ trait SignedUrlStorageTests
     {
         $storage = $this->createStorage(new TestClock());
 
-        $storage->store(
-            $signed = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3)
-        );
+        $storage->store($signed = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3));
 
         $id = $signed->identifier();
         $storage->consume($id);
@@ -87,10 +79,7 @@ trait SignedUrlStorageTests
             $storage->consume($id);
             PHPUnit::fail('Decrementing a used signed url below 0 should throw an exception');
         } catch (BadIdentifier $e) {
-            PHPUnit::assertStringStartsWith(
-                "The identifier [{$id}] does not exist",
-                $e->getMessage()
-            );
+            PHPUnit::assertStringStartsWith("The identifier [{$id}] does not exist", $e->getMessage());
         }
     }
 
@@ -101,9 +90,7 @@ trait SignedUrlStorageTests
     {
         $storage = $this->createStorage(new TestClock());
 
-        $storage->store(
-            $link = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3)
-        );
+        $storage->store($link = $this->createSignedUrl('/foo?signature=foo_signature', 'foo_signature', 10, 3));
 
         $signature = $link->identifier() . 'XXX';
 
@@ -111,10 +98,7 @@ trait SignedUrlStorageTests
             $storage->consume($signature);
             PHPUnit::fail('Expected exception to be thrown');
         } catch (BadIdentifier $e) {
-            PHPUnit::assertStringStartsWith(
-                "The identifier [{$signature}] does not exist",
-                $e->getMessage()
-            );
+            PHPUnit::assertStringStartsWith("The identifier [{$signature}] does not exist", $e->getMessage());
         }
     }
 
@@ -124,13 +108,7 @@ trait SignedUrlStorageTests
         int $expires_in = 10,
         int $max_usage = 1
     ): SignedUrl {
-        return SignedUrl::create(
-            $link_target,
-            $link_target,
-            $signature,
-            time() + $expires_in,
-            $max_usage
-        );
+        return SignedUrl::create($link_target, $link_target, $signature, time() + $expires_in, $max_usage);
     }
 
     /**

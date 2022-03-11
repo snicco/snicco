@@ -62,15 +62,12 @@ final class ResponseUtilsTest extends TestCase
     public function test_refresh(): void
     {
         $request = $this->frontendRequest('https://foo.com/bar?baz=biz#section1');
-        $response_utils = new ResponseUtils(
-            $this->createUrlGenerator(),
-            $this->createResponseFactory(),
-            $request
-        );
+        $response_utils = new ResponseUtils($this->createUrlGenerator(), $this->createResponseFactory(), $request);
 
         $this->assertSame(
             'https://foo.com/bar?baz=biz#section1',
-            $response_utils->refresh()->getHeaderLine('location')
+            $response_utils->refresh()
+                ->getHeaderLine('location')
         );
     }
 
@@ -192,7 +189,8 @@ final class ResponseUtilsTest extends TestCase
         $response_utils = new ResponseUtils(
             $this->createUrlGenerator(),
             $this->createResponseFactory(),
-            $this->frontendRequest()->withHeader('referer', 'https://foo.com/bar')
+            $this->frontendRequest()
+                ->withHeader('referer', 'https://foo.com/bar')
         );
 
         $response = $response_utils->redirectBack('/foobar');

@@ -81,8 +81,7 @@ interface ImmutableSession
     public function exists($keys): bool;
 
     /**
-     * Get a value form the session with dot notation.
-     * $session->get('user.name', 'calvin').
+     * Get a value form the session with dot notation. $session->get('user.name', 'calvin').
      *
      * @param mixed $default
      *

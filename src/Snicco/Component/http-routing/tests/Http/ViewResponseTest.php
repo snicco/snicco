@@ -21,7 +21,8 @@ final class ViewResponseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->base_response = $this->createResponseFactory()->createResponse();
+        $this->base_response = $this->createResponseFactory()
+            ->createResponse();
     }
 
     /**

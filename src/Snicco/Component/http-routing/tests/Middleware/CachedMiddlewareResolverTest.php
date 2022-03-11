@@ -46,27 +46,16 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $controller_action = new ControllerAction(Route::DELEGATE, $this->psr_container);
 
         // BazMiddleware is not present since It's loaded from cache.
-        $this->assertEquals(
-            [$blueprint1, $blueprint2],
-            $resolver->resolveForRoute($route, $controller_action)
-        );
+        $this->assertEquals([$blueprint1, $blueprint2], $resolver->resolveForRoute($route, $controller_action));
 
         $this->assertEquals(
             [$blueprint1, $blueprint2],
             $resolver->resolveForRequestWithoutRoute($this->frontendRequest())
         );
 
-        $this->assertEquals(
-            [$blueprint1],
-            $resolver->resolveForRequestWithoutRoute($this->adminRequest('/foo'))
-        );
+        $this->assertEquals([$blueprint1], $resolver->resolveForRequestWithoutRoute($this->adminRequest('/foo')));
 
-        $this->assertEquals(
-            [$blueprint1],
-            $resolver->resolveForRequestWithoutRoute(
-                $this->adminRequest('/foo')
-            )
-        );
+        $this->assertEquals([$blueprint1], $resolver->resolveForRequestWithoutRoute($this->adminRequest('/foo')));
     }
 
     /**
@@ -87,16 +76,11 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
             $resolver->resolveForRequestWithoutRoute($this->apiRequest())
         );
 
-        $this->assertEquals(
-            [$blueprint1],
-            $resolver->resolveForRequestWithoutRoute($this->adminRequest('/foo'))
-        );
+        $this->assertEquals([$blueprint1], $resolver->resolveForRequestWithoutRoute($this->adminRequest('/foo')));
 
         $this->assertEquals(
             [$blueprint1],
-            $resolver->resolveForRequestWithoutRoute(
-                $this->frontendRequest('/foo')
-            )
+            $resolver->resolveForRequestWithoutRoute($this->frontendRequest('/foo'))
         );
     }
 

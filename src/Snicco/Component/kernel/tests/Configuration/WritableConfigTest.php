@@ -103,10 +103,7 @@ final class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-                'definitions' => [
-                    'routes1',
-                    'routes2',
-                ],
+                'definitions' => ['routes1', 'routes2'],
                 'features' => [
                     'feature1' => true,
                     'feature2' => false,
@@ -116,10 +113,7 @@ final class WritableConfigTest extends TestCase
 
         $config = WritableConfig::fromArray($config);
 
-        $config->extend('routing.definitions', [
-            'routes3',
-            'routes4',
-        ]);
+        $config->extend('routing.definitions', ['routes3', 'routes4']);
 
         $config->extend('routing.features', [
             'feature1' => false,
@@ -128,12 +122,7 @@ final class WritableConfigTest extends TestCase
             'feature4' => 'yes',
         ]);
 
-        $this->assertSame([
-            'routes1',
-            'routes2',
-            'routes3',
-            'routes4',
-        ], $config->get('routing.definitions'));
+        $this->assertSame(['routes1', 'routes2', 'routes3', 'routes4'], $config->get('routing.definitions'));
 
         $this->assertSame([
             'feature1' => true,
@@ -182,10 +171,7 @@ final class WritableConfigTest extends TestCase
     public function numerically_indexed_arrays_are_merged_and_unique_values_remain(): void
     {
         $config = WritableConfig::fromArray([
-            'first' => [
-                'foo',
-                'bar',
-            ],
+            'first' => ['foo', 'bar'],
         ]);
 
         $config->extend('first', ['boo', 'bar', 'biz', 'foo']);
@@ -214,10 +200,7 @@ final class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-                'definitions' => [
-                    'routes1',
-                    'routes2',
-                ],
+                'definitions' => ['routes1', 'routes2'],
                 'features' => [
                     'feature1' => true,
                     'feature2' => false,
@@ -229,11 +212,7 @@ final class WritableConfigTest extends TestCase
 
         $config->append('routing.definitions', 'routes3');
 
-        $this->assertSame([
-            'routes1',
-            'routes2',
-            'routes3',
-        ], $config->get('routing.definitions'));
+        $this->assertSame(['routes1', 'routes2', 'routes3'], $config->get('routing.definitions'));
 
         $config->append('routing.definitions', ['routes4', 'routes5']);
 
@@ -269,10 +248,7 @@ final class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-                'definitions' => [
-                    'routes1',
-                    'routes2',
-                ],
+                'definitions' => ['routes1', 'routes2'],
                 'features' => [
                     'feature1' => true,
                     'feature2' => false,
@@ -315,8 +291,7 @@ final class WritableConfigTest extends TestCase
     public function test_append_throws_for_missing_key(): void
     {
         $config = [
-            'routing' => [
-            ],
+            'routing' => [],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -333,10 +308,7 @@ final class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-                'definitions' => [
-                    'routes1',
-                    'routes2',
-                ],
+                'definitions' => ['routes1', 'routes2'],
                 'features' => [
                     'feature1' => true,
                     'feature2' => false,
@@ -348,11 +320,7 @@ final class WritableConfigTest extends TestCase
 
         $config->prepend('routing.definitions', 'routes3');
 
-        $this->assertSame([
-            'routes3',
-            'routes1',
-            'routes2',
-        ], $config->get('routing.definitions'));
+        $this->assertSame(['routes3', 'routes1', 'routes2'], $config->get('routing.definitions'));
 
         $config->prepend('routing.definitions', ['routes4', 'routes5']);
 
@@ -388,10 +356,7 @@ final class WritableConfigTest extends TestCase
     {
         $config = [
             'routing' => [
-                'definitions' => [
-                    'routes1',
-                    'routes2',
-                ],
+                'definitions' => ['routes1', 'routes2'],
                 'features' => [
                     'feature1' => true,
                     'feature2' => false,
@@ -434,8 +399,7 @@ final class WritableConfigTest extends TestCase
     public function test_prepend_throws_for_missing_key(): void
     {
         $config = [
-            'routing' => [
-            ],
+            'routing' => [],
         ];
 
         $config = WritableConfig::fromArray($config);
@@ -526,16 +490,8 @@ final class WritableConfigTest extends TestCase
     public function test_get_list_of_string(): void
     {
         $config = WritableConfig::fromArray([
-            'routes' => [
-                'route1',
-                'route2',
-                'route3',
-            ],
-            'bad_routes' => [
-                'route1',
-                'route2',
-                1,
-            ],
+            'routes' => ['route1', 'route2', 'route3'],
+            'bad_routes' => ['route1', 'route2', 1],
             'associative_routes' => [
                 'routes' => [
                     'foo' => 'route1',
@@ -547,11 +503,7 @@ final class WritableConfigTest extends TestCase
 
         $res = $config->getListOfStrings('routes');
 
-        $this->assertSame([
-            'route1',
-            'route2',
-            'route3',
-        ], $res);
+        $this->assertSame(['route1', 'route2', 'route3'], $res);
 
         try {
             $config->getListOfStrings('bad_routes');
@@ -580,16 +532,8 @@ final class WritableConfigTest extends TestCase
     public function test_get_array(): void
     {
         $config = WritableConfig::fromArray([
-            'routes' => [
-                'route1',
-                'route2',
-                'route3',
-            ],
-            'bad_routes' => [
-                'route1',
-                'route2',
-                1,
-            ],
+            'routes' => ['route1', 'route2', 'route3'],
+            'bad_routes' => ['route1', 'route2', 1],
             'associative_routes' => [
                 'foo' => 'route1',
                 'route2',
@@ -600,17 +544,9 @@ final class WritableConfigTest extends TestCase
 
         $res = $config->getArray('routes');
 
-        $this->assertSame([
-            'route1',
-            'route2',
-            'route3',
-        ], $res);
+        $this->assertSame(['route1', 'route2', 'route3'], $res);
 
-        $this->assertSame([
-            'route1',
-            'route2',
-            1,
-        ], $config->getArray('bad_routes'));
+        $this->assertSame(['route1', 'route2', 1], $config->getArray('bad_routes'));
 
         $this->assertSame([
             'foo' => 'route1',

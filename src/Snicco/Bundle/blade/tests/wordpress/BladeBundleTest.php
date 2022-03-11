@@ -35,11 +35,7 @@ final class BladeBundleTest extends WPTestCase
      */
     public function test_alias(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
         $this->assertTrue($kernel->usesBundle('sniccowp/blade-bundle'));
@@ -50,11 +46,7 @@ final class BladeBundleTest extends WPTestCase
      */
     public function test_blade_view_factory_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
 
@@ -66,11 +58,7 @@ final class BladeBundleTest extends WPTestCase
      */
     public function the_blade_cache_dir_is_created(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $this->assertFalse(is_dir($this->directories->cacheDir() . '/blade'));
 
@@ -86,16 +74,10 @@ final class BladeBundleTest extends WPTestCase
      */
     public function test_exception_without_templating_bundle(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('bundles', [
-                Environment::ALL => [
-                    BladeBundle::class,
-                ],
+                Environment::ALL => [BladeBundle::class],
             ]);
         });
 

@@ -53,13 +53,10 @@ final class ReadWriteSessionTest extends TestCase
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
 
-        $this->assertSame(
-            [
-                'foo' => 'bar',
-                'baz' => 'biz',
-            ],
-            $session->all()
-        );
+        $this->assertSame([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ], $session->all());
     }
 
     /**
@@ -641,11 +638,7 @@ final class ReadWriteSessionTest extends TestCase
         $new_session->saveUsing($driver, $serializer = new JsonSerializer(), 'v', time());
 
         $data = $driver->read($old_session->id()->selector());
-        $new_session = new ReadWriteSession(
-            $new_session->id(),
-            $serializer->deserialize($data->data()),
-            time()
-        );
+        $new_session = new ReadWriteSession($new_session->id(), $serializer->deserialize($data->data()), time());
 
         $this->assertFalse($new_session->isDirty());
     }
@@ -1053,7 +1046,8 @@ final class ReadWriteSessionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('string or integer');
-        $this->newSession()->setUserId(true);
+        $this->newSession()
+            ->setUserId(true);
     }
 
     /**

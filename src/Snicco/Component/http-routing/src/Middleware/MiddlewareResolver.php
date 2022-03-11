@@ -137,10 +137,7 @@ final class MiddlewareResolver
             return $this->hydrateBlueprints($map);
         }
 
-        $route_middleware = array_merge(
-            $route->getMiddleware(),
-            $controller_action->middleware()
-        );
+        $route_middleware = array_merge($route->getMiddleware(), $controller_action->middleware());
 
         if (false !== ($key = array_search('global', $route_middleware, true))) {
             unset($route_middleware[$key]);
@@ -246,10 +243,7 @@ final class MiddlewareResolver
         $blueprints = $this->sort($blueprints);
 
         if (! empty($prepend)) {
-            $blueprints = array_merge(
-                $this->parse($prepend, $this->middleware_groups),
-                $blueprints
-            );
+            $blueprints = array_merge($this->parse($prepend, $this->middleware_groups), $blueprints);
         }
 
         return array_values(array_unique($blueprints, SORT_REGULAR));
@@ -418,10 +412,7 @@ final class MiddlewareResolver
         }
         foreach ($middleware_groups as $name => $aliases_or_class_strings) {
             try {
-                $this->middleware_groups[$name] = $this->parse(
-                    $aliases_or_class_strings,
-                    $middleware_groups
-                );
+                $this->middleware_groups[$name] = $this->parse($aliases_or_class_strings, $middleware_groups);
             } catch (MiddlewareRecursion $e) {
                 throw $e->withFirstMiddleware($name);
             }
@@ -460,20 +451,11 @@ final class MiddlewareResolver
         $blueprints = $this->hydrateBlueprints($this->request_map['global'] ?? []);
 
         if ($request->isToApiEndpoint()) {
-            $blueprints = array_merge(
-                $blueprints,
-                $this->hydrateBlueprints($this->request_map['api'] ?? [])
-            );
+            $blueprints = array_merge($blueprints, $this->hydrateBlueprints($this->request_map['api'] ?? []));
         } elseif ($request->isToFrontend()) {
-            $blueprints = array_merge(
-                $blueprints,
-                $this->hydrateBlueprints($this->request_map['frontend'] ?? [])
-            );
+            $blueprints = array_merge($blueprints, $this->hydrateBlueprints($this->request_map['frontend'] ?? []));
         } elseif ($request->isToAdminArea()) {
-            $blueprints = array_merge(
-                $blueprints,
-                $this->hydrateBlueprints($this->request_map['admin'] ?? [])
-            );
+            $blueprints = array_merge($blueprints, $this->hydrateBlueprints($this->request_map['admin'] ?? []));
         }
 
         return $blueprints;

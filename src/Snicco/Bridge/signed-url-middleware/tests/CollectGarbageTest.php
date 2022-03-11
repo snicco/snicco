@@ -28,7 +28,8 @@ final class CollectGarbageTest extends MiddlewareTestCase
     {
         $middleware = new CollectGarbage(0, new InMemoryStorage(), $logger = new TestLogger());
 
-        $this->runMiddleware($middleware, $this->frontendRequest())->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $this->frontendRequest())
+            ->assertNextMiddlewareCalled();
         $this->assertCount(0, $logger->records);
     }
 
@@ -85,12 +86,11 @@ final class CollectGarbageTest extends MiddlewareTestCase
 
         $middleware = new CollectGarbage(100, $storage, $logger = new TestLogger());
 
-        $this->runMiddleware($middleware, $this->frontendRequest())->assertNextMiddlewareCalled();
+        $this->runMiddleware($middleware, $this->frontendRequest())
+            ->assertNextMiddlewareCalled();
 
-        $this->assertTrue(
-            $logger->hasError([
-                'message' => 'GC fail.',
-            ])
-        );
+        $this->assertTrue($logger->hasError([
+            'message' => 'GC fail.',
+        ]));
     }
 }

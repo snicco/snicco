@@ -17,8 +17,8 @@ class InlineComponent extends BladeComponent
 
     public function render(): string
     {
-        return <<<'blade'
+        return <<<'CODE_SAMPLE'
 Content:{{$content}},SLOT:{{ $slot }}
-blade;
+CODE_SAMPLE;
     }
 }

@@ -18,7 +18,8 @@ final class SystemClock implements Clock
 
     public function currentTimestamp(): int
     {
-        return $this->currentTime()->getTimestamp();
+        return $this->currentTime()
+            ->getTimestamp();
     }
 
     public function currentTime(): DateTimeImmutable

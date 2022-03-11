@@ -54,21 +54,17 @@ final class MiddlewarePipelineTest extends TestCase
         $this->response_factory = $this->createResponseFactory();
 
         $this->pimple[HttpErrorHandler::class] = function (): HttpErrorHandler {
-            return $this->createHttpErrorHandler(
-                $this->response_factory
-            );
+            return $this->createHttpErrorHandler($this->response_factory);
         };
 
         $this->pimple[ResponseFactory::class] = function (): ResponseFactory {
             return $this->response_factory;
         };
 
-        $this->pipeline = new MiddlewarePipeline(
-            $this->pimple_psr,
-            new NullErrorHandler(),
-        );
+        $this->pipeline = new MiddlewarePipeline($this->pimple_psr, new NullErrorHandler(),);
         $this->request = new Request(
-            $this->psrServerRequestFactory()->createServerRequest('GET', 'https://foobar.com')
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', 'https://foobar.com')
         );
     }
 
@@ -113,10 +109,7 @@ final class MiddlewarePipelineTest extends TestCase
 
         $response = $this->pipeline
             ->send($this->request)
-            ->through([
-                $foo,
-                MiddlewareBlueprint::from(BarMiddleware::class, ['BAR']),
-            ])
+            ->through([$foo, MiddlewareBlueprint::from(BarMiddleware::class, ['BAR'])])
             ->then(function () {
                 return $this->response_factory->html('handler');
             });
@@ -136,10 +129,7 @@ final class MiddlewarePipelineTest extends TestCase
 
         $response = $this->pipeline
             ->send($this->request)
-            ->through([
-                FooMiddleware::class,
-                MiddlewareBlueprint::from(BarMiddleware::class, ['BAR']),
-            ])
+            ->through([FooMiddleware::class, MiddlewareBlueprint::from(BarMiddleware::class, ['BAR'])])
             ->then(function () {
                 return $this->response_factory->html('handler');
             });
@@ -199,10 +189,7 @@ final class MiddlewarePipelineTest extends TestCase
     public function middleware_can_be_resolved_from_the_container(): void
     {
         $this->pimple[MiddlewareWithDependencies::class] = function (): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies(
-                new Foo('FOO'),
-                new Bar('BAR')
-            );
+            return new MiddlewareWithDependencies(new Foo('FOO'), new Bar('BAR'));
         };
 
         $response = $this->pipeline
@@ -245,10 +232,7 @@ final class MiddlewarePipelineTest extends TestCase
      */
     public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline(): void
     {
-        $pipeline = new MiddlewarePipeline(
-            $this->pimple_psr,
-            new LazyHttpErrorHandler($this->pimple_psr)
-        );
+        $pipeline = new MiddlewarePipeline($this->pimple_psr, new LazyHttpErrorHandler($this->pimple_psr));
 
         $middleware = array_map([MiddlewareBlueprint::class, 'from'], [
             FooMiddleware::class,
@@ -274,10 +258,7 @@ final class MiddlewarePipelineTest extends TestCase
      */
     public function exceptions_in_the_request_handler_get_handled_without_breaking_other_middleware(): void
     {
-        $pipeline = new MiddlewarePipeline(
-            $this->pimple_psr,
-            new LazyHttpErrorHandler($this->pimple_psr)
-        );
+        $pipeline = new MiddlewarePipeline($this->pimple_psr, new LazyHttpErrorHandler($this->pimple_psr));
 
         $middleware = array_map([MiddlewareBlueprint::class, 'from'], [
             FooMiddleware::class,
@@ -310,9 +291,7 @@ final class MiddlewarePipelineTest extends TestCase
 
         $this->assertSame('foo', $response->getBody()->__toString());
 
-        $this->expectExceptionMessage(
-            'You cant run a middleware pipeline twice without calling send() first.'
-        );
+        $this->expectExceptionMessage('You cant run a middleware pipeline twice without calling send() first.');
 
         $this->pipeline->then(function () {
             return $this->response_factory->createResponse();
@@ -324,9 +303,7 @@ final class MiddlewarePipelineTest extends TestCase
      */
     public function test_exception_when_the_pipeline_is_run_without_sending_a_request(): void
     {
-        $this->expectExceptionMessage(
-            'You cant run a middleware pipeline twice without calling send() first.'
-        );
+        $this->expectExceptionMessage('You cant run a middleware pipeline twice without calling send() first.');
 
         $this->pipeline->then(function () {
             return $this->response_factory->html('foo');
@@ -372,7 +349,8 @@ class StopMiddleware extends Middleware
 
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        return $this->responseFactory()->html('stopped');
+        return $this->responseFactory()
+            ->html('stopped');
     }
 }
 
@@ -390,7 +368,8 @@ class PipelineTestMiddleware1 extends Middleware
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
-        $response->getBody()->write(':pm1');
+        $response->getBody()
+            ->write(':pm1');
 
         return $response;
     }
@@ -410,7 +389,8 @@ class PipelineTestMiddleware2 extends Middleware
     public function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next->process($request->withAttribute(self::ATTRIBUTE, $this->value_to_add), $next);
-        $response->getBody()->write(':pm2');
+        $response->getBody()
+            ->write(':pm2');
 
         return $response;
     }

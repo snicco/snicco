@@ -61,13 +61,7 @@ final class WPMailTransport implements Transport
             $message = '';
         }
 
-        $headers = array_merge(
-            $ccs,
-            $bcc,
-            $reply_to,
-            $from,
-            [$content_type],
-        );
+        $headers = array_merge($ccs, $bcc, $reply_to, $from, [$content_type],);
 
         try {
             // Don't set attachments here since WordPress only adds attachments by file path. Really?
@@ -86,9 +80,8 @@ final class WPMailTransport implements Transport
     }
 
     /**
-     * We want to throw a {@link CantSendEmail} to confirm with the interface.
-     * Throwing explicit exceptions we also allow a far better usage for clients since they would
-     * have to create their own hook callbacks otherwise.
+     * We want to throw a {@link CantSendEmail} to confirm with the interface. Throwing explicit exceptions we also
+     * allow a far better usage for clients since they would have to create their own hook callbacks otherwise.
      */
     private function handleFailure(): Closure
     {
@@ -103,10 +96,9 @@ final class WPMailTransport implements Transport
     }
 
     /**
-     * WordPress fires this action just before sending the mail with the global php mailer.
-     * SMTP plugins should also include this filter in order to not break plugins that need it.
-     * Here we directly configure the underlying PHPMailer instance which has all the options we
-     * need.
+     * WordPress fires this action just before sending the mail with the global php mailer. SMTP plugins should also
+     * include this filter in order to not break plugins that need it. Here we directly configure the underlying
+     * PHPMailer instance which has all the options we need.
      */
     private function justInTimeConfiguration(Email $mail): Closure
     {
@@ -153,7 +145,7 @@ final class WPMailTransport implements Transport
             }
         };
 
-        $this->wp->addAction('phpmailer_init', $closure, 99999, 1, );
+        $this->wp->addAction('phpmailer_init', $closure, 99999, 1,);
 
         return $closure;
     }
@@ -163,7 +155,8 @@ final class WPMailTransport implements Transport
      */
     private function getTo(Email $email, Envelope $envelope): array
     {
-        $merged = $email->cc()->merge($email->bcc());
+        $merged = $email->cc()
+            ->merge($email->bcc());
 
         $to = [];
         foreach ($envelope->recipients() as $recipient) {

@@ -91,11 +91,7 @@ final class BladeStandalone
             }
             $user = $wp->currentUser();
             if (! empty($user->roles) && is_array($user->roles)
-                && in_array(
-                    $expression,
-                    $user->roles,
-                    true
-                )) {
+                && in_array($expression, $user->roles, true)) {
                 return true;
             }
 
@@ -125,13 +121,9 @@ final class BladeStandalone
             return new Filesystem();
         }, true);
 
-        $this->illuminate_container->bindIf(
-            'events',
-            function () {
-                return new Dispatcher();
-            },
-            true
-        );
+        $this->illuminate_container->bindIf('events', function () {
+            return new Dispatcher();
+        }, true);
         /**
          * @psalm-suppress MixedReturnStatement
          * @psalm-suppress MixedInferredReturnType
@@ -149,7 +141,8 @@ final class BladeStandalone
         /**
          * @psalm-suppress PossiblyInvalidArgument
          */
-        ((new ViewServiceProvider($this->illuminate_container)))->register();
+        ((new ViewServiceProvider($this->illuminate_container)))
+            ->register();
     }
 
     private function listenToEvents(): void
@@ -162,9 +155,7 @@ final class BladeStandalone
     private function disableUnsupportedDirectives(): void
     {
         Blade::directive('service', function () {
-            throw new BadMethodCallException(
-                'The service directive is not supported. Dont use it. Its evil.'
-            );
+            throw new BadMethodCallException('The service directive is not supported. Dont use it. Its evil.');
         });
 
         Blade::directive('csrf', function () {

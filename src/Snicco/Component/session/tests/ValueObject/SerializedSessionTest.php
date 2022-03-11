@@ -37,11 +37,7 @@ final class SerializedSessionTest extends TestCase
      */
     public function test_last_activity(): void
     {
-        $data = SerializedSession::fromString(
-            'foo',
-            'foobar',
-            time()
-        );
+        $data = SerializedSession::fromString('foo', 'foobar', time());
 
         $this->assertSame(time(), $data->lastActivity());
     }
@@ -51,11 +47,7 @@ final class SerializedSessionTest extends TestCase
      */
     public function test_hashed_validator(): void
     {
-        $data = SerializedSession::fromString(
-            'foo',
-            'foobar',
-            time()
-        );
+        $data = SerializedSession::fromString('foo', 'foobar', time());
 
         $this->assertSame('foobar', $data->hashedValidator());
     }
@@ -66,40 +58,21 @@ final class SerializedSessionTest extends TestCase
      */
     public function test_user_id(): void
     {
-        $session = SerializedSession::fromString(
-            'foo',
-            'foobar',
-            time(),
-        );
+        $session = SerializedSession::fromString('foo', 'foobar', time(),);
 
         $this->assertNull($session->userId());
 
-        $session = SerializedSession::fromString(
-            'foo',
-            'foobar',
-            time(),
-            1
-        );
+        $session = SerializedSession::fromString('foo', 'foobar', time(), 1);
 
         $this->assertSame(1, $session->userId());
 
-        $session = SerializedSession::fromString(
-            'foo',
-            'foobar',
-            time(),
-            'user_id'
-        );
+        $session = SerializedSession::fromString('foo', 'foobar', time(), 'user_id');
 
         $this->assertSame('user_id', $session->userId());
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('null, string or integer');
 
-        SerializedSession::fromString(
-            'foo',
-            'foobar',
-            time(),
-            true
-        );
+        SerializedSession::fromString('foo', 'foobar', time(), true);
     }
 }

@@ -34,7 +34,8 @@ final class RequestTest extends TestCase
         parent::setUp();
 
         $this->request = $this->frontendRequest('/foo');
-        $this->psr_request = $this->psrServerRequestFactory()->createServerRequest('GET', '/foo');
+        $this->psr_request = $this->psrServerRequestFactory()
+            ->createServerRequest('GET', '/foo');
     }
 
     /**
@@ -235,9 +236,7 @@ final class RequestTest extends TestCase
      */
     public function test_is_frontend(): void
     {
-        $request = new Request(
-            $this->psr_request
-        );
+        $request = new Request($this->psr_request);
 
         $this->assertTrue($request->isToFrontend());
         $this->assertFalse($request->isToAdminArea());
@@ -290,16 +289,15 @@ final class RequestTest extends TestCase
      */
     public function test_from_psr(): void
     {
-        $request = Request::fromPsr(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo')
-        );
+        $request = Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', '/foo'));
 
         $this->assertSame('/foo', $request->path());
         $this->assertSame('GET', $request->getMethod());
         $this->assertTrue($request->isToFrontend());
 
         $request = Request::fromPsr(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo'),
             Request::TYPE_ADMIN_AREA
         );
 
@@ -312,7 +310,8 @@ final class RequestTest extends TestCase
     public function test_from_psr_does_not_change_type(): void
     {
         $request = Request::fromPsr(
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo'),
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo'),
             Request::TYPE_ADMIN_AREA
         );
 
@@ -398,16 +397,9 @@ final class RequestTest extends TestCase
 
         $this->assertSame([
             // default headers, header case is preserved
-            'Host' => [
-                '127.0.0.1',
-            ],
-            'foo' => [
-                'bar1',
-                'bar2',
-            ],
-            'baz' => [
-                'biz',
-            ],
+            'Host' => ['127.0.0.1'],
+            'foo' => ['bar1', 'bar2'],
+            'baz' => ['biz'],
         ], $request->getHeaders());
     }
 
@@ -430,7 +422,8 @@ final class RequestTest extends TestCase
     {
         $this->assertSame('', (string) $this->request->getBody());
 
-        $body = $this->psrStreamFactory()->createStream('foo');
+        $body = $this->psrStreamFactory()
+            ->createStream('foo');
         $request = $this->request->withBody($body);
 
         $this->assertSame('foo', (string) $request->getBody());
@@ -443,14 +436,14 @@ final class RequestTest extends TestCase
     {
         $this->assertSame([], $this->request->getUploadedFiles());
 
-        $stream = $this->psrStreamFactory()->createStream('foo');
+        $stream = $this->psrStreamFactory()
+            ->createStream('foo');
         $request = $this->request->withUploadedFiles([
-            $file = $this->psrUploadedFileFactory()->createUploadedFile($stream),
+            $file = $this->psrUploadedFileFactory()
+                ->createUploadedFile($stream),
         ]);
 
-        $this->assertSame([
-            $file,
-        ], $request->getUploadedFiles());
+        $this->assertSame([$file], $request->getUploadedFiles());
     }
 
     /**

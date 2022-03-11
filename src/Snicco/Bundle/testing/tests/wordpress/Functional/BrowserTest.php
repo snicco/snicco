@@ -92,7 +92,8 @@ final class BrowserTest extends WPTestCase
         $browser = $this->getBrowser();
 
         $crawler = $browser->request('GET', '/foo');
-        $node = $crawler->filter('h1')->first();
+        $node = $crawler->filter('h1')
+            ->first();
         $this->assertSame(WebTestCaseController::class, $node->innerText());
 
         $response = $browser->getResponse();
@@ -112,7 +113,8 @@ final class BrowserTest extends WPTestCase
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
         $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
@@ -138,7 +140,8 @@ final class BrowserTest extends WPTestCase
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
         $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
@@ -161,7 +164,8 @@ final class BrowserTest extends WPTestCase
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
         $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
@@ -183,7 +187,8 @@ final class BrowserTest extends WPTestCase
 
         $response = $browser->getResponse();
         $response->assertStatus(200);
-        $response->assertNotDelegated()->assertIsJson();
+        $response->assertNotDelegated()
+            ->assertIsJson();
 
         $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
         $this->assertEquals([
@@ -250,13 +255,16 @@ final class BrowserTest extends WPTestCase
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(HttpErrorHandler::class, new TestErrorHandler());
+            $kernel->container()
+                ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
         $kernel->boot();
 
         return new Browser(
-            $kernel->container()->make(HttpKernel::class),
-            $kernel->container()->make(Psr17FactoryDiscovery::class),
+            $kernel->container()
+                ->make(HttpKernel::class),
+            $kernel->container()
+                ->make(Psr17FactoryDiscovery::class),
             AdminAreaPrefix::fromString('/wp-admin'),
             UrlPath::fromString('/api'),
             $server,

@@ -38,11 +38,7 @@ final class AssertableDOM
 
     public function assertSelectorNotExists(string $selector, string $message = ''): void
     {
-        PHPUnit::assertThat(
-            $this->crawler,
-            new LogicalNot(new CrawlerSelectorExists($selector)),
-            $message
-        );
+        PHPUnit::assertThat($this->crawler, new LogicalNot(new CrawlerSelectorExists($selector)), $message);
     }
 
     public function assertSelectorTextContains(string $selector, string $text, string $message = ''): void
@@ -97,31 +93,20 @@ final class AssertableDOM
             $this->crawler,
             LogicalAnd::fromConstraints(
                 new CrawlerSelectorExists("input[name=\"{$fieldName}\"]"),
-                new CrawlerSelectorAttributeValueSame(
-                    "input[name=\"{$fieldName}\"]",
-                    'value',
-                    $expectedValue
-                )
+                new CrawlerSelectorAttributeValueSame("input[name=\"{$fieldName}\"]", 'value', $expectedValue)
             ),
             $message
         );
     }
 
-    public function assertInputValueNotSame(
-        string $fieldName,
-        string $expectedValue,
-        string $message = ''
-    ): void {
+    public function assertInputValueNotSame(string $fieldName, string $expectedValue, string $message = ''): void
+    {
         PHPUnit::assertThat(
             $this->crawler,
             LogicalAnd::fromConstraints(
                 new CrawlerSelectorExists("input[name=\"{$fieldName}\"]"),
                 new LogicalNot(
-                    new CrawlerSelectorAttributeValueSame(
-                        "input[name=\"{$fieldName}\"]",
-                        'value',
-                        $expectedValue
-                    )
+                    new CrawlerSelectorAttributeValueSame("input[name=\"{$fieldName}\"]", 'value', $expectedValue)
                 )
             ),
             $message
@@ -162,7 +147,8 @@ final class AssertableDOM
     ): void {
         $node = $this->crawler->filter($formSelector);
         PHPUnit::assertNotEmpty($node, sprintf('Form "%s" not found.', $formSelector));
-        $values = $node->form()->getValues();
+        $values = $node->form()
+            ->getValues();
         PHPUnit::assertArrayHasKey(
             $fieldName,
             $values,
@@ -175,7 +161,8 @@ final class AssertableDOM
     {
         $node = $this->crawler->filter($formSelector);
         PHPUnit::assertNotEmpty($node, sprintf('Form "%s" not found.', $formSelector));
-        $values = $node->form()->getValues();
+        $values = $node->form()
+            ->getValues();
         PHPUnit::assertArrayNotHasKey(
             $fieldName,
             $values,

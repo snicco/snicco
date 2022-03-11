@@ -19,10 +19,7 @@ final class SessionErrorsTest extends TestCase
     public function test_exception_invalid_list_of_errors(): void
     {
         try {
-            new SessionErrors([
-                'foo',
-                'bar',
-            ]);
+            new SessionErrors(['foo', 'bar']);
             $this->fail('No exception thrown');
         } catch (InvalidArgumentException $e) {
             $this->assertStringContainsString('$errors must be an array keyed by string namespaces.', $e->getMessage());
@@ -31,10 +28,7 @@ final class SessionErrorsTest extends TestCase
         try {
             new SessionErrors(
                 [
-                    'namespace1' => [
-                        'foo',
-                        'bar',
-                    ],
+                    'namespace1' => ['foo', 'bar'],
                 ]
             );
             $this->fail('No exception thrown');
@@ -49,19 +43,13 @@ final class SessionErrorsTest extends TestCase
             new SessionErrors(
                 [
                     'namespace1' => [
-                        'key1' => [
-                            'foo',
-                            1,
-                        ],
+                        'key1' => ['foo', 1],
                     ],
                 ]
             );
             $this->fail('No exception thrown');
         } catch (InvalidArgumentException $e) {
-            $this->assertStringContainsString(
-                'All error messages must be strings.',
-                $e->getMessage()
-            );
+            $this->assertStringContainsString('All error messages must be strings.', $e->getMessage());
         }
     }
 
@@ -72,22 +60,12 @@ final class SessionErrorsTest extends TestCase
     {
         $errors = new SessionErrors([
             'default' => [
-                'key1' => [
-                    'foo',
-                    'bar',
-                ],
-                'key2' => [
-                ],
+                'key1' => ['foo', 'bar'],
+                'key2' => [],
             ],
             'form2' => [
-                'key3' => [
-                    'foo',
-                    'bar',
-                ],
-                'key4' => [
-                    'baz',
-                    'biz',
-                ],
+                'key3' => ['foo', 'bar'],
+                'key4' => ['baz', 'biz'],
             ],
         ]);
         $this->assertTrue($errors->hasKey('key1'));
@@ -107,22 +85,12 @@ final class SessionErrorsTest extends TestCase
     {
         $errors = new SessionErrors([
             'default' => [
-                'key1' => [
-                    'foo',
-                    'bar',
-                ],
-                'key2' => [
-                ],
+                'key1' => ['foo', 'bar'],
+                'key2' => [],
             ],
             'form2' => [
-                'key3' => [
-                    'foo',
-                    'bar',
-                ],
-                'key4' => [
-                    'baz',
-                    'biz',
-                ],
+                'key3' => ['foo', 'bar'],
+                'key4' => ['baz', 'biz'],
             ],
         ]);
 
@@ -144,23 +112,12 @@ final class SessionErrorsTest extends TestCase
     {
         $errors = new SessionErrors([
             'default' => [
-                'key1' => [
-                    'foo',
-                    'bar',
-                ],
-                'key2' => [
-                    'baz',
-                ],
+                'key1' => ['foo', 'bar'],
+                'key2' => ['baz'],
             ],
             'form2' => [
-                'key3' => [
-                    'foo',
-                    'bar',
-                ],
-                'key4' => [
-                    'baz',
-                    'biz',
-                ],
+                'key3' => ['foo', 'bar'],
+                'key4' => ['baz', 'biz'],
             ],
         ]);
 
@@ -175,22 +132,12 @@ final class SessionErrorsTest extends TestCase
     {
         $errors = new SessionErrors([
             'default' => [
-                'key1' => [
-                    'foo',
-                    'bar',
-                ],
-                'key2' => [
-                ],
+                'key1' => ['foo', 'bar'],
+                'key2' => [],
             ],
             'form2' => [
-                'key3' => [
-                    'foo',
-                    'bar',
-                ],
-                'key4' => [
-                    'baz',
-                    'biz',
-                ],
+                'key3' => ['foo', 'bar'],
+                'key4' => ['baz', 'biz'],
             ],
         ]);
 

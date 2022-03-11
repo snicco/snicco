@@ -55,13 +55,10 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_server = $_SERVER;
         $this->_get = $_get;
         $this->_server = $_server;
-        $this->kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::testing(),
-            $this->directories,
-        );
+        $this->kernel = new Kernel(new PimpleContainerAdapter(), Environment::testing(), $this->directories,);
         $this->kernel->boot();
-        $this->http_dispatcher = $this->kernel->container()->make(HttpKernelRunner::class);
+        $this->http_dispatcher = $this->kernel->container()
+            ->make(HttpKernelRunner::class);
         remove_all_filters('admin_init');
         remove_all_filters('all_admin_notices');
     }
@@ -81,16 +78,9 @@ final class HttpKernelRunnerTest extends WPTestCase
      */
     public function test_http_runner_can_be_resolved_in_production(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::prod(),
-            $this->directories,
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories,);
         $kernel->boot();
-        $this->assertInstanceOf(
-            HttpKernelRunner::class,
-            $kernel->container()->make(HttpKernelRunner::class)
-        );
+        $this->assertInstanceOf(HttpKernelRunner::class, $kernel->container()->make(HttpKernelRunner::class));
     }
 
     /**
@@ -102,7 +92,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/frontend';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(false);
 
@@ -134,7 +125,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/bogus';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(false);
 
@@ -169,7 +161,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/no-response';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(false);
 
@@ -196,7 +189,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=foo';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -229,7 +223,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'foo';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -267,7 +262,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'foo';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -307,7 +303,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'do_nothing';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -335,7 +332,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'admin_redirect';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -369,7 +367,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'client_error';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -404,7 +403,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'server_error';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -439,7 +439,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_GET['page'] = 'foo';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(true);
 
@@ -476,7 +477,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/sniccowp/auth/register';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $this->http_dispatcher->listen(false);
 
@@ -511,7 +513,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/frontend';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -541,7 +544,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_URI'] = '/sniccowp/auth/register';
 
         /** @var TestableEventDispatcher $dispatcher */
-        $dispatcher = $this->kernel->container()->make(TestableEventDispatcher::class);
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -573,14 +577,11 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/frontend';
 
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            $this->directories,
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories,);
         $kernel->boot();
 
-        $http_runner = $kernel->container()->make(HttpKernelRunner::class);
+        $http_runner = $kernel->container()
+            ->make(HttpKernelRunner::class);
 
         $property = new ReflectionProperty(HttpKernelRunner::class, 'emitter');
         $property->setAccessible(true);

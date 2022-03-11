@@ -61,10 +61,7 @@ final class CustomDirectivesTest extends WPTestCase
         $this->blade_cache = dirname(__DIR__) . '/fixtures/cache';
         $this->blade_views = dirname(__DIR__) . '/fixtures/views';
 
-        $this->composers = new ViewComposerCollection(
-            null,
-            $global_view_context = new GlobalViewContext()
-        );
+        $this->composers = new ViewComposerCollection(null, $global_view_context = new GlobalViewContext());
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
         $this->blade = $blade;
@@ -87,7 +84,8 @@ final class CustomDirectivesTest extends WPTestCase
     {
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
-        $user = $this->factory()->user->create_and_get();
+        $user = $this->factory()
+            ->user->create_and_get();
         wp_set_current_user($user->ID);
 
         $view = $this->view('auth');
@@ -126,27 +124,30 @@ final class CustomDirectivesTest extends WPTestCase
     {
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
-        $admin = $this->factory()->user->create_and_get([
-            'role' => 'administrator',
-        ]);
+        $admin = $this->factory()
+            ->user->create_and_get([
+                'role' => 'administrator',
+            ]);
         wp_set_current_user($admin->ID);
 
         $view = $this->view('role');
         $content = $view->render();
         $this->assertViewContent('ADMIN', $content);
 
-        $editor = $this->factory()->user->create_and_get([
-            'role' => 'editor',
-        ]);
+        $editor = $this->factory()
+            ->user->create_and_get([
+                'role' => 'editor',
+            ]);
         wp_set_current_user($editor->ID);
 
         $view = $this->view('role');
         $content = $view->render();
         $this->assertViewContent('EDITOR', $content);
 
-        $author = $this->factory()->user->create_and_get([
-            'role' => 'author',
-        ]);
+        $author = $this->factory()
+            ->user->create_and_get([
+                'role' => 'author',
+            ]);
         wp_set_current_user($author->ID);
 
         $view = $this->view('role');

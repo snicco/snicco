@@ -86,11 +86,7 @@ abstract class Middleware implements MiddlewareInterface
 
     final protected function respondWith(): ResponseUtils
     {
-        return new ResponseUtils(
-            $this->url(),
-            $this->responseFactory(),
-            $this->currentRequest()
-        );
+        return new ResponseUtils($this->url(), $this->responseFactory(), $this->currentRequest());
     }
 
     private function currentRequest(): Request

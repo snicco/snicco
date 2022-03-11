@@ -75,7 +75,8 @@ final class ResponseTest extends TestCase
     {
         $stream = $this->factory->createStream('foo');
 
-        $response = $this->factory->createResponse()->withHtml($stream);
+        $response = $this->factory->createResponse()
+            ->withHtml($stream);
 
         $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
@@ -90,7 +91,8 @@ final class ResponseTest extends TestCase
             'foo' => 'bar',
         ], JSON_THROW_ON_ERROR));
 
-        $response = $this->factory->createResponse()->withJson($stream);
+        $response = $this->factory->createResponse()
+            ->withJson($stream);
 
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame([
@@ -198,7 +200,8 @@ final class ResponseTest extends TestCase
         $response = $this->factory->createResponse();
         $this->assertTrue($response->hasEmptyBody());
 
-        $response->getBody()->detach();
+        $response->getBody()
+            ->detach();
         $this->assertTrue($response->hasEmptyBody());
 
         $html_response = $this->factory->html('foobar');
@@ -224,7 +227,8 @@ final class ResponseTest extends TestCase
     {
         $response = $this->response->withCookie(new Cookie('foo', 'bar'));
 
-        $cookies = $response->cookies()->toHeaders();
+        $cookies = $response->cookies()
+            ->toHeaders();
         $this->assertCount(1, $cookies);
         $this->assertCount(0, $this->response->cookies()->toHeaders());
     }
@@ -236,7 +240,8 @@ final class ResponseTest extends TestCase
     {
         $response = $this->response->withoutCookie('foo');
 
-        $cookies = $response->cookies()->toHeaders();
+        $cookies = $response->cookies()
+            ->toHeaders();
         $this->assertCount(1, $cookies);
         $this->assertCount(0, $this->response->cookies()->toHeaders());
     }
@@ -247,7 +252,8 @@ final class ResponseTest extends TestCase
      */
     public function cookies_are_not_reset_in_nested_responses(): void
     {
-        $redirect_response = $this->factory->createResponse()->withCookie(new Cookie('foo', 'bar'));
+        $redirect_response = $this->factory->createResponse()
+            ->withCookie(new Cookie('foo', 'bar'));
 
         $response = new Response($redirect_response);
 
@@ -288,14 +294,11 @@ final class ResponseTest extends TestCase
             'biz' => 'boom',
         ]);
 
-        $this->assertSame(
-            [
-                'foo' => 'bar',
-                'bar' => 'baz',
-                'biz' => 'boom',
-            ],
-            $response_new->flashMessages()
-        );
+        $this->assertSame([
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'biz' => 'boom',
+        ], $response_new->flashMessages());
         $this->assertSame($arr, $response->flashMessages());
     }
 
@@ -325,14 +328,11 @@ final class ResponseTest extends TestCase
             'biz' => 'boom',
         ]);
 
-        $this->assertSame(
-            [
-                'foo' => 'bar',
-                'bar' => 'baz',
-                'biz' => 'boom',
-            ],
-            $response_new->oldInput()
-        );
+        $this->assertSame([
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'biz' => 'boom',
+        ], $response_new->oldInput());
         $this->assertSame($arr, $response->oldInput());
     }
 
@@ -357,15 +357,12 @@ final class ResponseTest extends TestCase
             'baz' => 'biz',
         ]);
 
-        $this->assertSame(
-            [
-                'default' => [
-                    'foo' => ['bar', 'baz'],
-                    'baz' => ['biz'],
-                ],
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar', 'baz'],
+                'baz' => ['biz'],
             ],
-            $response->errors()
-        );
+        ], $response->errors());
         $this->assertSame([], $this->response->errors());
 
         $response = $this->response->withErrors([
@@ -380,15 +377,12 @@ final class ResponseTest extends TestCase
                 'foo' => ['bar'],
             ],
         ], $response->errors());
-        $this->assertSame(
-            [
-                'default' => [
-                    'foo' => ['bar'],
-                    'bar' => ['baz'],
-                ],
+        $this->assertSame([
+            'default' => [
+                'foo' => ['bar'],
+                'bar' => ['baz'],
             ],
-            $response_new->errors()
-        );
+        ], $response_new->errors());
 
         $response = $this->response->withErrors([
             'foo' => 'bar',
@@ -422,13 +416,8 @@ final class ResponseTest extends TestCase
             ->withHeader('baz', 'biz');
 
         $this->assertSame([
-            'foo' => [
-                'bar1',
-                'bar2',
-            ],
-            'baz' => [
-                'biz',
-            ],
+            'foo' => ['bar1', 'bar2'],
+            'baz' => ['biz'],
         ], $response->getHeaders());
     }
 
@@ -452,7 +441,8 @@ final class ResponseTest extends TestCase
         $response = $this->response->withStatus(308);
         $this->assertTrue($response->isRedirect());
 
-        $response = $this->response->withStatus(301)->withHeader('location', '/foo');
+        $response = $this->response->withStatus(301)
+            ->withHeader('location', '/foo');
         $this->assertTrue($response->isRedirect('/foo'));
         $this->assertFalse($response->isRedirect('/bar'));
 

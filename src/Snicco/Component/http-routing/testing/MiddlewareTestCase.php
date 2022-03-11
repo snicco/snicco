@@ -118,19 +118,12 @@ abstract class MiddlewareTestCase extends TestCase
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
 
-        $this->response_utils = new ResponseUtils(
-            $url,
-            $this->response_factory,
-            $request
-        );
+        $this->response_utils = new ResponseUtils($url, $this->response_factory, $request);
 
         /** @var Response $response */
         $response = $middleware->process($request, $this->next());
 
-        return new MiddlewareTestResult(
-            $response,
-            $this->next_called
-        );
+        return new MiddlewareTestResult($response, $this->next_called);
     }
 
     final protected function receivedRequest(): Request
@@ -158,20 +151,12 @@ abstract class MiddlewareTestCase extends TestCase
 
     private function newUrlGenerator(Routes $routes, UrlGenerationContext $context): UrlGenerator
     {
-        return new Generator(
-            $routes,
-            $context,
-            WPAdminArea::fromDefaults(),
-            new RFC3986Encoder()
-        );
+        return new Generator($routes, $context, WPAdminArea::fromDefaults(), new RFC3986Encoder());
     }
 
     private function newResponseFactory(): ResponseFactory
     {
-        return new ResponseFactory(
-            $this->psrResponseFactory(),
-            $this->psrStreamFactory(),
-        );
+        return new ResponseFactory($this->psrResponseFactory(), $this->psrStreamFactory(),);
     }
 
     private function next(): NextMiddleware

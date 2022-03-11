@@ -44,10 +44,6 @@ final class MiddlewareRecursion extends InvalidArgumentException
         $trace = $this->build_trace;
         array_unshift($trace, $first);
 
-        return new self(
-            $trace,
-            $this->first_duplicate,
-            $this
-        );
+        return new self($trace, $this->first_duplicate, $this);
     }
 }

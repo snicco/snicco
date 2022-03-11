@@ -15,9 +15,8 @@ use function is_array;
 use function method_exists;
 
 /**
- * The test methods in this class are copied from
- * https://github.com/php-cache/integration-tests/blob/master/src/ We can't
- * extend the provided test case because we already need to extend WPTestCase.
+ * The test methods in this class are copied from https://github.com/php-cache/integration-tests/blob/master/src/ We
+ * can't extend the provided test case because we already need to extend WPTestCase.
  *
  * @see https://github.com/php-cache/integration-tests/issues/117
  *
@@ -135,7 +134,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $tags = $item->getPreviousTags();
         $this->assertTrue(is_array($tags));
         $this->assertCount(0, $tags);
@@ -159,7 +159,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $item->setTags(['tag0']);
         $this->assertCount(0, $item->getPreviousTags());
 
@@ -179,7 +180,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $this->expectException('Psr\Cache\InvalidArgumentException');
         $item->setTags(['']);
     }
@@ -197,7 +199,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $this->expectException('Psr\Cache\InvalidArgumentException');
         $item->setTags([$tag]);
     }
@@ -211,7 +214,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $item->setTags(['tag', 'tag', 'tag']);
         $this->cache->save($item);
         $item = $this->cache->getItem('key');
@@ -220,8 +224,8 @@ final class TaggingIntegrationTest extends WPTestCase
     }
 
     /**
-     * The tag must be removed whenever we remove an item. If not, when creating a new item
-     * with the same key will get the same tags.
+     * The tag must be removed whenever we remove an item. If not, when creating a new item with the same key will get
+     * the same tags.
      *
      * @test
      */
@@ -231,7 +235,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $item->setTags(['tag1']);
 
         // Save the item and then delete it
@@ -239,7 +244,8 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->cache->deleteItem('key');
 
         // Create a new item (same key) (no tags)
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $this->cache->save($item);
 
         // Clear the tag, The new item should not be cleared
@@ -259,7 +265,8 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $item->setTags(['tag1']);
         $this->cache->save($item);
 
@@ -267,7 +274,8 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->cache->clear();
 
         // Create a new item (no tags)
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $this->cache->save($item);
         $this->cache->invalidateTags(['tag1']);
 
@@ -283,10 +291,12 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $item->setTags(['tag1', 'tag2']);
         $this->cache->save($item);
-        $item = $this->cache->getItem('key2')->set('value');
+        $item = $this->cache->getItem('key2')
+            ->set('value');
         $item->setTags(['tag1']);
         $this->cache->save($item);
 
@@ -295,7 +305,8 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertTrue($this->cache->hasItem('key2'), 'Item should be cleared when tag is invalidated');
 
         // Create a new item (no tags)
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $this->cache->save($item);
         $this->cache->invalidateTags(['tag2']);
         $this->assertTrue($this->cache->hasItem('key'), 'Item key list should be removed when clearing the tags');
@@ -313,10 +324,12 @@ final class TaggingIntegrationTest extends WPTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $item->setTags(['tag1', 'tag2']);
         $this->cache->save($item);
-        $item = $this->cache->getItem('key2')->set('value');
+        $item = $this->cache->getItem('key2')
+            ->set('value');
         $item->setTags(['tag1']);
         $this->cache->save($item);
 
@@ -325,7 +338,8 @@ final class TaggingIntegrationTest extends WPTestCase
         $this->assertFalse($this->cache->hasItem('key2'), 'Item should be cleared when tag is invalidated');
 
         // Create a new item (no tags)
-        $item = $this->cache->getItem('key')->set('value');
+        $item = $this->cache->getItem('key')
+            ->set('value');
         $this->cache->save($item);
         $this->cache->invalidateTags(['tag1']);
 
@@ -344,7 +358,8 @@ final class TaggingIntegrationTest extends WPTestCase
         }
 
         $pool = $this->cache;
-        $i = $pool->getItem('key')->set('value');
+        $i = $pool->getItem('key')
+            ->set('value');
         $pool->save($i->setTags(['foo']));
         $i = $pool->getItem('key');
         $pool->save($i->setTags(['bar']));

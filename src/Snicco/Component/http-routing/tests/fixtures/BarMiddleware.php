@@ -21,7 +21,8 @@ class BarMiddleware extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()->write(':' . $this->bar);
+        $response->getBody()
+            ->write(':' . $this->bar);
 
         return $response;
     }

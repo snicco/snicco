@@ -170,10 +170,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
         $this->assertFailsWithMessageStarting(
-            sprintf(
-                'The event [%s] was dispatched but the provided condition did not pass.',
-                EventStub::class
-            ),
+            sprintf('The event [%s] was dispatched but the provided condition did not pass.', EventStub::class),
             function () {
                 $this->fake_dispatcher->assertDispatched(
                     EventStub::class,
@@ -207,10 +204,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
         $this->assertFailsWithMessageStarting(
-            sprintf(
-                'The event [%s] was dispatched but the provided condition did not pass',
-                EventStub::class
-            ),
+            sprintf('The event [%s] was dispatched but the provided condition did not pass', EventStub::class),
             function () {
                 $this->fake_dispatcher->assertDispatched(
                     function (EventStub $event_stub) {
@@ -234,11 +228,9 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('did not return bool');
 
-        $this->fake_dispatcher->assertDispatched(
-            function (EventStub $event_stub) {
-                return '1';
-            }
-        );
+        $this->fake_dispatcher->assertDispatched(function (EventStub $event_stub) {
+            return '1';
+        });
     }
 
     /**
@@ -297,12 +289,9 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['BAR']));
 
-        $this->fake_dispatcher->assertNotDispatched(
-            'foo_event',
-            function ($val) {
-                return 'FOO' === $val;
-            }
-        );
+        $this->fake_dispatcher->assertNotDispatched('foo_event', function ($val) {
+            return 'FOO' === $val;
+        });
     }
 
     /**

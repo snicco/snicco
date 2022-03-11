@@ -39,9 +39,7 @@ final class RouteTest extends TestCase
     public function test_exception_if_name_contains_whitespace(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Route name for route [my route] should not contain whitespaces.'
-        );
+        $this->expectExceptionMessage('Route name for route [my route] should not contain whitespaces.');
         Route::create('/foobar', RoutingTestController::class, 'my route');
     }
 
@@ -208,9 +206,7 @@ final class RouteTest extends TestCase
     public function test_exception_if_duplicate_required_segment_names(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Route segment names have to be unique but 1 of them is duplicated.'
-        );
+        $this->expectExceptionMessage('Route segment names have to be unique but 1 of them is duplicated.');
 
         Route::create('/foo/{bar}/{bar}', Route::DELEGATE);
     }
@@ -221,9 +217,7 @@ final class RouteTest extends TestCase
     public function test_exception_if_duplicate_optional_segment_names(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Route segment names have to be unique but 1 of them is duplicated.'
-        );
+        $this->expectExceptionMessage('Route segment names have to be unique but 1 of them is duplicated.');
 
         Route::create('/foo/{bar?}/{bar?}', Route::DELEGATE);
     }
@@ -234,9 +228,7 @@ final class RouteTest extends TestCase
     public function test_exception_if_duplicate_required_and_optional_segment_names(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Route segment names have to be unique but 1 of them is duplicated.'
-        );
+        $this->expectExceptionMessage('Route segment names have to be unique but 1 of them is duplicated.');
 
         Route::create('/foo/{bar}/{bar?}', Route::DELEGATE);
     }
@@ -252,9 +244,7 @@ final class RouteTest extends TestCase
             'bar' => '\d+',
         ]);
 
-        $this->expectExceptionMessage(
-            'Expected one of the valid segment names: ["bar"]. Got: ["bogus"].'
-        );
+        $this->expectExceptionMessage('Expected one of the valid segment names: ["bar"]. Got: ["bogus"].');
         $route->requirements([
             'bogus' => '\d+',
         ]);
@@ -270,9 +260,7 @@ final class RouteTest extends TestCase
         $route->requirements([
             'bar' => '\d+',
         ]);
-        $this->expectExceptionMessage(
-            'Requirement for segment [bar] can not be overwritten.'
-        );
+        $this->expectExceptionMessage('Requirement for segment [bar] can not be overwritten.');
         $route->requirements([
             'bar' => '\w+',
         ]);
@@ -311,10 +299,7 @@ final class RouteTest extends TestCase
             $this->fail('No exception thrown for bad route condition class.');
         } catch (InvalidArgumentException $e) {
             $this->assertStringStartsWith(
-                sprintf(
-                    'A condition has to be an instance of [%s].',
-                    RouteCondition::class
-                ),
+                sprintf('A condition has to be an instance of [%s].', RouteCondition::class),
                 $e->getMessage()
             );
         }
@@ -413,10 +398,7 @@ final class RouteTest extends TestCase
         $route->middleware('foo:arg1');
         $route->middleware('bar');
 
-        $this->assertSame([
-            'foo:arg1',
-            'bar',
-        ], $route->getMiddleware());
+        $this->assertSame(['foo:arg1', 'bar'], $route->getMiddleware());
     }
 
     /**

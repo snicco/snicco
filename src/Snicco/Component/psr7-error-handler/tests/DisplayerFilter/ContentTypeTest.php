@@ -44,19 +44,11 @@ final class ContentTypeTest extends TestCase
         $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
         $request = new ServerRequest('GET', '/foo');
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'text/plain'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
 
         $this->assertSame([$d1, $d2], array_values($filtered));
 
-        $filtered = $filter->filter(
-            $displayers,
-            $request->withHeader('Accept', 'application/json'),
-            $info,
-        );
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'application/json'), $info,);
 
         $this->assertSame([$d3, $d4], array_values($filtered));
     }
@@ -67,10 +59,7 @@ final class ContentTypeTest extends TestCase
     public function the_content_type_is_only_parsed_for_the_first_mime_type(): void
     {
         $filter = new ContentType();
-        $displayers = [
-            $d1 = new PlaintTextExceptionDisplayer1(),
-            $d2 = new JsonExceptionDisplayer1(),
-        ];
+        $displayers = [$d1 = new PlaintTextExceptionDisplayer1(), $d2 = new JsonExceptionDisplayer1()];
 
         $e = new RuntimeException();
         $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);

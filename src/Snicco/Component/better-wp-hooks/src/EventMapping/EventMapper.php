@@ -60,8 +60,8 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE
-     * any other callbacks are run for the hook.
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched BEFORE any other callbacks are
+     * run for the hook.
      *
      * @param class-string<MappedHook> $map_to_event_class
      */
@@ -72,8 +72,8 @@ final class EventMapper
     }
 
     /**
-     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all
-     * other callbacks are run for the hook.
+     * Map a WordPress hook to a dedicated event class which will ALWAYS be dispatched AFTER all other callbacks are run
+     * for the hook.
      *
      * @param class-string<MappedHook> $map_to
      */
@@ -131,20 +131,10 @@ final class EventMapper
     private function mapValidated(string $wordpress_hook_name, string $map_to, int $priority): void
     {
         if (isset($this->mapped_actions[$wordpress_hook_name][$map_to])) {
-            $this->wp->addAction(
-                $wordpress_hook_name,
-                $this->dispatchMappedAction($map_to),
-                $priority,
-                9999
-            );
+            $this->wp->addAction($wordpress_hook_name, $this->dispatchMappedAction($map_to), $priority, 9999);
         } else {
             /** @var class-string<MappedFilter> $map_to */
-            $this->wp->addFilter(
-                $wordpress_hook_name,
-                $this->dispatchMappedFilter($map_to),
-                $priority,
-                9999
-            );
+            $this->wp->addFilter($wordpress_hook_name, $this->dispatchMappedFilter($map_to), $priority, 9999);
         }
     }
 
@@ -162,10 +152,7 @@ final class EventMapper
                 array_shift($args_from_wordpress_hooks);
             }
 
-            $event = $this->event_factory->make(
-                $event_class,
-                $args_from_wordpress_hooks
-            );
+            $event = $this->event_factory->make($event_class, $args_from_wordpress_hooks);
 
             if (! $event->shouldDispatch()) {
                 // We don't need to return any values here.
@@ -185,10 +172,7 @@ final class EventMapper
     private function dispatchMappedFilter(string $event_class): Closure
     {
         return function (...$args_from_wordpress_hooks) use ($event_class) {
-            $event = $this->event_factory->make(
-                $event_class,
-                $args_from_wordpress_hooks
-            );
+            $event = $this->event_factory->make($event_class, $args_from_wordpress_hooks);
 
             if (! isset($args_from_wordpress_hooks[0])) {
                 // @codeCoverageIgnoreStart

@@ -581,11 +581,9 @@ final class InteractsWithInputTest extends TestCase
                 'bar' => null,
                 'baz' => '',
             ],
-        ])->withParsedBody(
-            [
-                'boom' => 'bam',
-            ]
-        );
+        ])->withParsedBody([
+            'boom' => 'bam',
+        ]);
         $this->assertFalse($request->missing('foo.bar'));
         $this->assertFalse($request->missing('foo.baz'));
         $this->assertTrue($request->missing('foo.bax'));

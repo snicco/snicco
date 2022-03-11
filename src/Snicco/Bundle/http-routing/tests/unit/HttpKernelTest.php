@@ -26,10 +26,7 @@ final class HttpKernelTest extends TestCase
      */
     public function test_exception_if_no_response_is_returned_in_middleware_pipeline(): void
     {
-        $pipeline = new MiddlewarePipeline(
-            new PimpleContainerAdapter(),
-            new TestErrorHandler()
-        );
+        $pipeline = new MiddlewarePipeline(new PimpleContainerAdapter(), new TestErrorHandler());
 
         $http_kernel = new HttpKernel(
             $pipeline,

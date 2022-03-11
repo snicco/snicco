@@ -74,27 +74,16 @@ final class RFC3986Encoder implements UrlEncoder
             return '';
         }
 
-        $encoded_query = http_build_query(
-            $query,
-            '',
-            '&',
-            PHP_QUERY_RFC3986
-        );
+        $encoded_query = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
 
-        $allowed_in_query = array_diff(
-            self::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA,
-            $this->query_special
-        );
+        $allowed_in_query = array_diff(self::RFC3986_PCHARS + self::QUERY_FRAGMENT_EXTRA, $this->query_special);
 
         return strtr($encoded_query, array_flip($allowed_in_query));
     }
 
     public function encodePath(string $path): string
     {
-        $path = implode(
-            '/',
-            array_map('rawurlencode', explode('/', $path))
-        );
+        $path = implode('/', array_map('rawurlencode', explode('/', $path)));
 
         return strtr($path, array_flip(self::RFC3986_PCHARS));
     }

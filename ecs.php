@@ -19,6 +19,8 @@ use PhpCsFixer\Fixer\PhpUnit\PhpUnitTestClassRequiresCoversFixer;
 use PhpCsFixer\Fixer\Semicolon\MultilineWhitespaceBeforeSemicolonsFixer;
 use PhpCsFixer\Fixer\Whitespace\NoExtraBlankLinesFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symplify\CodingStandard\Fixer\LineLength\DocBlockLineLengthFixer;
+use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -36,6 +38,17 @@ return static function (ContainerConfigurator $configurator): void {
 
     // Import base rules.
     $configurator->import(SetList::PHP_CS_FIXER);
+    // Import base rules
+    $configurator->import(SetList::PHP_CS_FIXER_RISKY);
+    $configurator->import(SetList::PSR_12);
+    $configurator->import(SetList::SPACES);
+    $configurator->import(SetList::ARRAY);
+    $configurator->import(SetList::DOCBLOCK);
+    $configurator->import(SetList::CLEAN_CODE);
+    $configurator->import(SetList::NAMESPACES);
+    $configurator->import(SetList::STRICT);
+    $configurator->import(SetList::COMMENTS);
+    $configurator->import(SetList::SYMPLIFY);
 
     // We don't use @covers annotations.
     $services->remove(PhpUnitTestClassRequiresCoversFixer::class);
@@ -89,35 +102,25 @@ return static function (ContainerConfigurator $configurator): void {
         ],
     ]);
 
-    // Import base rules
-    $configurator->import(SetList::PHP_CS_FIXER_RISKY);
-
     // Test methods should have an annotation and not be prefixed with "test_"
     $services->set(PhpUnitTestAnnotationFixer::class)->call('configure', [
         [
             'style' => 'annotation',
         ],
     ]);
+
     // Assertions should be called with $this instead of self::
     $services->set(PhpUnitTestCaseStaticMethodCallsFixer::class)->call('configure', [
         [
             'call_type' => 'this',
         ],
     ]);
+
     // This breaks assertions that compare object equality but not reference.
     $services->remove(PhpUnitStrictFixer::class);
 
     // Allow class names inside same class
     $services->remove(SelfAccessorFixer::class);
-
-    $configurator->import(SetList::PSR_12);
-    $configurator->import(SetList::SPACES);
-    $configurator->import(SetList::ARRAY);
-    $configurator->import(SetList::DOCBLOCK);
-    $configurator->import(SetList::CLEAN_CODE);
-    $configurator->import(SetList::NAMESPACES);
-    $configurator->import(SetList::STRICT);
-    $configurator->import(SetList::COMMENTS);
 
     // Only echo, no print.
     $services->set(NoMixedEchoPrintFixer::class);
@@ -128,6 +131,7 @@ return static function (ContainerConfigurator $configurator): void {
             'imports_order' => ['class', 'function', 'const'],
         ],
     ]);
+
     $services->set(GlobalNamespaceImportFixer::class)->call('configure', [
         [
             'import_classes' => true,
@@ -151,6 +155,22 @@ return static function (ContainerConfigurator $configurator): void {
             ],
         ]
     );
+
     $services->set(PhpdocNoUselessInheritdocFixer::class);
+
     $services->set(NoUnusedImportsFixer::class);
+
+    $services->set(LineLengthFixer::class)->call('configure', [
+        [
+            LineLengthFixer::LINE_LENGTH => 120,
+            LineLengthFixer::BREAK_LONG_LINES => true,
+            LineLengthFixer::INLINE_SHORT_LINES => true,
+        ],
+    ]);
+
+    $services->set(DocBlockLineLengthFixer::class)->call('configure', [
+        [
+            DocBlockLineLengthFixer::LINE_LENGTH => 100,
+        ],
+    ]);
 };

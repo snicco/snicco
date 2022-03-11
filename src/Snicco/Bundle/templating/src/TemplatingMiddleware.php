@@ -37,11 +37,10 @@ final class TemplatingMiddleware extends Middleware
             return $response;
         }
 
-        $body = $this->getViewEngine()->render($response->view(), $response->viewData());
+        $body = $this->getViewEngine()
+            ->render($response->view(), $response->viewData());
 
-        return (new Response($response))->withBody(
-            $this->responseFactory()->createStream($body)
-        );
+        return (new Response($response))->withBody($this->responseFactory()->createStream($body));
     }
 
     private function getViewEngine(): ViewEngine

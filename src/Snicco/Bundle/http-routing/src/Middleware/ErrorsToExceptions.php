@@ -16,9 +16,8 @@ use const E_DEPRECATED;
 use const E_USER_DEPRECATED;
 
 /**
- * This middleware will convert all errors that are not deprecations to proper exceptions.
- * However, this only happens inside the middleware pipeline meaning that other WordPress that we can't control nor change
- * is unaffected by this.
+ * This middleware will convert all errors that are not deprecations to proper exceptions. However, this only happens
+ * inside the middleware pipeline meaning that other WordPress that we can't control nor change is unaffected by this.
  */
 final class ErrorsToExceptions implements MiddlewareInterface
 {

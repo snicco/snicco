@@ -82,12 +82,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         $this->validateThatNoAdminPrefixesAreSet($path, $name);
 
-        $route = $this->createRoute(
-            $name,
-            $this->admin_dashboard_prefix->appendPath($path),
-            ['GET'],
-            $action
-        );
+        $route = $this->createRoute($name, $this->admin_dashboard_prefix->appendPath($path), ['GET'], $action);
         $route->condition(IsAdminDashboardRequest::class);
 
         $this->validateThatAdminRouteHasNoSegments($route);
@@ -109,12 +104,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     public function subPages(Route $parent_route, Closure $routes): void
     {
         if (isset($this->current_parent_route)) {
-            throw new BadRouteConfiguration(
-                sprintf(
-                    'Nested calls to [%s] are not possible.',
-                    __METHOD__
-                )
-            );
+            throw new BadRouteConfiguration(sprintf('Nested calls to [%s] are not possible.', __METHOD__));
         }
 
         $this->current_parent_route = $parent_route;
@@ -299,16 +289,9 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     public function fallback(
         $fallback_action,
-        array $dont_match_request_including = [
-            'favicon',
-            'robots',
-            'sitemap',
-        ]
+        array $dont_match_request_including = ['favicon', 'robots', 'sitemap']
     ): Route {
-        Assert::allString(
-            $dont_match_request_including,
-            'All fallback excludes have to be strings.'
-        );
+        Assert::allString($dont_match_request_including, 'All fallback excludes have to be strings.');
 
         $dont_match_request_including[] = trim($this->admin_dashboard_prefix->asString(), '/');
 
@@ -346,10 +329,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     {
         $prefix = $this->admin_dashboard_prefix->asString();
         if (UrlPath::fromString($path)->startsWith($prefix)) {
-            throw BadRouteConfiguration::becauseAdminRouteWasAddedWithHardcodedPrefix(
-                $name,
-                $prefix
-            );
+            throw BadRouteConfiguration::becauseAdminRouteWasAddedWithHardcodedPrefix($name, $prefix);
         }
     }
 
@@ -418,7 +398,8 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         }
 
         if ($parent_slug instanceof AdminMenuItem) {
-            $parent_slug = $parent_slug->slug()->asString();
+            $parent_slug = $parent_slug->slug()
+                ->asString();
         }
 
         $menu_item = AdminMenuItem::fromRoute($route, $attributes, $parent_slug);
@@ -435,9 +416,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         }
 
         if (! is_string($parent) && ! $parent instanceof Route) {
-            throw new BadRouteConfiguration(
-                '$parent has to be a string or an instance of Route.'
-            );
+            throw new BadRouteConfiguration('$parent has to be a string or an instance of Route.');
         }
 
         if (isset($this->current_parent_route)) {
@@ -468,7 +447,8 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function validateSlugCompatibility($parent_item, Route $child_route): void
     {
         if ($parent_item instanceof AdminMenuItem) {
-            $parent_slug = $parent_item->slug()->asString();
+            $parent_slug = $parent_item->slug()
+                ->asString();
             $compare_against = Str::beforeLast($parent_slug, '/');
         } else {
             $parent_slug = $parent_item;
@@ -521,13 +501,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $name = $this->applyGroupName($name);
         $namespace = $this->applyGroupNamespace();
 
-        $route = Route::create(
-            $path->asString(),
-            $controller,
-            $name,
-            $methods,
-            $namespace
-        );
+        $route = Route::create($path->asString(), $controller, $name, $methods, $namespace);
 
         $this->addGroupAttributes($route);
 

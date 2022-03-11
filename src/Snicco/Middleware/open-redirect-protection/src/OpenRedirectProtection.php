@@ -106,8 +106,9 @@ final class OpenRedirectProtection extends Middleware
         if (! $target && isset($parsed['path'])) {
             return true;
         }
+        $uri = $request->getUri();
 
-        return $request->getUri()->getHost() === $target;
+        return $uri->getHost() === $target;
     }
 
     private function isWhitelisted(string $host): bool
@@ -123,8 +124,9 @@ final class OpenRedirectProtection extends Middleware
 
     private function forbiddenRedirect(string $location): RedirectResponse
     {
-        return $this->respondWith()->redirectTo($this->exit_path, 302, [
-            'intended_redirect' => $location,
-        ]);
+        return $this->respondWith()
+            ->redirectTo($this->exit_path, 302, [
+                'intended_redirect' => $location,
+            ]);
     }
 }

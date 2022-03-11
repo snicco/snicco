@@ -56,9 +56,7 @@ class Response implements ResponseInterface
 
     final public function withAddedHeader($name, $value)
     {
-        return $this->new(
-            $this->psr7_response->withAddedHeader($name, $value)
-        );
+        return $this->new($this->psr7_response->withAddedHeader($name, $value));
     }
 
     final public function withHeader($name, $value)
@@ -278,7 +276,8 @@ class Response implements ResponseInterface
      */
     final public function withJson(StreamInterface $json)
     {
-        return $this->withHeader('Content-Type', 'application/json')->withBody($json);
+        return $this->withHeader('Content-Type', 'application/json')
+            ->withBody($json);
     }
 
     final public function isRedirect(string $location = null): bool

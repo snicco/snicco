@@ -76,10 +76,7 @@ final class MiddlewareFactoryTest extends TestCase
         $bar->value = 'BAR_CHANGED';
 
         $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies(
-                $foo,
-                $bar
-            );
+            return new MiddlewareWithDependencies($foo, $bar);
         };
 
         $m = $this->factory->create(MiddlewareWithDependencies::class, [
@@ -109,7 +106,7 @@ final class MiddlewareFactoryTest extends TestCase
      * @test
      */
     public function a_middleware_that_needs_both_constructor_args_and_runtime_args_can_be_returned_as_closure_from_the_container(
-    ): void {
+        ): void {
         $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(
             function (string $bar, string $baz) {
                 return new MiddlewareWithContextualAndRuntimeArgs(new Foo(), $bar, $baz);
@@ -146,10 +143,7 @@ final class MiddlewareFactoryTest extends TestCase
             )
         );
 
-        $this->factory->create(
-            MiddlewareWithContextualAndRuntimeArgs::class,
-            ['BAR_PASSED', 'BAZ_PASSED']
-        );
+        $this->factory->create(MiddlewareWithContextualAndRuntimeArgs::class, ['BAR_PASSED', 'BAZ_PASSED']);
     }
 }
 

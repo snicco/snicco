@@ -26,7 +26,7 @@ final class WPEventDispatcherTest extends WPTestCase
      * @test
      */
     public function if_event_objects_implement_expose_to_wp_they_are_passed_to_the_wp_hook_system_after_the_internal_dispatcher(
-    ): void {
+        ): void {
         add_filter(
             FilterEvent::class,
             function (FilterEvent $event) {
@@ -228,9 +228,7 @@ final class WPEventDispatcherTest extends WPTestCase
 
     private function getDispatcher(): WPEventDispatcher
     {
-        return new WPEventDispatcher(
-            new BaseEventDispatcher()
-        );
+        return new WPEventDispatcher(new BaseEventDispatcher());
     }
 }
 

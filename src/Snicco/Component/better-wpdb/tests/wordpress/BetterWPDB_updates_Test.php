@@ -355,26 +355,18 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             'test_int' => 10,
         ]);
 
-        $res = $this->better_wpdb->update(
-            'test_table',
-            [
-                'test_int' => 20,
-            ],
-            [
-                'test_bool' => true,
-            ]
-        );
+        $res = $this->better_wpdb->update('test_table', [
+            'test_int' => 20,
+        ], [
+            'test_bool' => true,
+        ]);
         $this->assertSame(0, $res);
 
-        $res = $this->better_wpdb->update(
-            'test_table',
-            [
-                'test_int' => 10,
-            ],
-            [
-                'test_bool' => true,
-            ]
-        );
+        $res = $this->better_wpdb->update('test_table', [
+            'test_int' => 10,
+        ], [
+            'test_bool' => true,
+        ]);
         $this->assertSame(2, $res);
 
         $this->assertRecord(1, [
@@ -390,15 +382,11 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             'test_bool' => 1,
         ]);
 
-        $res = $this->better_wpdb->update(
-            'test_table',
-            [
-                'test_float' => null,
-            ],
-            [
-                'test_float' => 20.00,
-            ]
-        );
+        $res = $this->better_wpdb->update('test_table', [
+            'test_float' => null,
+        ], [
+            'test_float' => 20.00,
+        ]);
         $this->assertSame(2, $res);
 
         $this->assertRecord(1, [
@@ -414,15 +402,11 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
             'test_bool' => 1,
         ]);
 
-        $res = $this->better_wpdb->update(
-            'test_table',
-            [
-                'test_float' => null,
-            ],
-            [
-                'test_float' => 20.00,
-            ]
-        );
+        $res = $this->better_wpdb->update('test_table', [
+            'test_float' => null,
+        ], [
+            'test_float' => 20.00,
+        ]);
         $this->assertSame(0, $res);
     }
 

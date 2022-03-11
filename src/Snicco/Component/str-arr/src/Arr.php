@@ -142,9 +142,9 @@ class Arr
     }
 
     /**
-     * Remove one or many array items from a given array using "dot" notation.
-     * Do not use this function if you $array is multidimensional and has keys that contain "."
-     * themselves.
+     * Remove one or many array items from a given array using "dot" notation. Do not use this function if you $array is
+     * multidimensional and has keys that contain "." themselves.
+     *
      * {@see https://github.com/laravel/framework/blob/v8.35.1/tests/Support/SupportArrTest.php#L877}.
      *
      * @param array           $array Passed by reference
@@ -350,9 +350,8 @@ class Arr
     }
 
     /**
-     * Get a value from the array, and remove it.
-     * This function has the same limitation as Arr::forget().
-     * Check the corresponding docblock in {@see Arr::forget}.
+     * Get a value from the array, and remove it. This function has the same limitation as Arr::forget(). Check the
+     * corresponding docblock in {@see Arr::forget}.
      *
      * @param mixed $default
      *

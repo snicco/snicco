@@ -372,10 +372,7 @@ final class ReadWriteSession implements Session
                 $this->userId(),
             );
 
-            $driver->write(
-                $this->id->selector(),
-                $serialized_session
-            );
+            $driver->write($this->id->selector(), $serialized_session);
         }
 
         $this->lock();

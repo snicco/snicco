@@ -45,7 +45,8 @@ final class WPAdminMenuTest extends WPTestCase
          * @var WP_UnitTest_Factory_For_User
          * @psalm-suppress MixedPropertyFetch
          */
-        $user_factory = $this->factory()->user;
+        $user_factory = $this->factory()
+            ->user;
 
         /** @var WP_User $user */
         $user = $user_factory->create_and_get([
@@ -65,7 +66,8 @@ final class WPAdminMenuTest extends WPTestCase
         $submenu = [];
 
         /** @var WPAdminMenu $wp_admin_menu */
-        $wp_admin_menu = $this->kernel->container()->make(WPAdminMenu::class);
+        $wp_admin_menu = $this->kernel->container()
+            ->make(WPAdminMenu::class);
 
         $wp_admin_menu->setUp();
 
@@ -86,7 +88,8 @@ final class WPAdminMenuTest extends WPTestCase
         $submenu = [];
 
         /** @var WPAdminMenu $wp_admin_menu */
-        $wp_admin_menu = $this->kernel->container()->make(WPAdminMenu::class);
+        $wp_admin_menu = $this->kernel->container()
+            ->make(WPAdminMenu::class);
 
         $wp_admin_menu->setUp();
 

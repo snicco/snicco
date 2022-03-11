@@ -18,9 +18,7 @@ return function (WebRoutingConfigurator $router) {
         'session-counter',
         '/increment-counter',
         [WebTestCaseController::class, 'incrementCounter']
-    )->middleware(
-        StatefulRequest::class
-    );
+    )->middleware(StatefulRequest::class);
     $router->post('body-as-json', '/body-as-json', [WebTestCaseController::class, 'bodyAsJson']);
     $router->post('files-as-json', '/files-as-json', [WebTestCaseController::class, 'filesAsJson']);
     $router->post('send-mail', '/send-mail', [WebTestCaseController::class, 'sendMail']);

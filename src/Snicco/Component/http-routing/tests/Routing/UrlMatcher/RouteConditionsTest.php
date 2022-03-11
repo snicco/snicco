@@ -30,10 +30,13 @@ final class RouteConditionsTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo');
-        $this->runNewPipeline($request)->assertOk()->assertSeeText(RoutingTestController::static);
+        $this->runNewPipeline($request)
+            ->assertOk()
+            ->assertSeeText(RoutingTestController::static);
 
         $request = $this->frontendRequest('/bar');
-        $this->runNewPipeline($request)->assertDelegated();
+        $this->runNewPipeline($request)
+            ->assertDelegated();
     }
 
     /**
@@ -52,7 +55,8 @@ final class RouteConditionsTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/foo/bar');
 
         // The static route does not match due to the failing condition.
-        $this->runNewPipeline($request)->assertSeeText('dynamic:bar');
+        $this->runNewPipeline($request)
+            ->assertSeeText('dynamic:bar');
     }
 
     /**
@@ -75,12 +79,14 @@ final class RouteConditionsTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo', [], 'POST');
-        $this->runNewPipeline($request)->assertDelegated();
+        $this->runNewPipeline($request)
+            ->assertDelegated();
 
         $this->assertSame(1, $GLOBALS['test']['maybe_condition_run']);
 
         $request = $this->frontendRequest('/bar', [], 'POST');
-        $this->runNewPipeline($request)->assertOk();
+        $this->runNewPipeline($request)
+            ->assertOk();
 
         $this->assertSame(2, $GLOBALS['test']['maybe_condition_run']);
     }

@@ -97,7 +97,8 @@ final class WPEloquentStandaloneTest extends WPTestCase
      */
     public function events_can_be_activated(): void
     {
-        ($eloquent = new WPEloquentStandalone())->bootstrap();
+        ($eloquent = new WPEloquentStandalone())
+            ->bootstrap();
 
         $this->assertNull(Eloquent::getEventDispatcher());
         $eloquent->withEvents($d = new \Illuminate\Events\Dispatcher());
@@ -176,10 +177,7 @@ final class WPEloquentStandaloneTest extends WPTestCase
     {
         (new WPEloquentStandalone($this->secondDatabaseConfig()))->bootstrap();
 
-        $this->assertInstanceOf(
-            DatabaseTransactionsManager::class,
-            Container::getInstance()['db.transactions']
-        );
+        $this->assertInstanceOf(DatabaseTransactionsManager::class, Container::getInstance()['db.transactions']);
     }
 
     /**
@@ -194,8 +192,11 @@ final class WPEloquentStandaloneTest extends WPTestCase
         // The laravel Schema Builder.
         $this->assertInstanceOf(\Illuminate\Database\Schema\Builder::class, $schema);
 
-        'mysql2' === $schema->getConnection()->getName();
-        'mysql' === $schema->getConnection()->getConfig('driver');
-        'sniccowp_testing_secondary' === $schema->getConnection()->getConfig('database');
+        'mysql2' === $schema->getConnection()
+            ->getName();
+        'mysql' === $schema->getConnection()
+            ->getConfig('driver');
+        'sniccowp_testing_secondary' === $schema->getConnection()
+            ->getConfig('database');
     }
 }

@@ -46,7 +46,8 @@ final class Authorize implements MiddlewareInterface
             403,
             sprintf(
                 'Authorization failed for path [%s] with required capability [%s].',
-                $request->getUri()->getPath(),
+                $request->getUri()
+                    ->getPath(),
                 $this->capability
             )
         );

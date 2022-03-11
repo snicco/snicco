@@ -62,8 +62,7 @@ final class ResponseUtils
     }
 
     /**
-     * Tries to create a redirect response to a "home" route and falls back to "/" if no home route
-     * exists.
+     * Tries to create a redirect response to a "home" route and falls back to "/" if no home route exists.
      *
      * @param array<string,int|string> $arguments
      */
@@ -97,8 +96,7 @@ final class ResponseUtils
     }
 
     /**
-     * Redirects to the exact provided location and sets the response to allow
-     * bypassing external redirect protection.
+     * Redirects to the exact provided location and sets the response to allow bypassing external redirect protection.
      *
      * NEVER use this method with a user-provided location.
      */

@@ -55,7 +55,8 @@ class WPDatabaseSettingsAPI extends BetterWPAPI
 
     public function tablePrefix(): string
     {
-        return $this->wpdb()->prefix;
+        return $this->wpdb()
+            ->prefix;
     }
 
     public function wpdb(): wpdb
@@ -68,7 +69,8 @@ class WPDatabaseSettingsAPI extends BetterWPAPI
         try {
             // This is a protected property in wpdb, but it has __get() access.
             /** @var mysqli $mysqli */
-            return $this->wpdb()->dbh;
+            return $this->wpdb()
+                ->dbh;
         } catch (Throwable $e) {
             // @codeCoverageIgnoreStart
 

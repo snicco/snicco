@@ -53,8 +53,6 @@ final class BadRouteConfiguration extends LogicException
 
     public static function becauseAdminRouteHasSegments(string $name): BadRouteConfiguration
     {
-        return new self(
-            "Admin routes can not define route parameters.\nViolating route [{$name}]."
-        );
+        return new self("Admin routes can not define route parameters.\nViolating route [{$name}].");
     }
 }

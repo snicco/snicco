@@ -15,7 +15,8 @@ final class MiddlewareOne extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()->write(':middleware_one');
+        $response->getBody()
+            ->write(':middleware_one');
 
         return $response;
     }

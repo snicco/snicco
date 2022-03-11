@@ -26,11 +26,7 @@ final class JsonSerializer implements Serializer
         $decoded = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         if (! is_array($decoded)) {
             throw new InvalidArgumentException(
-                sprintf(
-                    __METHOD__ . " must return an array.\nGot [%s] for data [%s]",
-                    gettype($decoded),
-                    $data
-                )
+                sprintf(__METHOD__ . " must return an array.\nGot [%s] for data [%s]", gettype($decoded), $data)
             );
         }
 

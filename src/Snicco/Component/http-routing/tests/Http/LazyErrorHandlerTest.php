@@ -74,16 +74,15 @@ final class LazyErrorHandlerTest extends TestCase
         $count = 0;
 
         $real_handler = new TestableErrorHandler(function () {
-            $response = $this->psrResponseFactory()->createResponse(500);
-            $response->getBody()->write('foo error');
+            $response = $this->psrResponseFactory()
+                ->createResponse(500);
+            $response->getBody()
+                ->write('foo error');
 
             return $response;
         });
 
-        $this->pimple[HttpErrorHandler::class] = function () use (
-            &$count,
-            $real_handler
-        ): TestableErrorHandler {
+        $this->pimple[HttpErrorHandler::class] = function () use (&$count, $real_handler): TestableErrorHandler {
             ++$count;
 
             return $real_handler;
@@ -93,7 +92,8 @@ final class LazyErrorHandlerTest extends TestCase
 
         $response = $lazy_handler->handle(
             new Exception('secret stuff'),
-            $this->psrServerRequestFactory()->createServerRequest('GET', '/foo')
+            $this->psrServerRequestFactory()
+                ->createServerRequest('GET', '/foo')
         );
 
         $this->assertSame(500, $response->getStatusCode());

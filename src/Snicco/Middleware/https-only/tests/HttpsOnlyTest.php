@@ -24,7 +24,8 @@ final class HttpsOnlyTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -39,7 +40,8 @@ final class HttpsOnlyTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
 
         $response->assertNextMiddlewareNotCalled();
-        $response->assertableResponse()->assertRedirect('https://foobar.com/foo/bar', 301);
+        $response->assertableResponse()
+            ->assertRedirect('https://foobar.com/foo/bar', 301);
     }
 
     /**
@@ -54,6 +56,7 @@ final class HttpsOnlyTest extends MiddlewareTestCase
         $response = $this->runMiddleware($middleware, $request);
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 }

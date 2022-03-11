@@ -51,11 +51,7 @@ final class Reflector
 
         if (! $class_exists) {
             throw new InvalidArgumentException(
-                sprintf(
-                    $message ?: "Expected class-string<%s>\nGot: [%s].",
-                    $expected_interface,
-                    $class_string
-                )
+                sprintf($message ?: "Expected class-string<%s>\nGot: [%s].", $expected_interface, $class_string)
             );
         }
 
@@ -66,11 +62,7 @@ final class Reflector
         }
 
         throw new InvalidArgumentException(
-            sprintf(
-                $message ?: "Expected class-string<%s>\nGot: [%s].",
-                $expected_interface,
-                $class_string
-            )
+            sprintf($message ?: "Expected class-string<%s>\nGot: [%s].", $expected_interface, $class_string)
         );
     }
 

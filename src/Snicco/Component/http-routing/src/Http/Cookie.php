@@ -127,9 +127,7 @@ final class Cookie
         }
 
         if (! in_array($same_site, ['Lax', 'Strict', 'None'], true)) {
-            throw new LogicException(
-                "The value [{$same_site}] is not supported for the SameSite cookie."
-            );
+            throw new LogicException("The value [{$same_site}] is not supported for the SameSite cookie.");
         }
 
         $cookie = clone $this;
@@ -149,9 +147,7 @@ final class Cookie
     public function withExpiryTimestamp($timestamp): Cookie
     {
         if (! is_int($timestamp) && ! $timestamp instanceof DateTimeImmutable) {
-            throw new InvalidArgumentException(
-                '$timestamp must be an integer or DataTimeInterface'
-            );
+            throw new InvalidArgumentException('$timestamp must be an integer or DataTimeInterface');
         }
 
         $timestamp = $timestamp instanceof DateTimeInterface

@@ -57,10 +57,7 @@ final class Mailer
         $mail = $event->email;
         $mail = $this->prepareAndValidate($mail);
 
-        $envelope = new Envelope(
-            $this->determineSender($mail),
-            $this->mergeRecipientsFromHeaders($mail)
-        );
+        $envelope = new Envelope($this->determineSender($mail), $this->mergeRecipientsFromHeaders($mail));
 
         $this->transport->send($mail, $envelope);
 
@@ -126,7 +123,8 @@ final class Mailer
             return $sender;
         }
 
-        $from = $mail->from()->toArray();
+        $from = $mail->from()
+            ->toArray();
 
         if (count($from)) {
             return $from[0];

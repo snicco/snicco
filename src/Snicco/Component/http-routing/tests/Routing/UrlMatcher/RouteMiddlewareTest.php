@@ -66,25 +66,17 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group(): void
     {
         $this->withMiddlewareGroups([
-            'group1' => [
-                FooMiddleware::class,
-                BarMiddleware::class,
-            ],
+            'group1' => [FooMiddleware::class, BarMiddleware::class],
         ]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                'group1'
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('group1');
         });
 
         $request = $this->frontendRequest('/foo');
 
         // Foo middleware is run first, so it appends last to the response body
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:foo_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:foo_middleware', $request);
     }
 
     /**
@@ -93,31 +85,20 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function duplicate_middleware_is_filtered_out(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                'group1'
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('group1');
         });
 
         $this->withMiddlewareGroups(
             [
-                'global' => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
-                ],
-                'group1' => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
-                ],
+                'global' => [FooMiddleware::class, BarMiddleware::class],
+                'group1' => [FooMiddleware::class, BarMiddleware::class],
             ]
         );
 
         $request = $this->frontendRequest('/foo');
 
         // The middleware is not run twice.
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:foo_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:foo_middleware', $request);
     }
 
     /**
@@ -142,9 +123,8 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/foo');
 
         $response = $this->runNewPipeline($request);
-        $response->assertOk()->assertBodyExact(
-            RoutingTestController::static . ':baz_middleware:bar_middleware:foo_middleware'
-        );
+        $response->assertOk()
+            ->assertBodyExact(RoutingTestController::static . ':baz_middleware:bar_middleware:foo_middleware');
     }
 
     /**
@@ -153,23 +133,15 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                ['all', 'foo:FOO']
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(['all', 'foo:FOO']);
         });
 
         $this->withMiddlewareGroups([
-            'all' => [
-                FooMiddleware::class . ':FOO',
-                BarMiddleware::class,
-            ],
+            'all' => [FooMiddleware::class . ':FOO', BarMiddleware::class],
         ]);
 
         $request = $this->frontendRequest('foo');
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:FOO',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:FOO', $request);
     }
 
     /**
@@ -178,25 +150,17 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function duplicate_middleware_is_not_filtered_out_when_passing_different_arguments(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                ['all', 'foo:FOO1']
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(['all', 'foo:FOO1']);
         });
 
         $this->withMiddlewareGroups([
-            'all' => [
-                FooMiddleware::class . ':FOO2',
-                BarMiddleware::class,
-            ],
+            'all' => [FooMiddleware::class . ':FOO2', BarMiddleware::class],
         ]);
 
         $request = $this->frontendRequest('foo');
 
         // The middleware on the route is run last which is why is output is appended first to the response body.
-        $this->assertResponseBody(
-            RoutingTestController::static . ':FOO1:bar_middleware:FOO2',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':FOO1:bar_middleware:FOO2', $request);
     }
 
     /**
@@ -209,20 +173,13 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
                 ->middleware(['group1', 'group2']);
         });
         $this->withMiddlewareGroups([
-            'group1' => [
-                FooMiddleware::class,
-            ],
-            'group2' => [
-                BarMiddleware::class,
-            ],
+            'group1' => [FooMiddleware::class],
+            'group2' => [BarMiddleware::class],
         ]);
 
         $request = $this->frontendRequest('/foo');
 
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:foo_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:foo_middleware', $request);
     }
 
     /**
@@ -237,10 +194,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $request = $this->frontendRequest('/foo');
 
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:foo_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:foo_middleware', $request);
     }
 
     /**
@@ -324,15 +278,11 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function a_middleware_group_can_point_to_a_middleware_alias(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                'foogroup'
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('foogroup');
         });
 
         $this->withMiddlewareGroups([
-            'foogroup' => [
-                'foo',
-            ],
+            'foogroup' => ['foo'],
         ]);
 
         $request = $this->frontendRequest('/foo');
@@ -346,16 +296,11 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->get('r1', '/foo', RoutingTestController::class)
-                ->middleware(
-                    ['baz', 'group1']
-                );
+                ->middleware(['baz', 'group1']);
         });
 
         $this->withMiddlewareGroups([
-            'group1' => [
-                FooMiddleware::class,
-                BarMiddleware::class,
-            ],
+            'group1' => [FooMiddleware::class, BarMiddleware::class],
         ]);
 
         $request = $this->frontendRequest('/foo');
@@ -371,23 +316,13 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function a_middleware_group_can_contain_another_middleware_group(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                'baz_group'
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('baz_group');
         });
 
         $this->withMiddlewareGroups([
-            'baz_group' => [
-                BazMiddleware::class,
-                'bar_group',
-            ],
-            'bar_group' => [
-                BarMiddleware::class,
-                'foo_group',
-            ],
-            'foo_group' => [
-                FooMiddleware::class,
-            ],
+            'baz_group' => [BazMiddleware::class, 'bar_group'],
+            'bar_group' => [BarMiddleware::class, 'foo_group'],
+            'foo_group' => [FooMiddleware::class],
         ]);
 
         $request = $this->frontendRequest('/foo');
@@ -409,10 +344,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         });
 
         $request = $this->frontendRequest('/foo');
-        $this->assertResponseBody(
-            RoutingTestController::static . ':FOO',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':FOO', $request);
     }
 
     /**
@@ -429,17 +361,10 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->withGlobalMiddleware([FoobarMiddleware::class]);
 
         $this->withMiddlewareGroups([
-            'barbaz' => [
-                BazMiddleware::class,
-                BarMiddleware::class,
-            ],
+            'barbaz' => [BazMiddleware::class, BarMiddleware::class],
         ]);
 
-        $this->withMiddlewarePriority([
-            FooMiddleware::class,
-            BarMiddleware::class,
-            BazMiddleware::class,
-        ]);
+        $this->withMiddlewarePriority([FooMiddleware::class, BarMiddleware::class, BazMiddleware::class]);
 
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
@@ -463,11 +388,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->withGlobalMiddleware([BarMiddleware::class]);
 
         $request = $this->frontendRequest('/foo');
-        $this->assertResponseBody(
-            RoutingTestController::static
-            . ':foo_middleware:bar_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':foo_middleware:bar_middleware', $request);
     }
 
     /**
@@ -476,24 +397,14 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
-                'all'
-            );
+            $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('all');
         });
 
         $this->withMiddlewareGroups([
-            'all' => [
-                FoobarMiddleware::class,
-                BarMiddleware::class,
-                BazMiddleware::class,
-                FooMiddleware::class,
-            ],
+            'all' => [FoobarMiddleware::class, BarMiddleware::class, BazMiddleware::class, FooMiddleware::class],
         ]);
 
-        $this->withMiddlewarePriority([
-            FooMiddleware::class,
-            BarMiddleware::class,
-        ]);
+        $this->withMiddlewarePriority([FooMiddleware::class, BarMiddleware::class]);
 
         $request = $this->frontendRequest('/foo');
         $this->assertResponseBody(
@@ -515,16 +426,10 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         $request = $this->frontendRequest('/foo');
 
         $this->withMiddlewareGroups([
-            'global' => [
-                FooMiddleware::class,
-                BarMiddleware::class,
-            ],
+            'global' => [FooMiddleware::class, BarMiddleware::class],
         ]);
 
-        $this->assertResponseBody(
-            RoutingTestController::static . ':bar_middleware:foo_middleware',
-            $request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':bar_middleware:foo_middleware', $request);
     }
 
     /**
@@ -540,10 +445,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
-        $this->assertSame(
-            '',
-            $response->body()
-        );
+        $this->assertSame('', $response->body());
     }
 
     /**
@@ -551,9 +453,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function global_middleware_can_be_configured_to_run_for_even_for_non_matching_requests(): void
     {
-        $this->alwaysRun([
-            RoutingConfigurator::GLOBAL_MIDDLEWARE,
-        ]);
+        $this->alwaysRun([RoutingConfigurator::GLOBAL_MIDDLEWARE]);
         $this->withGlobalMiddleware([FooMiddleware::class, BarMiddleware::class]);
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
@@ -562,10 +462,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
-        $this->assertSame(
-            ':bar_middleware:foo_middleware',
-            $response->body()
-        );
+        $this->assertSame(':bar_middleware:foo_middleware', $response->body());
     }
 
     /**
@@ -573,15 +470,10 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function web_middleware_can_be_configured_to_always_run_for_non_matching_requests(): void
     {
-        $this->alwaysRun([
-            RoutingConfigurator::FRONTEND_MIDDLEWARE,
-        ]);
+        $this->alwaysRun([RoutingConfigurator::FRONTEND_MIDDLEWARE]);
         $this->withMiddlewareGroups(
             [
-                RoutingConfigurator::FRONTEND_MIDDLEWARE => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
-                ],
+                RoutingConfigurator::FRONTEND_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
             ]
         );
 
@@ -591,10 +483,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
 
         $response = $this->runNewPipeline($this->frontendRequest('/bar'));
 
-        $this->assertSame(
-            ':bar_middleware:foo_middleware',
-            $response->body()
-        );
+        $this->assertSame(':bar_middleware:foo_middleware', $response->body());
     }
 
     /**
@@ -602,25 +491,15 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function running_web_middleware_always_is_has_no_effect_on_admin_requests(): void
     {
-        $this->alwaysRun([
-            RoutingConfigurator::FRONTEND_MIDDLEWARE,
-        ]);
+        $this->alwaysRun([RoutingConfigurator::FRONTEND_MIDDLEWARE]);
         $this->withMiddlewareGroups(
             [
-                RoutingConfigurator::FRONTEND_MIDDLEWARE => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
-                ],
+                RoutingConfigurator::FRONTEND_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
             ]
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
-            $configurator->page(
-                'admin1',
-                'admin.php/foo',
-                RoutingTestController::class,
-                [],
-            );
+            $configurator->page('admin1', 'admin.php/foo', RoutingTestController::class, [],);
         });
 
         $response = $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=foo'));
@@ -635,9 +514,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function admin_middleware_can_be_configured_to_always_run_for_non_admin_matching_requests(): void
     {
-        $this->alwaysRun([
-            RoutingConfigurator::ADMIN_MIDDLEWARE,
-        ]);
+        $this->alwaysRun([RoutingConfigurator::ADMIN_MIDDLEWARE]);
         $this->withMiddlewareGroups(
             [
                 RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
@@ -645,19 +522,12 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
-            $configurator->page(
-                'r1',
-                'admin.php/foo',
-                RoutingTestController::class,
-            );
+            $configurator->page('r1', 'admin.php/foo', RoutingTestController::class,);
         });
 
         $response = $this->runNewPipeline($this->adminRequest('/bar'));
 
-        $this->assertSame(
-            ':bar_middleware:foo_middleware',
-            $response->body()
-        );
+        $this->assertSame(':bar_middleware:foo_middleware', $response->body());
     }
 
     /**
@@ -665,9 +535,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function running_admin_middleware_always_has_no_effect_on_non_matching_web_requests(): void
     {
-        $this->alwaysRun([
-            RoutingConfigurator::ADMIN_MIDDLEWARE,
-        ]);
+        $this->alwaysRun([RoutingConfigurator::ADMIN_MIDDLEWARE]);
         $this->withMiddlewareGroups(
             [
                 RoutingConfigurator::ADMIN_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
@@ -675,11 +543,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'web1',
-                '/foo',
-                RoutingTestController::class
-            );
+            $configurator->get('web1', '/foo', RoutingTestController::class);
         });
 
         $response = $this->runNewPipeline($this->frontendRequest('/bar'));
@@ -691,9 +555,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function api_middleware_can_be_always_run(): void
     {
-        $this->alwaysRun([
-            RoutingConfigurator::API_MIDDLEWARE,
-        ]);
+        $this->alwaysRun([RoutingConfigurator::API_MIDDLEWARE]);
         $this->withMiddlewareGroups(
             [
                 RoutingConfigurator::API_MIDDLEWARE => [FooMiddleware::class, BarMiddleware::class],
@@ -701,24 +563,14 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'r1',
-                'foo',
-                RoutingTestController::class,
-            );
+            $configurator->get('r1', 'foo', RoutingTestController::class,);
         });
 
         $response = $this->runNewPipeline($this->apiRequest('/bar'));
-        $this->assertSame(
-            ':bar_middleware:foo_middleware',
-            $response->body()
-        );
+        $this->assertSame(':bar_middleware:foo_middleware', $response->body());
 
         $response = $this->runNewPipeline($this->frontendRequest('/bar'));
-        $this->assertSame(
-            '',
-            $response->body()
-        );
+        $this->assertSame('', $response->body());
     }
 
     /**
@@ -730,9 +582,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('can not be used as middleware that is always');
 
-        $this->alwaysRun([
-            FooMiddleware::class,
-        ]);
+        $this->alwaysRun([FooMiddleware::class]);
 
         $this->runNewPipeline($this->frontendRequest());
     }
@@ -829,11 +679,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     public function controller_middleware_is_after_route_middleware(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->get(
-                'r1',
-                '/foo',
-                ControllerWithBarMiddleware::class
-            )
+            $configurator->get('r1', '/foo', ControllerWithBarMiddleware::class)
                 ->middleware(FooMiddleware::class);
         });
 

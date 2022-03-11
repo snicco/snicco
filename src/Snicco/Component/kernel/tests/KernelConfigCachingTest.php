@@ -82,9 +82,7 @@ final class KernelConfigCachingTest extends TestCase
         );
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'The [app.php] config file was not found in the config dir'
-        );
+        $this->expectExceptionMessage('The [app.php] config file was not found in the config dir');
 
         $app->boot();
     }
@@ -154,7 +152,8 @@ final class KernelConfigCachingTest extends TestCase
                 $config->set('foo_config', 'bar');
             });
             $kernel->afterRegister(function (Kernel $kernel) {
-                $kernel->container()->instance(stdClass::class, new stdClass());
+                $kernel->container()
+                    ->instance(stdClass::class, new stdClass());
             });
 
             return $kernel;

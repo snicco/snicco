@@ -31,15 +31,7 @@ class CountryFactory extends Factory
 
     private function continent()
     {
-        $continents = [
-            'Asia',
-            'Africa',
-            'Europe',
-            'Australia',
-            'North America',
-            'South America',
-            'Antarctica.',
-        ];
+        $continents = ['Asia', 'Africa', 'Europe', 'Australia', 'North America', 'South America', 'Antarctica.'];
 
         return Arr::random($continents)[0];
     }

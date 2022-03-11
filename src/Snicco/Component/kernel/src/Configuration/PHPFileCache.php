@@ -32,11 +32,7 @@ final class PHPFileCache implements ConfigCache
 
         $config = $loader();
 
-        FileWriter::writeFile(
-            $key,
-            '<?php return ' . var_export($config, true) . ';',
-            0644
-        );
+        FileWriter::writeFile($key, '<?php return ' . var_export($config, true) . ';', 0644);
 
         return $config;
     }

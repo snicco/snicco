@@ -110,7 +110,9 @@ final class SchemaBuilderTest extends WPTestCase
     public function all_table_names_can_be_retrieved(): void
     {
         $pluck = 'Tables_in_' . $this->mysqli_connection->getDatabaseName();
-        $tables = collect($this->builder->getAllTables())->pluck($pluck)->toArray();
+        $tables = collect($this->builder->getAllTables())
+            ->pluck($pluck)
+            ->toArray();
 
         $expected_core_tables = [
             0 => 'wp_commentmeta',
@@ -140,12 +142,7 @@ final class SchemaBuilderTest extends WPTestCase
         $this->assertTrue($this->builder->hasColumn('users', 'user_login'));
         $this->assertFalse($this->builder->hasColumn('users', 'user_profile_pic'));
 
-        $this->assertFalse(
-            $this->builder->hasColumns('users', [
-                'user_login',
-                'user_profile_pic',
-            ])
-        );
+        $this->assertFalse($this->builder->hasColumns('users', ['user_login', 'user_profile_pic']));
         $this->assertTrue($this->builder->hasColumns('users', ['user_login', 'user_email']));
     }
 
@@ -242,10 +239,7 @@ final class SchemaBuilderTest extends WPTestCase
             $table->string('title');
         });
 
-        $this->assertSame([
-            'book_id',
-            'title',
-        ], $this->getColumnsByOrdinalPosition('books'));
+        $this->assertSame(['book_id', 'title'], $this->getColumnsByOrdinalPosition('books'));
     }
 
     /**
@@ -1142,8 +1136,10 @@ final class SchemaBuilderTest extends WPTestCase
 
         // With after() method
         $this->builder->table('books', function (Blueprint $table) {
-            $table->string('last_name')->after('first_name');
-            $table->string('phone')->after('last_name');
+            $table->string('last_name')
+                ->after('first_name');
+            $table->string('phone')
+                ->after('last_name');
         });
 
         $this->assertSame(
@@ -1172,7 +1168,8 @@ final class SchemaBuilderTest extends WPTestCase
         $builder = $this->newTestBuilder('books');
 
         $builder->create('books', function (Blueprint $table) {
-            $table->integer('user_id')->autoIncrement();
+            $table->integer('user_id')
+                ->autoIncrement();
             $table->string('email');
         });
 
@@ -1188,24 +1185,18 @@ final class SchemaBuilderTest extends WPTestCase
         ]);
 
         $assert = new AssertableWpDB('wp_books');
-        $assert->assertRecordExists(
-            [
-                'user_id' => 1,
-                'email' => 'calvin@gmail.com',
-            ]
-        );
-        $assert->assertRecordExists(
-            [
-                'user_id' => 10,
-                'email' => 'calvin@gmx.com',
-            ]
-        );
-        $assert->assertRecordExists(
-            [
-                'user_id' => 11,
-                'email' => 'calvin@web.com',
-            ]
-        );
+        $assert->assertRecordExists([
+            'user_id' => 1,
+            'email' => 'calvin@gmail.com',
+        ]);
+        $assert->assertRecordExists([
+            'user_id' => 10,
+            'email' => 'calvin@gmx.com',
+        ]);
+        $assert->assertRecordExists([
+            'user_id' => 11,
+            'email' => 'calvin@web.com',
+        ]);
     }
 
     /**
@@ -1222,7 +1213,9 @@ final class SchemaBuilderTest extends WPTestCase
         $builder->create('books', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
             $table->id();
-            $table->string('name')->charset('latin1')->collation('latin1_german1_ci');
+            $table->string('name')
+                ->charset('latin1')
+                ->collation('latin1_german1_ci');
         });
 
         $this->assertSame('utf8mb4', $builder->getTableCharset('books'));
@@ -1243,7 +1236,8 @@ final class SchemaBuilderTest extends WPTestCase
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_520_ci';
             $table->id();
-            $table->string('name')->collation('latin1_german1_ci');
+            $table->string('name')
+                ->collation('latin1_german1_ci');
         });
 
         $this->assertSame('utf8mb4_unicode_520_ci', $builder->getTableCollation('books'));
@@ -1262,7 +1256,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('My comment');
+            $table->string('name')
+                ->comment('My comment');
         });
 
         $name_col = $builder->getFullColumnInfo('books')['name'];
@@ -1279,9 +1274,12 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->integer('count')->default(10);
-            $table->string('name')->default('calvin alkan');
-            $table->json('movies')->default(new Expression('(JSON_ARRAY())'));
+            $table->integer('count')
+                ->default(10);
+            $table->string('name')
+                ->default('calvin alkan');
+            $table->json('movies')
+                ->default(new Expression('(JSON_ARRAY())'));
         });
 
         $this->wpdbInsert('wp_books', [
@@ -1295,9 +1293,10 @@ final class SchemaBuilderTest extends WPTestCase
             'movies' => '[]',
         ];
 
-        $this->assertDbTable()->assertRecordEquals([
-            'id' => 1,
-        ], $expected);
+        $this->assertDbTable()
+            ->assertRecordEquals([
+                'id' => 1,
+            ], $expected);
     }
 
     /**
@@ -1313,20 +1312,14 @@ final class SchemaBuilderTest extends WPTestCase
             $table->string('name');
         });
 
-        $this->assertSame([
-            'id',
-            'count',
-            'name',
-        ], $builder->getColumnsByOrdinalPosition('books'));
+        $this->assertSame(['id', 'count', 'name'], $builder->getColumnsByOrdinalPosition('books'));
 
         $builder->table('books', function (Blueprint $table) {
-            $table->string('email')->first();
+            $table->string('email')
+                ->first();
         });
 
-        $this->assertSame(
-            ['email', 'id', 'count', 'name'],
-            $builder->getColumnsByOrdinalPosition('books')
-        );
+        $this->assertSame(['email', 'id', 'count', 'name'], $builder->getColumnsByOrdinalPosition('books'));
     }
 
     /**
@@ -1338,7 +1331,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->nullable(false);
+            $table->string('email')
+                ->nullable(false);
         });
 
         $this->withDatabaseExceptions(function () {
@@ -1348,17 +1342,15 @@ final class SchemaBuilderTest extends WPTestCase
                 ]);
                 $this->fail('Non-nullable column was created without default value');
             } catch (mysqli_sql_exception $e) {
-                $this->assertSame(
-                    "Field 'email' doesn't have a default value",
-                    $e->getMessage()
-                );
+                $this->assertSame("Field 'email' doesn't have a default value", $e->getMessage());
             }
         });
 
         $builder->dropColumns('books', 'email');
 
         $builder->table('books', function (Blueprint $table) {
-            $table->string('email')->nullable(true);
+            $table->string('email')
+                ->nullable(true);
         });
 
         $this->withDatabaseExceptions(function () {
@@ -1381,9 +1373,12 @@ final class SchemaBuilderTest extends WPTestCase
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('full_name')->storedAs("CONCAT(first_name,' ',last_name)");
+            $table->string('full_name')
+                ->storedAs("CONCAT(first_name,' ',last_name)");
             $table->integer('price');
-            $table->integer('discounted_price')->storedAs('price -5')->unsigned();
+            $table->integer('discounted_price')
+                ->storedAs('price -5')
+                ->unsigned();
         });
 
         $this->wpdbInsert(
@@ -1425,9 +1420,12 @@ final class SchemaBuilderTest extends WPTestCase
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('full_name')->virtualAs("CONCAT(first_name,' ',last_name)");
+            $table->string('full_name')
+                ->virtualAs("CONCAT(first_name,' ',last_name)");
             $table->integer('price');
-            $table->integer('discounted_price')->virtualAs('price -5')->unsigned();
+            $table->integer('discounted_price')
+                ->virtualAs('price -5')
+                ->unsigned();
         });
 
         $this->wpdbInsert(
@@ -1466,7 +1464,8 @@ final class SchemaBuilderTest extends WPTestCase
         $builder = $this->newTestBuilder('books');
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->integer('price')->unsigned();
+            $table->integer('price')
+                ->unsigned();
         });
 
         $this->wpdbInsert('wp_books', [
@@ -1479,10 +1478,11 @@ final class SchemaBuilderTest extends WPTestCase
             'price' => '10',
         ];
 
-        $this->assertDbTable()->assertRecordEquals([
-            'id' => 1,
-            'price' => 10,
-        ], $expected);
+        $this->assertDbTable()
+            ->assertRecordEquals([
+                'id' => 1,
+                'price' => 10,
+            ], $expected);
 
         $this->withDatabaseExceptions(function () {
             try {
@@ -1492,10 +1492,7 @@ final class SchemaBuilderTest extends WPTestCase
 
                 $this->fail('[TEST FAILED] Negative value inserted for unsigned integer.');
             } catch (mysqli_sql_exception $e) {
-                $this->assertSame(
-                    "Out of range value for column 'price' at row 1",
-                    $e->getMessage()
-                );
+                $this->assertSame("Out of range value for column 'price' at row 1", $e->getMessage());
             }
         });
     }
@@ -1509,8 +1506,10 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('time')->nullable();
-            $table->timestamp('time_non_nullable')->useCurrent();
+            $table->timestamp('time')
+                ->nullable();
+            $table->timestamp('time_non_nullable')
+                ->useCurrent();
         });
 
         $this->wpdbInsert('wp_books', [
@@ -1538,10 +1537,7 @@ final class SchemaBuilderTest extends WPTestCase
             $table->morphs('taggable');
         });
 
-        $this->assertSame(
-            ['id', 'taggable_type', 'taggable_id'],
-            $builder->getColumnsByOrdinalPosition('books')
-        );
+        $this->assertSame(['id', 'taggable_type', 'taggable_id'], $builder->getColumnsByOrdinalPosition('books'));
 
         $builder->table('books', function (Blueprint $table) {
             $table->dropMorphs('taggable');
@@ -1566,10 +1562,7 @@ final class SchemaBuilderTest extends WPTestCase
             $table->rememberToken();
         });
 
-        $this->assertSame([
-            'id',
-            'remember_token',
-        ], $builder->getColumnsByOrdinalPosition('books'));
+        $this->assertSame(['id', 'remember_token'], $builder->getColumnsByOrdinalPosition('books'));
 
         $builder->table('books', function (Blueprint $table) {
             $table->dropRememberToken();
@@ -1632,10 +1625,7 @@ final class SchemaBuilderTest extends WPTestCase
             $table->timestamps();
         });
 
-        $this->assertSame(
-            ['id', 'created_at', 'updated_at'],
-            $builder->getColumnsByOrdinalPosition('books')
-        );
+        $this->assertSame(['id', 'created_at', 'updated_at'], $builder->getColumnsByOrdinalPosition('books'));
 
         $builder->table('books', function (Blueprint $table) {
             $table->dropTimestamps();
@@ -1656,10 +1646,7 @@ final class SchemaBuilderTest extends WPTestCase
             $table->timestampsTz();
         });
 
-        $this->assertSame(
-            ['id', 'created_at', 'updated_at'],
-            $builder->getColumnsByOrdinalPosition('books')
-        );
+        $this->assertSame(['id', 'created_at', 'updated_at'], $builder->getColumnsByOrdinalPosition('books'));
 
         $builder->table('books', function (Blueprint $table) {
             $table->dropTimestampsTz();
@@ -1677,7 +1664,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
+            $table->string('email')
+                ->unique();
             $table->string('name');
         });
 
@@ -1704,7 +1692,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->index();
+            $table->string('email')
+                ->index();
             $table->string('name');
             $table->string('address');
         });
@@ -1748,7 +1737,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->string('email');
-            $table->string('name')->primary();
+            $table->string('name')
+                ->primary();
         });
 
         $builder->seePrimaryKey('name');
@@ -1763,7 +1753,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder->create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->index();
+            $table->string('name')
+                ->index();
         });
 
         $builder->seeIndexColumn('name');
@@ -1783,10 +1774,14 @@ final class SchemaBuilderTest extends WPTestCase
         $builder = $this->newTestBuilder('books');
 
         $builder->create('books', function (Blueprint $table) {
-            $table->integer('amount')->primary();
-            $table->string('name')->index();
-            $table->string('phone')->index();
-            $table->string('email')->unique();
+            $table->integer('amount')
+                ->primary();
+            $table->string('name')
+                ->index();
+            $table->string('phone')
+                ->index();
+            $table->string('email')
+                ->unique();
         });
 
         $builder->seeIndexColumn('name');
@@ -1834,7 +1829,8 @@ final class SchemaBuilderTest extends WPTestCase
         $builder2->create('books', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('author_id')->unique()
+            $table->foreignId('author_id')
+                ->unique()
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
@@ -1860,7 +1856,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $builder2->create('books', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('author_id')->unique()
+            $table->foreignId('author_id')
+                ->unique()
                 ->constrained()
                 ->onUpdate('cascade');
         });
@@ -1879,10 +1876,11 @@ final class SchemaBuilderTest extends WPTestCase
             'author_name' => 'calvin alkan',
         ]);
 
-        $this->assertDbTable()->assertRecordExists([
-            'id' => 1,
-            'author_id' => 2,
-        ]);
+        $this->assertDbTable()
+            ->assertRecordExists([
+                'id' => 1,
+                'author_id' => 2,
+            ]);
     }
 
     /**
@@ -1902,7 +1900,8 @@ final class SchemaBuilderTest extends WPTestCase
         $builder2->create('books', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('author_id')->unique()
+            $table->foreignId('author_id')
+                ->unique()
                 ->constrained()
                 ->onDelete('cascade');
         });
@@ -1915,19 +1914,21 @@ final class SchemaBuilderTest extends WPTestCase
             'author_id' => 1,
         ]);
 
-        $this->assertDbTable('wp_books')->assertRecordExists([
-            'id' => 1,
-            'author_id' => 1,
-        ]);
+        $this->assertDbTable('wp_books')
+            ->assertRecordExists([
+                'id' => 1,
+                'author_id' => 1,
+            ]);
 
         $this->wpdbDelete('wp_authors', [
             'id' => 1,
         ]);
 
-        $this->assertDbTable('wp_books')->assertRecordNotExists([
-            'id' => 1,
-            'author_id' => 1,
-        ]);
+        $this->assertDbTable('wp_books')
+            ->assertRecordNotExists([
+                'id' => 1,
+                'author_id' => 1,
+            ]);
     }
 
     /**
@@ -1947,7 +1948,8 @@ final class SchemaBuilderTest extends WPTestCase
         $builder2->create('books', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('author_id')->unique()
+            $table->foreignId('author_id')
+                ->unique()
                 ->constrained();
         });
 
@@ -1968,10 +1970,11 @@ final class SchemaBuilderTest extends WPTestCase
         ]);
 
         // Our record is still here because we dropped the foreign key. Otherwise this would blow up
-        $this->assertDbTable('wp_books')->assertRecordExists([
-            'id' => 1,
-            'author_id' => 1,
-        ]);
+        $this->assertDbTable('wp_books')
+            ->assertRecordExists([
+                'id' => 1,
+                'author_id' => 1,
+            ]);
     }
 
     /**
@@ -1989,7 +1992,8 @@ final class SchemaBuilderTest extends WPTestCase
 
         $columns = collect($this->getFullColumnInfo($table_name));
 
-        return $columns->pluck('Field')->toArray();
+        return $columns->pluck('Field')
+            ->toArray();
     }
 
     private function getFullColumnInfo(string $table_with_prefix)
@@ -2028,10 +2032,7 @@ class TestSchemaBuilder extends MySqlBuilder
     {
         $table = $this->table;
 
-        PHPUnit::assertTrue(
-            $this->hasColumn($table, $column),
-            'Column: ' . $column . ' not found.'
-        );
+        PHPUnit::assertTrue($this->hasColumn($table, $column), 'Column: ' . $column . ' not found.');
         PHPUnit::assertSame(
             $type,
             $this->getColumnType($table, $column),
@@ -2056,7 +2057,8 @@ class TestSchemaBuilder extends MySqlBuilder
 
         $key = 'Tables_in_' . $this->connection->getDatabaseName();
 
-        return $parent->pluck($key)->toArray();
+        return $parent->pluck($key)
+            ->toArray();
     }
 
     public function getFullColumnInfo(?string $table): array
@@ -2065,15 +2067,12 @@ class TestSchemaBuilder extends MySqlBuilder
 
         $binding = $this->connection->getTablePrefix() . $table;
 
-        $col_info = collect(
-            $this->connection->select(
-                str_replace('?', $binding, $query)
-            )
-        );
+        $col_info = collect($this->connection->select(str_replace('?', $binding, $query)));
 
         $field_names = $col_info->pluck('Field');
 
-        return $field_names->combine($col_info)->toArray();
+        return $field_names->combine($col_info)
+            ->toArray();
     }
 
     public function seePrimaryKey(string $column): void
@@ -2110,7 +2109,8 @@ class TestSchemaBuilder extends MySqlBuilder
 
         $col_info = collect($this->connection->select($query));
 
-        return $col_info->pluck('Field')->toArray();
+        return $col_info->pluck('Field')
+            ->toArray();
     }
 
     /**

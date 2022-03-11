@@ -38,7 +38,8 @@ trait AuthenticateWithWordPress
     {
         $expected_id = $user instanceof WP_User ? $user->ID : $user;
 
-        $actual = wp_get_current_user()->ID;
+        $actual = wp_get_current_user()
+            ->ID;
 
         PHPUnit::assertNotSame(0, $actual, 'The current user is a guest.');
         PHPUnit::assertSame(

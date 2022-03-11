@@ -74,11 +74,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_alias(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
         $this->assertTrue($kernel->usesBundle(SessionBundle::ALIAS));
@@ -89,13 +85,10 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_services_can_be_resolved(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(LoggerInterface::class, new NullLogger());
+            $kernel->container()
+                ->instance(LoggerInterface::class, new NullLogger());
         });
         $kernel->boot();
 
@@ -110,19 +103,18 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_stateful_request_middleware_is_singleton(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->instance(LoggerInterface::class, new NullLogger());
+            $kernel->container()
+                ->instance(LoggerInterface::class, new NullLogger());
         });
         $kernel->boot();
 
         $this->assertSame(
-            $kernel->container()->make(StatefulRequest::class),
-            $kernel->container()->make(StatefulRequest::class)
+            $kernel->container()
+                ->make(StatefulRequest::class),
+            $kernel->container()
+                ->make(StatefulRequest::class)
         );
     }
 
@@ -131,11 +123,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_exception_if_session_config_is_invalid(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::testing(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::COOKIE_NAME => 'foo',
@@ -156,11 +144,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_with_db_session_driver_creates_table(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertSame(
             0,
@@ -188,11 +172,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_with_object_cache_driver(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::DRIVER => WPObjectCacheDriver::class,
@@ -209,11 +189,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_with_encryption(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::ENCRYPT_DATA => true,
@@ -233,11 +209,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_session_encryptor(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::ENCRYPT_DATA => true,
@@ -261,11 +233,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function test_different_serializers(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
@@ -275,11 +243,7 @@ final class SessionBundleTest extends WPTestCase
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
@@ -289,18 +253,15 @@ final class SessionBundleTest extends WPTestCase
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::SERIALIZER => TestSerializer::class,
             ]);
         });
         $kernel->afterRegister(function (Kernel $kernel) {
-            $kernel->container()->shared(TestSerializer::class, fn () => new TestSerializer());
+            $kernel->container()
+                ->shared(TestSerializer::class, fn () => new TestSerializer());
         });
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);
@@ -314,11 +275,7 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('class-name that implements [Snicco\Component\Session\Serializer\Serializer]');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
@@ -336,11 +293,7 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('class-name that implements');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
@@ -358,11 +311,7 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('non-empty string');
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
@@ -380,11 +329,7 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(EncryptionBundle::class);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::ENCRYPT_DATA => true,
@@ -402,16 +347,9 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(BetterWPHooksBundle::class);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('bundles.all', [
-                SessionBundle::class,
-                BetterWPDBBundle::class,
-            ]);
+            $config->set('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
         $kernel->boot();
     }
@@ -421,11 +359,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function the_default_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/session.php'));
 
@@ -438,10 +372,7 @@ final class SessionBundleTest extends WPTestCase
          */
         $config = require $this->directories->configDir() . '/session.php';
 
-        $this->assertSame(
-            require dirname(__DIR__, 2) . '/config/session.php',
-            $config
-        );
+        $this->assertSame(require dirname(__DIR__, 2) . '/config/session.php', $config);
     }
 
     /**
@@ -449,11 +380,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function the_default_configuration_is_not_copied_if_the_file_already_exists(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         file_put_contents(
             $this->directories->configDir() . '/session.php',
@@ -479,11 +406,7 @@ final class SessionBundleTest extends WPTestCase
      */
     public function the_default_configuration_is_only_copied_in_dev_environment(): void
     {
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
 
         $this->assertFalse(is_file($this->directories->configDir() . '/session.php'));
 
@@ -500,15 +423,9 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(BetterWPDBBundle::class);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
-            $config->set('bundles.all', [
-                SessionBundle::class,
-            ]);
+            $config->set('bundles.all', [SessionBundle::class]);
         });
         $kernel->boot();
     }
@@ -521,18 +438,12 @@ final class SessionBundleTest extends WPTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(BetterWPCacheBundle::class);
 
-        $kernel = new Kernel(
-            $this->newContainer(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('session', [
                 SessionOption::DRIVER => WPObjectCacheDriver::class,
             ]);
-            $config->set('bundles.all', [
-                SessionBundle::class,
-            ]);
+            $config->set('bundles.all', [SessionBundle::class]);
         });
         $kernel->boot();
     }

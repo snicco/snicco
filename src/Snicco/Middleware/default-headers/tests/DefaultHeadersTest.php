@@ -28,8 +28,10 @@ final class DefaultHeadersTest extends MiddlewareTestCase
 
         $response->assertNextMiddlewareCalled();
 
-        $response->assertableResponse()->assertHeader('foo', 'bar');
-        $response->assertableResponse()->assertHeader('baz', 'biz');
+        $response->assertableResponse()
+            ->assertHeader('foo', 'bar');
+        $response->assertableResponse()
+            ->assertHeader('baz', 'biz');
     }
 
     /**
@@ -41,14 +43,12 @@ final class DefaultHeadersTest extends MiddlewareTestCase
             return $response->withHeader('foo', 'bar');
         });
 
-        $response = $this->runMiddleware(
-            new DefaultHeaders([
-                'foo' => 'baz',
-            ]),
-            $this->frontendRequest()
-        );
+        $response = $this->runMiddleware(new DefaultHeaders([
+            'foo' => 'baz',
+        ]), $this->frontendRequest());
         $response->assertNextMiddlewareCalled();
 
-        $response->assertableResponse()->assertHeader('foo', 'bar');
+        $response->assertableResponse()
+            ->assertHeader('foo', 'bar');
     }
 }

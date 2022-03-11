@@ -20,7 +20,8 @@ final class MustMatchRoute implements MiddlewareInterface
         if ($response instanceof DelegatedResponse) {
             throw new HttpException(
                 404,
-                "A delegated response was returned for path [{$request->getUri()->getPath()}]."
+                "A delegated response was returned for path [{$request->getUri()
+                    ->getPath()}]."
             );
         }
 

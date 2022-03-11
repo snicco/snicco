@@ -12,8 +12,7 @@ use function in_array;
 use const PHP_SAPI;
 
 /**
- * This class is an immutable value object that represent the environment the application is
- * running in.
+ * This class is an immutable value object that represent the environment the application is running in.
  *
  * @psalm-immutable
  */
@@ -38,10 +37,7 @@ final class Environment
      */
     private function __construct(string $environment, bool $is_debug)
     {
-        Assert::stringNotEmpty(
-            $environment,
-            'App environment can not be constructed with an empty string.'
-        );
+        Assert::stringNotEmpty($environment, 'App environment can not be constructed with an empty string.');
 
         if (! in_array($environment, $this->validEnvironments(), true)) {
             throw new InvalidArgumentException(
@@ -56,9 +52,7 @@ final class Environment
         $this->environment = $environment;
 
         if ($this->isProduction() && $is_debug) {
-            throw new InvalidArgumentException(
-                'App environment can not be in debug mode while in production.'
-            );
+            throw new InvalidArgumentException('App environment can not be in debug mode while in production.');
         }
 
         $this->is_debug = $is_debug;

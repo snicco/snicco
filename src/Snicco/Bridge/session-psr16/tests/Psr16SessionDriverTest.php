@@ -42,10 +42,7 @@ final class Psr16SessionDriverTest extends TestCase
 
         $driver = new Psr16SessionDriver($cache, 10);
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
 
         $this->expectException(CouldNotDestroySessions::class);
         $this->expectExceptionMessage('Cant destroy session ids [id1]');
@@ -67,10 +64,7 @@ final class Psr16SessionDriverTest extends TestCase
 
         $driver = new Psr16SessionDriver($cache, 10);
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
 
         $this->expectException(CouldNotDestroySessions::class);
         $this->expectExceptionMessage('Cant destroy session ids [id1]');
@@ -107,10 +101,7 @@ final class Psr16SessionDriverTest extends TestCase
         $this->expectException(CouldNotWriteSessionContent::class);
         $this->expectExceptionMessage('id1');
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
     }
 
     /**
@@ -130,10 +121,7 @@ final class Psr16SessionDriverTest extends TestCase
         $this->expectException(CouldNotWriteSessionContent::class);
         $this->expectExceptionMessage('id1');
 
-        $driver->write(
-            'id1',
-            SerializedSession::fromString('foo', 'val', time()),
-        );
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
     }
 
     /**

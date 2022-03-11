@@ -79,8 +79,6 @@ final class IlluminateContainerAdapter extends DIContainer
             return;
         }
 
-        throw new FrozenService(
-            sprintf('Singleton [%s] was already resolved and can not be overwritten.', $id)
-        );
+        throw new FrozenService(sprintf('Singleton [%s] was already resolved and can not be overwritten.', $id));
     }
 }

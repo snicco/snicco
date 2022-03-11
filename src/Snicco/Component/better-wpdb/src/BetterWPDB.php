@@ -129,8 +129,8 @@ final class BetterWPDB
     }
 
     /**
-     * Runs the callback inside a database transaction that
-     * automatically commits on success and rolls back if any errors happen.
+     * Runs the callback inside a database transaction that automatically commits on success and rolls back if any
+     * errors happen.
      *
      * @template T
      *
@@ -162,14 +162,7 @@ final class BetterWPDB
                 /** @codeCoverageIgnoreEnd */
                 $end = microtime(true);
 
-                $this->log(
-                    new QueryInfo(
-                        $start,
-                        $end,
-                        'START TRANSACTION',
-                        []
-                    )
-                );
+                $this->log(new QueryInfo($start, $end, 'START TRANSACTION', []));
 
                 $res = $callback($this);
 
@@ -184,14 +177,7 @@ final class BetterWPDB
                 /** @codeCoverageIgnoreEnd */
                 $end = microtime(true);
 
-                $this->log(
-                    new QueryInfo(
-                        $start,
-                        $end,
-                        'COMMIT',
-                        []
-                    )
-                );
+                $this->log(new QueryInfo($start, $end, 'COMMIT', []));
 
                 $this->in_transaction = false;
 
@@ -298,13 +284,13 @@ final class BetterWPDB
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
-        return $this->preparedQuery($sql, $bindings)->get_result();
+        return $this->preparedQuery($sql, $bindings)
+            ->get_result();
     }
 
     /**
-     * Returns the entire result set as associative array.
-     * This method is preferred for small result sets.
-     * For large result sets this method will cause memory issues, and it's better to use {@see BetterWPDB::selectAll()}.
+     * Returns the entire result set as associative array. This method is preferred for small result sets. For large
+     * result sets this method will cause memory issues, and it's better to use {@see BetterWPDB::selectAll()}.
      *
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
@@ -316,7 +302,8 @@ final class BetterWPDB
      */
     public function selectAll(string $sql, array $bindings): array
     {
-        $val = $this->select($sql, $bindings)->fetch_all(MYSQLI_ASSOC);
+        $val = $this->select($sql, $bindings)
+            ->fetch_all(MYSQLI_ASSOC);
         /**
          * @var array<array<string, bool|float|int|string|null>> $val
          */
@@ -444,8 +431,8 @@ final class BetterWPDB
     }
 
     /**
-     * Runs a bulk insert of records in a transaction.
-     * If any record can't be inserted the entire transaction will be rolled back.
+     * Runs a bulk insert of records in a transaction. If any record can't be inserted the entire transaction will be
+     * rolled back.
      *
      * @param non-empty-string                              $table
      * @param iterable<array<non-empty-string,scalar|null>> $records !!! IMPORTANT !!!
@@ -593,10 +580,7 @@ final class BetterWPDB
      */
     private function buildInsertSql(string $table, array $column_names): string
     {
-        $column_names = array_map(
-            fn ($column_name) => $this->escIdentifier($column_name),
-            $column_names
-        );
+        $column_names = array_map(fn ($column_name) => $this->escIdentifier($column_name), $column_names);
         $columns = implode(',', $column_names);
         $table = $this->escIdentifier($table);
         $placeholders = str_repeat('?,', count($column_names) - 1) . '?';

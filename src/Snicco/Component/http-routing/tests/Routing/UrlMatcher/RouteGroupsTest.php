@@ -24,7 +24,8 @@ final class RouteGroupsTest extends HttpRunnerTestCase
         $this->expectExceptionMessage('Cant register route [r1] because delegated');
 
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->prefix('foo')->get('r1', '/bar', RoutingTestController::class);
+            $configurator->prefix('foo')
+                ->get('r1', '/bar', RoutingTestController::class);
         });
     }
 
@@ -81,14 +82,8 @@ final class RouteGroupsTest extends HttpRunnerTestCase
                 });
         });
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('/foo/bar')
-        );
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('/foo/baz')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('/foo/bar'));
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('/foo/baz'));
         $this->assertEmptyBody($this->frontendRequest('/foo'));
 
         $this->assertSame('/foo/bar', $routing->urlGenerator()->toRoute('r1'));
@@ -111,7 +106,8 @@ final class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertSame('/baz', $routing->urlGenerator()->toRoute('users.route2'));
 
         $this->expectException(RouteNotFound::class);
-        $routing->urlGenerator()->toRoute('route1');
+        $routing->urlGenerator()
+            ->toRoute('route1');
     }
 
     /**
@@ -141,25 +137,20 @@ final class RouteGroupsTest extends HttpRunnerTestCase
     public function group_prefixes_are_merged_on_multiple_levels(): void
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
-            $configurator->prefix('foo')->group(function (WebRoutingConfigurator $router) {
-                $router
-                    ->prefix('bar')
-                    ->group(function (WebRoutingConfigurator $router) {
-                        $router->get('r1', '/baz', RoutingTestController::class);
-                        $router->get('r2', '/biz', RoutingTestController::class);
-                    });
-            });
+            $configurator->prefix('foo')
+                ->group(function (WebRoutingConfigurator $router) {
+                    $router
+                        ->prefix('bar')
+                        ->group(function (WebRoutingConfigurator $router) {
+                            $router->get('r1', '/baz', RoutingTestController::class);
+                            $router->get('r2', '/biz', RoutingTestController::class);
+                        });
+                });
         });
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('/foo/bar/baz')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('/foo/bar/baz'));
 
-        $this->assertResponseBody(
-            RoutingTestController::static,
-            $this->frontendRequest('/foo/bar/biz')
-        );
+        $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('/foo/bar/biz'));
 
         $this->assertEmptyBody($this->frontendRequest('/baz'));
         $this->assertEmptyBody($this->frontendRequest('/biz'));
@@ -175,10 +166,11 @@ final class RouteGroupsTest extends HttpRunnerTestCase
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->name('users')
                 ->group(function (WebRoutingConfigurator $router) {
-                    $router->name('admins')->group(function (WebRoutingConfigurator $router) {
-                        $router->get('calvin', '/bar', RoutingTestController::class);
-                        $router->get('marlon', '/baz', RoutingTestController::class);
-                    });
+                    $router->name('admins')
+                        ->group(function (WebRoutingConfigurator $router) {
+                            $router->get('calvin', '/bar', RoutingTestController::class);
+                            $router->get('marlon', '/baz', RoutingTestController::class);
+                        });
 
                     $router->get('jon', '/jon', RoutingTestController::class);
                 });
@@ -189,7 +181,8 @@ final class RouteGroupsTest extends HttpRunnerTestCase
         $this->assertSame('/jon', $routing->urlGenerator()->toRoute('users.jon'));
 
         $this->expectException(RouteNotFound::class);
-        $routing->urlGenerator()->toRoute('admins.calvin');
+        $routing->urlGenerator()
+            ->toRoute('admins.calvin');
     }
 
     /**
@@ -200,18 +193,16 @@ final class RouteGroupsTest extends HttpRunnerTestCase
         $this->webRouting(function (WebRoutingConfigurator $configurator) {
             $configurator->middleware('foo:FOO')
                 ->group(function (WebRoutingConfigurator $router) {
-                    $router->middleware('bar:BAR')->group(function (WebRoutingConfigurator $router) {
-                        $router
-                            ->get('r1', '/foo', RoutingTestController::class)
-                            ->middleware('baz');
-                    });
+                    $router->middleware('bar:BAR')
+                        ->group(function (WebRoutingConfigurator $router) {
+                            $router
+                                ->get('r1', '/foo', RoutingTestController::class)
+                                ->middleware('baz');
+                        });
                 });
         });
 
         $get_request = $this->frontendRequest('/foo');
-        $this->assertResponseBody(
-            RoutingTestController::static . ':baz_middleware:BAR:FOO',
-            $get_request
-        );
+        $this->assertResponseBody(RoutingTestController::static . ':baz_middleware:BAR:FOO', $get_request);
     }
 }

@@ -38,17 +38,11 @@ final class MiddlewareCacheTest extends TestCase
      */
     public function route_middleware_is_not_cached_in_non_production(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::dev(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware', [
-                MiddlewareOption::ALWAYS_RUN => [
-                    RoutingConfigurator::FRONTEND_MIDDLEWARE,
-                ],
+                MiddlewareOption::ALWAYS_RUN => [RoutingConfigurator::FRONTEND_MIDDLEWARE],
                 MiddlewareOption::ALIASES => [],
                 MiddlewareOption::GROUPS => [
                     'frontend' => [MiddlewareThree::class],
@@ -61,7 +55,8 @@ final class MiddlewareCacheTest extends TestCase
 
         $kernel->boot();
 
-        $kernel->container()->make(RouteRunner::class);
+        $kernel->container()
+            ->make(RouteRunner::class);
 
         $this->assertFalse(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
     }
@@ -71,17 +66,11 @@ final class MiddlewareCacheTest extends TestCase
      */
     public function route_middleware_is_cached_in_production(): void
     {
-        $kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::prod(),
-            $this->directories
-        );
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
             $config->set('middleware', [
-                MiddlewareOption::ALWAYS_RUN => [
-                    RoutingConfigurator::FRONTEND_MIDDLEWARE,
-                ],
+                MiddlewareOption::ALWAYS_RUN => [RoutingConfigurator::FRONTEND_MIDDLEWARE],
                 MiddlewareOption::ALIASES => [],
                 MiddlewareOption::GROUPS => [
                     'frontend' => [MiddlewareThree::class],
@@ -94,29 +83,24 @@ final class MiddlewareCacheTest extends TestCase
 
         $this->assertFalse(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
 
-        $kernel->container()->make(RouteRunner::class);
+        $kernel->container()
+            ->make(RouteRunner::class);
 
         $this->assertTrue(is_file($this->directories->cacheDir() . '/prod.middleware-map-generated.php'));
 
-        $new_kernel = new Kernel(
-            new PimpleContainerAdapter(),
-            Environment::prod(),
-            $this->directories
-        );
+        $new_kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
 
         $new_kernel->boot();
 
         /** @var MiddlewarePipeline $pipeline */
-        $pipeline = $new_kernel->container()->make(MiddlewarePipeline::class);
+        $pipeline = $new_kernel->container()
+            ->make(MiddlewarePipeline::class);
 
         $request = new ServerRequest('GET', '/middleware1');
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('pipeline exhausted');
             });
 
@@ -129,10 +113,7 @@ final class MiddlewareCacheTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('pipeline exhausted');
             });
 
@@ -146,17 +127,11 @@ final class MiddlewareCacheTest extends TestCase
 
         $response = $pipeline
             ->send(Request::fromPsr($request))
-            ->through([
-                RoutingMiddleware::class,
-                RouteRunner::class,
-            ])->then(function () {
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function () {
                 throw new RuntimeException('pipeline exhausted');
             });
 
-        $this->assertSame(
-            ':middleware_three',
-            (string) $response->getBody()
-        );
+        $this->assertSame(':middleware_three', (string) $response->getBody());
     }
 
     protected function fixturesDir(): string

@@ -72,9 +72,7 @@ final class EventSubscribingTest extends TestCase
 
     private function getDispatcher(): EventDispatcher
     {
-        return new BaseEventDispatcher(
-            new NewableListenerFactory()
-        );
+        return new BaseEventDispatcher(new NewableListenerFactory());
     }
 }
 

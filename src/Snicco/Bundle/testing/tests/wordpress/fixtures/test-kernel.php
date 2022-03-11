@@ -8,9 +8,5 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return function (Environment $env) {
-    return new Kernel(
-        new PimpleContainerAdapter(),
-        $env,
-        Directories::fromDefaults(__DIR__)
-    );
+    return new Kernel(new PimpleContainerAdapter(), $env, Directories::fromDefaults(__DIR__));
 };

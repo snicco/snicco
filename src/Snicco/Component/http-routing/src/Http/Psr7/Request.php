@@ -108,8 +108,7 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Returns the value of a received cookie or $default if no cookie with the given name
-     * exists.
+     * Returns the value of a received cookie or $default if no cookie with the given name exists.
      *
      * If multiple cookie headers have been sent for $name only the first one will be returned.
      */
@@ -157,7 +156,8 @@ final class Request implements ServerRequestInterface
 
     public function fullUrl(): string
     {
-        return $this->getUri()->__toString();
+        return $this->getUri()
+            ->__toString();
     }
 
     public function pathIs(string ...$patterns): bool
@@ -190,7 +190,8 @@ final class Request implements ServerRequestInterface
 
     public function path(): string
     {
-        $path = $this->getUri()->getPath();
+        $path = $this->getUri()
+            ->getPath();
         if ('' === $path) {
             $path = '/';
         }
@@ -199,15 +200,15 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * A request is considered secure when the scheme is set to "https".
-     * If your site runs behind a reverse proxy you have to make sure that your reverse proxy is
-     * configured correctly for setting the HTTP_X_FORWARDED_PROTO header. It's not
-     * possible to configure trusted proxies because if this is not configured at the server
-     * level the entire WP application will misbehave anyway.
+     * A request is considered secure when the scheme is set to "https". If your site runs behind a reverse proxy you
+     * have to make sure that your reverse proxy is configured correctly for setting the HTTP_X_FORWARDED_PROTO header.
+     * It's not possible to configure trusted proxies because if this is not configured at the server level the entire
+     * WP application will misbehave anyway.
      */
     public function isSecure(): bool
     {
-        return 'https' === $this->getUri()->getScheme();
+        return 'https' === $this->getUri()
+            ->getScheme();
     }
 
     public function isToFrontend(): bool
@@ -317,10 +318,7 @@ final class Request implements ServerRequestInterface
 
     public function accepts(string $content_type): bool
     {
-        return $this->matchesType(
-            $content_type,
-            $this->getHeaderLine('accept')
-        );
+        return $this->matchesType($content_type, $this->getHeaderLine('accept'));
     }
 
     /**
@@ -340,8 +338,7 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_GET).
-     * Supports 'dot' notation and accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_GET). Supports 'dot' notation and accessing nested values with * wildcards.
      *
      * @param mixed $default
      *
@@ -360,7 +357,8 @@ final class Request implements ServerRequestInterface
 
     public function queryString(): string
     {
-        $qs = $this->getUri()->getQuery();
+        $qs = $this->getUri()
+            ->getQuery();
 
         while (Str::endsWith($qs, '&') || Str::endsWith($qs, '=')) {
             $qs = mb_substr($qs, 0, -1);
@@ -370,8 +368,7 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_POST).
-     * Supports 'dot' notation and accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_POST). Supports 'dot' notation and accessing nested values with * wildcards.
      *
      * @param mixed $default
      *
@@ -484,10 +481,7 @@ final class Request implements ServerRequestInterface
      */
     public function hasAny($keys): bool
     {
-        return Arr::hasAny(
-            $this->inputSource(),
-            $keys
-        );
+        return Arr::hasAny($this->inputSource(), $keys);
     }
 
     /**
@@ -683,7 +677,8 @@ final class Request implements ServerRequestInterface
 
     public function routeIs(string $route_name): bool
     {
-        $route = $this->routingResult()->route();
+        $route = $this->routingResult()
+            ->route();
         if (null === $route) {
             return false;
         }
@@ -732,9 +727,7 @@ final class Request implements ServerRequestInterface
             : $this->getQueryParams();
 
         if (! is_array($input)) {
-            throw new RuntimeException(
-                sprintf('%s can only be used if the parsed body is an array.', __METHOD__)
-            );
+            throw new RuntimeException(sprintf('%s can only be used if the parsed body is an array.', __METHOD__));
         }
 
         return $input;

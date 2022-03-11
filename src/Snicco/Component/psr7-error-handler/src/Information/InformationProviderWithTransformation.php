@@ -43,9 +43,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             $this->addMessage($status_code, $title_and_details);
         }
         if (! isset($this->default_messages[500])) {
-            throw new InvalidArgumentException(
-                'Data for the 500 status code must be provided.'
-            );
+            throw new InvalidArgumentException('Data for the 500 status code must be provided.');
         }
         $this->transformer = $transformer;
         $this->identifier = $identifier;
@@ -64,11 +62,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
         /** @var array<positive-int,array{title:string, message:string}> $decoded */
         $decoded = json_decode($data, true, JSON_THROW_ON_ERROR);
 
-        return new self(
-            $decoded,
-            $identifier,
-            ...$transformer
-        );
+        return new self($decoded, $identifier, ...$transformer);
     }
 
     public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
@@ -106,9 +100,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             throw new InvalidArgumentException("\$title must be string for status code [{$status_code}].");
         }
         if (! isset($info['message']) || ! is_string($info['message'])) {
-            throw new InvalidArgumentException(
-                "\$message must be string for status code [{$status_code}]."
-            );
+            throw new InvalidArgumentException("\$message must be string for status code [{$status_code}].");
         }
         $this->default_messages[$status_code] = $info;
     }

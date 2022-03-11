@@ -158,11 +158,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator(
-            $this->storage,
-            $this->hmac,
-            $clock = new TestClock()
-        );
+        $validator = new SignedUrlValidator($this->storage, $this->hmac, $clock = new TestClock());
 
         $validator->validate($signed_url->asString());
 
@@ -179,10 +175,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_after_max_usage(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10, 2);
-        $validator = new SignedUrlValidator(
-            $this->storage,
-            $this->hmac,
-        );
+        $validator = new SignedUrlValidator($this->storage, $this->hmac,);
 
         $validator->validate($signed_url->asString());
         $validator->validate($signed_url->asString());
@@ -225,11 +218,7 @@ final class SignedUrlValidatorTest extends TestCase
     {
         $signed_url = $this->url_signer->sign('/foo', 10);
 
-        $validator = new SignedUrlValidator(
-            $this->storage,
-            $this->hmac,
-            $clock = new TestClock()
-        );
+        $validator = new SignedUrlValidator($this->storage, $this->hmac, $clock = new TestClock());
 
         $string = str_replace('signature=', 'signature=tampered', $signed_url->asString());
 
@@ -302,12 +291,7 @@ final class SignedUrlValidatorTest extends TestCase
         $pre = $_SERVER['HTTP_USER_AGENT'] ?? null;
         $_SERVER['HTTP_USER_AGENT'] = 'foobar';
 
-        $signed_url = $this->url_signer->sign(
-            'https://foo.com/bar/baz/',
-            10,
-            1,
-            $_SERVER['HTTP_USER_AGENT']
-        );
+        $signed_url = $this->url_signer->sign('https://foo.com/bar/baz/', 10, 1, $_SERVER['HTTP_USER_AGENT']);
 
         $validator = new SignedUrlValidator($this->storage, $this->hmac);
 

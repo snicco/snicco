@@ -28,7 +28,8 @@ final class GuestsOnlyTest extends MiddlewareTestCase
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
         $response->assertNextMiddlewareCalled();
-        $response->assertableResponse()->assertOk();
+        $response->assertableResponse()
+            ->assertOk();
     }
 
     /**
@@ -43,7 +44,8 @@ final class GuestsOnlyTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
-        $response->assertableResponse()->assertRedirect('/dashboard');
+        $response->assertableResponse()
+            ->assertRedirect('/dashboard');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -59,7 +61,8 @@ final class GuestsOnlyTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
-        $response->assertableResponse()->assertRedirect('/home');
+        $response->assertableResponse()
+            ->assertRedirect('/home');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -72,7 +75,8 @@ final class GuestsOnlyTest extends MiddlewareTestCase
 
         $response = $this->runMiddleware($this->newMiddleware($wp), $this->frontendRequest());
 
-        $response->assertableResponse()->assertRedirect('/');
+        $response->assertableResponse()
+            ->assertRedirect('/');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -86,7 +90,8 @@ final class GuestsOnlyTest extends MiddlewareTestCase
             $this->frontendRequest()
         );
 
-        $response->assertableResponse()->assertRedirect('/custom-home-page');
+        $response->assertableResponse()
+            ->assertRedirect('/custom-home-page');
         $response->assertNextMiddlewareNotCalled();
     }
 
@@ -97,7 +102,8 @@ final class GuestsOnlyTest extends MiddlewareTestCase
     {
         $response = $this->runMiddleware(
             $this->newMiddleware(new GuestOnlyTestWPAPI(true)),
-            $this->frontendRequest()->withHeader('Accept', 'application/json')
+            $this->frontendRequest()
+                ->withHeader('Accept', 'application/json')
         );
 
         $response->assertNextMiddlewareNotCalled();
@@ -118,17 +124,16 @@ final class GuestsOnlyTest extends MiddlewareTestCase
     {
         $response = $this->runMiddleware(
             $this->newMiddleware(new GuestOnlyTestWPAPI(true), null, 'Guests only'),
-            $this->frontendRequest()->withHeader('Accept', 'application/json')
+            $this->frontendRequest()
+                ->withHeader('Accept', 'application/json')
         );
 
         $response->assertNextMiddlewareNotCalled();
         $psr_response = $response->assertableResponse();
         $psr_response->assertIsJson();
-        $psr_response->assertBodyExact(
-            json_encode([
-                'message' => 'Guests only',
-            ], JSON_THROW_ON_ERROR)
-        );
+        $psr_response->assertBodyExact(json_encode([
+            'message' => 'Guests only',
+        ], JSON_THROW_ON_ERROR));
         $psr_response->assertForbidden();
     }
 

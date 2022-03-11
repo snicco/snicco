@@ -99,10 +99,7 @@ final class HttpInformationProviderTest extends TestCase
         $this->assertEquals('foobar_e', $information->identifier());
         $this->assertSame($e, $information->originalException());
         $this->assertSame('Unauthorized', $information->safeTitle());
-        $this->assertSame(
-            'You need to log-in first.',
-            $information->safeDetails()
-        );
+        $this->assertSame('You need to log-in first.', $information->safeDetails());
         $this->assertSame($e, $information->originalException());
 
         $transformed = $information->transformedException();

@@ -42,11 +42,8 @@ final class StatefulRequest extends Middleware
 
     private bool $rotate_next_session = false;
 
-    public function __construct(
-        SessionManager $session_manager,
-        LoggerInterface $logger,
-        string $cookie_path
-    ) {
+    public function __construct(SessionManager $session_manager, LoggerInterface $logger, string $cookie_path)
+    {
         $this->session_manager = $session_manager;
         $this->logger = $logger;
         $this->cookie_path = '/' . ltrim($cookie_path, '/') . '*';

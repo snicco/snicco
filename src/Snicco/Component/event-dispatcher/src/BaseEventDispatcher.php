@@ -54,10 +54,7 @@ final class BaseEventDispatcher implements EventDispatcher
             if ($original_event instanceof StoppablePsrEvent && $original_event->isPropagationStopped()) {
                 break;
             }
-            $this->callListener(
-                $listener,
-                $event,
-            );
+            $this->callListener($listener, $event,);
         }
 
         return $original_event;
@@ -85,11 +82,12 @@ final class BaseEventDispatcher implements EventDispatcher
 
         $listener = $this->listeners[$event_name][$id];
 
-        if (! $listener instanceof Closure && in_array(Unremovable::class, (array) class_implements($listener[0]), true)) {
-            throw CantRemoveListener::thatIsMarkedAsUnremovable(
-                $listener,
-                $event_name
-            );
+        if (! $listener instanceof Closure && in_array(
+            Unremovable::class,
+            (array) class_implements($listener[0]),
+            true
+        )) {
+            throw CantRemoveListener::thatIsMarkedAsUnremovable($listener, $event_name);
         }
 
         unset($this->listeners[$event_name][$id]);
@@ -97,17 +95,9 @@ final class BaseEventDispatcher implements EventDispatcher
 
     public function subscribe(string $event_subscriber): void
     {
-        if (! in_array(
-            EventSubscriber::class,
-            (array) class_implements($event_subscriber),
-            true
-        )) {
+        if (! in_array(EventSubscriber::class, (array) class_implements($event_subscriber), true)) {
             throw new InvalidArgumentException(
-                sprintf(
-                    '[%s] does not implement [%s].',
-                    $event_subscriber,
-                    EventSubscriber::class
-                )
+                sprintf('[%s] does not implement [%s].', $event_subscriber, EventSubscriber::class)
             );
         }
 
@@ -210,10 +200,7 @@ final class BaseEventDispatcher implements EventDispatcher
             return;
         }
 
-        $instance = $this->listener_factory->create(
-            $listener[0],
-            $event->name()
-        );
+        $instance = $this->listener_factory->create($listener[0], $event->name());
 
         call_user_func_array([$instance, $listener[1]], $payload);
     }
