@@ -74,8 +74,8 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function preparedQuery(string $sql, array $bindings = []): mysqli_stmt
     {
@@ -137,8 +137,8 @@ final class BetterWPDB
      *
      * @param Closure(BetterWPDB):T $callback
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @psalm-return  T
      */
@@ -200,8 +200,8 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null>                               $changes     !!! IMPORTANT !!!
      *                                                                                                  Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function updateByPrimary(string $table, $primary_key, array $changes): int
     {
@@ -223,8 +223,8 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $changes    !!! IMPORTANT !!!
      *                                                                   Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function update(string $table, array $conditions, array $changes): int
     {
@@ -257,8 +257,8 @@ final class BetterWPDB
      * @param non-empty-string                               $table
      * @param non-empty-array<non-empty-string, scalar|null> $conditions
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return int The number of deleted records
      */
@@ -282,8 +282,8 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
@@ -301,8 +301,8 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return list<array<string, bool|float|int|string|null>>
      */
@@ -320,9 +320,9 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
+     * @throws InvalidArgumentException
      * @throws NoMatchingRowFound
      * @throws QueryException
-     * @throws InvalidArgumentException
      *
      * @return array<string, float|int|string|null> Booleans are returned as (int) 1 or (int) 0
      */
@@ -346,9 +346,9 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
+     * @throws InvalidArgumentException
      * @throws NoMatchingRowFound
      * @throws QueryException
-     * @throws InvalidArgumentException
      *
      * @return mixed
      */
@@ -363,8 +363,8 @@ final class BetterWPDB
      * @param non-empty-string                              $table
      * @param non-empty-array<non-empty-string,scalar|null> $conditions
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function exists(string $table, array $conditions): bool
     {
@@ -404,8 +404,8 @@ final class BetterWPDB
      * @param non-empty-string       $sql
      * @param array<int,scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return Generator<array<string,bool|float|int|string|null>>
      */
@@ -423,8 +423,8 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $data  !!! IMPORTANT !!!
      *                                                              Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function insert(string $table, array $data): mysqli_stmt
     {
@@ -446,8 +446,8 @@ final class BetterWPDB
      * @param iterable<array<non-empty-string,scalar|null>> $records !!! IMPORTANT !!!
      *                                                               Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return int The number of inserted records
      */

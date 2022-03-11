@@ -80,8 +80,8 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $offset
      *
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      *
      * @return T
      */
@@ -121,8 +121,8 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $id
      *
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      *
      * @psalm-return T
      */
