@@ -130,7 +130,7 @@ final class StatefulRequest extends Middleware
         return $this->addSessionCookie($response, $this->session_manager->toCookie($session));
     }
 
-    protected function maybeInvalidateOrRotate(Session $session): void
+    private function maybeInvalidateOrRotate(Session $session): void
     {
         if ($this->invalidate_next_session) {
             $session->invalidate();

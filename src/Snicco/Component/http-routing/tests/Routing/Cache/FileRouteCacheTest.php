@@ -92,7 +92,7 @@ final class FileRouteCacheTest extends TestCase
         );
     }
 
-    protected function resetDir(): void
+    private function resetDir(): void
     {
         if (is_file($this->test_cache_file)) {
             $res = unlink($this->test_cache_file);
