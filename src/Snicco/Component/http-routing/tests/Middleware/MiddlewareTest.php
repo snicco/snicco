@@ -235,8 +235,11 @@ final class MiddlewareTest extends TestCase
     public function test_exception_if_current_request_is_not_set(): void
     {
         $middleware = new class() extends Middleware {
-            // Handle method is made public on purpose
-            // @noRector
+            /**
+             * Handle method is made public on purpose.
+             *
+             * @noRector
+             */
             public function handle(Request $request, NextMiddleware $next): ResponseInterface
             {
                 return $this->respondWith()
