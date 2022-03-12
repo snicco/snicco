@@ -35,17 +35,15 @@ use function wp_set_current_user;
  */
 final class CustomDirectivesTest extends WPTestCase
 {
-    protected string $blade_cache;
+    private string $blade_cache;
 
-    protected string $blade_views;
+    private string $blade_views;
 
-    protected ViewEngine $view_engine;
+    private ViewEngine $view_engine;
 
-    protected ViewComposerCollection $composers;
+    private ViewComposerCollection $composers;
 
-    protected GlobalViewContext $global_view_context;
-
-    protected BladeStandalone $blade;
+    private BladeStandalone $blade;
 
     /**
      * @psalm-suppress NullArgument
@@ -72,7 +70,6 @@ final class CustomDirectivesTest extends WPTestCase
         $this->blade = $blade;
 
         $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
-        $this->global_view_context = $global_view_context;
 
         $this->clearCache();
     }
@@ -150,7 +147,7 @@ final class CustomDirectivesTest extends WPTestCase
         $this->assertViewContent('', $content);
     }
 
-    protected function assertViewContent(string $expected, string $actual): void
+    private function assertViewContent(string $expected, string $actual): void
     {
         $actual = preg_replace('#
 |

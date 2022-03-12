@@ -18,8 +18,6 @@ final class CreatesPsrRequestsTests extends TestCase
 {
     use CreatesPsrRequests;
 
-    protected string $host = 'foo.com';
-
     /**
      * @test
      */
