@@ -35,7 +35,7 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-if (!function_exists('_classFile')) {
+if (! function_exists('_classFile')) {
     /**
      * @param class-string $class_name
      *
