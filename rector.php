@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Array_\ArrayThisCallToThisMethodCallRector;
-
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
@@ -27,6 +26,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Snicco\Bridge\SessionWP\WPDBSessionDriver;
 use Snicco\Bundle\HttpRouting\StdErrLogger;
+use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\BetterWPCache\Tests\wordpress\TaggingIntegrationTest;
 use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr16IntegrationTest;
 use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr6IntegrationTest;
@@ -55,6 +55,7 @@ return static function (ContainerConfigurator $configurator): void {
         __DIR__ . '/tests',
         __DIR__ . '/ecs.php',
         __DIR__ . '/rector.php',
+        __DIR__ . '/bin',
     ]);
     $parameters->set(Option::PARALLEL, true);
     $parameters->set(Option::PHP_VERSION_FEATURES, '7.4');
@@ -73,6 +74,7 @@ return static function (ContainerConfigurator $configurator): void {
             _classFile(Email::class),
             _classFile(WPCacheAPI::class),
             _classFile(HttpException::class),
+            _classFile(BetterWPAPI::class),
         ],
     ]);
 

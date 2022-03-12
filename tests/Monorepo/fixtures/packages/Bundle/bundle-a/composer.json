@@ -1,0 +1,7 @@
+{
+  "name": "sniccowp/bundle-a-name",
+  "description": "description",
+  "require": {
+    "sniccowp/component-a-name": "dev-master"
+  }
+}

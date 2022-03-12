@@ -5,10 +5,6 @@
         {
             "name": "Calvin Alkan",
             "email": "calvin@snicco.de"
-        },
-        {
-            "name": "Marlon Alkan",
-            "email": "marlon@snicco.de"
         }
     ],
     "type": "library",
@@ -64,11 +60,11 @@
         "guzzlehttp/psr7": "^2.1",
         "laminas/laminas-diactoros": "^2.8",
         "nyholm/psr7": "^1.0.0",
-        "php-stubs/wordpress-stubs": "^5.8.0",
         "rector/rector": "^0.12.17",
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "^10.1",
         "symplify/monorepo-builder": "9.4.70",
+        "symplify/package-builder": "^9.3.26",
         "vimeo/psalm": "^4.10",
         "vlucas/phpdotenv": "5.4.1"
     },
@@ -121,7 +117,8 @@
             "Snicco\\Middleware\\TrailingSlash\\": "src/Snicco/Middleware/trailing-slash/src",
             "Snicco\\Middleware\\WPAuth\\": "src/Snicco/Middleware/wp-auth-only/src",
             "Snicco\\Middleware\\WPCap\\": "src/Snicco/Middleware/wp-capability/src",
-            "Snicco\\Middleware\\WPNonce\\": "src/Snicco/Middleware/wp-nonce/src"
+            "Snicco\\Middleware\\WPNonce\\": "src/Snicco/Middleware/wp-nonce/src",
+            "Snicco\\Monorepo\\": "src/Monorepo/"
         }
     },
     "autoload-dev": {
@@ -179,12 +176,11 @@
             "Snicco\\Middleware\\TrailingSlash\\Tests\\": "src/Snicco/Middleware/trailing-slash/tests",
             "Snicco\\Middleware\\WPAuth\\Tests\\": "src/Snicco/Middleware/wp-auth-only/tests",
             "Snicco\\Middleware\\WPCap\\Tests\\": "src/Snicco/Middleware/wp-capability/tests",
-            "Snicco\\Middleware\\WPNonce\\Tests\\": "src/Snicco/Middleware/wp-nonce/tests"
+            "Snicco\\Middleware\\WPNonce\\Tests\\": "src/Snicco/Middleware/wp-nonce/tests",
+            "Snicco\\Monorepo\\Tests\\": "tests/Monorepo/"
         }
     },
     "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
         "sort-packages": true
     },
     "scripts": {
