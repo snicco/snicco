@@ -18,15 +18,19 @@ use Snicco\Component\StrArr\Str;
 use stdClass;
 use Webmozart\Assert\Assert;
 
+use function array_map;
+use function explode;
 use function filter_var;
 use function gettype;
 use function in_array;
 use function is_array;
 use function is_int;
 use function is_string;
+use function rawurldecode;
 use function sprintf;
 use function strtok;
 use function strtoupper;
+use function strtr;
 use function substr;
 use function trim;
 
@@ -99,10 +103,7 @@ final class Request implements ServerRequestInterface
 
     public function userAgent(): ?string
     {
-        $user_agent = substr($this->getHeaderLine('user-agent'), 0, 500);
-        if (false === $user_agent) {
-            return null;
-        }
+        $user_agent = (string) substr($this->getHeaderLine('user-agent'), 0, 500);
 
         if ('' === $user_agent) {
             return null;
@@ -186,15 +187,15 @@ final class Request implements ServerRequestInterface
 
     public function decodedPath(): string
     {
-        $path = $this->path();
+        // We need to make sure that %2F stays %2F
+        $path = strtr($this->path(), [
+            '%2F' => '%252F',
+        ]);
 
-        return implode(
-            '/',
-            array_map(fn ($part): string => // Make sure that %2F stays %2F
-rawurldecode(strtr($part, [
-    '%2F' => '%252F',
-])), explode('/', $path))
-        );
+        $segments = explode('/', $path);
+        $segments = array_map(fn ($part): string => rawurldecode($part), $segments);
+
+        return implode('/', $segments);
     }
 
     public function path(): string
@@ -753,7 +754,7 @@ rawurldecode(strtr($part, [
     private function isEmpty(string $key): bool
     {
         /** @var mixed $value */
-        $value = Arr::get($this->inputSource(), $key, null);
+        $value = Arr::get($this->inputSource(), $key);
 
         if (null === $value) {
             return true;

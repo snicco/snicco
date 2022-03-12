@@ -229,6 +229,31 @@ final class MiddlewareTest extends TestCase
         $middleware->process($this->frontendRequest(), $this->getNext());
     }
 
+    /**
+     * @test
+     */
+    public function test_exception_if_current_request_is_not_set(): void
+    {
+        $middleware = new class() extends Middleware {
+            // Handle method is made public on purpose
+            // @noRector
+            public function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                return $this->respondWith()
+                    ->refresh();
+            }
+        };
+        $middleware->setContainer($this->pimple_psr);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('current request not set on middleware');
+
+        $middleware->handle(
+            Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', '/foo')),
+            $this->getNext()
+        );
+    }
+
     private function getNext(): NextMiddleware
     {
         return new NextMiddleware(function (): void {

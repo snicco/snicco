@@ -83,6 +83,15 @@ final class ReflectorTest extends TestCase
     {
         $this->assertSame('string', Reflector::firstParameterType(ClassWithConstructor::class));
     }
+
+    /**
+     * @test
+     */
+    public function test_first_parameter_returns_null_for_method_with_no_params(): void
+    {
+        $this->assertNull(Reflector::firstParameterType([TestSubject::class, 'noParams']));
+    }
+
 }
 
 final class NoConstructor
@@ -105,6 +114,12 @@ final class TestSubject implements Countable
     {
         return 0;
     }
+
+    public function noParams() :void
+    {
+        // @noRector
+    }
+
 }
 
 final class TestTraversable implements Iterator

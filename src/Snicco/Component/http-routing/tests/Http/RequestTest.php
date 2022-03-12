@@ -196,7 +196,7 @@ final class RequestTest extends TestCase
     /**
      * @test
      */
-    public function test__is_secure(): void
+    public function test_is_secure(): void
     {
         $request = $this->frontendRequest('http://foobar.com');
         $this->assertFalse($request->isSecure());
