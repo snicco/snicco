@@ -15,15 +15,15 @@ var classes = [
             {
                 "name": "handle",
                 "role": null,
-                "public": true,
-                "private": false,
+                "public": false,
+                "private": true,
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
         "nbMethodsIncludingGettersSetters": 2,
         "nbMethods": 2,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 2,
+        "nbMethodsPrivate": 1,
+        "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
         "wmc": 6,

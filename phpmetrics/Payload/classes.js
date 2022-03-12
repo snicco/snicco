@@ -153,8 +153,8 @@ var classes = [
             {
                 "name": "handle",
                 "role": null,
-                "public": true,
-                "private": false,
+                "public": false,
+                "private": true,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
@@ -174,8 +174,8 @@ var classes = [
         ],
         "nbMethodsIncludingGettersSetters": 4,
         "nbMethods": 4,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 2,
+        "nbMethodsPrivate": 3,
+        "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
         "wmc": 8,

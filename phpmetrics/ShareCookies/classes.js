@@ -6,24 +6,24 @@ var classes = [
         "final": true,
         "methods": [
             {
-                "name": "handle",
+                "name": "addCookiesToResponse",
                 "role": null,
                 "public": true,
                 "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "addCookiesToResponse",
+                "name": "handle",
                 "role": null,
-                "public": true,
-                "private": false,
+                "public": false,
+                "private": true,
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
         "nbMethodsIncludingGettersSetters": 2,
         "nbMethods": 2,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 2,
+        "nbMethodsPrivate": 1,
+        "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
         "wmc": 4,
@@ -31,11 +31,11 @@ var classes = [
         "ccnMethodMax": 3,
         "externals": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
             "Psr\\Http\\Message\\ResponseInterface",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
-            "Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "Psr\\Http\\Message\\ResponseInterface",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
+            "Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware"
         ],
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
