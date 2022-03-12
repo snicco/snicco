@@ -11,7 +11,6 @@ use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionNamedType;
-use ReflectionParameter;
 
 use function class_exists;
 use function class_implements;
