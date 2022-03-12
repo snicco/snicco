@@ -1,0 +1,63 @@
+# Inspired by https://github.com/symplify/symplify/blob/main/.github/workflows/daily_pull_request.yaml
+name: Daily Pull Requests
+
+on:
+  workflow_dispatch:
+  schedule:
+    # https://crontab.guru/once-a-day
+    - cron: "0 0 * * *"
+
+jobs:
+  daily_pull_requests:
+    strategy:
+      fail-fast: false
+      matrix:
+        actions:
+          - name: "Reapply Coding-Standards"
+            run: |
+              vendor/bin/rector process --ansi
+              vendor/bin/ecs --fix --ansi
+            branch: 'automated/reapply-coding-standards'
+
+    name: ${{ matrix.actions.name }}
+    runs-on: ubuntu-latest
+
+    if: github.repository_owner == 'sniccowp'  # don't run this action on forks
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: Install composer dependencies
+        uses: "ramsey/composer-install@v1"
+
+      - name: Import GPG keys
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git-user-signingkey: true
+          git-commit-gpgsign: true
+
+      - name: ${{ matrix.actions.name }}
+        run: ${{ matrix.actions.run }}
+
+      # see https://github.com/peter-evans/create-pull-request
+      - name: Create pull-request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          commit-message: "[automated] ${{ matrix.actions.name }}"
+          committer: sniccowp-bot <sniccowp-github@snicco.de>
+          author: sniccowp-bot <sniccowp-github@snicco.de>
+          base: 'master'
+          branch: ${{ matrix.actions.branch }}
+          title: '[automated] ${{ matrix.actions.name }}'
+          delete-branch: true
