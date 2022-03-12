@@ -91,7 +91,6 @@ final class ReflectorTest extends TestCase
     {
         $this->assertNull(Reflector::firstParameterType([TestSubject::class, 'noParams']));
     }
-
 }
 
 final class NoConstructor
@@ -115,11 +114,10 @@ final class TestSubject implements Countable
         return 0;
     }
 
-    public function noParams() :void
+    public function noParams(): void
     {
         // @noRector
     }
-
 }
 
 final class TestTraversable implements Iterator
