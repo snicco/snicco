@@ -1,0 +1,71 @@
+# Inspired by https://github.com/symplify/symplify/blob/main/.github/workflows/split_monorepo.yaml
+name: Split Monorepo
+on:
+  push:
+
+jobs:
+  provide_packages_json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - uses: "ramsey/composer-install@v1"
+
+      # get package json list
+      - id: package_json
+        run: echo "::set-output name=matrix::$(php bin/monorepo_split_matrix)"
+
+    # this step is needed, so the output gets to the next defined job
+    outputs:
+      matrix: ${{ steps.package_json.outputs.matrix }}
+
+  split_monorepo:
+    needs: provide_packages_json
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
+
+    steps:
+      - run: |
+          echo "Package name ${{ matrix.packages.name }}"
+          echo "Package path rel ${{ matrix.packages.vendor_name }}"
+          echo "Package path rel ${{ matrix.packages.relative_path }}"
+
+#      # no tag
+#      - if: "!startsWith(github.ref, 'refs/tags/')"
+#        # Uses an action in the root directory
+#        name: Monorepo Split of ${{ matrix.package }}
+#        uses: symplify/github-action-monorepo-split@2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+#        with:
+#          package-directory: '${{ matrix.package_path_rel }}'
+#          split-repository-organization: 'sniccowp'
+#          split-repository-name: '${{ matrix.package_name }}'
+#          user-name: "GitHub Action"
+#          user-email: "action@github.com"
+#          branch: "main"
+#
+#      # with tag
+#      - if: "startsWith(github.ref, 'refs/tags/')"
+#        # Uses an action in the root directory
+#        name: Monorepo Tagged Split of ${{ matrix.package }}
+#        uses: symplify/github-action-monorepo-split@2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+#        with:
+#          tag: ${GITHUB_REF#refs/tags/}
+#
+#          package-directory: 'packages/${{ matrix.package }}'
+#          split-repository-organization: 'symplify'
+#          split-repository-name: '${{ matrix.package }}'
+#          user-name: "GitHub Action"
+#          user-email: "action@github.com"
+#          branch: "main"

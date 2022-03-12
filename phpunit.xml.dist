@@ -52,6 +52,11 @@
             <directory suffix="Test.php">src/Snicco/Component/*/tests/integration</directory>
             <directory suffix="Test.php">src/Snicco/Middleware/*/tests/integration</directory>
         </testsuite>
+
+        <testsuite name="monorepo">
+            <directory suffix="Test.php">tests/Monorepo</directory>
+        </testsuite>
+
     </testsuites>
 
     <coverage includeUncoveredFiles="true" processUncoveredFiles="true">

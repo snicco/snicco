@@ -1,0 +1,7 @@
+{
+  "name": "sniccowp/component-a-name",
+  "description": "description",
+  "require": {
+    "sniccowp/component-b-name": "dev-master"
+  }
+}
