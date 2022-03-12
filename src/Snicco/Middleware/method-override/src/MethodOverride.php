@@ -15,12 +15,15 @@ use function strtoupper;
 
 final class MethodOverride extends Middleware
 {
+    /**
+     * @var string
+     */
     public const HEADER = 'X-HTTP-Method-Override';
 
     /**
      * @psalm-suppress MixedAssignment
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if ('POST' !== $request->realMethod()) {
             return $next($request);

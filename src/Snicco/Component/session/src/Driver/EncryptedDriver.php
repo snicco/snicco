@@ -68,6 +68,7 @@ final class EncryptedDriver implements UserSessionsDriver
         if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
+
         $this->driver->destroyAll();
     }
 
@@ -76,6 +77,7 @@ final class EncryptedDriver implements UserSessionsDriver
         if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
+
         $this->driver->destroyAllForUserId($user_id);
     }
 
@@ -84,6 +86,7 @@ final class EncryptedDriver implements UserSessionsDriver
         if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
+
         $this->driver->destroyAllForUserIdExcept($selector, $user_id);
     }
 

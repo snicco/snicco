@@ -62,7 +62,7 @@ final class PsrViewComposerFactoryTest extends TestCase
     }
 }
 
-class TestComposerNewable implements ViewComposer
+final class TestComposerNewable implements ViewComposer
 {
     public function compose(View $view): View
     {
@@ -70,9 +70,9 @@ class TestComposerNewable implements ViewComposer
     }
 }
 
-class TestComposerNotNewable implements ViewComposer
+final class TestComposerNotNewable implements ViewComposer
 {
-    private stdClass $std;
+    public stdClass $std;
 
     public function __construct(stdClass $std)
     {

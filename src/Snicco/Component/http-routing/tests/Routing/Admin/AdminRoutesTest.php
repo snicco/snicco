@@ -25,7 +25,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage("Admin routes can not define route parameters.\nViolating route [admin1].");
 
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin1', 'admin.php/foo/{bar}');
         });
         $routing->urlMatcher();
@@ -39,7 +39,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
         $this->expectException(BadRouteConfiguration::class);
         $this->expectExceptionMessage('You should not add the prefix [/wp-admin] to the admin route [admin1]');
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin1', '/wp-admin/admin.php/foo/');
         });
     }
@@ -52,7 +52,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('group');
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->middleware('foo')
                 ->page('admin.1', 'admin.php/foo', Route::DELEGATE, [], null);
         });
@@ -66,7 +66,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('You should not add the prefix [/wp-admin] to the admin route [admin.1]');
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin.1', '/wp-admin/admin.php/foo', Route::DELEGATE, [], null);
         });
     }
@@ -84,7 +84,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
             )
         );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/wp-admin/admin.php/foo', RoutingTestController::class);
         });
     }
@@ -94,7 +94,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'admin.php/foo', RoutingTestController::class, [], null);
         });
 
@@ -107,7 +107,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function routes_to_different_admin_pages_dont_match(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'options.php/foo', RoutingTestController::class);
         });
 
@@ -120,7 +120,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function non_get_requests_do_not_match(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'admin.php/foo', RoutingTestController::class);
         });
 
@@ -136,7 +136,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function two_different_admin_routes_can_be_created(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'admin.php/foo', RoutingTestController::class,);
 
             $configurator->page('r2', 'admin.php/bar', RoutingTestController::class,);
@@ -157,7 +157,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function reverse_routing_works_with_admin_routes(): void
     {
-        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'admin.php/foo', RoutingTestController::class,);
         });
 
@@ -173,7 +173,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function a_route_with_the_same_page_query_var_but_different_parent_menu_doesnt_match(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', '/admin.php/foo', RoutingTestController::class,);
         });
 
@@ -189,7 +189,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function admin_routes_do_not_match_for_non_admin_requests_that_have_the_same_rewritten_url_but_are_not_loaded_from_withing_the_admin_dashboard(
         ): void {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'options.php/foo', RoutingTestController::class, [],);
         });
 
@@ -206,7 +206,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
      */
     public function the_real_request_path_is_available_in_the_controller_not_the_rewritten_one(): void
     {
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'admin.php/foo', [RoutingTestController::class, 'returnFullRequest'],);
         });
 

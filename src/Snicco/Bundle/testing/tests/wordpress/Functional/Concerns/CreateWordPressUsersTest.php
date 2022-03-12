@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Tests\wordpress\Functional\Concerns;
 
-use Closure;
 use PHPUnit\Framework\AssertionFailedError;
 use Snicco\Bundle\Testing\Functional\WebTestCase;
 use WP_User;
@@ -84,7 +83,7 @@ final class CreateWordPressUsersTest extends WebTestCase
             $this->assertUserExists($id);
             $this->fail('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
-            $this->assertStringStartsWith("The user with id [{$id}] does not exist.", $e->getMessage());
+            $this->assertStringStartsWith(sprintf('The user with id [%s] does not exist.', $id), $e->getMessage());
         }
     }
 
@@ -103,11 +102,11 @@ final class CreateWordPressUsersTest extends WebTestCase
             $this->assertUserDoesntExists($id);
             $this->fail('Assertion did not fail.');
         } catch (AssertionFailedError $e) {
-            $this->assertStringStartsWith("The user with id [{$id}] does exist.", $e->getMessage());
+            $this->assertStringStartsWith(sprintf('The user with id [%s] does exist.', $id), $e->getMessage());
         }
     }
 
-    protected function createKernel(): Closure
+    protected function createKernel(): callable
     {
         return require dirname(__DIR__, 2) . '/fixtures/test-kernel.php';
     }

@@ -31,6 +31,7 @@ final class CachedAdminMenuTest extends TestCase
         foreach ($menu->items() as $item) {
             $this->assertInstanceOf(AdminMenuItem::class, $item);
         }
+
         $items = $menu->items();
 
         $this->assertTrue(isset($items[0]));

@@ -31,8 +31,8 @@ final class ControllerAction
     /**
      * @param array{0: class-string, 1:string} $class_callable
      *
-     * @throws ReflectionException
      * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     public function __construct(array $class_callable, ContainerInterface $container)
     {

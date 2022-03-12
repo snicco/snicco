@@ -26,7 +26,7 @@ final class SetUserIdTest extends MiddlewareTestCase
     }
 }
 
-class SetUserIDTestWPAPI extends BetterWPAPI
+final class SetUserIDTestWPAPI extends BetterWPAPI
 {
     private int $user_id;
 

@@ -117,9 +117,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
     {
         $m = new ValidateSignature(
             $this->validator,
-            function (ServerRequestInterface $request) {
-                return $request->getHeaderLine('User-Agent');
-            }
+            fn (ServerRequestInterface $request): string => $request->getHeaderLine('User-Agent')
         );
 
         $current_request = $this->frontendRequest()

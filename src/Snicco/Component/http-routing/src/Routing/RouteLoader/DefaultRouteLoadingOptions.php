@@ -24,9 +24,9 @@ final class DefaultRouteLoadingOptions implements RouteLoadingOptions
     {
         if ($parsed_version) {
             $_name = Str::beforeFirst($file_basename, PHPFileRouteLoader::VERSION_FLAG);
-            $file_basename = $_name . ".v{$parsed_version}";
+            $file_basename = $_name . sprintf('.v%s', $parsed_version);
             $prefix = (string) $this->api_base_prefix->append($_name)
-                ->append("v{$parsed_version}");
+                ->append(sprintf('v%s', $parsed_version));
         } else {
             $prefix = $this->api_base_prefix->append($file_basename)
                 ->asString();

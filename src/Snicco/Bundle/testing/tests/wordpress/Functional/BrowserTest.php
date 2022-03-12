@@ -116,7 +116,7 @@ final class BrowserTest extends WPTestCase
         $response->assertNotDelegated()
             ->assertIsJson();
 
-        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'foo' => 'bar',
             'baz' => 'biz',
@@ -143,7 +143,7 @@ final class BrowserTest extends WPTestCase
         $response->assertNotDelegated()
             ->assertIsJson();
 
-        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'cookie1' => 'foo',
             'cookie2' => 'bar',
@@ -167,7 +167,7 @@ final class BrowserTest extends WPTestCase
         $response->assertNotDelegated()
             ->assertIsJson();
 
-        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             'foo' => 'bar',
             'baz' => 'biz',
@@ -190,7 +190,7 @@ final class BrowserTest extends WPTestCase
         $response->assertNotDelegated()
             ->assertIsJson();
 
-        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertEquals([
             [
                 'size' => filesize(dirname(__DIR__) . '/fixtures/php-image.png'),
@@ -254,7 +254,7 @@ final class BrowserTest extends WPTestCase
     private function getBrowser(array $server = [], CookieJar $cookies = null): Browser
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });

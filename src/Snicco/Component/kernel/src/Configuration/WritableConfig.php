@@ -72,19 +72,21 @@ final class WritableConfig extends Config
     public function append(string $key, $value): void
     {
         if (! $this->has($key)) {
-            throw new LogicException("Cant append to missing config key [{$key}].");
+            throw new LogicException(sprintf('Cant append to missing config key [%s].', $key));
         }
+
         $current = $this->get($key);
 
         Assert::isArray($current);
-        Assert::isList($current, "Cant append to key [{$key}] because its not a list.");
+        Assert::isList($current, sprintf('Cant append to key [%s] because its not a list.', $key));
 
-        $type = count($current) ? gettype($current[0]) : null;
+        $type = isset($current[0]) ? gettype($current[0]) : null;
 
         foreach (Arr::toArray($value) as $item) {
             if (($actual = gettype($item)) !== $type && (null !== $type)) {
                 throw new LogicException("Expected scalar type [{$type}].\nGot [{$actual}].");
             }
+
             $current[] = $item;
         }
 
@@ -126,14 +128,15 @@ final class WritableConfig extends Config
     public function prepend(string $key, $value): void
     {
         if (! $this->has($key)) {
-            throw new LogicException("Cant prepend to missing config key [{$key}].");
+            throw new LogicException(sprintf('Cant prepend to missing config key [%s].', $key));
         }
+
         $current = $this->get($key);
 
         Assert::isArray($current);
-        Assert::isList($current, "Cant prepend to key [{$key}] because its not a list.");
+        Assert::isList($current, sprintf('Cant prepend to key [%s] because its not a list.', $key));
 
-        $type = count($current) ? gettype($current[0]) : null;
+        $type = isset($current[0]) ? gettype($current[0]) : null;
 
         $value = Arr::toArray($value);
 
@@ -141,6 +144,7 @@ final class WritableConfig extends Config
             if (($actual = gettype($item)) !== $type && (null !== $type)) {
                 throw new LogicException("Expected scalar type [{$type}].\nGot [{$actual}].");
             }
+
             array_unshift($current, $item);
         }
 

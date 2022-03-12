@@ -49,7 +49,7 @@ trait UserSessionDriverTests
         foreach (['session_no_user1', 'session_no_user2'] as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [{$selector}] was not deleted.");
+                PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -58,7 +58,7 @@ trait UserSessionDriverTests
         foreach (array_keys($sessions) as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [{$selector}] was not deleted.");
+                PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -91,7 +91,7 @@ trait UserSessionDriverTests
         foreach (array_keys($user_two_sessions) as $selector) {
             try {
                 $user_sessions->read($selector);
-                PHPUnit::fail("User session [{$selector}] was not deleted.");
+                PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
@@ -167,7 +167,7 @@ trait UserSessionDriverTests
 
             try {
                 $user_session_driver->read($selector);
-                PHPUnit::fail("User session [{$selector}] was not deleted.");
+                PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
             } catch (BadSessionID $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }

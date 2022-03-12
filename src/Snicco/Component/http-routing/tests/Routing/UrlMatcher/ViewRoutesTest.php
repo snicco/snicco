@@ -30,7 +30,7 @@ final class ViewRoutesTest extends HttpRunnerTestCase
      */
     public function view_routes_work(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->view('/foo', $this->view);
         });
 
@@ -58,7 +58,7 @@ final class ViewRoutesTest extends HttpRunnerTestCase
      */
     public function the_default_values_can_be_customized_for_view_routes(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->view('/foo', $this->view, [
                 'greet' => 'Calvin',
             ], 200, [

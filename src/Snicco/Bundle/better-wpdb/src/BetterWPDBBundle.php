@@ -13,6 +13,9 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 final class BetterWPDBBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/better-wpdb-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -27,9 +30,10 @@ final class BetterWPDBBundle implements Bundle
     public function register(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(BetterWPDB::class, function () use ($kernel) {
-                return BetterWPDB::fromWpdb($kernel->container()[QueryLogger::class] ?? null);
-            });
+            ->shared(
+                BetterWPDB::class,
+                fn (): BetterWPDB => BetterWPDB::fromWpdb($kernel->container()[QueryLogger::class] ?? null)
+            );
     }
 
     public function bootstrap(Kernel $kernel): void

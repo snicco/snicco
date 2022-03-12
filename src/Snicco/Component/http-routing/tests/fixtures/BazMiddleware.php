@@ -8,16 +8,16 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 
-class BazMiddleware extends Middleware
+final class BazMiddleware extends Middleware
 {
     private string $baz;
 
-    public function __construct($baz = 'baz_middleware')
+    public function __construct(string $baz = 'baz_middleware')
     {
         $this->baz = $baz;
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    protected function handle(Request $request, $next): ResponseInterface
     {
         $response = $next($request);
 

@@ -6,7 +6,7 @@ namespace Snicco\Component\BetterWPMail\Tests\fixtures\Email;
 
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 
-class TestMail extends Email
+final class TestMail extends Email
 {
     protected string $subject = 'foo';
 

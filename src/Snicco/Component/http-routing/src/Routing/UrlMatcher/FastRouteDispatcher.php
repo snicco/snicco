@@ -86,7 +86,7 @@ final class FastRouteDispatcher implements UrlMatcher
      *
      * @var array<string,array<string,string>>
      */
-    private $static_route_map;
+    private array $static_route_map = [];
 
     /**
      * A multidimensional array where each HTTP Verbs contains multiple arrays
@@ -97,14 +97,18 @@ final class FastRouteDispatcher implements UrlMatcher
      * routeMap: array<int,array{0: string, 1: array<string,string>}>
      * }>>
      */
-    private $dynamic_route_map;
+    private array $dynamic_route_map = [];
 
     public function __construct(Routes $routes, array $data, RouteConditionFactory $condition_factory)
     {
         $this->routes = $routes;
-        [$this->static_route_map, $this->dynamic_route_map] = $data;
-        Assert::isArray($this->static_route_map);
-        Assert::isArray($this->dynamic_route_map);
+        [$static_map, $dynamic_route_map] = $data;
+        Assert::isArray($static_map);
+        Assert::isArray($dynamic_route_map);
+        /** @psalm-suppress MixedPropertyTypeCoercion */
+        $this->static_route_map = $static_map;
+        /** @psalm-suppress MixedPropertyTypeCoercion */
+        $this->dynamic_route_map = $dynamic_route_map;
         $this->condition_factory = $condition_factory;
     }
 
@@ -141,6 +145,7 @@ final class FastRouteDispatcher implements UrlMatcher
                     return $result;
                 }
             }
+
             if (isset($this->dynamic_route_map['GET'])) {
                 $result = $this->dispatchVariableRoute($this->dynamic_route_map['GET'], $path, $request);
 
@@ -153,7 +158,11 @@ final class FastRouteDispatcher implements UrlMatcher
         $allowed_methods = [];
 
         foreach ($this->static_route_map as $method => $uri_map) {
-            if ($request_method === $method || ! isset($uri_map[$path])) {
+            if ($request_method === $method) {
+                continue;
+            }
+
+            if (! isset($uri_map[$path])) {
                 continue;
             }
 
@@ -164,7 +173,7 @@ final class FastRouteDispatcher implements UrlMatcher
             }
         }
 
-        if (count($allowed_methods)) {
+        if ([] !== $allowed_methods) {
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
 
@@ -179,7 +188,7 @@ final class FastRouteDispatcher implements UrlMatcher
             }
         }
 
-        if (count($allowed_methods)) {
+        if ([] !== $allowed_methods) {
             throw MethodNotAllowed::currentMethod($request_method, $allowed_methods, $path);
         }
 
@@ -210,7 +219,7 @@ final class FastRouteDispatcher implements UrlMatcher
         // We allowed FastRoute to match optional segments with and without trailing slash because
         // fast route natively only supports optional segments with no trailing slash.
         // Because of this we need to check explicitly here.
-        $has_optional_segments = count($route->getOptionalSegmentNames()) > 0;
+        $has_optional_segments = [] !== $route->getOptionalSegmentNames();
         $request_has_trailing = Str::endsWith($request->path(), '/');
         $route_needs_trailing = Str::endsWith($route->getPattern(), '/');
 

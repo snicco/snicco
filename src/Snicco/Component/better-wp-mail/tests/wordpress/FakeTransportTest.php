@@ -28,9 +28,7 @@ final class FakeTransportTest extends WPTestCase
         $fake_transport = new FakeTransport();
         $fake_transport->interceptWordPressEmails();
 
-        add_filter('pre_option_home', function (): string {
-            return 'bogus';
-        });
+        add_filter('pre_option_home', fn (): string => 'bogus');
 
         if ('bogus' !== get_option('home')) {
             throw new RuntimeException('Could not update home url in test setup.');
@@ -50,9 +48,7 @@ final class FakeTransportTest extends WPTestCase
         $fake_transport = new FakeTransport();
         $fake_transport->interceptWordPressEmails();
 
-        add_filter('pre_option_home', function (): string {
-            return 'https://www.foobar.com';
-        });
+        add_filter('pre_option_home', fn (): string => 'https://www.foobar.com');
 
         if ('https://www.foobar.com' !== get_option('home')) {
             throw new RuntimeException('Could not update home url in test setup.');
@@ -60,10 +56,8 @@ final class FakeTransportTest extends WPTestCase
 
         wp_mail('calvin@web.de', 'subject', 'message');
 
-        $fake_transport->assertSent(WPMail::class, function (WPMail $WPMail): bool {
-            return $WPMail->from()
-                ->has('wordpress@foobar.com');
-        });
+        $fake_transport->assertSent(WPMail::class, fn (WPMail $WPMail): bool => $WPMail->from()
+            ->has('wordpress@foobar.com'));
     }
 
     /**
@@ -76,8 +70,6 @@ final class FakeTransportTest extends WPTestCase
 
         wp_mail('calvin@web.de', 'subject', 'message', '', [dirname(__DIR__) . '/fixtures/php-elephant.jpg']);
 
-        $fake_transport->assertSent(WPMail::class, function (WPMail $mail): bool {
-            return 1 === count($mail->attachments());
-        });
+        $fake_transport->assertSent(WPMail::class, fn (WPMail $mail): bool => 1 === count($mail->attachments()));
     }
 }

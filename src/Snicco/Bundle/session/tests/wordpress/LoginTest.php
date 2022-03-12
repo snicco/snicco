@@ -51,7 +51,7 @@ final class LoginTest extends WPTestCase
         $this->directories = $this->bundle_test->setUpDirectories();
         unset($_COOKIE['test_cookie']);
         $this->kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('session', [
                 SessionOption::COOKIE_NAME => 'test_cookie',
             ]);
@@ -107,7 +107,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -130,6 +130,7 @@ final class LoginTest extends WPTestCase
             ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
+
         $m->save($session);
 
         /** @var MiddlewarePipeline $pipeline */
@@ -146,7 +147,7 @@ final class LoginTest extends WPTestCase
 
         $response = $pipeline->send($request)
             ->through([StatefulRequest::class])
-            ->then(function () {
+            ->then(function (): Response {
                 ob_start();
                 wp_signon([
                     'user_login' => (new WP_User(1))->user_login,
@@ -167,7 +168,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 
@@ -186,6 +187,7 @@ final class LoginTest extends WPTestCase
             ->get(SessionManager::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
+
         $m->save($session);
 
         /** @var MiddlewarePipeline $pipeline */
@@ -202,7 +204,7 @@ final class LoginTest extends WPTestCase
 
         $response = $pipeline->send($request)
             ->through([StatefulRequest::class])
-            ->then(function (Request $request) {
+            ->then(function (Request $request): Response {
                 ob_start();
                 wp_signon([
                     'user_login' => (new WP_User(1))->user_login,
@@ -227,7 +229,7 @@ final class LoginTest extends WPTestCase
         $this->assertIsString($first_session, 'No new session generated');
 
         $serialized_session = $this->driver->read($first_session);
-        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR);
+        $data = (array) json_decode($serialized_session->data(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertTrue(isset($data['foo']), 'Session contents are not the same');
         $this->assertSame('bar', $data['foo'], 'Session contents are not the same');
 

@@ -130,7 +130,7 @@ final class ReadOnlySessionTest extends TestCase
         $session = $this->newSession();
 
         $store = ReadOnlySession::fromSession($session);
-        $this->assertEquals($session->lastActivity(), $store->lastActivity());
+        $this->assertSame($session->lastActivity(), $store->lastActivity());
     }
 
     /**
@@ -141,7 +141,7 @@ final class ReadOnlySessionTest extends TestCase
         $session = $this->newSession();
 
         $store = ReadOnlySession::fromSession($session);
-        $this->assertEquals($session->lastRotation(), $store->lastRotation());
+        $this->assertSame($session->lastRotation(), $store->lastRotation());
     }
 
     /**
@@ -202,6 +202,7 @@ final class ReadOnlySessionTest extends TestCase
     {
         $session = $this->newSession();
         $session->setUserId(10);
+
         $store = ReadOnlySession::fromSession($session);
         $this->assertSame(10, $store->userId());
     }

@@ -79,12 +79,12 @@ final class BetterWPMailBundleTest extends WPTestCase
 
         $transport = new CustomTransport();
 
-        $kernel->afterRegister(function (Kernel $kernel) use ($transport) {
+        $kernel->afterRegister(function (Kernel $kernel) use ($transport): void {
             $kernel->container()
                 ->instance(CustomTransport::class, $transport);
         });
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('mail', [
                 MailOption::TRANSPORT => CustomTransport::class,
             ]);
@@ -108,7 +108,7 @@ final class BetterWPMailBundleTest extends WPTestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('mail', [
                 MailOption::RENDERER => [ViewEngineMailRenderer::class],
             ]);
@@ -132,7 +132,7 @@ final class BetterWPMailBundleTest extends WPTestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [BetterWPMailBundle::class, TemplatingBundle::class],
             ]);
@@ -216,7 +216,7 @@ final class BetterWPMailBundleTest extends WPTestCase
     }
 }
 
-class CustomTransport implements Transport
+final class CustomTransport implements Transport
 {
     public function send(Email $email, Envelope $envelope): void
     {

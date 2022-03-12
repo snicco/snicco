@@ -6,7 +6,7 @@ namespace Snicco\Component\BetterWPMail\Tests\fixtures;
 
 use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 
-class NamedViewRenderer implements MailRenderer
+final class NamedViewRenderer implements MailRenderer
 {
     public function render(string $template_name, array $context = []): string
     {

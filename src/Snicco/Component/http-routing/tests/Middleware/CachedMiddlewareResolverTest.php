@@ -43,6 +43,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 
         $route = Route::create('/', Route::DELEGATE, 'r1');
         $route->middleware(BazMiddleware::class);
+
         $controller_action = new ControllerAction(Route::DELEGATE, $this->psr_container);
 
         // BazMiddleware is not present since It's loaded from cache.

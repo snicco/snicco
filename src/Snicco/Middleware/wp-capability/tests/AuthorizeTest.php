@@ -33,7 +33,7 @@ final class AuthorizeTest extends MiddlewareTestCase
      */
     public function a_user_with_given_capabilities_can_access_the_route(): void
     {
-        $wp = new AuthorizeTestBetterWPAPI(function (string $cap) {
+        $wp = new AuthorizeTestBetterWPAPI(function (string $cap): bool {
             if ('manage_options' !== $cap) {
                 throw new RuntimeException('Wrong cap passed');
             }
@@ -53,7 +53,7 @@ final class AuthorizeTest extends MiddlewareTestCase
      */
     public function a_user_without_authorisation_to_the_route_will_throw_an_exception(): void
     {
-        $wp = new AuthorizeTestBetterWPAPI(function (string $cap) {
+        $wp = new AuthorizeTestBetterWPAPI(function (string $cap): bool {
             if ('manage_options' !== $cap) {
                 throw new RuntimeException('Wrong cap passed');
             }
@@ -80,7 +80,7 @@ final class AuthorizeTest extends MiddlewareTestCase
      */
     public function the_user_can_be_authorized_against_a_resource(): void
     {
-        $wp = new AuthorizeTestBetterWPAPI(function (string $cap, int $resource_id) {
+        $wp = new AuthorizeTestBetterWPAPI(function (string $cap, int $resource_id): bool {
             if ('manage_options' !== $cap) {
                 throw new RuntimeException('Wrong cap passed');
             }
@@ -113,7 +113,7 @@ final class AuthorizeTest extends MiddlewareTestCase
     }
 }
 
-class AuthorizeTestBetterWPAPI extends BetterWPAPI
+final class AuthorizeTestBetterWPAPI extends BetterWPAPI
 {
     /**
      * @var Closure(string, mixed...):bool

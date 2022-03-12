@@ -23,7 +23,7 @@ final class Redirect extends Middleware
     /**
      * @var array<string,array{to: string, status: positive-int}>
      */
-    private array $redirects;
+    private array $redirects = [];
 
     /**
      * @param array<positive-int,array<string,string>> $redirects
@@ -37,7 +37,7 @@ final class Redirect extends Middleware
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (isset($this->redirects[$request->path()])) {
             return $this->responseFactory()

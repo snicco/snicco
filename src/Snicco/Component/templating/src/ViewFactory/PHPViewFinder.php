@@ -16,7 +16,7 @@ final class PHPViewFinder
     /**
      * @var list<string>
      */
-    private array $directories;
+    private array $directories = [];
 
     /**
      * @param list<string> $directories
@@ -49,7 +49,7 @@ final class PHPViewFinder
             }
         }
 
-        throw new ViewNotFound("No file can be found for view name [{$view_name}].");
+        throw new ViewNotFound(sprintf('No file can be found for view name [%s].', $view_name));
     }
 
     /**
@@ -72,7 +72,7 @@ final class PHPViewFinder
      */
     private function normalize(array $directories): array
     {
-        return array_map(fn (string $dir) => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
+        return array_map(fn (string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     private function normalizeViewName(string $view_name): string

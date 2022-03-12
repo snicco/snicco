@@ -31,7 +31,7 @@ final class Psr16StorageTest extends TestCase
     public function test_exception_if_link_cant_be_deleted_from_cache(): void
     {
         $cache = new class() extends ArrayCachePool {
-            public function delete($key)
+            public function delete($key): bool
             {
                 return false;
             }
@@ -57,7 +57,7 @@ final class Psr16StorageTest extends TestCase
     public function test_exception_if_link_cant_be_stored_in_cache(): void
     {
         $cache = new class() extends ArrayCachePool {
-            public function set($key, $value, $ttl = null)
+            public function set($key, $value, $ttl = null): bool
             {
                 return false;
             }
@@ -81,7 +81,7 @@ final class Psr16StorageTest extends TestCase
         $cache = new class() extends ArrayCachePool {
             public bool $should_fail = false;
 
-            public function set($key, $value, $ttl = null)
+            public function set($key, $value, $ttl = null): bool
             {
                 if ($this->should_fail) {
                     return false;

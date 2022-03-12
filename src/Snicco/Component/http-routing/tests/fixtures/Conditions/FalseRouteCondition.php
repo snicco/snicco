@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures\Conditions;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
-class FalseRouteCondition extends RouteCondition
+final class FalseRouteCondition extends RouteCondition
 {
     public function isSatisfied(Request $request): bool
     {

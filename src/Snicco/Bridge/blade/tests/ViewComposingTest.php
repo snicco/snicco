@@ -35,11 +35,9 @@ final class ViewComposingTest extends BladeTestCase
         ]);
         $this->composers->addComposer(
             'components.view-composer-parent',
-            function (View $view) {
-                return $view->with([
-                    'name' => 'calvin',
-                ]);
-            }
+            fn (View $view): View => $view->with([
+                'name' => 'calvin',
+            ])
         );
 
         $this->assertSame('calvinalkan', trim($this->renderView('nested-view-composer')));
@@ -50,11 +48,9 @@ final class ViewComposingTest extends BladeTestCase
      */
     public function a_view_composer_can_be_added_to_a_view(): void
     {
-        $this->composers->addComposer('view-composer', function (View $view) {
-            return $view->with([
-                'name' => 'calvin',
-            ]);
-        });
+        $this->composers->addComposer('view-composer', fn (View $view): View => $view->with([
+            'name' => 'calvin',
+        ]));
 
         $this->assertViewContent('calvin', $this->renderView('view-composer'));
     }

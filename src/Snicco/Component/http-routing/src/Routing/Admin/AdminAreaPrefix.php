@@ -18,9 +18,9 @@ final class AdminAreaPrefix
         $this->prefix = $prefix;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->asString();
+        return $this->prefix;
     }
 
     public static function fromString(string $prefix): AdminAreaPrefix

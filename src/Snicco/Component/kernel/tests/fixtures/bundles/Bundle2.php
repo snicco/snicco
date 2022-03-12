@@ -10,7 +10,7 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
-class Bundle2 implements Bundle
+final class Bundle2 implements Bundle
 {
     public bool $registered = false;
 
@@ -33,6 +33,7 @@ class Bundle2 implements Bundle
         if (! $config->has('bundle1.configured')) {
             throw new RuntimeException('bundle1 should have been configured first.');
         }
+
         $config->set('bundle2.configured', true);
     }
 
@@ -52,9 +53,10 @@ class Bundle2 implements Bundle
     public function bootstrap(Kernel $kernel): void
     {
         $container = $kernel->container();
-        if (false === $container[Bundle1::class]->booted) {
+        if (! $container[Bundle1::class]->booted) {
             throw new RuntimeException('bundle1 should have been booted first');
         }
+
         $container[self::class]->booted = true;
     }
 

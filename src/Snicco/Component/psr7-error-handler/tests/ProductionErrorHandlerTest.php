@@ -57,7 +57,7 @@ final class ProductionErrorHandlerTest extends TestCase
     /**
      * @var array<positive-int,array{title:string, message:string}>
      */
-    private array $error_data;
+    private array $error_data = [];
 
     private SplHashIdentifier $identifier;
 
@@ -70,6 +70,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $this->error_data = json_decode(
             (string) file_get_contents(dirname(__DIR__) . '/resources/en_US.error.json'),
             true,
+            JSON_THROW_ON_ERROR,
             JSON_THROW_ON_ERROR
         );
         $this->identifier = new SplHashIdentifier();
@@ -98,7 +99,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $response = $this->error_handler->handle($e, $this->base_request);
 
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertSame(500, $response->getStatusCode());
 
         $body = (string) $response->getBody();
 
@@ -120,13 +121,13 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withAddedHeader('Accept', 'application/json; text/html;')
         );
 
-        $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
 
         $body = (string) $response->getBody();
         $this->assertStringNotContainsString('Secret message here', $body);
 
-        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR);
+        $decoded = json_decode($body, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
         $this->assertIsArray($decoded);
         $this->assertTrue(isset($decoded['errors']));
         $this->assertTrue(isset($decoded['errors'][0]));
@@ -150,7 +151,7 @@ final class ProductionErrorHandlerTest extends TestCase
 
         $response = $this->error_handler->handle($e, $this->base_request);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
 
         $body = (string) $response->getBody();
 
@@ -175,8 +176,8 @@ final class ProductionErrorHandlerTest extends TestCase
             $this->base_request->withHeader('Accept', 'text/plain'),
         );
 
-        $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('text/plain', $response->getHeaderLine('content-type'));
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('text/plain', $response->getHeaderLine('content-type'));
 
         $body = (string) $response->getBody();
         $title = $this->error_data[500]['title'];
@@ -199,9 +200,9 @@ final class ProductionErrorHandlerTest extends TestCase
             ->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
 
         // default handler handles this.
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertSame(500, $response->getStatusCode());
         $this->assertStringContainsString('<h1>500 - Internal Server Error</h1>', (string) $response->getBody());
-        $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
+        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
     }
 
     /**
@@ -248,7 +249,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $body = (string) $response->getBody();
 
         /** @var array $response_data */
-        $response_data = json_decode($body, true, JSON_THROW_ON_ERROR);
+        $response_data = json_decode($body, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         $this->assertTrue(isset($response_data['title']));
         $this->assertTrue(isset($response_data['details']));
@@ -397,7 +398,7 @@ final class ProductionErrorHandlerTest extends TestCase
     }
 }
 
-class RequestLogContextWithException implements RequestLogContext
+final class RequestLogContextWithException implements RequestLogContext
 {
     private int $count = 0;
 
@@ -414,7 +415,7 @@ class RequestLogContextWithException implements RequestLogContext
     }
 }
 
-class DisplayerWithException implements ExceptionDisplayer
+final class DisplayerWithException implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

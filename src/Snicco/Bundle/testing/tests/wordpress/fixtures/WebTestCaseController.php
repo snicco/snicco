@@ -27,7 +27,7 @@ final class WebTestCaseController extends Controller
     public function __invoke(): Response
     {
         return $this->respondWith()
-            ->html('<h1>' . __CLASS__ . '</h1>');
+            ->html('<h1>' . self::class . '</h1>');
     }
 
     public function queryParams(Request $request): Response
@@ -87,7 +87,7 @@ final class WebTestCaseController extends Controller
          */
         foreach ($request->getServerParams() as $name => $value) {
             if (0 === strpos((string) $name, 'X-')) {
-                $string .= "{$name}={$value}";
+                $string .= sprintf('%s=%s', $name, $value);
             }
         }
 

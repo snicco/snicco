@@ -48,6 +48,7 @@ final class JsonToArray extends Payload
                     );
                 }
             }
+
             /** @psalm-var array<string,mixed> */
             return $res;
         } catch (Throwable $e) {

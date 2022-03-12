@@ -26,7 +26,7 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('string or a closure');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->include(1);
         });
     }
@@ -39,7 +39,7 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('not readable');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->include($this->routes_dir . '/bogus.php');
         });
     }
@@ -52,7 +52,7 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('has to return a closure');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->include($this->routes_dir . '/_no_closure.php');
         });
     }
@@ -66,7 +66,7 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
             'partial' => FooMiddleware::class,
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->include($this->routes_dir . '/_partial.php');
         });
 
@@ -86,7 +86,7 @@ final class IncludingRoutesTest extends HttpRunnerTestCase
             'partial' => FooMiddleware::class,
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             /** @var Closure(WebRoutingConfigurator):void $closure */
             $closure = require $this->routes_dir . '/_partial.php';
             $configurator->include($closure);

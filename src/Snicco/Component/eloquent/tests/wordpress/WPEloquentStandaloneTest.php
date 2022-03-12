@@ -38,7 +38,7 @@ final class WPEloquentStandaloneTest extends WPTestCase
         Eloquent::unsetEventDispatcher();
         Eloquent::unsetConnectionResolver();
 
-        $this->withDatabaseExceptions(function () {
+        $this->withDatabaseExceptions(function (): void {
             global $wpdb;
             $wpdb->query('CREATE DATABASE IF NOT EXISTS sniccowp_2_testing');
         });
@@ -46,7 +46,7 @@ final class WPEloquentStandaloneTest extends WPTestCase
 
     protected function tearDown(): void
     {
-        $this->withDatabaseExceptions(function () {
+        $this->withDatabaseExceptions(function (): void {
             global $wpdb;
             $wpdb->query('DROP DATABASE IF EXISTS sniccowp_2_testing');
         });
@@ -192,11 +192,8 @@ final class WPEloquentStandaloneTest extends WPTestCase
         // The laravel Schema Builder.
         $this->assertInstanceOf(\Illuminate\Database\Schema\Builder::class, $schema);
 
-        'mysql2' === $schema->getConnection()
-            ->getName();
-        'mysql' === $schema->getConnection()
-            ->getConfig('driver');
-        'sniccowp_testing_secondary' === $schema->getConnection()
-            ->getConfig('database');
+        $this->assertSame('mysql2', $schema->getConnection()->getName());
+        $this->assertSame('mysql', $schema->getConnection()->getConfig('driver'));
+        $this->assertSame('sniccowp_2_testing', $schema->getConnection()->getConfig('database'));
     }
 }

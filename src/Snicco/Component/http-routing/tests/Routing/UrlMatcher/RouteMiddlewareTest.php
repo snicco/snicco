@@ -69,7 +69,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             'group1' => [FooMiddleware::class, BarMiddleware::class],
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('group1');
         });
 
@@ -84,7 +84,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function duplicate_middleware_is_filtered_out(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('group1');
         });
 
@@ -106,11 +106,11 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function duplicate_middleware_does_not_throw_an_exception(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->middleware(FooMiddleware::class)->group(
-                function (WebRoutingConfigurator $router) {
+                function (WebRoutingConfigurator $router): void {
                     $router->middleware([FooMiddleware::class, BarMiddleware::class])->group(
-                        function (WebRoutingConfigurator $router) {
+                        function (WebRoutingConfigurator $router): void {
                             $router->get('r1', '/foo', RoutingTestController::class)->middleware(
                                 BazMiddleware::class
                             );
@@ -132,7 +132,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(['all', 'foo:FOO']);
         });
 
@@ -149,7 +149,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function duplicate_middleware_is_not_filtered_out_when_passing_different_arguments(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(['all', 'foo:FOO1']);
         });
 
@@ -168,7 +168,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function multiple_middleware_groups_can_be_applied(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware(['group1', 'group2']);
         });
@@ -187,7 +187,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_can_be_added_as_a_full_class_name(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware([FooMiddleware::class, BarMiddleware::class]);
         });
@@ -204,7 +204,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     {
         $this->expectExceptionMessage('The middleware [abc] is not an alias or group name.');
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware('abc');
         });
@@ -217,7 +217,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function multiple_middleware_arguments_can_be_passed(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware('foobar');
 
@@ -243,7 +243,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function boolean_true_false_is_converted(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware(BooleanMiddleware::class . ':true');
 
@@ -263,7 +263,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function numeric_values_are_converted(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware(IntegerMiddleware::class . ':1');
         });
@@ -277,7 +277,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function a_middleware_group_can_point_to_a_middleware_alias(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('foogroup');
         });
 
@@ -294,7 +294,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function group_and_route_middleware_can_be_combined(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware(['baz', 'group1']);
         });
@@ -315,7 +315,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function a_middleware_group_can_contain_another_middleware_group(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('baz_group');
         });
 
@@ -337,7 +337,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_can_be_applied_without_an_alias_and_arguments(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
                 FooMiddleware::class . ':FOO'
             );
@@ -352,7 +352,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_is_sorted(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware(['barbaz', FooMiddleware::class]);
         });
@@ -379,7 +379,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function global_middleware_will_be_run_first_even_if_set_on_route(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware([FooMiddleware::class, 'global']);
         });
@@ -396,7 +396,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('all');
         });
 
@@ -419,7 +419,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_in_the_global_group_is_always_applied_if_a_route_matches(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
@@ -439,7 +439,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
     {
         $this->withGlobalMiddleware([FooMiddleware::class, BarMiddleware::class]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
@@ -456,7 +456,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         $this->alwaysRun([RoutingConfigurator::GLOBAL_MIDDLEWARE]);
         $this->withGlobalMiddleware([FooMiddleware::class, BarMiddleware::class]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
@@ -477,7 +477,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             ]
         );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class);
         });
 
@@ -498,7 +498,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             ]
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('admin1', 'admin.php/foo', RoutingTestController::class, [],);
         });
 
@@ -521,7 +521,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             ]
         );
 
-        $this->adminRouting(function (AdminRoutingConfigurator $configurator) {
+        $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'admin.php/foo', RoutingTestController::class,);
         });
 
@@ -542,7 +542,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             ]
         );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('web1', '/foo', RoutingTestController::class);
         });
 
@@ -562,7 +562,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             ]
         );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'foo', RoutingTestController::class,);
         });
 
@@ -597,7 +597,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             'group2' => ['group1'],
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware('group1');
         });
@@ -619,7 +619,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             'group3' => ['group1'],
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware('group1');
         });
@@ -643,7 +643,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
             'group3' => [BazMiddleware::class, 'group1'],
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)
                 ->middleware('group1');
         });
@@ -678,7 +678,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_is_after_route_middleware(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', ControllerWithBarMiddleware::class)
                 ->middleware(FooMiddleware::class);
         });

@@ -32,7 +32,7 @@ final class TestableEventDispatcher implements EventDispatcher
     /**
      * @var array<string, list<Event>>
      */
-    private $dispatched_events = [];
+    private array $dispatched_events = [];
 
     /**
      * @var string[]
@@ -103,7 +103,7 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         $event_names = is_array($event_names) ? $event_names : [$event_names];
 
-        if (! count($event_names)) {
+        if ([] === $event_names) {
             throw new InvalidArgumentException('$event_names cant be an empty array.');
         }
 
@@ -113,7 +113,7 @@ final class TestableEventDispatcher implements EventDispatcher
     public function assertNotingDispatched(): void
     {
         $count = count($this->dispatched_events);
-        PHPUnit::assertSame(0, $count, "{$count} event[s] dispatched.");
+        PHPUnit::assertSame(0, $count, sprintf('%d event[s] dispatched.', $count));
     }
 
     /**
@@ -132,13 +132,13 @@ final class TestableEventDispatcher implements EventDispatcher
         PHPUnit::assertArrayHasKey(
             $event_name,
             $this->dispatched_events,
-            "The event [{$event_name}] was not dispatched."
+            sprintf('The event [%s] was not dispatched.', $event_name)
         );
 
         if ($condition instanceof Closure) {
             PHPUnit::assertNotEmpty(
                 $this->getDispatched($event_name, $condition),
-                "The event [{$event_name}] was dispatched but the provided condition did not pass."
+                sprintf('The event [%s] was dispatched but the provided condition did not pass.', $event_name)
             );
         }
     }
@@ -157,13 +157,13 @@ final class TestableEventDispatcher implements EventDispatcher
             return;
         }
 
-        if (! $condition) {
+        if (null === $condition) {
             $this->assertDispatchedTimes($event_name, 0);
         } else {
             PHPUnit::assertCount(
                 0,
                 $this->getDispatched($event_name, $condition),
-                "The event [{$event_name}] was dispatched and the condition passed."
+                sprintf('The event [%s] was dispatched and the condition passed.', $event_name)
             );
         }
     }
@@ -172,7 +172,11 @@ final class TestableEventDispatcher implements EventDispatcher
     {
         $count = count($this->getDispatched($event_name));
 
-        PHPUnit::assertSame($times, $count, "The event [{$event_name}] was dispatched [{$count}] time[s].");
+        PHPUnit::assertSame(
+            $times,
+            $count,
+            sprintf('The event [%s] was dispatched [%d] time[s].', $event_name, $count)
+        );
     }
 
     public function resetDispatchedEvents(): void
@@ -189,15 +193,11 @@ final class TestableEventDispatcher implements EventDispatcher
             return true;
         }
 
-        if (count($this->dont_fake)) {
+        if ([] !== $this->dont_fake) {
             return ! in_array($event_name, $this->dont_fake, true);
         }
 
-        if (in_array($event_name, $this->events_to_fake, true)) {
-            return true;
-        }
-
-        return false;
+        return in_array($event_name, $this->events_to_fake, true);
     }
 
     /**
@@ -208,7 +208,7 @@ final class TestableEventDispatcher implements EventDispatcher
         $passed = [];
 
         foreach ($this->dispatched_events[$event_name] ?? [] as $event) {
-            if (! $callback_condition) {
+            if (null === $callback_condition) {
                 $passed[] = $event;
 
                 continue;
@@ -224,6 +224,7 @@ final class TestableEventDispatcher implements EventDispatcher
             if (! is_bool($res)) {
                 throw new LogicException('Test closure that asserts events did not return boolean.');
             }
+
             if ($res) {
                 $passed[] = $event;
             }

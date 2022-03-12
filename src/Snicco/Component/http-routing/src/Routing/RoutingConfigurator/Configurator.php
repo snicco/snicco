@@ -24,13 +24,13 @@ use Webmozart\Assert\Assert;
 use function array_merge;
 use function array_pop;
 use function array_reverse;
-use function count;
 use function gettype;
 use function is_string;
 use function trim;
 
 /**
  * @interal
+ *
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigurator
@@ -89,10 +89,18 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         // It makes no sense to have a menu item without a dedicated action to handle it.
         if (Route::DELEGATE === $action && ! empty($menu_attributes)) {
-            throw new BadRouteConfiguration("Route [{$name}] can not have an admin menu item without an action.");
+            throw new BadRouteConfiguration(sprintf(
+                'Route [%s] can not have an admin menu item without an action.',
+                $name
+            ));
         }
+
         // A menu item should explicitly not be added.
-        if (null === $menu_attributes || Route::DELEGATE === $action) {
+        if (null === $menu_attributes) {
+            return $route;
+        }
+
+        if (Route::DELEGATE === $action) {
             return $route;
         }
 
@@ -130,21 +138,21 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $this->deleteCurrentGroup();
     }
 
-    public function middleware($middleware)
+    public function middleware($middleware): self
     {
         $this->delegate_attributes[RoutingConfigurator::MIDDLEWARE_KEY] = Arr::toArray($middleware);
 
         return $this;
     }
 
-    public function name(string $name)
+    public function name(string $name): self
     {
         $this->delegate_attributes[RoutingConfigurator::NAME_KEY] = $name;
 
         return $this;
     }
 
-    public function namespace(string $namespace)
+    public function namespace(string $namespace): self
     {
         $this->delegate_attributes[RoutingConfigurator::NAMESPACE_KEY] = $namespace;
 
@@ -162,7 +170,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         $routes = $file_or_closure;
         if (! $routes instanceof Closure) {
             Assert::string($file_or_closure, '$file_or_closure has to be a string or a closure.');
-            Assert::readable($file_or_closure, "The file {$file_or_closure} is not readable.");
+            Assert::readable($file_or_closure, sprintf('The file %s is not readable.', $file_or_closure));
             Assert::isInstanceOf(
                 $routes = require $file_or_closure,
                 Closure::class,
@@ -280,7 +288,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
         return $this->addWebRoute($name, $path, ['OPTIONS'], $action);
     }
 
-    public function prefix(string $prefix)
+    public function prefix(string $prefix): self
     {
         $this->delegate_attributes[RoutingConfigurator::PREFIX_KEY] = UrlPath::fromString($prefix);
 
@@ -335,7 +343,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function validateThatAdminRouteHasNoSegments(Route $route): void
     {
-        if (count($route->getSegmentNames())) {
+        if ([] !== $route->getSegmentNames()) {
             throw BadRouteConfiguration::becauseAdminRouteHasSegments($route->getName());
         }
     }
@@ -356,7 +364,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
         $parent_slug = null;
 
-        $parent_route = $parent_route ?? $this->current_parent_route ?? null;
+        $parent_route ??= $this->current_parent_route ?? null;
 
         if (is_string($parent_route)) {
             $this->validateThatParentHasNoAdminPrefixSet($parent_route, $route->getName());
@@ -369,28 +377,30 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
             if (! isset($this->menu_items[$parent_name])) {
                 throw new BadRouteConfiguration(
-                    "Can not use route [{$parent_name}] as a parent for [{$route->getName()}] because it has no menu item."
+                    sprintf(
+                        'Can not use route [%s] as a parent for [%s] because it has no menu item.',
+                        $parent_name,
+                        $route->getName()
+                    )
                 );
             }
 
             $parent_slug = $this->menu_items[$parent_name];
         }
 
-        if ($parent_slug instanceof AdminMenuItem) {
-            if ($parent_slug->isChild()) {
-                /** @var Route $parent_route */
-                $parent_name = $parent_route->getName();
+        if ($parent_slug instanceof AdminMenuItem && $parent_slug->isChild()) {
+            /** @var Route $parent_route */
+            $parent_name = $parent_route->getName();
 
-                throw new BadRouteConfiguration(
-                    sprintf(
-                        'Can not use route [%s] as a parent for route [%s] because [%s] is already a child of parent slug [%s].',
-                        $parent_name,
-                        $route->getName(),
-                        $parent_name,
-                        (string) $parent_slug->parentSlug()
-                    )
-                );
-            }
+            throw new BadRouteConfiguration(
+                sprintf(
+                    'Can not use route [%s] as a parent for route [%s] because [%s] is already a child of parent slug [%s].',
+                    $parent_name,
+                    $route->getName(),
+                    $parent_name,
+                    (string) $parent_slug->parentSlug()
+                )
+            );
         }
 
         if ($parent_slug) {
@@ -485,7 +495,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function redirectRouteName(string $from, string $to): string
     {
-        return "redirect_route:{$from}:{$to}";
+        return sprintf('redirect_route:%s:%s', $from, $to);
     }
 
     /**
@@ -513,7 +523,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupPrefix(UrlPath $path): UrlPath
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return $path;
         }
 
@@ -523,7 +533,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function applyGroupName(string $route_name): string
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return $route_name;
         }
 
@@ -533,13 +543,13 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
             return $route_name;
         }
 
-        return "{$g}.{$route_name}";
+        return sprintf('%s.%s', $g, $route_name);
     }
 
     private function applyGroupNamespace(): string
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return '';
         }
 
@@ -549,7 +559,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function addGroupAttributes(Route $route): void
     {
         $current = $this->currentGroup();
-        if (! $current) {
+        if (! $current instanceof RouteGroup) {
             return;
         }
 
@@ -561,7 +571,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
     private function updateGroupStack(RouteGroup $group): void
     {
         $current = $this->currentGroup();
-        if ($current) {
+        if (null !== $current) {
             $group = $group->mergeWith($current);
         }
 
@@ -570,7 +580,7 @@ final class Configurator implements WebRoutingConfigurator, AdminRoutingConfigur
 
     private function currentGroup(): ?RouteGroup
     {
-        if (! count($this->group_stack)) {
+        if ([] === $this->group_stack) {
             return null;
         }
 

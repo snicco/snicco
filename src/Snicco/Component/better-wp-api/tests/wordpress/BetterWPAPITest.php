@@ -43,7 +43,7 @@ final class BetterWPAPITest extends WPTestCase
     public function test_do_action(): void
     {
         $called = false;
-        add_action('foobar', function (string $foo, string $bar) use (&$called) {
+        add_action('foobar', function (string $foo, string $bar) use (&$called): void {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $called = true;
@@ -60,7 +60,7 @@ final class BetterWPAPITest extends WPTestCase
      */
     public function test_apply_filters(): void
     {
-        add_filter('foobar', function (string $foo, string $bar, array $baz) {
+        add_filter('foobar', function (string $foo, string $bar, array $baz): string {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $this->assertSame(['baz', 'biz'], $baz);
@@ -79,7 +79,7 @@ final class BetterWPAPITest extends WPTestCase
      */
     public function test_apply_filters_strict(): void
     {
-        add_filter('filter1', function (string $foo, string $bar, array $baz) {
+        add_filter('filter1', function (string $foo, string $bar, array $baz): string {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $this->assertSame(['baz', 'biz'], $baz);
@@ -87,7 +87,7 @@ final class BetterWPAPITest extends WPTestCase
             return 'filtered';
         }, 10, 3);
 
-        add_filter('filter2', function (string $foo, string $bar, array $baz) {
+        add_filter('filter2', function (string $foo, string $bar, array $baz): int {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $this->assertSame(['baz', 'biz'], $baz);
@@ -109,14 +109,14 @@ final class BetterWPAPITest extends WPTestCase
      */
     public function test_apply_filters_strict_with_object_works(): void
     {
-        add_filter('filter1', function (stdClass $std) {
+        add_filter('filter1', function (stdClass $std): stdClass {
             $std->foo = 'foo';
 
             return $std;
         }, 10, 3);
 
-        add_filter('filter1', function (stdClass $class) {
-            $this->assertTrue(isset($class->foo));
+        add_filter('filter1', function (stdClass $class): stdClass {
+            $this->assertTrue(property_exists($class, 'foo') && null !== $class->foo);
             $class->bar = 'bar';
 
             return $class;
@@ -137,14 +137,14 @@ final class BetterWPAPITest extends WPTestCase
      */
     public function test_apply_filters_strict_with_object_fails(): void
     {
-        add_filter('filter1', function (stdClass $std) {
+        add_filter('filter1', function (stdClass $std): stdClass {
             $std->foo = 'bar';
 
             return $std;
         }, 10, 3);
 
-        add_filter('filter1', function (stdClass $class) {
-            $this->assertTrue(isset($class->foo));
+        add_filter('filter1', function (stdClass $class): TestWPAPI {
+            $this->assertTrue(property_exists($class, 'foo') && null !== $class->foo);
 
             return new TestWPAPI();
         }, 10, 3);
@@ -170,7 +170,7 @@ final class BetterWPAPITest extends WPTestCase
 
         $wp = new TestWPAPI();
 
-        $wp->addAction('foobar', function (string $foo, string $bar) use (&$called) {
+        $wp->addAction('foobar', function (string $foo, string $bar) use (&$called): void {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
             $called = true;
@@ -186,7 +186,7 @@ final class BetterWPAPITest extends WPTestCase
     public function test_add_filter(): void
     {
         $wp = new TestWPAPI();
-        $wp->addFilter('foobar', function (string $foo, string $bar) {
+        $wp->addFilter('foobar', function (string $foo, string $bar): string {
             $this->assertSame('foo', $foo);
             $this->assertSame('bar', $bar);
 
@@ -204,7 +204,7 @@ final class BetterWPAPITest extends WPTestCase
     public function test_remove_filter(): void
     {
         $cb = /** @return never */
-            function () {
+            function (): void {
                 throw new RuntimeException('not removed');
             };
 
@@ -216,7 +216,7 @@ final class BetterWPAPITest extends WPTestCase
         do_action('foo');
 
         $cb = /** @return never */
-            function () {
+            function (): void {
                 throw new RuntimeException('not removed');
             };
 

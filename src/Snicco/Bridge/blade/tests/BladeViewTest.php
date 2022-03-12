@@ -80,7 +80,7 @@ final class BladeViewTest extends BladeTestCase
         $path = realpath($this->blade_views . '/foo.blade.php');
 
         if (false === $path) {
-            throw new RuntimeException("path [{$path}] does not exist.");
+            throw new RuntimeException(sprintf('path [%s] does not exist.', $this->blade_views . '/foo.blade.php'));
         }
 
         $view = $this->view_engine->make($path);

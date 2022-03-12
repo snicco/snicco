@@ -29,11 +29,18 @@ use function is_file;
 
 final class DebugBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/debug-bundle';
 
     public function shouldRun(Environment $env): bool
     {
-        return $env->isDevelop() && $env->isDebug();
+        if (! $env->isDevelop()) {
+            return false;
+        }
+
+        return $env->isDebug();
     }
 
     public function configure(WritableConfig $config, Kernel $kernel): void
@@ -70,7 +77,7 @@ final class DebugBundle implements Bundle
 
         if (! is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
             $copied = copy(dirname(__DIR__) . '/config/debug.php', $to);
-            if (false === $copied) {
+            if (! $copied) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not copy default debug.php config.');
                 // @codeCoverageIgnoreEnd
@@ -88,7 +95,7 @@ final class DebugBundle implements Bundle
     {
         // private
         $kernel->container()
-            ->factory(Run::class, function () {
+            ->factory(Run::class, function (): Run {
                 $whoops = new Run();
                 $whoops->allowQuit(false);
                 $whoops->writeToOutput(false);
@@ -97,7 +104,7 @@ final class DebugBundle implements Bundle
             });
 
         $kernel->container()
-            ->shared(PrettyPageHandler::class, function () use ($kernel) {
+            ->shared(PrettyPageHandler::class, function () use ($kernel): FilterablePrettyPageHandler {
                 $handler = new FilterablePrettyPageHandler();
                 $handler->handleUnconditionally(true);
 
@@ -114,7 +121,7 @@ final class DebugBundle implements Bundle
             });
 
         $kernel->container()
-            ->shared(WhoopsHtmlDisplayer::class, function () use ($kernel) {
+            ->shared(WhoopsHtmlDisplayer::class, function () use ($kernel): WhoopsHtmlDisplayer {
                 $whoops = $kernel->container()
                     ->make(Run::class);
                 $whoops->pushHandler($kernel->container()->make(PrettyPageHandler::class));
@@ -123,7 +130,7 @@ final class DebugBundle implements Bundle
             });
 
         $kernel->container()
-            ->shared(WhoopsJsonDisplayer::class, function () use ($kernel) {
+            ->shared(WhoopsJsonDisplayer::class, function () use ($kernel): WhoopsJsonDisplayer {
                 $whoops = $kernel->container()
                     ->make(Run::class);
 

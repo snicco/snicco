@@ -73,12 +73,12 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
         if (! isset($this->views[$information->identifier()])) {
             $status = (string) $information->statusCode();
             $possible_views = array_filter([
-                $is_admin ? "{$status}-admin" : null,
-                $is_admin ? "errors.{$status}-admin" : null,
-                $is_admin ? "exceptions.{$status}-admin" : null,
+                $is_admin ? sprintf('%s-admin', $status) : null,
+                $is_admin ? sprintf('errors.%s-admin', $status) : null,
+                $is_admin ? sprintf('exceptions.%s-admin', $status) : null,
                 $status,
-                "errors.{$status}",
-                "exceptions.{$status}",
+                sprintf('errors.%s', $status),
+                sprintf('exceptions.%s', $status),
             ]);
             $this->views[$information->identifier()] = $this->engine->make($possible_views);
         }

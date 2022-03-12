@@ -30,8 +30,8 @@ final class ViewEngine
      * @param string|string[]      $view
      * @param array<string, mixed> $context
      *
-     * @throws ViewNotFound
      * @throws ViewCantBeRendered
+     * @throws ViewNotFound
      */
     public function render($view, array $context = []): string
     {
@@ -71,9 +71,7 @@ final class ViewEngine
             sprintf(
                 "None of the used view factories can render the any of the views [%s].\nTried with:\n%s",
                 implode(',', $views),
-                implode("\n", array_map(function (ViewFactory $v) {
-                    return get_class($v);
-                }, $this->view_factories))
+                implode("\n", array_map(fn (ViewFactory $v) => get_class($v), $this->view_factories))
             )
         );
     }

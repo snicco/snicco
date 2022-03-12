@@ -49,6 +49,9 @@ use function sprintf;
 
 final class SessionBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/session-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -91,6 +94,7 @@ final class SessionBundle implements Bundle
             ->make(EventMapper::class);
         $event_mapper->map('wp_logout', WPLogout::class);
         $event_mapper->map('wp_login', WPLogin::class);
+
         $event_dispatcher = $kernel->container()
             ->make(EventDispatcher::class);
         $event_dispatcher->listen(WPLogout::class, [StatefulRequest::class, 'wpLogoutEvent']);
@@ -105,7 +109,7 @@ final class SessionBundle implements Bundle
     private function bindSessionDriver(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionDriver::class, function () use ($kernel) {
+            ->shared(SessionDriver::class, function () use ($kernel): SessionDriver {
                 if ($kernel->env()->isTesting()) {
                     return new InMemoryDriver();
                 }
@@ -131,15 +135,13 @@ final class SessionBundle implements Bundle
     private function bindSessionManager(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionManager::class, function () use ($kernel) {
-                return new FactorySessionManager(
-                    $kernel->container()
-                        ->make(SessionConfig::class),
-                    $kernel->container()
-                        ->make(SessionDriver::class),
-                    $this->resolveSerializer($kernel),
-                );
-            });
+            ->shared(SessionManager::class, fn (): FactorySessionManager => new FactorySessionManager(
+                $kernel->container()
+                    ->make(SessionConfig::class),
+                $kernel->container()
+                    ->make(SessionDriver::class),
+                $this->resolveSerializer($kernel),
+            ));
     }
 
     private function validateConfig(Kernel $kernel, WritableConfig $config): void
@@ -196,20 +198,27 @@ final class SessionBundle implements Bundle
                 )
             );
         }
-        if (WPObjectCacheDriver::class === $driver && ! $kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'You need to add [%s] to your bundles.php config if you are using the object-cache session driver',
-                    BetterWPCacheBundle::class,
-                )
-            );
+
+        if (WPObjectCacheDriver::class !== $driver) {
+            return;
         }
+
+        if ($kernel->usesBundle(BetterWPCacheBundle::ALIAS)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'You need to add [%s] to your bundles.php config if you are using the object-cache session driver',
+                BetterWPCacheBundle::class,
+            )
+        );
     }
 
     private function bindWPDBSessionDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
         $kernel->container()
-            ->shared(WPDBSessionDriver::class, function () use ($kernel, $config) {
+            ->shared(WPDBSessionDriver::class, function () use ($kernel, $config): WPDBSessionDriver {
                 /** @var non-empty-string $table */
                 $table = $config->getString('session.' . SessionOption::PREFIX);
 
@@ -224,7 +233,7 @@ final class SessionBundle implements Bundle
     private function bindObjectCacheDriver(Kernel $kernel, ReadOnlyConfig $config): void
     {
         $kernel->container()
-            ->shared(WPObjectCacheDriver::class, function () use ($kernel, $config) {
+            ->shared(WPObjectCacheDriver::class, function () use ($kernel, $config): WPObjectCacheDriver {
                 /** @var non-empty-string $group */
                 $group = $config->getString('session.' . SessionOption::PREFIX);
 
@@ -241,7 +250,7 @@ final class SessionBundle implements Bundle
     private function bindSessionConfig(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionConfig::class, function () use ($kernel) {
+            ->shared(SessionConfig::class, function () use ($kernel): SessionConfig {
                 $cookie_name = $kernel->config()
                     ->getString('session.' . SessionOption::COOKIE_NAME);
                 $config = $kernel->config()
@@ -260,6 +269,7 @@ final class SessionBundle implements Bundle
         if (JsonSerializer::class === $serializer) {
             return new JsonSerializer();
         }
+
         if (PHPSerializer::class === $serializer) {
             return new PHPSerializer();
         }
@@ -273,6 +283,7 @@ final class SessionBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
+
         $destination = $kernel->directories()
             ->configDir() . '/session.php';
         if (is_file($destination)) {
@@ -281,9 +292,12 @@ final class SessionBundle implements Bundle
 
         $copied = copy(dirname(__DIR__) . '/config/session.php', $destination);
 
-        if (false === $copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default session config to destination [{$destination}]");
+            throw new RuntimeException(sprintf(
+                'Could not copy the default session config to destination [%s]',
+                $destination
+            ));
             // @codeCoverageIgnoreEnd
         }
     }
@@ -291,15 +305,13 @@ final class SessionBundle implements Bundle
     private function bindMiddleware(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(StatefulRequest::class, function () use ($kernel) {
-                return new StatefulRequest(
-                    $kernel->container()
-                        ->make(SessionManager::class),
-                    $kernel->container()
-                        ->make(LoggerInterface::class),
-                    $kernel->container()
-                        ->make(SessionConfig::class)->cookiePath()
-                );
-            });
+            ->shared(StatefulRequest::class, fn (): StatefulRequest => new StatefulRequest(
+                $kernel->container()
+                    ->make(SessionManager::class),
+                $kernel->container()
+                    ->make(LoggerInterface::class),
+                $kernel->container()
+                    ->make(SessionConfig::class)->cookiePath()
+            ));
     }
 }

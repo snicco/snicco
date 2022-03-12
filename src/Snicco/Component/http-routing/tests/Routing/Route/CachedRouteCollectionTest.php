@@ -12,7 +12,6 @@ use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\Route\SerializedRouteCollection;
 use stdClass;
 
-use function count;
 use function serialize;
 
 /**
@@ -54,7 +53,7 @@ final class CachedRouteCollectionTest extends TestCase
             'r2' => serialize($r2),
         ]);
 
-        $this->assertSame(2, count($routes));
+        $this->assertCount(2, $routes);
     }
 
     /**
@@ -74,6 +73,7 @@ final class CachedRouteCollectionTest extends TestCase
             $this->assertInstanceOf(Route::class, $route);
             ++$count;
         }
+
         $this->assertSame(2, $count);
     }
 
@@ -159,6 +159,7 @@ final class CachedRouteCollectionTest extends TestCase
             $this->assertInstanceOf(Route::class, $route);
             ++$count;
         }
+
         $this->assertSame(2, $count);
     }
 
@@ -178,7 +179,7 @@ final class CachedRouteCollectionTest extends TestCase
             iterator_to_array($routes);
             $this->fail('Expected exception for iterator_to_array on route collection.');
         } catch (RouteNotFound $e) {
-            $this->assertEquals(
+            $this->assertSame(
                 "Route accessed with bad name.\nRoute with real name [r1] is stored with name [route1].",
                 $e->getMessage()
             );
@@ -193,7 +194,7 @@ final class CachedRouteCollectionTest extends TestCase
             $routes->getByName('route1');
             $this->fail('Expected exception for getByName().');
         } catch (RouteNotFound $e) {
-            $this->assertEquals(
+            $this->assertSame(
                 "Route accessed with bad name.\nRoute with real name [r1] is stored with name [route1].",
                 $e->getMessage()
             );

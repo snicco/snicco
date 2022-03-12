@@ -193,7 +193,7 @@ final class RequestAwareLoggerTest extends TestCase
     }
 }
 
-class PathLogContext implements RequestLogContext
+final class PathLogContext implements RequestLogContext
 {
     public function add(array $context, ExceptionInformation $information): array
     {
@@ -203,7 +203,7 @@ class PathLogContext implements RequestLogContext
     }
 }
 
-class MethodLogContext implements RequestLogContext
+final class MethodLogContext implements RequestLogContext
 {
     public function add(array $context, ExceptionInformation $information): array
     {

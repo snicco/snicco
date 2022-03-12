@@ -41,6 +41,7 @@ final class InMemoryDriver implements UserSessionsDriver
         if ($this->fail_gc) {
             throw new CouldNotDestroySessions('InMemory driver force-failed garbage collection.');
         }
+
         $expiration = $this->calculateExpiration($seconds_without_activity);
 
         foreach ($this->storage as $sessionId => $session) {
@@ -67,7 +68,7 @@ final class InMemoryDriver implements UserSessionsDriver
     public function touch(string $selector, int $current_timestamp): void
     {
         if (! isset($this->storage[$selector])) {
-            throw BadSessionID::forSelector($selector, __CLASS__);
+            throw BadSessionID::forSelector($selector, self::class);
         }
 
         $this->storage[$selector]['last_activity'] = $current_timestamp;
@@ -100,9 +101,15 @@ final class InMemoryDriver implements UserSessionsDriver
     public function destroyAllForUserIdExcept(string $selector, $user_id): void
     {
         foreach ($this->storage as $s => $data) {
-            if ($data['user_id'] === $user_id && $s !== $selector) {
-                unset($this->storage[$s]);
+            if ($data['user_id'] !== $user_id) {
+                continue;
             }
+
+            if ($s === $selector) {
+                continue;
+            }
+
+            unset($this->storage[$s]);
         }
     }
 

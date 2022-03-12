@@ -28,7 +28,7 @@ final class ConditionBlueprint
     /**
      * @var array<scalar>
      */
-    public array $passed_args;
+    public array $passed_args = [];
 
     /**
      * @param "!"|class-string<RouteCondition> $condition_class

@@ -18,7 +18,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_redirect_route_can_be_created(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->redirect('/foo', '/bar', 307, [
                 'baz' => 'biz',
             ]);
@@ -37,7 +37,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_permanent_redirect_can_be_created(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->permanentRedirect('/foo', '/bar', [
                 'baz' => 'biz',
             ]);
@@ -56,7 +56,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_temporary_redirect_can_be_created(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->temporaryRedirect('/foo', '/bar', [
                 'baz' => 'biz',
             ]);
@@ -75,7 +75,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_redirect_to_an_external_url_can_be_created(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->redirectAway('/foo', 'https://foobar.com', 301);
         });
 
@@ -92,7 +92,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function a_redirect_to_a_route_can_be_created(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/base/{param}');
             $configurator->redirectToRoute('/foo', 'route1', [
                 'param' => 'baz',
@@ -112,7 +112,7 @@ final class RedirectRoutesTest extends HttpRunnerTestCase
      */
     public function regex_based_redirects_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->redirect('base/{slug}', 'base/new')
                 ->requireOneOf('slug', ['foo', 'bar']);
 

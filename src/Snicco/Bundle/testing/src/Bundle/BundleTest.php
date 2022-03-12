@@ -9,7 +9,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
-use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
@@ -47,14 +46,14 @@ final class BundleTest
         $this->fixtures_dir = $fixtures_dir;
     }
 
-    public function newContainer(): DIContainer
+    public function newContainer(): PimpleContainerAdapter
     {
         return new PimpleContainerAdapter();
     }
 
     public function withoutHttpErrorHandling(Kernel $kernel): void
     {
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
@@ -66,7 +65,7 @@ final class BundleTest
 
         if (! is_dir($fixtures_dir)) {
             $res = mkdir($fixtures_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create base directory');
                 // @codeCoverageIgnoreEnd
@@ -77,7 +76,7 @@ final class BundleTest
 
         if (! is_dir($config_dir)) {
             $res = mkdir($config_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create config directory');
                 // @codeCoverageIgnoreEnd
@@ -97,7 +96,7 @@ final class BundleTest
 
         if (! is_dir($cache_dir)) {
             $res = mkdir($cache_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create cache directory');
                 // @codeCoverageIgnoreEnd
@@ -108,7 +107,7 @@ final class BundleTest
 
         if (! is_dir($log_dir)) {
             $res = mkdir($log_dir, 0775, true);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create log directory');
                 // @codeCoverageIgnoreEnd
@@ -152,6 +151,7 @@ final class BundleTest
             if ($file_info->isDir()) {
                 continue;
             }
+
             if ($file_info->isFile() && 'php' === $file_info->getExtension() && ! in_array($name, $expect, true)) {
                 $files[] = $name;
             }
@@ -159,9 +159,9 @@ final class BundleTest
 
         foreach ($files as $file) {
             $res = unlink($file);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [{$file}].");
+                throw new RuntimeException(sprintf('Could not remove test fixture file [%s].', $file));
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -191,9 +191,9 @@ final class BundleTest
 
         foreach ($files as $file) {
             $res = unlink($file);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test fixture file [{$file}].");
+                throw new RuntimeException(sprintf('Could not remove test fixture file [%s].', $file));
                 // @codeCoverageIgnoreEnd
             }
         }
@@ -202,9 +202,9 @@ final class BundleTest
 
         foreach ($dirs as $dir) {
             $res = rmdir($dir);
-            if (false === $res) {
+            if (! $res) {
                 // @codeCoverageIgnoreStart
-                throw new RuntimeException("Could not remove test directory [{$dir}].");
+                throw new RuntimeException(sprintf('Could not remove test directory [%s].', $dir));
                 // @codeCoverageIgnoreEnd
             }
         }

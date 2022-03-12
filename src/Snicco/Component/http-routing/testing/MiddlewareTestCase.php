@@ -55,9 +55,7 @@ abstract class MiddlewareTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->next_middleware_response = function (Response $response): Response {
-            return $response;
-        };
+        $this->next_middleware_response = fn (Response $response): Response => $response;
         $this->response_factory = $this->newResponseFactory();
     }
 
@@ -112,9 +110,11 @@ abstract class MiddlewareTestCase extends TestCase
             if (! $pimple->offsetExists(ResponseFactory::class)) {
                 $pimple[ResponseFactory::class] = $this->response_factory;
             }
+
             if (! $pimple->offsetExists(UrlGenerator::class)) {
                 $pimple[UrlGenerator::class] = $url;
             }
+
             $middleware->setContainer(new \Pimple\Psr11\Container($pimple));
         }
 

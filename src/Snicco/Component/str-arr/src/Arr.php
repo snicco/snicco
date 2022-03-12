@@ -30,6 +30,7 @@ use function array_intersect_key;
 use function array_key_exists;
 use function array_rand;
 use function array_shift;
+use function array_values;
 use function count;
 use function explode;
 use function gettype;
@@ -42,7 +43,7 @@ use function is_string;
 use function sprintf;
 use function strpos;
 
-class Arr
+final class Arr
 {
     /**
      * @param string|string[] $keys
@@ -67,15 +68,17 @@ class Arr
      */
     public static function first(iterable $array, Closure $condition = null, $default = null)
     {
-        if ($condition) {
+        if (null !== $condition) {
             foreach ($array as $key => $value) {
                 if ($condition($value, $key)) {
                     return $value;
                 }
             }
+
             /** @var TVal|null $default */
             return $default;
         }
+
         foreach ($array as $value) {
             return $value;
         }
@@ -111,7 +114,7 @@ class Arr
 
         if ($number > $count) {
             throw new InvalidArgumentException(
-                "You requested [{$number}] items, but there are only [{$count}] items available."
+                sprintf('You requested [%d] items, but there are only [%d] items available.', $number, $count)
             );
         }
 
@@ -123,6 +126,7 @@ class Arr
             if (1 === $number) {
                 return $array[$key];
             }
+
             $results[] = $array[$key];
         }
 
@@ -151,8 +155,6 @@ class Arr
      *
      * @param array           $array Passed by reference
      * @param string|string[] $keys
-     *
-     * @see
      */
     public static function forget(array &$array, $keys): void
     {
@@ -160,7 +162,7 @@ class Arr
         $keys = (array) $keys;
         self::checkAllStringKeys($keys, 'forget');
 
-        if (0 === count($keys)) {
+        if ([] === $keys) {
             return;
         }
 
@@ -187,7 +189,7 @@ class Arr
                 }
             }
 
-            if (count($parts)) {
+            if ([] !== $parts) {
                 unset($array[array_shift($parts)]);
             }
         }
@@ -211,9 +213,9 @@ class Arr
     }
 
     /**
-     * @psalm-assert-if-true array $value
-     *
      * @param mixed $value
+     *
+     * @psalm-assert-if-true array $value
      */
     public static function accessible($value): bool
     {
@@ -224,6 +226,7 @@ class Arr
      * Flattens a multi-dimensional array into a single level.
      *
      * @return list<mixed>
+     *
      * @psalm-suppress MixedAssignment
      */
     public static function flatten(iterable $array, int $depth = 50): array
@@ -260,6 +263,7 @@ class Arr
      * Set an array item to a given value using "dot" notation.
      *
      * @param mixed $value
+     *
      * @psalm-suppress MixedAssignment
      */
     public static function set(array &$array, string $key, $value): array
@@ -283,7 +287,7 @@ class Arr
             $array = &$array[$key];
         }
 
-        if (count($keys)) {
+        if ([] !== $keys) {
             $array[array_shift($keys)] = $value;
         }
 
@@ -326,8 +330,11 @@ class Arr
         self::checkIsArray($array, 'has');
         $keys = self::toArray($keys);
         self::checkAllStringKeys($keys, 'has');
+        if ([] === $keys) {
+            return false;
+        }
 
-        if ([] === $keys || [] === $array) {
+        if ([] === $array) {
             return false;
         }
 
@@ -487,6 +494,7 @@ class Arr
             if (! is_iterable($values)) {
                 continue;
             }
+
             foreach ($values as $value) {
                 $results[] = $value;
             }
@@ -532,6 +540,10 @@ class Arr
      */
     private static function arrayItems(iterable $array): array
     {
+        if (is_array($array)) {
+            return array_values($array);
+        }
+
         $res = [];
         foreach ($array as $item) {
             $res[] = $item;
@@ -542,20 +554,24 @@ class Arr
 
     /**
      * @param int|string $key
-     *
-     * @psalm-suppress DocblockTypeContradiction
      */
     private static function checkKeyStringInt($key, string $called_method): void
     {
-        if (! is_string($key) && ! is_int($key)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
-                    self::class . '::' . $called_method . '()',
-                    gettype($key)
-                )
-            );
+        if (is_string($key)) {
+            return;
         }
+
+        if (is_int($key)) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
+                self::class . '::' . $called_method . '()',
+                gettype($key)
+            )
+        );
     }
 
     /**
@@ -564,7 +580,7 @@ class Arr
      *
      * @param Default $default
      *
-     * @return TVal
+     * @psalm-return TVal
      */
     private static function returnDefault($default)
     {

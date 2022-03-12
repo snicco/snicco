@@ -10,7 +10,6 @@ use Faker\Generator as FakerGenerator;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
@@ -29,17 +28,14 @@ use function rtrim;
 
 final class WPEloquentStandalone
 {
-    /**
-     * @var Application|Container
-     */
-    private $illuminate_container;
+    private Container $illuminate_container;
 
     private array $connection_configuration;
 
     private bool $enable_global_facades;
 
     /**
-     * @psalm-suppress InvalidArgument
+     * @param mixed[] $connection_configuration
      */
     public function __construct(array $connection_configuration = [], bool $enable_global_facades = true)
     {
@@ -53,6 +49,7 @@ final class WPEloquentStandalone
         }
 
         if ($enable_global_facades && ! Facade::getFacadeApplication() instanceof IlluminateContainer) {
+            /** @psalm-suppress InvalidArgument */
             Facade::setFacadeApplication($this->illuminate_container);
         }
 
@@ -76,7 +73,7 @@ final class WPEloquentStandalone
 
         $this->illuminate_container->singletonIf(
             FakerGenerator::class,
-            function () use ($faker_locale) {
+            function () use ($faker_locale): FakerGenerator {
                 $faker = Factory::create($faker_locale);
                 $faker->unique(true);
 
@@ -84,7 +81,7 @@ final class WPEloquentStandalone
             }
         );
 
-        EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace) {
+        EloquentFactory::guessFactoryNamesUsing(function (string $model) use ($factory_namespace): string {
             $model = class_basename($model);
 
             return rtrim($factory_namespace, '\\') . '\\' . $model . 'Factory';
@@ -104,7 +101,7 @@ final class WPEloquentStandalone
         $this->bindEventDispatcher($event_dispatcher);
     }
 
-    public function bootstrap(): ConnectionResolverInterface
+    public function bootstrap(): WPConnectionResolver
     {
         $this->bindConfig();
         $this->bindTransactionManager();
@@ -121,9 +118,7 @@ final class WPEloquentStandalone
 
     private function bindEventDispatcher(Dispatcher $event_dispatcher): void
     {
-        $this->illuminate_container->singleton('events', function () use ($event_dispatcher) {
-            return $event_dispatcher;
-        });
+        $this->illuminate_container->singleton('events', fn (): Dispatcher => $event_dispatcher);
         Eloquent::setEventDispatcher($event_dispatcher);
     }
 
@@ -135,7 +130,7 @@ final class WPEloquentStandalone
             $config['database.connections'] = $this->connection_configuration;
         } else {
             // eloquent only needs some config element that works with array access.
-            $this->illuminate_container->singleton('config', function () {
+            $this->illuminate_container->singleton('config', function (): Fluent {
                 $config = new Fluent();
                 $config['database.connections'] = $this->connection_configuration;
 
@@ -146,16 +141,15 @@ final class WPEloquentStandalone
 
     private function bindTransactionManager(): void
     {
-        $this->illuminate_container->singletonIf('db.transactions', function () {
-            return new DatabaseTransactionsManager();
-        });
+        $this->illuminate_container->singletonIf(
+            'db.transactions',
+            fn (): DatabaseTransactionsManager => new DatabaseTransactionsManager()
+        );
     }
 
-    /**
-     * @psalm-suppress PossiblyInvalidArgument
-     */
-    private function newConnectionResolver(): ConnectionResolverInterface
+    private function newConnectionResolver(): WPConnectionResolver
     {
+        /** @psalm-suppress InvalidArgument */
         $illuminate_database_manager = new DatabaseManager(
             $this->illuminate_container,
             new ConnectionFactory($this->illuminate_container)
@@ -166,8 +160,6 @@ final class WPEloquentStandalone
 
     private function bindDBFacade(ConnectionResolverInterface $connection_resolver): void
     {
-        $this->illuminate_container->singletonIf('db', function () use ($connection_resolver) {
-            return $connection_resolver;
-        });
+        $this->illuminate_container->singletonIf('db', fn (): ConnectionResolverInterface => $connection_resolver);
     }
 }

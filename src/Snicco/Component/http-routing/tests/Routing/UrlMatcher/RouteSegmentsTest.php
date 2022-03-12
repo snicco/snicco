@@ -18,7 +18,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function url_encoded_routes_can_be_matched_by_their_decoded_path(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('city', '/german-city/{city}', [RoutingTestController::class, 'dynamic']);
         });
 
@@ -31,7 +31,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function non_ascii_routes_can_be_matched(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'новости', [RoutingTestController::class, 'static']);
             $configurator->get('r2', '/foo/{bar}', [RoutingTestController::class, 'dynamic']);
         });
@@ -48,7 +48,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function routes_are_case_sensitive(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
         });
 
@@ -61,7 +61,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function route_segments_can_contain_encoded_forward_slashes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('bands', '/bands/{band}/{song?}', [RoutingTestController::class, 'bandSong']);
         });
 
@@ -77,7 +77,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function urldecoded_route_definitions_can_match_url_encoded_paths(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'münchen', RoutingTestController::class);
         });
 
@@ -91,7 +91,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function routes_can_contain_a_plus_sign(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'foo+bar', RoutingTestController::class);
         });
 
@@ -104,7 +104,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function regex_can_be_added_as_a_condition_as_array_syntax(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('users', 'users/{user}', [RoutingTestController::class, 'dynamic'])
                 ->requirements([
                     'user' => '[a]+',
@@ -123,7 +123,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_regex_conditions_can_be_added(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get(
                 'r1',
                 '/user/{id}/{name}',
@@ -149,7 +149,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function optional_parameters_work_at_the_end_of_the_url(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'users/{id}/{name?}', [RoutingTestController::class, 'users']);
         });
 
@@ -165,7 +165,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_parameters_can_be_optional(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->post('r1', '/team/{name?}/{player?}', [RoutingTestController::class, 'twoOptional']);
         });
 
@@ -184,7 +184,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_parameters_can_be_optional_with_a_preceding_required_segment(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             // Preceding group is required but not capturing
             $configurator->get(
                 'r1',
@@ -211,7 +211,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function multiple_parameters_can_be_optional_and_have_custom_regex(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->post(
                 'r1',
                 '/team/{id?}/{name?}',
@@ -245,7 +245,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function adding_regex_can_be_done_as_a_fluent_api(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', 'users/{user_id}/{name}', [RoutingTestController::class, 'twoParams'])
                 ->requirements([
                     'user_id' => '[a]+',
@@ -272,7 +272,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_alpha_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get(
                 'route1',
                 '/route1/{param1}/{param2}',
@@ -319,7 +319,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', 'route1/{name}', [RoutingTestController::class, 'dynamic'])
                 ->requireAlphaNum('name');
 
@@ -348,7 +348,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_number_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', 'route1/{name}', [RoutingTestController::class, 'dynamicInt'])
                 ->requireNum('name');
         });
@@ -365,7 +365,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function only_one_of_can_be_added_to_a_segment_as_a_helper_method(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get(
                 'route1',
                 'route1/{name}',
@@ -391,7 +391,7 @@ final class RouteSegmentsTest extends HttpRunnerTestCase
      */
     public function segments_can_be_added_before_path_segments(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('city', '{language}/foo/{page}', [RoutingTestController::class, 'twoParams']);
         });
 

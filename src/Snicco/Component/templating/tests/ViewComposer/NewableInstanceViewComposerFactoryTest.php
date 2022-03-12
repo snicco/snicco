@@ -49,9 +49,9 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
     }
 }
 
-class ComplexComposer implements ViewComposer
+final class ComplexComposer implements ViewComposer
 {
-    private stdClass $stdClass;
+    public stdClass $stdClass;
 
     public function __construct(stdClass $stdClass)
     {

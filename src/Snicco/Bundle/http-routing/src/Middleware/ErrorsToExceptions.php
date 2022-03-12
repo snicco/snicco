@@ -22,9 +22,12 @@ use const E_USER_DEPRECATED;
  */
 final class ErrorsToExceptions implements MiddlewareInterface
 {
-    private LoggerInterface $logger;
+    /**
+     * @var int
+     */
+    private const THROW_AT = E_ALL - E_DEPRECATED - E_USER_DEPRECATED;
 
-    private int $throw_at = E_ALL - E_DEPRECATED - E_USER_DEPRECATED;
+    private LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -34,13 +37,14 @@ final class ErrorsToExceptions implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         set_error_handler(function (int $level, string $message, string $file = '', int $line = 0): bool {
-            if ($this->throw_at & $level) {
+            if ((self::THROW_AT & $level) !== 0) {
                 throw new ErrorException($message, 0, $level, $file, $line);
             }
+
             // Don't pass the deprecation to PHPs native error handler since it will display them with display errors set to one.
             // This will cause the laminas' response emitter to throw an exception because of previous output.
             $line = (string) $line;
-            $this->logger->info("PHP Deprecated: {$message} in {$file} on line {$line}");
+            $this->logger->info(sprintf('PHP Deprecated: %s in %s on line %s', $message, $file, $line));
 
             return true;
         });

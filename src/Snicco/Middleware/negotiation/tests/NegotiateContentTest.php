@@ -20,7 +20,7 @@ final class NegotiateContentTest extends MiddlewareTestCase
      */
     public function content_negotiation_is_performed(): void
     {
-        $this->withNextMiddlewareResponse(function (Response $response, Request $request) {
+        $this->withNextMiddlewareResponse(function (Response $response, Request $request): Response {
             $response->getBody()
                 ->write($request->getHeaderLine('accept'));
 

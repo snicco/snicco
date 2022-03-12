@@ -221,7 +221,7 @@ final class GeneratorTest extends HttpRunnerTestCase
         $m = rawurlencode('münchen');
         $d = rawurlencode('düsseldorf');
 
-        $this->assertSame("/{$m}/{$d}", $this->generator()->to('münchen/düsseldorf'));
+        $this->assertSame(sprintf('/%s/%s', $m, $d), $this->generator()->to('münchen/düsseldorf'));
     }
 
     /**
@@ -257,7 +257,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function a_route_can_be_named(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo_route', '/foo');
             $configurator->post('bar_route', '/bar');
         });
@@ -278,7 +278,7 @@ final class GeneratorTest extends HttpRunnerTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('/foo_route', '/foo');
         });
     }
@@ -288,7 +288,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function an_absolute_url_can_be_created(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo_route', '/foo');
         });
 
@@ -302,11 +302,11 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function route_names_are_merged_on_multiple_levels(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->name('foo')
-                ->group(function (WebRoutingConfigurator $configurator) {
+                ->group(function (WebRoutingConfigurator $configurator): void {
                     $configurator->name('bar')
-                        ->group(function (WebRoutingConfigurator $configurator) {
+                        ->group(function (WebRoutingConfigurator $configurator): void {
                             $configurator->get('baz', '/baz');
                         });
                     $configurator->get('biz', '/biz');
@@ -326,9 +326,9 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function group_names_are_applied_to_child_routes(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->name('foo')
-                ->group(function (WebRoutingConfigurator $configurator) {
+                ->group(function (WebRoutingConfigurator $configurator): void {
                     $configurator->get('bar', '/bar');
                     $configurator->get('baz', '/baz');
                     $configurator->get('biz', '/biz');
@@ -345,7 +345,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function urls_for_routes_with_required_segments_can_be_generated(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo/{required}');
         });
 
@@ -361,7 +361,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function urls_for_routes_with_optional_segments_can_be_generated(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', 'foo/{required}/{optional?}');
             $configurator->get('bar', 'bar/{required}/{optional?}/');
         });
@@ -398,7 +398,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function optional_segments_can_be_created_after_fixed_segments(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', 'foo/{optional?}');
         });
         $url = $routing->urlGenerator()
@@ -413,7 +413,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function multiple_optional_segments_can_be_used(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', 'foo/{opt1?}/{opt2?}/');
             $configurator->get('bar', 'bar/{required}/{opt1?}/{opt2?}');
         });
@@ -439,7 +439,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function required_segments_can_be_created_with_regex_constraints(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo/{required}')
                 ->requirements([
                     'required' => '[a]+',
@@ -467,7 +467,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function optional_segments_can_be_created_with_regex_constraints(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo/{optional?}')
                 ->requirements([
                     'optional' => '[a]+',
@@ -502,7 +502,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function required_and_optional_segments_can_be_created_with_regex(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo/{required}/{optional?}')
                 ->requirements([
                     'required' => '\w+',
@@ -552,7 +552,7 @@ final class GeneratorTest extends HttpRunnerTestCase
     {
         $this->expectExceptionMessage('Required parameter [required] is missing for route [foo].');
 
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', 'foo/{required}');
         });
 
@@ -575,7 +575,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function a_route_is_replaced_if_another_route_with_the_same_name_is_added(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', 'foo');
             $configurator->get('route1', 'bar');
         });
@@ -590,7 +590,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function generated_urls_are_cached_if_no_route_arguments_are_required(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('static', '/static');
             $configurator->get('foo', '/foo/{required}');
         });
@@ -621,7 +621,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function test_with_complex_reqex(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('teams', '/teams/{team}/{player?}')
                 ->requirements([
                     'team' => 'm{1}.+united[xy]',
@@ -702,7 +702,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function test_with_optional_segments_where_no_value_is_provided(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo/{bar?}/{baz?}');
         });
 
@@ -711,7 +711,7 @@ final class GeneratorTest extends HttpRunnerTestCase
                 'param1' => 'foo',
             ]);
 
-        $this->assertEquals('/foo?param1=foo', $url);
+        $this->assertSame('/foo?param1=foo', $url);
     }
 
     /**
@@ -719,7 +719,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function additional_parameters_are_added_as_query_arguments(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('teams', '/{team}/{player}');
         });
 
@@ -749,7 +749,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function test_to_login_with_named_login_route(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('login', '/login1');
             $configurator->get('auth.login', '/login2');
             $configurator->get('framework.auth.login', '/login3');
@@ -772,7 +772,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function test_to_login_with_named_auth_login_route(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('auth.login', '/login2');
             $configurator->get('framework.auth.login', '/login3');
         });
@@ -794,7 +794,7 @@ final class GeneratorTest extends HttpRunnerTestCase
      */
     public function test_two_login_with_named_framework_auth_login_route(): void
     {
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('framework.auth.login', '/login3');
         });
 
@@ -837,7 +837,7 @@ final class GeneratorTest extends HttpRunnerTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Replacements must be string or integer. Got [array].');
 
-        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', 'foo/{required}');
         });
 

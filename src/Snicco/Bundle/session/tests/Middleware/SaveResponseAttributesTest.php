@@ -48,11 +48,9 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         $middleware = new SaveResponseAttributes();
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withErrors([
-                'foo' => ['bar', 'baz'],
-            ], 'name1');
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withErrors([
+            'foo' => ['bar', 'baz'],
+        ], 'name1'));
 
         $response = $this->runMiddleware($middleware, $this->request);
         $response->assertNextMiddlewareCalled();
@@ -73,12 +71,10 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         $middleware = new SaveResponseAttributes();
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withFlashMessages([
-                'foo' => 'bar',
-                'baz' => 'biz',
-            ]);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withFlashMessages([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ]));
 
         $response = $this->runMiddleware($middleware, $this->request);
         $response->assertNextMiddlewareCalled();
@@ -94,12 +90,10 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     {
         $middleware = new SaveResponseAttributes();
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response->withOldInput([
-                'foo' => 'bar',
-                'baz' => 'biz',
-            ]);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response->withOldInput([
+            'foo' => 'bar',
+            'baz' => 'biz',
+        ]));
 
         $response = $this->runMiddleware($middleware, $this->request);
         $response->assertNextMiddlewareCalled();

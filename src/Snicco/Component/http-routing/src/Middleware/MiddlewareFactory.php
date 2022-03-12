@@ -45,6 +45,7 @@ final class MiddlewareFactory
                 /** @var mixed $middleware */
                 $middleware = $middleware(...array_values($route_arguments));
             }
+
             if (! $middleware instanceof MiddlewareInterface) {
                 throw new LogicException(
                     sprintf(

@@ -81,9 +81,7 @@ final class Kernel
             throw new LogicException('The kernel cant be booted twice.');
         }
 
-        $cached_config = $this->config_cache->get($this->configCacheFile(), function () {
-            return $this->loadConfiguration();
-        });
+        $cached_config = $this->config_cache->get($this->configCacheFile(), fn (): array => $this->loadConfiguration());
 
         $this->read_only_config = ReadOnlyConfig::fromArray($cached_config);
 
@@ -149,6 +147,7 @@ final class Kernel
         if ($this->booted) {
             throw new LogicException('register callbacks can not be added after the kernel was booted.');
         }
+
         $this->after_register_callbacks[] = $callback;
     }
 
@@ -164,6 +163,7 @@ final class Kernel
         if ($this->booted) {
             throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
         }
+
         $this->after_config_loaded_callbacks[] = $callback;
     }
 
@@ -176,12 +176,14 @@ final class Kernel
 
         if (! $writable_config->has('app')) {
             throw new InvalidArgumentException(
-                "The [app.php] config file was not found in the config dir [{$config_dir}]."
+                sprintf('The [app.php] config file was not found in the config dir [%s].', $config_dir)
             );
         }
+
         if (! $writable_config->has('app.bootstrappers')) {
             $writable_config->set('app.bootstrappers', []);
         }
+
         if (! $writable_config->has('bundles')) {
             $writable_config->set('bundles', []);
         }
@@ -213,6 +215,7 @@ final class Kernel
         foreach ($this->bundles as $bundle) {
             $bundle->register($this);
         }
+
         foreach ($this->bootstrappers as $bootstrapper) {
             $bootstrapper->register($this);
         }
@@ -227,6 +230,7 @@ final class Kernel
         foreach ($this->bundles as $bundle) {
             $bundle->bootstrap($this);
         }
+
         foreach ($this->bootstrappers as $bootstrapper) {
             $bootstrapper->bootstrap($this);
         }
@@ -268,6 +272,7 @@ final class Kernel
                 )
             );
         }
+
         $this->bundles[$alias] = $bundle;
     }
 
@@ -306,7 +311,11 @@ final class Kernel
 
     private function determineCache(Environment $environment): ConfigCache
     {
-        if ($environment->isProduction() || $environment->isStaging()) {
+        if ($environment->isProduction()) {
+            return new PHPFileCache();
+        }
+
+        if ($environment->isStaging()) {
             return new PHPFileCache();
         }
 

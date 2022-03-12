@@ -27,13 +27,14 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
     {
         parent::setUp();
 
-        $this->pimple[MiddlewareWithDependencies::class] = function (): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies(new Foo(), new Bar());
-        };
+        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+            new Foo(),
+            new Bar()
+        );
 
-        $this->pimple[ControllerWithMiddleware::class] = function (): ControllerWithMiddleware {
-            return new ControllerWithMiddleware(new Baz());
-        };
+        $this->pimple[ControllerWithMiddleware::class] = fn (): ControllerWithMiddleware => new ControllerWithMiddleware(
+            new Baz()
+        );
     }
 
     /**
@@ -47,11 +48,12 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $bar = new Bar();
         $bar->value = 'BAR';
 
-        $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies($foo, $bar);
-        };
+        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+            $foo,
+            $bar
+        );
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware(
                 MiddlewareWithDependencies::class
             );
@@ -73,7 +75,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             return new ControllerWithMiddleware($baz);
         };
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', ControllerWithMiddleware::class . '@handle');
         });
 
@@ -97,21 +99,19 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
         $this->pimple[Bar::class] = fn (): Bar => $bar;
 
         $this->pimple[MiddlewareWithClassAndParamDependencies::class] = $this->pimple->protect(
-            function (string $foo, string $bar) {
-                return new MiddlewareWithClassAndParamDependencies(
-                    $this->pimple[Foo::class],
-                    $this->pimple[Bar::class],
-                    $foo,
-                    $bar
-                );
-            }
+            fn (string $foo, string $bar): \Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher\MiddlewareWithClassAndParamDependencies => new MiddlewareWithClassAndParamDependencies(
+                $this->pimple[Foo::class],
+                $this->pimple[Bar::class],
+                $foo,
+                $bar
+            )
         );
 
         $this->withMiddlewareAlias([
             'm' => MiddlewareWithClassAndParamDependencies::class,
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('m:BAZ,BIZ');
         });
 
@@ -128,7 +128,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
             'm' => MiddlewareWithTypedDefault::class,
         ]);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('r1', '/foo', RoutingTestController::class)->middleware('m');
         });
 
@@ -137,7 +137,7 @@ final class RouteMiddlewareDependencyInjectionTest extends HttpRunnerTestCase
     }
 }
 
-class MiddlewareWithClassAndParamDependencies extends Middleware
+final class MiddlewareWithClassAndParamDependencies extends Middleware
 {
     private Foo $foo;
 
@@ -155,7 +155,7 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
         $this->biz = $biz;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 
@@ -166,7 +166,7 @@ class MiddlewareWithClassAndParamDependencies extends Middleware
     }
 }
 
-class MiddlewareWithTypedDefault extends Middleware
+final class MiddlewareWithTypedDefault extends Middleware
 {
     private ?Foo $foo;
 
@@ -175,7 +175,7 @@ class MiddlewareWithTypedDefault extends Middleware
         $this->foo = $foo;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (null !== $this->foo) {
             throw new RuntimeException('Foo is not null');

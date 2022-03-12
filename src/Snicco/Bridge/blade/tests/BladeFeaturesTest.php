@@ -46,7 +46,7 @@ final class BladeFeaturesTest extends BladeTestCase
         $content = $view->render();
         $this->assertSame([
             'foo' => 'bar',
-        ], json_decode($content, true));
+        ], json_decode($content, true, 512, JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -56,16 +56,19 @@ final class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('if');
         $view = $view->with('records', ['foo']);
+
         $content = $view->render();
         $this->assertViewContent('I have one record!', $content);
 
         $view = $this->view('if');
         $view = $view->with('records', ['foo', 'bar']);
+
         $content = $view->render();
         $this->assertViewContent('I have multiple records!', $content);
 
         $view = $this->view('if');
         $view = $view->with('records', []);
+
         $content = $view->render();
         $this->assertViewContent("I don't have any records!", $content);
     }
@@ -77,11 +80,13 @@ final class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('unless');
         $view = $view->with('foo', 'foo');
+
         $content = $view->render();
         $this->assertViewContent('', $content);
 
         $view = $this->view('unless');
         $view = $view->with('foo', 'bar');
+
         $content = $view->render();
         $this->assertViewContent('UNLESS', $content);
     }
@@ -94,11 +99,13 @@ final class BladeFeaturesTest extends BladeTestCase
         $view = $this->view('isset-empty');
         $view = $view->with('isset', 'foo');
         $view = $view->with('empty', 'blabla');
+
         $content = $view->render();
         $this->assertViewContent('ISSET', $content);
 
         $view = $this->view('isset-empty');
         $view = $view->with('empty', '');
+
         $content = $view->render();
         $this->assertViewContent('EMPTY', $content);
     }
@@ -110,6 +117,7 @@ final class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('parent');
         $view = $view->with('greeting', 'Hello');
+
         $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
     }
@@ -121,11 +129,13 @@ final class BladeFeaturesTest extends BladeTestCase
     {
         $view = $this->view('include-if');
         $view = $view->with('greeting', 'Hello');
+
         $content = $view->render();
         $this->assertViewContent('Hello calvin', $content);
 
         $view = $this->view('include-if-bogus');
         $view = $view->with('greeting', 'Hello');
+
         $content = $view->render();
         $this->assertViewContent('', $content);
     }
@@ -242,7 +252,7 @@ final class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The service directive is not supported. Dont use it. Its evil.',
-                ($e->getPrevious()) ? $e->getPrevious()
+                (null !== $e->getPrevious()) ? $e->getPrevious()
                     ->getMessage() : $e->getMessage()
             );
         }
@@ -261,7 +271,7 @@ final class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The csrf directive is not supported as it requires the entire laravel framework.',
-                ($e->getPrevious()) ? $e->getPrevious()
+                (null !== $e->getPrevious()) ? $e->getPrevious()
                     ->getMessage() : $e->getMessage()
             );
         }
@@ -280,7 +290,7 @@ final class BladeFeaturesTest extends BladeTestCase
         } catch (ViewCantBeRendered $e) {
             $this->assertStringStartsWith(
                 'The method directive is not supported because form-method spoofing is not supported in WordPress.',
-                ($e->getPrevious()) ? $e->getPrevious()
+                (null !== $e->getPrevious()) ? $e->getPrevious()
                     ->getMessage() : $e->getMessage()
             );
         }

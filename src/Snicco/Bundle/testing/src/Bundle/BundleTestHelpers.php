@@ -56,6 +56,7 @@ trait BundleTestHelpers
         } catch (ContainerExceptionInterface $e) {
             PHPUnit::fail("Class [{$class}] could not be resolved.\nMessage: " . $e->getMessage());
         }
+
         PHPUnit::assertInstanceOf($class, $resolved);
     }
 
@@ -64,7 +65,7 @@ trait BundleTestHelpers
         try {
             $kernel->container()
                 ->get($identifier);
-            PHPUnit::fail("Identifier [{$identifier}] was bound in the container.");
+            PHPUnit::fail(sprintf('Identifier [%s] was bound in the container.', $identifier));
         } catch (NotFoundExceptionInterface $e) {
             PHPUnit::assertStringContainsString($identifier, $e->getMessage());
         }

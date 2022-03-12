@@ -7,9 +7,9 @@ namespace Snicco\Component\Eloquent\Tests\fixtures\Factory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Snicco\Component\StrArr\Arr;
 
-class CountryFactory extends Factory
+final class CountryFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker->country(),
@@ -22,14 +22,12 @@ class CountryFactory extends Factory
      */
     public function narnia(): self
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'continent' => 'Narnia',
-            ];
-        });
+        return $this->state(fn (array $attributes): array => [
+            'continent' => 'Narnia',
+        ]);
     }
 
-    private function continent()
+    private function continent(): string
     {
         $continents = ['Asia', 'Africa', 'Europe', 'Australia', 'North America', 'South America', 'Antarctica.'];
 

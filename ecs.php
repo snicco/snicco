@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use PhpCsFixer\Fixer\Alias\NoMixedEchoPrintFixer;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
+use PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer;
 use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
 use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoUselessInheritdocFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocOrderByValueFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocToCommentFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesOrderFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer;
@@ -31,6 +33,7 @@ return static function (ContainerConfigurator $configurator): void {
         __DIR__ . '/monorepo-builder.php',
         __DIR__ . '/tests',
         __DIR__ . '/ecs.php',
+        __DIR__ . '/rector.php',
     ]);
     $parameters->set(Option::PARALLEL, true);
 
@@ -116,7 +119,7 @@ return static function (ContainerConfigurator $configurator): void {
         ],
     ]);
 
-    // This breaks assertions that compare object equality but not reference.
+    // Handle this with rector where we can skip it.
     $services->remove(PhpUnitStrictFixer::class);
 
     // Allow class names inside same class
@@ -131,6 +134,8 @@ return static function (ContainerConfigurator $configurator): void {
             'imports_order' => ['class', 'function', 'const'],
         ],
     ]);
+
+    $services->set(FullyQualifiedStrictTypesFixer::class);
 
     $services->set(GlobalNamespaceImportFixer::class)->call('configure', [
         [
@@ -171,6 +176,12 @@ return static function (ContainerConfigurator $configurator): void {
     $services->set(DocBlockLineLengthFixer::class)->call('configure', [
         [
             DocBlockLineLengthFixer::LINE_LENGTH => 80,
+        ],
+    ]);
+
+    $services->set(PhpdocOrderByValueFixer::class)->call('configure', [
+        [
+            'annotations' => ['throws'],
         ],
     ]);
 };

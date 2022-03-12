@@ -50,21 +50,21 @@ class Response implements ResponseInterface
     final public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", static::class)
+            sprintf(sprintf('Cannot set undefined property [%s] on immutable class [%%s]', $name), static::class)
         );
     }
 
-    final public function withAddedHeader($name, $value)
+    final public function withAddedHeader($name, $value): self
     {
         return $this->new($this->psr7_response->withAddedHeader($name, $value));
     }
 
-    final public function withHeader($name, $value)
+    final public function withHeader($name, $value): self
     {
         return $this->new($this->psr7_response->withHeader($name, $value));
     }
 
-    final public function withBody(StreamInterface $body)
+    final public function withBody(StreamInterface $body): self
     {
         return $this->new($this->psr7_response->withBody($body));
     }
@@ -84,17 +84,17 @@ class Response implements ResponseInterface
         return $this->psr7_response->getBody();
     }
 
-    final public function withProtocolVersion($version)
+    final public function withProtocolVersion($version): self
     {
         return $this->new($this->psr7_response->withProtocolVersion($version));
     }
 
-    final public function withoutHeader($name)
+    final public function withoutHeader($name): self
     {
         return $this->new($this->psr7_response->withoutHeader($name));
     }
 
-    final public function withStatus($code, $reasonPhrase = '')
+    final public function withStatus($code, $reasonPhrase = ''): self
     {
         return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
     }
@@ -136,7 +136,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withNoIndex(?string $bot = null)
+    final public function withNoIndex(?string $bot = null): self
     {
         $value = $bot ? $bot . ': noindex' : 'noindex';
 
@@ -146,7 +146,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withNoFollow(?string $bot = null)
+    final public function withNoFollow(?string $bot = null): self
     {
         $value = $bot ? $bot . ': nofollow' : 'nofollow';
 
@@ -156,7 +156,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withNoRobots(?string $bot = null)
+    final public function withNoRobots(?string $bot = null): self
     {
         $value = $bot ? $bot . ': none' : 'none';
 
@@ -166,7 +166,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withNoArchive(?string $bot = null)
+    final public function withNoArchive(?string $bot = null): self
     {
         $value = $bot ? $bot . ': noarchive' : 'noarchive';
 
@@ -176,7 +176,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withContentType(string $content_type)
+    final public function withContentType(string $content_type): self
     {
         return $this->withHeader('content-type', $content_type);
     }
@@ -184,7 +184,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withCookie(Cookie $cookie)
+    final public function withCookie(Cookie $cookie): self
     {
         $response = clone $this;
         $response->cookies = $this->cookies->withCookie($cookie);
@@ -195,7 +195,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withoutCookie(string $name, string $path = '/')
+    final public function withoutCookie(string $name, string $path = '/'): self
     {
         $cookie = (new Cookie($name, 'deleted'))
             ->withExpiryTimestamp(1)
@@ -212,7 +212,7 @@ class Response implements ResponseInterface
      *
      * @return static
      */
-    final public function withFlashMessages(array $flash)
+    final public function withFlashMessages(array $flash): self
     {
         $flash_messages = $this->flash_messages;
         foreach ($flash as $k => $v) {
@@ -231,7 +231,7 @@ class Response implements ResponseInterface
      *
      * @return static
      */
-    final public function withOldInput(array $old_input)
+    final public function withOldInput(array $old_input): self
     {
         $_input = $this->old_input;
         foreach ($old_input as $k => $v) {
@@ -274,7 +274,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    final public function withJson(StreamInterface $json)
+    final public function withJson(StreamInterface $json): self
     {
         return $this->withHeader('Content-Type', 'application/json')
             ->withBody($json);
@@ -288,7 +288,11 @@ class Response implements ResponseInterface
 
     final public function isSuccessful(): bool
     {
-        return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+        if ($this->getStatusCode() < 200) {
+            return false;
+        }
+
+        return $this->getStatusCode() < 300;
     }
 
     final public function isOk(): bool
@@ -308,7 +312,11 @@ class Response implements ResponseInterface
 
     final public function isInformational(): bool
     {
-        return $this->getStatusCode() >= 100 && $this->getStatusCode() < 200;
+        if ($this->getStatusCode() < 100) {
+            return false;
+        }
+
+        return $this->getStatusCode() < 200;
     }
 
     final public function isRedirection(): bool
@@ -369,7 +377,7 @@ class Response implements ResponseInterface
     /**
      * @return static
      */
-    private function new(ResponseInterface $new_psr_response)
+    private function new(ResponseInterface $new_psr_response): self
     {
         $new = clone $this;
         $new->psr7_response = $new_psr_response;

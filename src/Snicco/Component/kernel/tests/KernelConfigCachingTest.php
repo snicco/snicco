@@ -143,15 +143,16 @@ final class KernelConfigCachingTest extends TestCase
                 Directories::fromDefaults($this->fixtures_dir),
                 new TestConfigCache()
             );
-            $kernel->afterConfigurationLoaded(function (WritableConfig $config) use (&$run) {
+            $kernel->afterConfigurationLoaded(function (WritableConfig $config) use (&$run): void {
                 if (true === $run) {
                     throw new RuntimeException('after configuration callback run for cached kernel');
                 }
+
                 $run = true;
 
                 $config->set('foo_config', 'bar');
             });
-            $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->afterRegister(function (Kernel $kernel): void {
                 $kernel->container()
                     ->instance(stdClass::class, new stdClass());
             });
@@ -176,7 +177,7 @@ final class KernelConfigCachingTest extends TestCase
     }
 }
 
-class TestConfigCache implements ConfigCache
+final class TestConfigCache implements ConfigCache
 {
     /**
      * @psalm-suppress MixedReturnStatement

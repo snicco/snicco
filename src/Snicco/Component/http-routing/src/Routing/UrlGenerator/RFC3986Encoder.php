@@ -19,6 +19,9 @@ use function trim;
  */
 final class RFC3986Encoder implements UrlEncoder
 {
+    /**
+     * @var array<string, string>
+     */
     public const RFC3986_UNRESERVED = [
         '-' => '-',
         '.' => '.',
@@ -26,6 +29,9 @@ final class RFC3986Encoder implements UrlEncoder
         '~' => '~',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     public const RFC3986_SUB_DELIMITERS = [
         '!' => '%21',
         '$' => '%24',
@@ -40,11 +46,17 @@ final class RFC3986Encoder implements UrlEncoder
         ')' => '%29',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     public const RFC3986_PCHARS = self::RFC3986_UNRESERVED + self::RFC3986_SUB_DELIMITERS + [
         '@' => '%40',
         ':' => '%3A',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     private const QUERY_FRAGMENT_EXTRA = [
         '/' => '%2F',
         '?' => '%3F',
@@ -53,19 +65,17 @@ final class RFC3986Encoder implements UrlEncoder
     /**
      * @var array<string,string>
      */
-    private $query_special;
+    private array $query_special = [];
 
     /**
      * @param array<string,string>|null $query_special
      */
     public function __construct(?array $query_special = null)
     {
-        $this->query_special = null === $query_special
-            ? [
-                '=' => '%3D',
-                '&' => '%26',
-            ]
-            : $query_special;
+        $this->query_special = $query_special ?? [
+            '=' => '%3D',
+            '&' => '%26',
+        ];
     }
 
     public function encodeQuery(array $query): string

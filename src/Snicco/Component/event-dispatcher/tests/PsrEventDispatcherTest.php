@@ -35,11 +35,11 @@ final class PsrEventDispatcherTest extends TestCase
     {
         $psr_dispatcher = new BaseEventDispatcher();
 
-        $psr_dispatcher->listen(Object1::class, function (Object1 $event) {
+        $psr_dispatcher->listen(Object1::class, function (Object1 $event): void {
             $event->foo = 'FOO';
         });
 
-        $psr_dispatcher->listen(Object1::class, function (Object1 $event) {
+        $psr_dispatcher->listen(Object1::class, function (Object1 $event): void {
             $this->assertSame('FOO', $event->foo);
             $event->bar = 'BAR';
         });
@@ -58,18 +58,18 @@ final class PsrEventDispatcherTest extends TestCase
     {
         $psr_dispatcher = new BaseEventDispatcher();
 
-        $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event) {
+        $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event): void {
             $this->assertSame(1, $event->count);
             $event->incrementCount();
         });
 
-        $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event) {
+        $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event): void {
             $this->assertSame(2, $event->count);
             $event->incrementCount();
             $event->should_stop = true;
         });
 
-        $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event) {
+        $psr_dispatcher->listen(StoppableEvent::class, function (StoppableEvent $event): void {
             $this->fail('This should not have been called.');
         });
 
@@ -83,14 +83,14 @@ final class PsrEventDispatcherTest extends TestCase
     }
 }
 
-class Object1
+final class Object1
 {
     public string $foo = 'foo';
 
     public string $bar = 'foo';
 }
 
-class StoppableEvent implements StoppableEventInterface
+final class StoppableEvent implements StoppableEventInterface
 {
     public bool $should_stop = false;
 

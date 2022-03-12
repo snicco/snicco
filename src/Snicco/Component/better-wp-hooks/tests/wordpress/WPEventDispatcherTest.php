@@ -29,25 +29,19 @@ final class WPEventDispatcherTest extends WPTestCase
         ): void {
         add_filter(
             FilterEvent::class,
-            function (FilterEvent $event) {
+            function (FilterEvent $event): void {
                 $event->value = 'filtered_by_wp:' . $event->value;
             }
         );
 
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(
-            FilterEvent::class,
-            function (FilterEvent $event) {
-                $event->value = $event->value . ':Filter1:';
-            }
-        );
-        $dispatcher->listen(
-            FilterEvent::class,
-            function (FilterEvent $event) {
-                $event->value = $event->value . 'Filter2';
-            }
-        );
+        $dispatcher->listen(FilterEvent::class, function (FilterEvent $event): void {
+            $event->value .= ':Filter1:';
+        });
+        $dispatcher->listen(FilterEvent::class, function (FilterEvent $event): void {
+            $event->value .= 'Filter2';
+        });
 
         $result = $dispatcher->dispatch($event = new FilterEvent('FOOBAR'));
 
@@ -60,8 +54,8 @@ final class WPEventDispatcherTest extends WPTestCase
      */
     public function wordpress_filters_can_be_also_be_used_if_no_listeners_are_attached(): void
     {
-        add_filter(FilterEvent::class, function (FilterEvent $event) {
-            $event->value = $event->value . ':filtered';
+        add_filter(FilterEvent::class, function (FilterEvent $event): void {
+            $event->value .= ':filtered';
         });
 
         $dispatcher = $this->getDispatcher();
@@ -77,7 +71,7 @@ final class WPEventDispatcherTest extends WPTestCase
      */
     public function plain_object_events_can_be_shared_with_wordpress(): void
     {
-        add_filter(PlainObjectEvent::class, function (PlainObjectEvent $event) {
+        add_filter(PlainObjectEvent::class, function (PlainObjectEvent $event): void {
             $event->value = 'filtered_by_wp:' . $event->value;
         });
 
@@ -85,8 +79,8 @@ final class WPEventDispatcherTest extends WPTestCase
 
         $dispatcher->listen(
             PlainObjectEvent::class,
-            function (PlainObjectEvent $event) {
-                $event->value = $event->value . ':Filter1';
+            function (PlainObjectEvent $event): void {
+                $event->value .= ':Filter1';
             }
         );
 
@@ -102,17 +96,14 @@ final class WPEventDispatcherTest extends WPTestCase
      */
     public function events_that_dont_implement_expose_to_wp_are_not_shared(): void
     {
-        add_filter(
-            stdClass::class,
-            function (stdClass $event) {
-                $event->value = $event->value . ':filtered_by_wordpress';
-            }
-        );
+        add_filter(stdClass::class, function (stdClass $event): void {
+            $event->value .= ':filtered_by_wordpress';
+        });
 
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(function (stdClass $event) {
-            $event->value = $event->value . ':filtered_by_listener';
+        $dispatcher->listen(function (stdClass $event): void {
+            $event->value .= ':filtered_by_listener';
         });
 
         $event = new stdClass();
@@ -129,17 +120,17 @@ final class WPEventDispatcherTest extends WPTestCase
      */
     public function stopped_psr_events_are_not_shared_with_wordpress(): void
     {
-        add_filter(StoppableEvent ::class, function (StoppableEvent $event) {
-            $event->value = $event->value . ':filtered_by_wordpress';
+        add_filter(StoppableEvent ::class, function (StoppableEvent $event): void {
+            $event->value .= ':filtered_by_wordpress';
         });
 
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(function (StoppableEvent $event) {
-            $event->value = $event->value . ':filtered_by_listener1';
+        $dispatcher->listen(function (StoppableEvent $event): void {
+            $event->value .= ':filtered_by_listener1';
         });
-        $dispatcher->listen(function (StoppableEvent $event) {
-            $event->value = $event->value . ':filtered_by_listener2';
+        $dispatcher->listen(function (StoppableEvent $event): void {
+            $event->value .= ':filtered_by_listener2';
             $event->stopped = true;
         });
 
@@ -158,18 +149,15 @@ final class WPEventDispatcherTest extends WPTestCase
     {
         $event = new CustomNameEvent('FOOBAR', 'foo_event');
 
-        add_filter('foo_event', function (CustomNameEvent $event) {
+        add_filter('foo_event', function (CustomNameEvent $event): void {
             $event->value = 'filtered_by_wp:' . $event->value;
         });
 
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(
-            'foo_event',
-            function (CustomNameEvent $event) {
-                $event->value = $event->value . ':Filter1';
-            }
-        );
+        $dispatcher->listen('foo_event', function (CustomNameEvent $event): void {
+            $event->value .= ':Filter1';
+        });
 
         $result = $dispatcher->dispatch($event);
 
@@ -190,7 +178,7 @@ final class WPEventDispatcherTest extends WPTestCase
         $std = new stdClass();
         $std->foo = 'bar';
 
-        $base_dispatcher->listen(stdClass::class, function (stdClass $stdClass) {
+        $base_dispatcher->listen(stdClass::class, function (stdClass $stdClass): void {
             $stdClass->foo = 'BAR';
         });
 
@@ -232,7 +220,7 @@ final class WPEventDispatcherTest extends WPTestCase
     }
 }
 
-class WPDispatcherSubscriber implements EventSubscriber
+final class WPDispatcherSubscriber implements EventSubscriber
 {
     public static function subscribedEvents(): array
     {

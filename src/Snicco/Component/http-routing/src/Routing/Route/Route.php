@@ -29,23 +29,29 @@ final class Route
 {
     /**
      * @interal
+     *
+     * @var string[]|class-string<DelegateResponseController>[]
      */
     public const DELEGATE = [DelegateResponseController::class, '__invoke'];
 
     /**
      * @interal
+     *
+     * @var string
      */
     public const FALLBACK_NAME = 'sniccowp_fallback_route';
 
     /**
      * @interal
+     *
+     * @var string[]
      */
     public const ALL_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'OPTIONS', 'DELETE'];
 
     /**
      * @var string[]
      */
-    private array $methods;
+    private array $methods = [];
 
     private string $pattern;
 
@@ -239,7 +245,7 @@ final class Route
         Assert::keyNotExists(
             $this->conditions,
             $condition,
-            sprintf('Condition [%s] was added twice to route [%s].', $condition, $this->getName())
+            sprintf('Condition [%s] was added twice to route [%s].', $condition, $this->name)
         );
 
         $this->conditions[$b->class] = $b;
@@ -329,7 +335,7 @@ final class Route
      */
     public function requireOneOf(string $segment_name, array $values): Route
     {
-        $values = array_map(function ($value) {
+        $values = array_map(function ($value): string {
             $value = is_int($value) ? (string) $value : $value;
             Assert::string($value);
 
@@ -352,20 +358,20 @@ final class Route
         $this->pattern = $pattern;
 
         // @see https://regexr.com/6cn0d
-        preg_match_all('/[^{]\w+(?=\??})/', $pattern, $names);
+        preg_match_all('#[^{]\w+(?=\??})#', $pattern, $names);
 
         if (! empty($names[0])) {
             Assert::uniqueValues($names[0], 'Route segment names have to be unique but %s of them %s duplicated.');
             $this->segment_names = $names[0];
         }
 
-        preg_match_all('/[^{]\w+(?=})/', $pattern, $required_names);
+        preg_match_all('#[^{]\w+(?=})#', $pattern, $required_names);
 
         if (! empty($required_names[0])) {
             $this->required_segments_names = $required_names[0];
         }
 
-        preg_match_all('/[^{]\w+(?=\?})/', $pattern, $optional_names);
+        preg_match_all('#[^{]\w+(?=\?})#', $pattern, $optional_names);
 
         if (! empty($optional_names[0])) {
             $this->optional_segment_names = $optional_names[0];
@@ -399,9 +405,9 @@ final class Route
         Assert::stringNotEmpty($controller[1], 'Expected controller method to be a string.');
 
         if (! class_exists($controller[0])) {
-            $controller[0] = ! empty($this->namespace)
-                ? $this->namespace . '\\' . $controller[0]
-                : $controller[0];
+            $controller[0] = empty($this->namespace)
+                ? $controller[0]
+                : $this->namespace . '\\' . $controller[0];
 
             if (! class_exists($controller[0])) {
                 throw new InvalidArgumentException(
@@ -433,10 +439,15 @@ final class Route
         if (! empty($name)) {
             Assert::stringNotEmpty($name);
             Assert::notStartsWith($name, '.');
-            Assert::notContains($name, ' ', "Route name for route [{$name}] should not contain whitespaces.");
+            Assert::notContains(
+                $name,
+                ' ',
+                sprintf('Route name for route [%s] should not contain whitespaces.', $name)
+            );
         } else {
             $name = $this->pattern . ':' . implode('@', $this->controller);
         }
+
         $this->name = $name;
     }
 
@@ -459,7 +470,7 @@ final class Route
         Assert::keyNotExists(
             $this->middleware,
             $middleware_id,
-            "Middleware [{$middleware_id}] added twice to route [{$this->name}]."
+            sprintf('Middleware [%s] added twice to route [%s].', $middleware_id, $this->name)
         );
         $this->middleware[$middleware_id] = $m;
     }
@@ -477,7 +488,7 @@ final class Route
             Assert::keyNotExists(
                 $this->requirements,
                 $segment,
-                "Requirement for segment [{$segment}] can not be overwritten."
+                sprintf('Requirement for segment [%s] can not be overwritten.', $segment)
             );
             $this->requirements[$segment] = $regex;
         }

@@ -58,12 +58,8 @@ final class PHPViewFactory implements ViewFactory
 
         if (null !== $parent) {
             $parent = $parent
-                ->with(
-                    array_filter($view->context(), function ($value) {
-                        return ! $value instanceof ChildContent;
-                    })
-                )
-                ->with('__content', new ChildContent(function () use ($view) {
+                ->with(array_filter($view->context(), fn ($value): bool => ! $value instanceof ChildContent))
+                ->with('__content', new ChildContent(function () use ($view): void {
                     $this->requireView($view);
                 }));
 
@@ -85,7 +81,7 @@ final class PHPViewFactory implements ViewFactory
      *
      * @return never
      */
-    private function handleViewException(Throwable $e, int $ob_level, PHPView $view)
+    private function handleViewException(Throwable $e, int $ob_level, PHPView $view): void
     {
         while (ob_get_level() > $ob_level) {
             OutputBuffer::remove();

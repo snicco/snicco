@@ -6,7 +6,7 @@ namespace Snicco\Component\BetterWPAPI\Tests\fixtures;
 
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 
-class TestWPAPI extends BetterWPAPI
+final class TestWPAPI extends BetterWPAPI
 {
     public function customMethod(): string
     {

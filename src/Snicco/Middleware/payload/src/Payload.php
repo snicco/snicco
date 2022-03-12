@@ -19,12 +19,12 @@ abstract class Payload extends Middleware
     /**
      * @var string[]
      */
-    private array $content_types;
+    private array $content_types = [];
 
     /**
      * @var string[]
      */
-    private array $methods;
+    private array $methods = [];
 
     /**
      * @param string[] $content_types
@@ -38,7 +38,7 @@ abstract class Payload extends Middleware
         $this->methods = $methods;
     }
 
-    final public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    final protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         if (! $this->shouldParseRequest($request)) {
             return $next($request);

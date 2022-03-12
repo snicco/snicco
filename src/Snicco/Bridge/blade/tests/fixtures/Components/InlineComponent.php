@@ -6,7 +6,7 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
 use Snicco\Bridge\Blade\BladeComponent;
 
-class InlineComponent extends BladeComponent
+final class InlineComponent extends BladeComponent
 {
     public string $content;
 

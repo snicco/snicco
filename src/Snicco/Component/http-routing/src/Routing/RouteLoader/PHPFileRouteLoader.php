@@ -27,14 +27,26 @@ use const PATHINFO_FILENAME;
 
 final class PHPFileRouteLoader implements RouteLoader
 {
+    /**
+     * @var string
+     */
     public const VERSION_FLAG = '-v';
 
+    /**
+     * @var string
+     */
     public const FRONTEND_ROUTE_FILENAME = 'frontend';
 
+    /**
+     * @var string
+     */
     public const ADMIN_ROUTE_FILENAME = 'admin';
 
     // Match all files that end with ".php" and don't start with an underscore.
     // https://regexr.com/691di
+    /**
+     * @var string
+     */
     private const SEARCH_PATTERN = '/^[^_].+\.php$/';
 
     private RouteLoadingOptions $options;
@@ -42,12 +54,12 @@ final class PHPFileRouteLoader implements RouteLoader
     /**
      * @var string[]
      */
-    private array $route_directories;
+    private array $route_directories = [];
 
     /**
      * @var string[]
      */
-    private array $api_route_directories;
+    private array $api_route_directories = [];
 
     /**
      * @param string[] $route_directories
@@ -84,7 +96,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getRouteAttributes($name);
 
-            /** @var Closure(WebRoutingConfigurator) $closure */
+            /** @psalm-var Closure(WebRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
 
             $configurator->group($closure, $attributes);
@@ -92,8 +104,8 @@ final class PHPFileRouteLoader implements RouteLoader
 
         if ($frontend_routes) {
             $attributes = $this->options->getRouteAttributes(self::FRONTEND_ROUTE_FILENAME);
+            /** @psalm-var Closure(WebRoutingConfigurator) $closure */
             $closure = $this->requireFile($frontend_routes, $attributes);
-            /** @var Closure(WebRoutingConfigurator) $closure */
             $configurator->group($closure, $attributes);
         }
     }
@@ -108,9 +120,9 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getRouteAttributes($name);
 
+            /** @psalm-var Closure(AdminRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes, true);
 
-            /** @var Closure(AdminRoutingConfigurator) $closure */
             $configurator->group($closure, $attributes);
         }
     }
@@ -139,9 +151,9 @@ final class PHPFileRouteLoader implements RouteLoader
 
             $attributes = $this->options->getApiRouteAttributes($name, $version);
 
+            /** @psalm-var Closure(WebRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes);
 
-            /** @var Closure(WebRoutingConfigurator) $closure */
             $configurator->group($closure, $attributes);
         }
     }
@@ -155,15 +167,17 @@ final class PHPFileRouteLoader implements RouteLoader
      * } $attributes
      *
      * @throws ReflectionException
-     * @psalm-suppress UnresolvableInclude
      */
     private function requireFile(string $file, array $attributes = [], bool $is_admin_file = false): Closure
     {
         $this->validateAttributes($attributes);
 
+        /**
+         * @psalm-suppress UnresolvableInclude
+         */
         $closure = require $file;
 
-        Assert::isInstanceOf($closure, Closure::class, "Route file [{$file}] did not return a closure.");
+        Assert::isInstanceOf($closure, Closure::class, sprintf('Route file [%s] did not return a closure.', $file));
 
         $this->validateClosureTypeHint($closure, $file, $is_admin_file);
 
@@ -188,13 +202,19 @@ final class PHPFileRouteLoader implements RouteLoader
 
             /** @var SplFileInfo $file_info */
             foreach ($file_infos as $file_info) {
-                if (
-                    $file_info->isFile()
-                    && $file_info->isReadable()
-                    && preg_match(self::SEARCH_PATTERN, $file_info->getFilename())
-                ) {
-                    $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
+                if (! $file_info->isFile()) {
+                    continue;
                 }
+
+                if (! $file_info->isReadable()) {
+                    continue;
+                }
+
+                if (! preg_match(self::SEARCH_PATTERN, $file_info->getFilename())) {
+                    continue;
+                }
+
+                $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
             }
         }
 
@@ -248,7 +268,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
                     break;
                 default:
-                    throw new InvalidArgumentException("The option [{$key}] is not supported.");
+                    throw new InvalidArgumentException(sprintf('The option [%s] is not supported.', $key));
             }
         }
     }
@@ -282,16 +302,13 @@ final class PHPFileRouteLoader implements RouteLoader
             if (WebRoutingConfigurator::class === $name) {
                 throw InvalidRouteClosureReturned::adminRoutesAreUsingWebRouting($filepath);
             }
-        } else {
-            if (AdminRoutingConfigurator::class === $name) {
-                throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
-            }
+        } elseif (AdminRoutingConfigurator::class === $name) {
+            throw InvalidRouteClosureReturned::webRoutesAreUsingAdminRouting($filepath);
         }
     }
 
     /**
      * @return array{0:string, 1:?string}
-     * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */
     private function parseNameAndVersion(string $filename): array
     {
@@ -303,6 +320,9 @@ final class PHPFileRouteLoader implements RouteLoader
         if (1 === $res) {
             Assert::keyExists($match, 1);
 
+            /**
+             * @psalm-suppress PossiblyUndefinedIntArrayOffset
+             */
             return [Str::beforeFirst($filename, self::VERSION_FLAG), $match[1]];
         }
 

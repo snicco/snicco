@@ -42,7 +42,7 @@ final class LazyErrorHandlerTest extends TestCase
     public function the_lazy_error_handler_behaves_the_same_as_the_real_error_handler_it_proxies_to(): void
     {
         $this->pimple[HttpErrorHandler::class] = fn (): TestableErrorHandler => new TestableErrorHandler(
-            function () {
+            function (): void {
                 throw new Exception('Should never be called');
             }
         );
@@ -73,7 +73,7 @@ final class LazyErrorHandlerTest extends TestCase
     {
         $count = 0;
 
-        $real_handler = new TestableErrorHandler(function () {
+        $real_handler = new TestableErrorHandler(function (): ResponseInterface {
             $response = $this->psrResponseFactory()
                 ->createResponse(500);
             $response->getBody()
@@ -101,7 +101,7 @@ final class LazyErrorHandlerTest extends TestCase
     }
 }
 
-class TestableErrorHandler implements HttpErrorHandler
+final class TestableErrorHandler implements HttpErrorHandler
 {
     /**
      * @var Closure(Throwable, ServerRequestInterface) :ResponseInterface

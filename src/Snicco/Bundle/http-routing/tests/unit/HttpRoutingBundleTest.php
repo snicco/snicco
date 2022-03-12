@@ -49,7 +49,7 @@ final class HttpRoutingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [HttpRoutingBundle::class],
             ]);
@@ -106,7 +106,7 @@ final class HttpRoutingBundleTest extends TestCase
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, '/wp/wp-admin');
         });
 
@@ -127,7 +127,7 @@ final class HttpRoutingBundleTest extends TestCase
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing.' . RoutingOption::WP_LOGIN_PATH, '/wp/wp-login.php');
         });
 
@@ -143,7 +143,7 @@ final class HttpRoutingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing', [
                 RoutingOption::HOST => 'sniccowp.test',
             ]);
@@ -155,7 +155,7 @@ final class HttpRoutingBundleTest extends TestCase
         $this->assertSame([], $kernel->config()->getListOfStrings('routing.api_route_directories'));
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing.route_directories', [dirname(__DIR__) . '/fixtures/routes']);
             $config->set('routing.api_route_directories', [dirname(__DIR__) . '/fixtures/routes/api']);
             $config->set('routing.api_prefix', 'snicco');
@@ -176,7 +176,7 @@ final class HttpRoutingBundleTest extends TestCase
     public function test_middleware_options_have_defaults(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('middleware', []);
         });
         $kernel->boot();
@@ -292,7 +292,7 @@ final class HttpRoutingBundleTest extends TestCase
         $response = $p1
             ->send(Request::fromPsr($psr_request))
             ->through([])
-            ->then(function () {
+            ->then(function (): void {
                 throw new RuntimeException('error');
             });
 
@@ -364,7 +364,7 @@ final class HttpRoutingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing', [
                 RoutingOption::HOST => 'foo.com',
                 RoutingOption::ROUTE_DIRECTORIES => [],
@@ -394,7 +394,7 @@ final class HttpRoutingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(
                     Psr17FactoryDiscovery::class,

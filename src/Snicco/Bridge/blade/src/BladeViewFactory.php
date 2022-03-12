@@ -21,7 +21,7 @@ final class BladeViewFactory implements ViewFactory
     /**
      * @var string[]
      */
-    private array $view_directories;
+    private array $view_directories = [];
 
     /**
      * @param string[] $view_directories
@@ -40,8 +40,9 @@ final class BladeViewFactory implements ViewFactory
     public function make(string $view): BladeView
     {
         try {
-            $view = $this->view_factory->first([$this->normalizeNames($view)]);
             /** @var View $view */
+            $view = $this->view_factory->first([$this->normalizeNames($view)]);
+
             return new BladeView($view);
         } catch (InvalidArgumentException $e) {
             throw new ViewNotFound($e->getMessage(), $e->getCode(), $e);

@@ -6,6 +6,7 @@ namespace Snicco\Component\HttpRouting\Tests\Routing;
 
 use Generator;
 use InvalidArgumentException;
+use Iterator;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\StrArr\Str;
@@ -138,9 +139,13 @@ final class UrlPathTest extends TestCase
         $this->assertFalse($path->contains('biz'));
     }
 
-    public function providePath(): array
+    public function providePath(): Iterator
     {
-        return [['foo', '/foo'], ['/foo', '/foo'], ['//foo', '/foo'], ['/foo/', '/foo/'], ['/foo//', '/foo/']];
+        yield ['foo', '/foo'];
+        yield ['/foo', '/foo'];
+        yield ['//foo', '/foo'];
+        yield ['/foo/', '/foo/'];
+        yield ['/foo//', '/foo/'];
     }
 
     public function prependProvider(): Generator

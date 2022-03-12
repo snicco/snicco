@@ -20,7 +20,7 @@ final class BladeView implements View
     /**
      * @var array<string,mixed>
      */
-    private array $context;
+    private array $context = [];
 
     private string $name;
 
@@ -52,7 +52,7 @@ final class BladeView implements View
                 ->render();
         } catch (Throwable $e) {
             throw new ViewCantBeRendered(
-                "Error rendering view:[{$this->name()}]\nCaused by: {$e->getMessage()}",
+                "Error rendering view:[{$this->name}]\nCaused by: {$e->getMessage()}",
                 (int) $e->getCode(),
                 $e,
             );

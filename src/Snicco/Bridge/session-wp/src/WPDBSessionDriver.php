@@ -46,7 +46,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
                 [$selector]
             );
         } catch (NoMatchingRowFound $e) {
-            throw BadSessionID::forSelector($selector, __CLASS__);
+            throw BadSessionID::forSelector($selector, self::class);
         }
 
         return $this->instantiate($session);
@@ -99,10 +99,15 @@ final class WPDBSessionDriver implements UserSessionsDriver
                 'last_activity' => $current_timestamp,
             ]
         );
-
-        if (0 === $rows && ! $this->exists($selector)) {
-            throw BadSessionID::forSelector($selector, __CLASS__);
+        if (0 !== $rows) {
+            return;
         }
+
+        if ($this->exists($selector)) {
+            return;
+        }
+
+        throw BadSessionID::forSelector($selector, self::class);
     }
 
     public function destroyAll(): void

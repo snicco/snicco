@@ -11,9 +11,9 @@ use ReflectionException;
 use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing;
-
-use function count;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 
 final class RouteRunner extends Middleware
 {
@@ -40,12 +40,12 @@ final class RouteRunner extends Middleware
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedArgument
      */
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $result = $request->routingResult();
         $route = $result->route();
 
-        if (! $route) {
+        if (! $route instanceof Route) {
             return $this->delegate($request);
         }
 
@@ -56,7 +56,7 @@ final class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(function (Request $request) use ($result, $action) {
+            ->then(function (Request $request) use ($result, $action): Response {
                 $segments = $result->decodedSegments();
                 /** @var Routing\Route\Route $route */
                 $route = $result->route();
@@ -72,7 +72,7 @@ final class RouteRunner extends Middleware
     {
         $middleware = $this->middleware_resolver->resolveForRequestWithoutRoute($request);
 
-        if (! count($middleware)) {
+        if ([] === $middleware) {
             return $this->responseFactory()
                 ->delegate();
         }
@@ -80,9 +80,6 @@ final class RouteRunner extends Middleware
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(function () {
-                return $this->responseFactory()
-                    ->delegate();
-            });
+            ->then(fn (): DelegatedResponse => $this->responseFactory()->delegate());
     }
 }

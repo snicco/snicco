@@ -21,7 +21,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function basic_get_routing_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
         });
 
@@ -34,7 +34,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function non_allowed_methods_throw_a_405_exception(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
             $configurator->get('route2', '/foo/{bar}', RoutingTestController::class);
         });
@@ -63,7 +63,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function get_routes_match_head_requests(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
             $configurator->get('bar', '/foo/{param}', [RoutingTestController::class, 'dynamic']);
         });
@@ -94,7 +94,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function basic_post_routing_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->post('foo', '/foo', RoutingTestController::class);
         });
 
@@ -107,7 +107,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function basic_put_routing_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->put('foo', '/foo', RoutingTestController::class);
         });
         $request = $this->frontendRequest('/foo', [], 'PUT');
@@ -119,7 +119,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function basic_patch_routing_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->patch('foo', '/foo', RoutingTestController::class);
         });
 
@@ -132,7 +132,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function basic_delete_routing_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->delete('foo', '/foo', RoutingTestController::class);
         });
 
@@ -145,7 +145,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function basic_options_routing_works(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->options('foo', '/foo', RoutingTestController::class);
         });
 
@@ -158,7 +158,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function a_route_can_match_all_methods(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->any('foo', '/foo', RoutingTestController::class);
         });
 
@@ -186,7 +186,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function a_route_can_match_specific_methods(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->match(['GET', 'POST'], 'foo', '/foo', RoutingTestController::class);
         });
 
@@ -206,7 +206,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('static', '/foo/baz', [RoutingTestController::class, 'static']);
             $configurator->get('dynamic', '/foo/{dynamic}', [RoutingTestController::class, 'dynamic']);
         });
@@ -223,7 +223,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function middleware_can_be_added_after_a_route_is_created(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class)
                 ->middleware('foo');
         });
@@ -237,7 +237,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function a_route_can_have_multiple_middlewares(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class)
                 ->middleware(['foo', 'bar']);
         });
@@ -251,7 +251,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function middleware_can_pass_arguments(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class)
                 ->middleware(['foo:FOO', 'bar:BAR']);
         });
@@ -265,7 +265,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function a_route_can_be_set_to_not_handle_anything_but_only_run_middleware(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo')
                 ->middleware(FooMiddleware::class);
         });
@@ -281,7 +281,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
     {
         $this->expectException(BadRouteConfiguration::class);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/foo', RoutingTestController::class);
             $configurator->get('route2', '/foo', RoutingTestController::class);
         });
@@ -294,7 +294,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
     {
         $this->expectException(BadRouteConfiguration::class);
 
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/{foo}', RoutingTestController::class);
             $configurator->get('route2', '/foo', RoutingTestController::class);
         });
@@ -305,7 +305,7 @@ final class RouteAttributesTest extends HttpRunnerTestCase
      */
     public function a_route_with_the_same_name_can_be_added_twice_even_if_urls_are_different(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/foo', RoutingTestController::class);
             $configurator->get('route1', '/bar', RoutingTestController::class);
         });

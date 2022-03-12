@@ -39,7 +39,7 @@ final class LazyGeneratorTest extends TestCase
      */
     public function test_to_works(): void
     {
-        $lazy_generator = new LazyGenerator(function () {
+        $lazy_generator = new LazyGenerator(function (): Generator {
             ++$this->constructed;
 
             return new Generator(
@@ -72,7 +72,7 @@ final class LazyGeneratorTest extends TestCase
      */
     public function test_to_route_works(): void
     {
-        $lazy_generator = new LazyGenerator(function () {
+        $lazy_generator = new LazyGenerator(function (): Generator {
             ++$this->constructed;
 
             $route = Route::create('/foo', Route::DELEGATE, 'foo');
@@ -99,7 +99,7 @@ final class LazyGeneratorTest extends TestCase
      */
     public function test_to_login_works(): void
     {
-        $lazy_generator = new LazyGenerator(function () {
+        $lazy_generator = new LazyGenerator(function (): Generator {
             ++$this->constructed;
 
             return new Generator(

@@ -14,6 +14,6 @@ final class CouldNotWriteSessionContent extends RuntimeException
         string $driver_identifier,
         Throwable $previous = null
     ): CouldNotWriteSessionContent {
-        return new self("Cant write session [{$id}] to the [{$driver_identifier}] driver.", 0, $previous);
+        return new self(sprintf('Cant write session [%s] to the [%s] driver.', $id, $driver_identifier), 0, $previous);
     }
 }

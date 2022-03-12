@@ -63,7 +63,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
              * @param mixed      $value
              */
             #[ReturnTypeWillChange]
-            public function offsetSet($offset, $value)
+            public function offsetSet($offset, $value): void
             {
                 $this->container[$offset] = $value;
             }
@@ -72,7 +72,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
              * @param int|string $offset
              */
             #[ReturnTypeWillChange]
-            public function offsetExists($offset)
+            public function offsetExists($offset): bool
             {
                 return isset($this->container[$offset]);
             }
@@ -81,7 +81,7 @@ final class SessionStorageUsingArrayAccessTest extends TestCase
              * @param int|string $offset
              */
             #[ReturnTypeWillChange]
-            public function offsetUnset($offset)
+            public function offsetUnset($offset): void
             {
                 unset($this->container[$offset]);
             }

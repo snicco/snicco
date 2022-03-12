@@ -6,7 +6,7 @@ namespace Snicco\Component\BetterWPMail\Tests\fixtures\Email;
 
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 
-class TestMail2 extends Email
+final class TestMail2 extends Email
 {
     public function __construct()
     {

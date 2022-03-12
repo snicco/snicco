@@ -21,7 +21,6 @@ use Snicco\Component\StrArr\Arr;
 use function array_diff;
 use function array_merge;
 use function array_unique;
-use function count;
 use function filter_var;
 use function is_array;
 use function is_int;
@@ -52,10 +51,12 @@ final class ReadWriteSession implements Session
     /**
      * @var list<object>
      */
-    private $stored_events = [];
+    private array $stored_events = [];
 
     /**
      * @interal Sessions MUST only be started from a {@see SessionManager}
+     *
+     * @param mixed[] $data
      */
     public function __construct(SessionId $id, array $data, int $last_activity)
     {
@@ -66,6 +67,7 @@ final class ReadWriteSession implements Session
             $this->put('_sniccowp.timestamps.created_at', $last_activity);
             $this->is_new = true;
         }
+
         if (! $this->has('_sniccowp.timestamps.last_rotated')) {
             $this->put('_sniccowp.timestamps.last_rotated', $last_activity);
         }
@@ -143,9 +145,10 @@ final class ReadWriteSession implements Session
         if (! $this->has($key)) {
             $this->put($key, $start_value);
         }
+
         $current = $this->get($key, 0);
         if (! is_int($current)) {
-            throw new LogicException("Current value for key [{$key}] is not an integer.");
+            throw new LogicException(sprintf('Current value for key [%s] is not an integer.', $key));
         }
 
         $this->put($key, $current + $amount);
@@ -177,7 +180,7 @@ final class ReadWriteSession implements Session
         $array = $this->get($key, []);
 
         if (! is_array($array)) {
-            throw new LogicException("Value for key [{$key}] is not an array.");
+            throw new LogicException(sprintf('Value for key [%s] is not an array.', $key));
         }
 
         $array[] = $value;
@@ -193,7 +196,7 @@ final class ReadWriteSession implements Session
         $old = $this->oldInput($key);
 
         return null === $key
-            ? is_array($old) && count($old) > 0
+            ? is_array($old) && [] !== $old
             : null !== $old;
     }
 
@@ -209,6 +212,7 @@ final class ReadWriteSession implements Session
         if (null === $key) {
             return $old;
         }
+
         if (! is_array($old)) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('_old_input must be an associative array.');
@@ -397,13 +401,21 @@ final class ReadWriteSession implements Session
 
     public function userId()
     {
+        /** @var mixed $user_id */
         $user_id = $this->get('_user_id');
-
-        if (! is_string($user_id) && ! is_int($user_id) && null !== $user_id) {
-            throw new InvalidArgumentException('$user_id must be string or integer.');
+        if (is_string($user_id)) {
+            return $user_id;
         }
 
-        return $user_id;
+        if (is_int($user_id)) {
+            return $user_id;
+        }
+
+        if (null === $user_id) {
+            return null;
+        }
+
+        throw new InvalidArgumentException('$user_id must be string or integer.');
     }
 
     public function isNew(): bool
@@ -421,12 +433,15 @@ final class ReadWriteSession implements Session
         }
 
         $is_dirty = $this->attributes !== $this->original_attributes;
-
-        if ($is_dirty || $this->invalidated_id) {
+        if ($is_dirty) {
             return true;
         }
 
-        return count($this->oldFlashes()) > 0;
+        if (null !== $this->invalidated_id) {
+            return true;
+        }
+
+        return [] !== $this->oldFlashes();
     }
 
     /**
