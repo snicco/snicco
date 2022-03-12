@@ -100,7 +100,7 @@ final class OpenRedirectProtection extends Middleware
 
     private function isSameSiteRedirect(UriInterface $uri, string $redirect_host): bool
     {
-        if('' === $redirect_host){
+        if ('' === $redirect_host) {
             return true;
         }
 
