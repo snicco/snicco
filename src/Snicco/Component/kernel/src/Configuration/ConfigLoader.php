@@ -32,8 +32,9 @@ final class ConfigLoader
             /** @psalm-suppress UnresolvableInclude */
             $items = require $path;
             if (! is_array($items)) {
-                throw new InvalidArgumentException("Reading the [{$name}] config did not return an array.");
+                throw new InvalidArgumentException(sprintf('Reading the [%s] config did not return an array.', $name));
             }
+
             $config[$name] = $items;
         }
 

@@ -11,21 +11,26 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
+use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\RoutingResult;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
 use stdClass;
 use Webmozart\Assert\Assert;
 
+use function array_map;
+use function explode;
 use function filter_var;
 use function gettype;
 use function in_array;
 use function is_array;
 use function is_int;
 use function is_string;
+use function rawurldecode;
 use function sprintf;
 use function strtok;
 use function strtoupper;
+use function strtr;
 use function substr;
 use function trim;
 
@@ -33,10 +38,19 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 final class Request implements ServerRequestInterface
 {
+    /**
+     * @var string
+     */
     public const TYPE_FRONTEND = 'frontend';
 
+    /**
+     * @var string
+     */
     public const TYPE_ADMIN_AREA = 'admin';
 
+    /**
+     * @var string
+     */
     public const TYPE_API = 'api';
 
     private ServerRequestInterface $psr_request;
@@ -71,7 +85,7 @@ final class Request implements ServerRequestInterface
     public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
-            sprintf("Cannot set undefined property [{$name}] on immutable class [%s]", self::class)
+            sprintf(sprintf('Cannot set undefined property [%s] on immutable class [%%s]', $name), self::class)
         );
     }
 
@@ -89,8 +103,9 @@ final class Request implements ServerRequestInterface
 
     public function userAgent(): ?string
     {
-        $user_agent = substr($this->getHeaderLine('user-agent'), 0, 500);
-        if (false === $user_agent || '' === $user_agent) {
+        $user_agent = (string) substr($this->getHeaderLine('user-agent'), 0, 500);
+
+        if ('' === $user_agent) {
             return null;
         }
 
@@ -121,13 +136,8 @@ final class Request implements ServerRequestInterface
         if (! isset($cookies[$name])) {
             return $default;
         }
-        if (is_array($cookies[$name])) {
-            $cookie = $cookies[$name][0];
-        } else {
-            $cookie = $cookies[$name];
-        }
 
-        return $cookie;
+        return is_array($cookies[$name]) ? $cookies[$name][0] : $cookies[$name];
     }
 
     public function routingResult(): RoutingResult
@@ -177,17 +187,15 @@ final class Request implements ServerRequestInterface
 
     public function decodedPath(): string
     {
-        $path = $this->path();
+        // We need to make sure that %2F stays %2F
+        $path = strtr($this->path(), [
+            '%2F' => '%252F',
+        ]);
 
-        return implode(
-            '/',
-            array_map(function ($part) {
-                // Make sure that %2F stays %2F
-                return rawurldecode(strtr($part, [
-                    '%2F' => '%252F',
-                ]));
-            }, explode('/', $path))
-        );
+        $segments = explode('/', $path);
+        $segments = array_map(fn ($part): string => rawurldecode($part), $segments);
+
+        return implode('/', $segments);
     }
 
     public function path(): string
@@ -590,72 +598,72 @@ final class Request implements ServerRequestInterface
         return $this->psr_request->getAttributes();
     }
 
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): Request
     {
         return $this->new($this->psr_request->withAttribute($name, $value));
     }
 
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): Request
     {
         return $this->new($this->psr_request->withProtocolVersion($version));
     }
 
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): Request
     {
         return $this->new($this->psr_request->withHeader($name, $value));
     }
 
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): Request
     {
         return $this->new($this->psr_request->withAddedHeader($name, $value));
     }
 
-    public function withoutHeader($name)
+    public function withoutHeader($name): Request
     {
         return $this->new($this->psr_request->withoutHeader($name));
     }
 
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): Request
     {
         return $this->new($this->psr_request->withBody($body));
     }
 
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): Request
     {
         return $this->new($this->psr_request->withRequestTarget($requestTarget));
     }
 
-    public function withMethod($method)
+    public function withMethod($method): Request
     {
         return $this->new($this->psr_request->withMethod($method));
     }
 
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): Request
     {
         return $this->new($this->psr_request->withUri($uri, $preserveHost));
     }
 
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): Request
     {
         return $this->new($this->psr_request->withQueryParams($query));
     }
 
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): Request
     {
         return $this->new($this->psr_request->withCookieParams($cookies));
     }
 
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): Request
     {
         return $this->new($this->psr_request->withoutAttribute($name));
     }
 
-    public function withParsedBody($data)
+    public function withParsedBody($data): Request
     {
         return $this->new($this->psr_request->withParsedBody($data));
     }
 
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): Request
     {
         return $this->new($this->psr_request->withUploadedFiles($uploadedFiles));
     }
@@ -676,7 +684,7 @@ final class Request implements ServerRequestInterface
     /**
      * @return static
      */
-    public function withUserId(int $user_id)
+    public function withUserId(int $user_id): Request
     {
         return $this->withAttribute('snicco.user_id', $user_id);
     }
@@ -685,7 +693,7 @@ final class Request implements ServerRequestInterface
     {
         $route = $this->routingResult()
             ->route();
-        if (null === $route) {
+        if (! $route instanceof Route) {
             return false;
         }
 
@@ -695,7 +703,7 @@ final class Request implements ServerRequestInterface
     /**
      * @return static
      */
-    private function new(ServerRequestInterface $new_psr_request)
+    private function new(ServerRequestInterface $new_psr_request): Request
     {
         return new self($new_psr_request, $this->type);
     }
@@ -707,7 +715,11 @@ final class Request implements ServerRequestInterface
 
     private function matchesType(string $match_against, string $accept_header): bool
     {
-        if ('*/*' === $accept_header || '*' === $accept_header) {
+        if ('*/*' === $accept_header) {
+            return true;
+        }
+
+        if ('*' === $accept_header) {
             return true;
         }
 
@@ -715,7 +727,7 @@ final class Request implements ServerRequestInterface
 
         if (false === $tok) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not parse accept header [{$match_against}].");
+            throw new RuntimeException(sprintf('Could not parse accept header [%s].', $match_against));
             // @codeCoverageIgnoreEnd
         }
 
@@ -742,18 +754,16 @@ final class Request implements ServerRequestInterface
     private function isEmpty(string $key): bool
     {
         /** @var mixed $value */
-        $value = Arr::get($this->inputSource(), $key, null);
+        $value = Arr::get($this->inputSource(), $key);
 
         if (null === $value) {
             return true;
         }
+
         if ([] === $value) {
             return true;
         }
-        if ('' === trim((string) $value)) {
-            return true;
-        }
 
-        return false;
+        return '' === trim((string) $value);
     }
 }

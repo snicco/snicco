@@ -12,7 +12,7 @@ final class Delegating implements DisplayerFilter
     /**
      * @var DisplayerFilter[]
      */
-    private array $filters;
+    private array $filters = [];
 
     public function __construct(DisplayerFilter ...$filter)
     {

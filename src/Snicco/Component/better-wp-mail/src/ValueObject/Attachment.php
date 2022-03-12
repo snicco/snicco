@@ -30,7 +30,10 @@ use const SEEK_CUR;
 
 final class Attachment
 {
-    private string $encoding = 'base64';
+    /**
+     * @var string
+     */
+    private const ENCODING = 'base64';
 
     private string $content_type;
 
@@ -52,7 +55,7 @@ final class Attachment
      */
     private function __construct($body, string $filename, string $content_type = null, bool $inline = false)
     {
-        $this->content_type = (null === $content_type) ? 'application/octet-stream' : $content_type;
+        $this->content_type = $content_type ?? 'application/octet-stream';
         $this->filename = $filename;
         $this->disposition = $inline ? 'inline' : 'attachment';
 
@@ -82,6 +85,7 @@ final class Attachment
         if (! is_readable($path)) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not readable.', $path));
         }
+
         $stream = @fopen($path, 'r');
         if (false === $stream) {
             // @codeCoverageIgnoreStart
@@ -139,7 +143,7 @@ final class Attachment
 
     public function isInline(): bool
     {
-        return 'inline' === $this->disposition();
+        return 'inline' === $this->disposition;
     }
 
     public function disposition(): string
@@ -149,7 +153,7 @@ final class Attachment
 
     public function encoding(): string
     {
-        return $this->encoding;
+        return self::ENCODING;
     }
 
     public function cid(): string

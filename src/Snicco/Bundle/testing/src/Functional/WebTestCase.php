@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Functional;
 
-use Closure;
 use Codeception\TestCase\WPTestCase;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
@@ -52,7 +51,7 @@ abstract class WebTestCase extends WPTestCase
     /**
      * @var TestExtension[]
      */
-    private array $extensions;
+    private array $extensions = [];
 
     /**
      * @var array<string,mixed>
@@ -67,9 +66,7 @@ abstract class WebTestCase extends WPTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->extensions = array_map(function (string $class) {
-            return new $class();
-        }, $this->extensions());
+        $this->extensions = array_map(fn (string $class): TestExtension => new $class(), $this->extensions());
         $this->setUpExtensions();
     }
 
@@ -80,9 +77,9 @@ abstract class WebTestCase extends WPTestCase
     }
 
     /**
-     * @return Closure(Environment):Kernel
+     * @return callable(Environment):Kernel
      */
-    abstract protected function createKernel(): Closure;
+    abstract protected function createKernel(): callable;
 
     /**
      * @return class-string<TestExtension>[]
@@ -127,6 +124,7 @@ abstract class WebTestCase extends WPTestCase
             ->make(SessionManager::class);
         $session = $session_manager->start(new CookiePool($this->cookies));
         $session->put($data);
+
         $session_manager->save($session);
 
         $this->withCookies([
@@ -163,7 +161,7 @@ abstract class WebTestCase extends WPTestCase
     final protected function withoutExceptionHandling(): void
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
@@ -204,7 +202,7 @@ abstract class WebTestCase extends WPTestCase
     final protected function swapInstance(string $id, object $instance): void
     {
         $kernel = $this->getNonBootedKernel(__METHOD__);
-        $kernel->afterRegister(function (Kernel $kernel) use ($id, $instance) {
+        $kernel->afterRegister(function (Kernel $kernel) use ($id, $instance): void {
             $kernel->container()
                 ->instance($id, $instance);
         });
@@ -285,7 +283,10 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getKernel();
         if ($kernel->booted()) {
-            throw new LogicException("Method [{$__METHOD__}] can not be used if the kernel was already booted.");
+            throw new LogicException(sprintf(
+                'Method [%s] can not be used if the kernel was already booted.',
+                $__METHOD__
+            ));
         }
 
         return $kernel;
@@ -294,7 +295,10 @@ abstract class WebTestCase extends WPTestCase
     private function assertBrowserNotCreated(string $__METHOD__): void
     {
         if (isset($this->browser)) {
-            throw new LogicException("Method [{$__METHOD__}] can not be used if the browser was already created.");
+            throw new LogicException(sprintf(
+                'Method [%s] can not be used if the browser was already created.',
+                $__METHOD__
+            ));
         }
     }
 }

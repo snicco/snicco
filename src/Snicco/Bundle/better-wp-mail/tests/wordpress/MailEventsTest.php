@@ -23,7 +23,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 
 use function add_action;
 use function dirname;
-use function get_class;
 
 /**
  * @internal
@@ -38,7 +37,7 @@ final class MailEventsTest extends WPTestCase
     public function test_mail_events_without_better_wp_hooks_and_exposed_events(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('mail', [
                 MailOption::EXPOSE_MAIL_EVENTS => true,
             ]);
@@ -57,12 +56,12 @@ final class MailEventsTest extends WPTestCase
         $called = false;
         $was_sent_called = false;
 
-        add_action(TestEmail::class, function (SendingEmail $event) use (&$called) {
+        add_action(TestEmail::class, function (SendingEmail $event) use (&$called): void {
             $called = true;
-            $this->assertSame(TestEmail::class, get_class($event->email));
+            $this->assertInstanceOf(TestEmail::class, $event->email);
         });
 
-        add_action(EmailWasSent::class, function (EmailWasSent $event) use (&$was_sent_called) {
+        add_action(EmailWasSent::class, function (EmailWasSent $event) use (&$was_sent_called): void {
             $this->assertTrue($event->envelope()->recipients()->has('c@web.de'));
             $was_sent_called = true;
         });
@@ -94,11 +93,11 @@ final class MailEventsTest extends WPTestCase
         $transport = $kernel->container()
             ->get(Transport::class);
 
-        add_action(TestEmail::class, function () {
+        add_action(TestEmail::class, function (): void {
             throw new RuntimeException('This should not be called');
         });
 
-        add_action(EmailWasSent::class, function () {
+        add_action(EmailWasSent::class, function (): void {
             throw new RuntimeException('This should not be called');
         });
 
@@ -117,7 +116,7 @@ final class MailEventsTest extends WPTestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [BetterWPHooksBundle::class, BetterWPMailBundle::class],
             ]);
@@ -143,16 +142,16 @@ final class MailEventsTest extends WPTestCase
         $called = false;
         $was_sent_called = false;
 
-        $testable_dispatcher->listen(TestEmail::class, function (SendingEmail $event) {
+        $testable_dispatcher->listen(TestEmail::class, function (SendingEmail $event): void {
             $event->email = $event->email->addTo('m@web.de');
         });
 
-        add_action(TestEmail::class, function (SendingEmail $event) use (&$called) {
+        add_action(TestEmail::class, function (SendingEmail $event) use (&$called): void {
             $called = true;
-            $this->assertSame(TestEmail::class, get_class($event->email));
+            $this->assertInstanceOf(TestEmail::class, $event->email);
         });
 
-        add_action(EmailWasSent::class, function (EmailWasSent $event) use (&$was_sent_called) {
+        add_action(EmailWasSent::class, function (EmailWasSent $event) use (&$was_sent_called): void {
             $this->assertTrue($event->envelope()->recipients()->has('c@web.de'));
             $was_sent_called = true;
         });
@@ -179,7 +178,7 @@ final class MailEventsTest extends WPTestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('bundles', [
                 Environment::ALL => [BetterWPHooksBundle::class, BetterWPMailBundle::class],
             ]);
@@ -199,15 +198,15 @@ final class MailEventsTest extends WPTestCase
         $fake_transport = $kernel->container()
             ->get(Transport::class);
 
-        $testable_dispatcher->listen(TestEmail::class, function (SendingEmail $event) {
+        $testable_dispatcher->listen(TestEmail::class, function (SendingEmail $event): void {
             $event->email = $event->email->addTo('m@web.de');
         });
 
-        add_action(TestEmail::class, function () {
+        add_action(TestEmail::class, function (): void {
             throw new RuntimeException('This should not be called.');
         });
 
-        add_action(EmailWasSent::class, function () {
+        add_action(EmailWasSent::class, function (): void {
             throw new RuntimeException('This should not be called.');
         });
 
@@ -229,6 +228,6 @@ final class MailEventsTest extends WPTestCase
     }
 }
 
-class TestEmail extends Email
+final class TestEmail extends Email
 {
 }

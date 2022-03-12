@@ -56,8 +56,9 @@ abstract class BetterWPDBTestCase extends WPTestCase
 
         foreach ($expected as $name => $value) {
             if (! array_key_exists($name, $record)) {
-                $this->fail("Record does not have key [{$name}].");
+                $this->fail(sprintf('Record does not have key [%s].', $name));
             }
+
             $this->assertSame($value, $record[$name]);
         }
     }

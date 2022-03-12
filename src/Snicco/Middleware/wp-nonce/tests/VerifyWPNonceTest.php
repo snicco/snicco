@@ -59,9 +59,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): ViewResponse => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -85,9 +83,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): ViewResponse => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -133,9 +129,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
 
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): ViewResponse => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -181,9 +175,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return new ViewResponse('foo', $response);
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): ViewResponse => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
 
@@ -227,9 +219,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
-        $this->withNextMiddlewareResponse(function (Response $response) {
-            return $response;
-        });
+        $this->withNextMiddlewareResponse(fn (Response $response): Response => $response);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
         $response->assertNextMiddlewareCalled()
@@ -238,7 +228,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     }
 }
 
-class VerifyNonceTestWPApi extends BetterWPAPI
+final class VerifyNonceTestWPApi extends BetterWPAPI
 {
     public function verifyNonce(string $nonce, string $action): bool
     {
@@ -247,6 +237,6 @@ class VerifyNonceTestWPApi extends BetterWPAPI
 
     public function createNonce(string $form_action): string
     {
-        return "nonce.{$form_action}";
+        return sprintf('nonce.%s', $form_action);
     }
 }

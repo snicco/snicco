@@ -273,8 +273,8 @@ final class MailerTest extends WPTestCase
 
         $header = $this->getSentMails()[0]['header'];
 
-        $this->assertStringContainsString("From: {$site_name} <{$admin_email}>", $header);
-        $this->assertStringContainsString("Reply-To: {$site_name} <{$admin_email}>", $header);
+        $this->assertStringContainsString(sprintf('From: %s <%s>', $site_name, $admin_email), $header);
+        $this->assertStringContainsString(sprintf('Reply-To: %s <%s>', $site_name, $admin_email), $header);
     }
 
     /**
@@ -463,7 +463,7 @@ final class MailerTest extends WPTestCase
      */
     public function wp_mail_errors_lead_to_an_exception(): void
     {
-        add_action('wp_mail_content_type', function () {
+        add_action('wp_mail_content_type', function (): void {
             do_action(
                 'wp_mail_failed',
                 new WP_Error(
@@ -500,7 +500,7 @@ final class MailerTest extends WPTestCase
         $phpmailer->AltBody = 'foobar';
         $phpmailer->Body = 'baz';
 
-        add_action('wp_mail_content_type', function () {
+        add_action('wp_mail_content_type', function (): void {
             do_action(
                 'wp_mail_failed',
                 new WP_Error(
@@ -704,7 +704,7 @@ final class MailerTest extends WPTestCase
 
         $expected_cid = $email->attachments()[0]
             ->cid();
-        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
+        $this->assertStringContainsString(sprintf('Content-ID: <%s>', $expected_cid), $body);
     }
 
     /**
@@ -746,7 +746,7 @@ final class MailerTest extends WPTestCase
 
         $expected_cid = $email->attachments()[0]
             ->cid();
-        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
+        $this->assertStringContainsString(sprintf('Content-ID: <%s>', $expected_cid), $body);
     }
 
     /**
@@ -787,7 +787,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('filename=php-elephant-inline', $body);
         $expected_cid = $email->attachments()[0]
             ->cid();
-        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
+        $this->assertStringContainsString(sprintf('Content-ID: <%s>', $expected_cid), $body);
 
         // Attachment
         $this->assertStringContainsString('Content-Type: image/jpeg;', $body);
@@ -840,7 +840,7 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('filename=php-elephant-inline', $body);
         $expected_cid = $email->attachments()[0]
             ->cid();
-        $this->assertStringContainsString("Content-ID: <{$expected_cid}>", $body);
+        $this->assertStringContainsString(sprintf('Content-ID: <%s>', $expected_cid), $body);
     }
 
     /**

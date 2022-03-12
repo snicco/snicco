@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 
-use Closure;
 use LogicException;
 use RuntimeException;
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
@@ -26,9 +25,9 @@ use function dirname;
 final class WebTestCaseTest extends WebTestCase
 {
     /**
-     * @var class-string<TestExtension>[]
+     * @var array<class-string<\Snicco\Bundle\Testing\Tests\wordpress\Functional\DummyTestExtension>>
      */
-    private array $extensions = [DummyTestExtension::class];
+    private const EXTENSIONS = [DummyTestExtension::class];
 
     protected function setUp(): void
     {
@@ -107,6 +106,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/custom-server-vars');
+
         $response = $browser->getResponse();
 
         $response->assertOk();
@@ -129,11 +129,12 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/cookies-as-json');
+
         $response = $browser->lastResponse();
 
         $response->assertOk();
 
-        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         $this->assertSame([
             'foo' => 'bar',
@@ -149,6 +150,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/full-url');
+
         $response = $browser->lastResponse();
 
         $response->assertOk()
@@ -168,6 +170,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/full-url');
+
         $response = $browser->lastResponse();
 
         $response->assertOk()
@@ -217,7 +220,7 @@ final class WebTestCaseTest extends WebTestCase
     public function test_with_session_data_works(): void
     {
         $kernel = $this->getKernel();
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->extend('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
@@ -232,7 +235,7 @@ final class WebTestCaseTest extends WebTestCase
         $response = $browser->lastResponse();
         $response->assertOk();
 
-        $info = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $info = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         $this->assertEquals([
             'id' => $id->asString(),
@@ -246,7 +249,7 @@ final class WebTestCaseTest extends WebTestCase
     public function session_data_is_not_lost_between_requests(): void
     {
         $kernel = $this->getKernel();
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->extend('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
@@ -262,7 +265,7 @@ final class WebTestCaseTest extends WebTestCase
         $response = $browser->lastResponse();
         $response->assertOk();
 
-        $info = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR);
+        $info = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
 
         $this->assertEquals([
             'id' => $id->asString(),
@@ -288,6 +291,7 @@ final class WebTestCaseTest extends WebTestCase
         $browser = $this->getBrowser();
 
         $browser->request('GET', '/force-exception-middleware');
+
         $response = $browser->lastResponse();
 
         $response->assertOk();
@@ -406,16 +410,16 @@ final class WebTestCaseTest extends WebTestCase
 
     protected function extensions(): array
     {
-        return $this->extensions;
+        return self::EXTENSIONS;
     }
 
-    protected function createKernel(): Closure
+    protected function createKernel(): callable
     {
         return require dirname(__DIR__) . '/fixtures/test-kernel.php';
     }
 }
 
-class DummyTestExtension implements TestExtension
+final class DummyTestExtension implements TestExtension
 {
     public bool $setUp = false;
 

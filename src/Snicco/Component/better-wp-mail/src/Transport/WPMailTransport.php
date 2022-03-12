@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPMail\Transport;
 
-use Closure;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
@@ -50,11 +49,11 @@ final class WPMailTransport implements Transport
         $bcc = $this->stringifyAddresses($email->bcc(), 'Bcc:');
 
         if ($html = $email->htmlBody()) {
-            $content_type = "Content-Type: text/html; charset={$email->htmlCharset()}";
+            $content_type = sprintf('Content-Type: text/html; charset=%s', $email->htmlCharset());
             $message = $html;
         } else {
             $message = $email->textBody();
-            $content_type = "Content-Type: text/plain; charset={$email->textCharset()}";
+            $content_type = sprintf('Content-Type: text/plain; charset=%s', $email->textCharset());
         }
 
         if (null === $message) {
@@ -67,7 +66,7 @@ final class WPMailTransport implements Transport
             // Don't set attachments here since WordPress only adds attachments by file path. Really?
             $success = $this->wp->mail($to, $email->subject(), $message, $headers, []);
 
-            if (false === $success) {
+            if (! $success) {
                 throw new CantSendEmailWithWPMail('Could not sent the mail with wp_mail().');
             }
         } catch (Exception $e) {
@@ -84,10 +83,10 @@ final class WPMailTransport implements Transport
      * Throwing explicit exceptions we also allow a far better usage for clients
      * since they would have to create their own hook callbacks otherwise.
      */
-    private function handleFailure(): Closure
+    private function handleFailure(): callable
     {
         $closure = /** @return never */
-            function (WP_Error $error) {
+            function (WP_Error $error): void {
                 throw CantSendEmailWithWPMail::becauseWPMailRaisedErrors($error);
             };
 
@@ -102,7 +101,7 @@ final class WPMailTransport implements Transport
      * break plugins that need it. Here we directly configure the underlying
      * PHPMailer instance which has all the options we need.
      */
-    private function justInTimeConfiguration(Email $mail): Closure
+    private function justInTimeConfiguration(Email $mail): callable
     {
         $closure = function (PHPMailer $php_mailer) use ($mail): void {
             if ($priority = $mail->priority()) {

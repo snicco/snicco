@@ -23,6 +23,13 @@ use function strip_tags;
  */
 class Email
 {
+    /**
+     * @var array<string, string>
+     */
+    private const RESERVED_CONTEXT = [
+        'images' => 'Its used to generated CIDs in your templates',
+    ];
+
     protected string $subject = '';
 
     protected ?string $html = null;
@@ -36,13 +43,6 @@ class Email
     protected string $text_charset = 'utf-8';
 
     protected string $html_charset = 'utf-8';
-
-    /**
-     * @var array<string,string>
-     */
-    private array $reserved_context = [
-        'images' => 'Its used to generated CIDs in your templates',
-    ];
 
     /**
      * @var list<Mailbox>
@@ -111,7 +111,7 @@ class Email
     final public function addTo($address): Email
     {
         $new = clone $this;
-        $new->to = array_merge($this->to, $this->normalizeAddresses($address));
+        $new->to = [...$this->to, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -137,7 +137,7 @@ class Email
     final public function addCc($address): Email
     {
         $new = clone $this;
-        $new->cc = array_merge($this->cc, $this->normalizeAddresses($address));
+        $new->cc = [...$this->cc, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -163,7 +163,7 @@ class Email
     final public function addBcc($address): Email
     {
         $new = clone $this;
-        $new->bcc = array_merge($this->bcc, $this->normalizeAddresses($address));
+        $new->bcc = [...$this->bcc, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -223,7 +223,7 @@ class Email
     final public function addReplyTo($address): Email
     {
         $new = clone $this;
-        $new->reply_to = array_merge($this->reply_to, $this->normalizeAddresses($address));
+        $new->reply_to = [...$this->reply_to, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -249,7 +249,7 @@ class Email
     final public function addFrom($address): Email
     {
         $new = clone $this;
-        $new->from = array_merge($this->from, $this->normalizeAddresses($address));
+        $new->from = [...$this->from, ...$this->normalizeAddresses($address)];
 
         return $new;
     }
@@ -521,6 +521,7 @@ class Email
         if ($priority < 1 || $priority > 5) {
             throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
         }
+
         $this->priority = $priority;
     }
 
@@ -539,15 +540,16 @@ class Email
         ];
 
         foreach ($context as $key => $value) {
-            if (isset($this->reserved_context[$key])) {
+            if (isset(self::RESERVED_CONTEXT[$key])) {
                 throw new LogicException(
                     sprintf(
                         "[%s] is a reserved context key.\n[%s].\nPlease choose a different key.",
                         $key,
-                        $this->reserved_context[$key]
+                        self::RESERVED_CONTEXT[$key]
                     )
                 );
             }
+
             $this->context[$key] = $value;
         }
     }
@@ -579,6 +581,7 @@ class Email
             if (null === $first_key) {
                 return [];
             }
+
             if (is_string($addresses[$first_key])) {
                 $addresses = [$addresses];
             }

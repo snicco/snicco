@@ -28,7 +28,7 @@ final class HttpKernel
     /**
      * @var class-string<MiddlewareInterface>[]
      */
-    private array $kernel_middleware;
+    private array $kernel_middleware = [];
 
     /**
      * @param class-string<MiddlewareInterface>[] $kernel_middleware
@@ -52,7 +52,7 @@ final class HttpKernel
         $response = $this->pipeline
             ->send($request)
             ->through($this->kernel_middleware)
-            ->then(function () {
+            ->then(function (): void {
                 throw new LogicException(
                     'Kernel middleware pipeline is exhausted without returning a response. This should never happen.'
                 );

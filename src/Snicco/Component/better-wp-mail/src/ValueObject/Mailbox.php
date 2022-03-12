@@ -27,6 +27,8 @@ final class Mailbox
 {
     /**
      * @see https://regexr.com/69uh5
+     *
+     * @var string
      */
     private const PATTERN = '/^(?<name>\w+\s?\w+)?\s*<(?<address>[^>]+)>$/';
 
@@ -44,13 +46,11 @@ final class Mailbox
         $address = strtolower($address);
 
         if (null === self::$email_validator) {
-            self::$email_validator = function (string $email): bool {
-                return false !== filter_var($email, FILTER_VALIDATE_EMAIL);
-            };
+            self::$email_validator = fn (string $email): bool => false !== filter_var($email, FILTER_VALIDATE_EMAIL);
         }
 
         if (! $this->isEmailValid($address, self::$email_validator)) {
-            throw new InvalidArgumentException("[{$address}] is not a valid email.");
+            throw new InvalidArgumentException(sprintf('[%s] is not a valid email.', $address));
         }
 
         $this->address = $address;
@@ -108,9 +108,11 @@ final class Mailbox
 
     public function toString(): string
     {
-        return ($name = $this->name())
-            ? ($name . ' <' . $this->address() . '>')
-            : $this->address();
+        if ('' === $this->name) {
+            return $this->address;
+        }
+
+        return sprintf('%s <%s>', $this->name, $this->address);
     }
 
     public function name(): string
@@ -127,7 +129,10 @@ final class Mailbox
     {
         $res = call_user_func($validator, $address);
         if (! is_bool($res)) {
-            throw new LogicException("MailBox::email_validator did not return a boolean for address [{$address}].");
+            throw new LogicException(sprintf(
+                'MailBox::email_validator did not return a boolean for address [%s].',
+                $address
+            ));
         }
 
         return $res;

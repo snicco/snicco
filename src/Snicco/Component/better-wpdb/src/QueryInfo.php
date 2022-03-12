@@ -36,7 +36,7 @@ final class QueryInfo
     /**
      * @var array<scalar|null>
      */
-    public array $bindings;
+    public array $bindings = [];
 
     /**
      * @param non-empty-string   $sql_with_placeholders
@@ -64,19 +64,25 @@ final class QueryInfo
      */
     private function replacePlaceholders(string $sql_with_placeholders, array $bindings): string
     {
-        $bindings = array_map(function ($binding) {
-            if (is_int($binding) || is_float($binding)) {
+        $bindings = array_map(function ($binding): string {
+            if (is_int($binding)) {
                 return (string) $binding;
             }
+
+            if (is_float($binding)) {
+                return (string) $binding;
+            }
+
             if (null === $binding) {
                 return 'null';
             }
+
             $binding = (string) $binding;
 
-            return "'{$binding}'";
+            return sprintf("'%s'", $binding);
         }, $bindings);
 
-        return (string) preg_replace_callback('/\?/', function () use (&$bindings): string {
+        return (string) preg_replace_callback('#\?#', function () use (&$bindings): string {
             /**
              * @var string[] $bindings
              */

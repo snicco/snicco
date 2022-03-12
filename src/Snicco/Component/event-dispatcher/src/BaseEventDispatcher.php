@@ -54,6 +54,7 @@ final class BaseEventDispatcher implements EventDispatcher
             if ($original_event instanceof StoppablePsrEvent && $original_event->isPropagationStopped()) {
                 break;
             }
+
             $this->callListener($listener, $event,);
         }
 
@@ -116,6 +117,7 @@ final class BaseEventDispatcher implements EventDispatcher
 
             return;
         }
+
         if (null === $listener) {
             throw new InvalidArgumentException('$listener can not be null if first $event_name is not a closure.');
         }
@@ -146,9 +148,10 @@ final class BaseEventDispatcher implements EventDispatcher
         if (isset($this->listener_cache[$event_name])) {
             return $this->listener_cache[$event_name];
         }
+
         $listeners = $this->listeners[$event_name] ?? [];
 
-        /** @var array<array{0: class-string, 1:string}|Closure> $listeners */
+        /** @psalm-var array<array{0: class-string, 1:string}|Closure> $listeners */
         $listeners = $include_reflection
                 ? $this->mergeReflectionListeners($event_name, $listeners)
                 : $listeners;

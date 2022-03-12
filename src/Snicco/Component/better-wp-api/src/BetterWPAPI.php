@@ -10,7 +10,7 @@ use WP_User;
 use function add_action;
 use function add_filter;
 use function apply_filters_ref_array;
-use function array_merge;
+use function array_unshift;
 use function current_user_can;
 use function do_action;
 use function get_class;
@@ -60,7 +60,7 @@ class BetterWPAPI
      * @param T     $filterable_value
      * @param mixed ...$args
      *
-     * @return T
+     * @psalm-return T
      */
     public function applyFiltersStrict(string $hook_name, $filterable_value, ...$args)
     {
@@ -71,9 +71,10 @@ class BetterWPAPI
         $actual = gettype($return_value);
         if ($actual !== $expected) {
             throw new InvalidArgumentException(
-                "Initial value for filter [{$hook_name}] is {$expected}. Returned [{$actual}]."
+                sprintf('Initial value for filter [%s] is %s. Returned [%s].', $hook_name, $expected, $actual)
             );
         }
+
         if ('object' === $expected) {
             /**
              * @var object $filterable_value
@@ -84,10 +85,16 @@ class BetterWPAPI
 
             if ($value_class !== $returned_class) {
                 throw new InvalidArgumentException(
-                    "Initial value for filter [{$hook_name}] is an instance of [{$value_class}]. Returned [{$returned_class}]."
+                    sprintf(
+                        'Initial value for filter [%s] is an instance of [%s]. Returned [%s].',
+                        $hook_name,
+                        $value_class,
+                        $returned_class
+                    )
                 );
             }
         }
+
         /**
          * @var T $return_value
          */
@@ -102,7 +109,9 @@ class BetterWPAPI
      */
     public function applyFilters(string $hook_name, $value, ...$args)
     {
-        return apply_filters_ref_array($hook_name, array_merge([$value], $args));
+        array_unshift($args, $value);
+
+        return apply_filters_ref_array($hook_name, $args);
     }
 
     public function removeFilter(string $hook_name, callable $callback, int $priority = 10): bool

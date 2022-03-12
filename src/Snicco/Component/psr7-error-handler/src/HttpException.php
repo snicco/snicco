@@ -14,7 +14,7 @@ class HttpException extends RuntimeException
     /**
      * @var array<string,string>
      */
-    private array $response_headers;
+    private array $response_headers = [];
 
     /**
      * @param array<string,string> $response_headers

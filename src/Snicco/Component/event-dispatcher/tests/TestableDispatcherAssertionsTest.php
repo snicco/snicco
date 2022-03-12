@@ -46,7 +46,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_nothing_dispatched_can_pass(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
 
@@ -58,7 +58,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_nothing_dispatched_can_fail(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
 
@@ -75,7 +75,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_pass(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
@@ -88,13 +88,13 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_fail(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was not dispatched',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched('foo_event');
             }
         );
@@ -105,14 +105,15 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_pass_with_truthful_condition_about_the_event(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val) {
+        $this->fake_dispatcher->listen('foo_event', function ($val): void {
             $this->respondedToEvent('foo_event', 'closure1', $val);
         });
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO', 'BAR']));
 
-        $this->fake_dispatcher->assertDispatched('foo_event', function ($foo, $bar) {
-            return 'FOO' === $foo && 'BAR' === $bar;
-        });
+        $this->fake_dispatcher->assertDispatched(
+            'foo_event',
+            fn ($foo, $bar): bool => 'FOO' === $foo && 'BAR' === $bar
+        );
     }
 
     /**
@@ -122,10 +123,11 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was not dispatched',
-            function () {
-                $this->fake_dispatcher->assertDispatched('foo_event', function ($foo, $bar) {
-                    return 'FOO' === $foo && 'BAR' === $bar;
-                });
+            function (): void {
+                $this->fake_dispatcher->assertDispatched(
+                    'foo_event',
+                    fn ($foo, $bar): bool => 'FOO' === $foo && 'BAR' === $bar
+                );
             }
         );
     }
@@ -139,10 +141,11 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched but the provided condition did not pass.',
-            function () {
-                $this->fake_dispatcher->assertDispatched('foo_event', function ($foo, $bar) {
-                    return 'FOO' === $foo && 'BAR' === $bar;
-                });
+            function (): void {
+                $this->fake_dispatcher->assertDispatched(
+                    'foo_event',
+                    fn ($foo, $bar): bool => 'FOO' === $foo && 'BAR' === $bar
+                );
             }
         );
     }
@@ -156,9 +159,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->fake_dispatcher->assertDispatched(
             EventStub::class,
-            function (EventStub $event_stub) {
-                return 'FOO' === $event_stub->val1 && 'BAR' === $event_stub->val2;
-            }
+            fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1 && 'BAR' === $event_stub->val2
         );
     }
 
@@ -171,12 +172,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched but the provided condition did not pass.', EventStub::class),
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     EventStub::class,
-                    function (EventStub $event_stub) {
-                        return 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2;
-                    }
+                    fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2
                 );
             }
         );
@@ -190,9 +189,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
 
         $this->fake_dispatcher->assertDispatched(
-            function (EventStub $event_stub) {
-                return 'FOO' === $event_stub->val1 && 'BAR' === $event_stub->val2;
-            }
+            fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1 && 'BAR' === $event_stub->val2
         );
     }
 
@@ -205,12 +202,10 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched but the provided condition did not pass', EventStub::class),
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertDispatched(
-                    function (EventStub $event_stub) {
-                        return 'FOO' === $event_stub->val1
-                            && 'BAZ' === $event_stub->val2;
-                    }
+                    fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1
+                        && 'BAZ' === $event_stub->val2
                 );
             },
         );
@@ -228,9 +223,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('did not return bool');
 
-        $this->fake_dispatcher->assertDispatched(function (EventStub $event_stub) {
-            return '1';
-        });
+        $this->fake_dispatcher->assertDispatched(fn (EventStub $event_stub): string => '1');
     }
 
     /**
@@ -250,7 +243,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched [3] time[s].',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
                 $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
                 $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
@@ -276,7 +269,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched [1] time[s].',
-            function () {
+            function (): void {
                 $this->fake_dispatcher->assertNotDispatched('foo_event');
             }
         );
@@ -289,9 +282,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
     {
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['BAR']));
 
-        $this->fake_dispatcher->assertNotDispatched('foo_event', function ($val) {
-            return 'FOO' === $val;
-        });
+        $this->fake_dispatcher->assertNotDispatched('foo_event', fn ($val): bool => 'FOO' === $val);
     }
 
     /**
@@ -303,13 +294,8 @@ final class TestableDispatcherAssertionsTest extends TestCase
 
         $this->assertFailsWithMessageStarting(
             'The event [foo_event] was dispatched and the condition passed.',
-            function () {
-                $this->fake_dispatcher->assertNotDispatched(
-                    'foo_event',
-                    function ($val) {
-                        return 'BAR' === $val;
-                    }
-                );
+            function (): void {
+                $this->fake_dispatcher->assertNotDispatched('foo_event', fn ($val): bool => 'BAR' === $val);
             }
         );
     }
@@ -322,9 +308,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAZ'));
 
         $this->fake_dispatcher->assertNotDispatched(
-            function (EventStub $event_stub) {
-                return 'FOO' === $event_stub->val1 && 'BAR' === $event_stub->val2;
-            }
+            fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1 && 'BAR' === $event_stub->val2
         );
     }
 
@@ -340,9 +324,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->fake_dispatcher->dispatch($event);
 
         $this->fake_dispatcher->assertDispatched(
-            function (stdClass $event) {
-                return 'FOO' === $event->foo && 'BAR' === $event->bar;
-            }
+            fn (stdClass $event): bool => 'FOO' === $event->foo && 'BAR' === $event->bar
         );
     }
 
@@ -356,9 +338,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->assertFailsWithMessageStarting(
             sprintf('The event [%s] was dispatched and the condition passed.', EventStub::class),
             fn () => $this->fake_dispatcher->assertNotDispatched(
-                function (EventStub $event_stub): bool {
-                    return 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2;
-                }
+                fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2
             )
         );
     }

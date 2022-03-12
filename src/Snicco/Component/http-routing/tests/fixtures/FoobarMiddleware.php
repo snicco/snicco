@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 
-class FoobarMiddleware extends Middleware
+final class FoobarMiddleware extends Middleware
 {
     private string $val;
 
@@ -21,7 +21,7 @@ class FoobarMiddleware extends Middleware
         }
     }
 
-    public function handle(Request $request, $next): ResponseInterface
+    protected function handle(Request $request, $next): ResponseInterface
     {
         $response = $next($request);
 

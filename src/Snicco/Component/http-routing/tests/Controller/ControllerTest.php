@@ -24,7 +24,7 @@ final class ControllerTest extends HttpRunnerTestCase
      */
     public function test_controllers_have_access_to_response_utils(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $router) {
+        $this->webRouting(function (WebRoutingConfigurator $router): void {
             $router->get('r1', '/foo', ResponseUtilsTestController::class);
         });
 
@@ -39,12 +39,8 @@ final class ControllerTest extends HttpRunnerTestCase
     public function test_exception_if_current_request_not_set(): void
     {
         $container = new Container();
-        $container[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory();
-        };
-        $container[UrlGenerator::class] = function (): UrlGenerator {
-            return $this->generator();
-        };
+        $container[ResponseFactory::class] = fn (): ResponseFactory => $this->createResponseFactory();
+        $container[UrlGenerator::class] = fn (): UrlGenerator => $this->generator();
 
         $controller = new ResponseUtilsTestController();
         $controller->setContainer(new \Pimple\Psr11\Container($container));
@@ -62,9 +58,7 @@ final class ControllerTest extends HttpRunnerTestCase
     public function test_exception_if_url_generator_not_set(): void
     {
         $container = new Container();
-        $container[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory();
-        };
+        $container[ResponseFactory::class] = fn (): ResponseFactory => $this->createResponseFactory();
 
         $controller = new ResponseUtilsTestController();
         $controller->setContainer(new \Pimple\Psr11\Container($container));
@@ -82,9 +76,7 @@ final class ControllerTest extends HttpRunnerTestCase
     public function test_exception_if_response_factory_not_set(): void
     {
         $container = new Container();
-        $container[UrlGenerator::class] = function (): UrlGenerator {
-            return $this->generator();
-        };
+        $container[UrlGenerator::class] = fn (): UrlGenerator => $this->generator();
 
         $controller = new ResponseUtilsTestController();
         $controller->setContainer(new \Pimple\Psr11\Container($container));
@@ -97,7 +89,7 @@ final class ControllerTest extends HttpRunnerTestCase
     }
 }
 
-class ResponseUtilsTestController extends Controller
+final class ResponseUtilsTestController extends Controller
 {
     public function __invoke()
     {

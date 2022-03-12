@@ -7,7 +7,7 @@ namespace Snicco\Component\EventDispatcher\Tests\fixtures\Listener;
 use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use Snicco\Component\EventDispatcher\Tests\fixtures\Event\FooEvent;
 
-class ClassListener2
+final class ClassListener2
 {
     use AssertListenerResponse;
 

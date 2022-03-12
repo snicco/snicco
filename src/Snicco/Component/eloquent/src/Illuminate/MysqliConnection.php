@@ -24,6 +24,9 @@ use function is_array;
  */
 final class MysqliConnection extends IlluminateMysqlConnection
 {
+    /**
+     * @var string
+     */
     public const CONNECTION_NAME = 'wp_mysqli_connection';
 
     private MysqliDriverInterface $mysqli_driver;
@@ -31,9 +34,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
     public function __construct(MysqliDriverInterface $mysqli_driver, WPDatabaseSettingsAPI $wp)
     {
         $this->mysqli_driver = $mysqli_driver;
-        $pdo_adapter = function (): PDOAdapter {
-            return $this->mysqli_driver;
-        };
+        $pdo_adapter = fn (): PDOAdapter => $this->mysqli_driver;
 
         parent::__construct($pdo_adapter, $wp->dbName(), $wp->tablePrefix(), [
             'driver' => 'mysql',
@@ -43,7 +44,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
             'password' => $wp->dbPassword(),
             'charset' => $wp->dbCharset(),
             // important. Don't set this to an empty string as it is by default in WordPress.
-            'collation' => ! empty($wp->dbCollate()) ? $wp->dbCollate() : null,
+            'collation' => empty($wp->dbCollate()) ? null : $wp->dbCollate(),
             'prefix' => $wp->tablePrefix(),
             'name' => self::CONNECTION_NAME,
         ]);
@@ -128,7 +129,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     public function statement($query, $bindings = []): bool
     {
-        return $this->run($query, $bindings, function ($query, $bindings) {
+        return $this->run($query, $bindings, function ($query, $bindings): bool {
             if ($this->pretending) {
                 return true;
             }
@@ -160,7 +161,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     public function affectingStatement($query, $bindings = []): int
     {
-        return $this->run($query, $bindings, function ($query, $bindings) {
+        return $this->run($query, $bindings, function ($query, $bindings): int {
             if ($this->pretending) {
                 return 0;
             }
@@ -191,7 +192,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      */
     public function unprepared($query): bool
     {
-        return $this->run($query, [], function ($query) {
+        return $this->run($query, [], function ($query): bool {
             if ($this->pretending) {
                 return true;
             }
@@ -239,7 +240,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
      * @param array                    $bindings
      * @param Closure(string,array): T $callback
      *
-     * @return T
+     * @psalm-return T
      *
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress MoreSpecificImplementedParamType
@@ -264,7 +265,7 @@ final class MysqliConnection extends IlluminateMysqlConnection
     /**
      * Reconnect to the database if a PDO connection is missing.
      */
-    protected function reconnectIfMissingConnection()
+    protected function reconnectIfMissingConnection(): void
     {
         if (! $this->mysqli_driver->isStillConnected()) {
             $this->mysqli_driver->reconnect();

@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures\Conditions;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Condition\RouteCondition;
 
-class MaybeRouteCondition extends RouteCondition
+final class MaybeRouteCondition extends RouteCondition
 {
     /**
      * @var bool|string

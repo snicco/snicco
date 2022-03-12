@@ -24,7 +24,7 @@ final class CustomNameEvent implements ExposeToWP, Event
         return $this->name ?: static::class;
     }
 
-    public function payload()
+    public function payload(): self
     {
         return $this;
     }

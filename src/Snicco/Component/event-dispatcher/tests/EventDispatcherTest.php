@@ -7,7 +7,6 @@ namespace Snicco\Component\EventDispatcher\Tests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
-use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\Exception\CantRemoveListener;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 use Snicco\Component\EventDispatcher\GenericEvent;
@@ -56,7 +55,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(FooEvent::class, function (FooEvent $event) {
+        $dispatcher->listen(FooEvent::class, function (FooEvent $event): void {
             $this->respondedToEvent(FooEvent::class, 'closure1', $event->val);
         });
 
@@ -72,7 +71,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(FooEvent::class, function () {
+        $dispatcher->listen(FooEvent::class, function (): void {
             $this->respondedToEvent(FooEvent::class, 'closure1', 'bar');
         });
 
@@ -88,11 +87,11 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen('foo_event', function () {
+        $dispatcher->listen('foo_event', function (): void {
             $this->respondedToEvent('foo_event', 'closure1', 'bar');
         });
 
-        $dispatcher->listen('foo_event', function () {
+        $dispatcher->listen('foo_event', function (): void {
             $this->respondedToEvent('foo_event', 'closure2', 'baz');
         });
 
@@ -112,7 +111,7 @@ final class EventDispatcherTest extends TestCase
 
         $this->assertListenerNotRun('foo_event', 'closure1');
 
-        $dispatcher->listen('foo_event', function () {
+        $dispatcher->listen('foo_event', function (): void {
             $this->respondedToEvent('foo_event', 'closure1', 'bar');
         });
 
@@ -128,7 +127,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen('foo_event', function (string $foo, string $bar) {
+        $dispatcher->listen('foo_event', function (string $foo, string $bar): void {
             $this->respondedToEvent('foo_event', 'closure1', $foo . $bar);
         });
 
@@ -144,7 +143,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(FooEvent::class, function (FooEvent $event) {
+        $dispatcher->listen(FooEvent::class, function (FooEvent $event): void {
             $this->respondedToEvent('foo_event', 'closure1', $event->val);
         });
 
@@ -160,7 +159,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(stdClass::class, function (stdClass $event) {
+        $dispatcher->listen(stdClass::class, function (stdClass $event): void {
             $this->respondedToEvent(stdClass::class, 'closure1', (string) $event->foo . (string) $event->bar);
         });
 
@@ -294,7 +293,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(function (FooEvent $event) {
+        $dispatcher->listen(function (FooEvent $event): void {
             $this->respondedToEvent(FooEvent::class, 'closure1', $event->val);
         });
 
@@ -331,7 +330,7 @@ final class EventDispatcherTest extends TestCase
 
         $dispatcher->listen(
             FooEvent::class,
-            $closure = function (FooEvent $event) {
+            $closure = function (FooEvent $event): void {
                 $this->respondedToEvent(FooEvent::class, 'closure1', $event->val);
             }
         );
@@ -413,12 +412,12 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(MutableEvent::class, function (MutableEvent $event) {
+        $dispatcher->listen(MutableEvent::class, function (MutableEvent $event): void {
             $val = $event->val;
             $event->val = 'FOOBAZ';
             $this->respondedToEvent(MutableEvent::class, 'closure1', $val);
         });
-        $dispatcher->listen(MutableEvent::class, function (MutableEvent $event) {
+        $dispatcher->listen(MutableEvent::class, function (MutableEvent $event): void {
             $this->respondedToEvent(MutableEvent::class, 'closure2', $event->val);
         });
 
@@ -437,14 +436,14 @@ final class EventDispatcherTest extends TestCase
 
         $dispatcher->listen(
             FilterableEvent::class,
-            function (FilterableEvent $event) {
-                $event->val = $event->val . ':Filter1:';
+            function (FilterableEvent $event): void {
+                $event->val .= ':Filter1:';
             }
         );
         $dispatcher->listen(
             FilterableEvent::class,
-            function (FilterableEvent $event) {
-                $event->val = $event->val . 'Filter2';
+            function (FilterableEvent $event): void {
+                $event->val .= 'Filter2';
             }
         );
 
@@ -461,7 +460,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(function (LoggableEvent $event) {
+        $dispatcher->listen(function (LoggableEvent $event): void {
             $this->respondedToEvent($event, 'closure1', $event->message());
         });
 
@@ -481,7 +480,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen(function (AbstractLogin $event) {
+        $dispatcher->listen(function (AbstractLogin $event): void {
             $this->respondedToEvent($event, 'closure1', $event->message());
         });
 
@@ -496,7 +495,7 @@ final class EventDispatcherTest extends TestCase
     {
         $dispatcher = $this->getDispatcher();
 
-        $dispatcher->listen('my_plugin_user_created', function (UserCreated $event) {
+        $dispatcher->listen('my_plugin_user_created', function (UserCreated $event): void {
             $this->respondedToEvent($event->name(), 'closure1', $event->user_name);
         });
 
@@ -533,7 +532,7 @@ final class EventDispatcherTest extends TestCase
         $this->assertTrue(true);
     }
 
-    private function getDispatcher(): EventDispatcher
+    private function getDispatcher(): BaseEventDispatcher
     {
         return new BaseEventDispatcher(new NewableListenerFactory());
     }

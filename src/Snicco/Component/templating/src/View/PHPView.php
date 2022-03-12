@@ -70,7 +70,7 @@ final class PHPView implements View
     {
         $new = clone $this;
         if (is_array($key)) {
-            $new->context = array_merge($this->context(), $key);
+            $new->context = array_merge($this->context, $key);
         } else {
             $new->context[$key] = $value;
         }
@@ -108,19 +108,20 @@ final class PHPView implements View
 
         if (false === $data) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Cant read file contents of view [{$this->filepath}].");
+            throw new RuntimeException(sprintf('Cant read file contents of view [%s].', $this->filepath));
             // @codeCoverageIgnoreEnd
         }
 
         $scope = Str::betweenFirst($data, '/*', '*/');
 
-        $match = preg_match('/(?:Extends:\s?)(.+)/', $scope, $matches);
+        $match = preg_match('#(?:Extends:\s?)(.+)#', $scope, $matches);
 
         if (false === $match) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("preg_match failed on string [{$scope}]");
+            throw new RuntimeException(sprintf('preg_match failed on string [%s]', $scope));
             // @codeCoverageIgnoreEnd
         }
+
         if (0 === $match) {
             return null;
         }

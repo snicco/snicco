@@ -45,6 +45,7 @@ final class WPHookAPI extends BetterWPAPI
         if (null === $hook) {
             return null;
         }
+
         if (! $hook instanceof WP_Hook) {
             throw new RuntimeException(
                 sprintf(

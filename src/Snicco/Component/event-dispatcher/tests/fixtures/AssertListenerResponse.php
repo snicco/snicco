@@ -10,7 +10,9 @@ use function get_class;
 use function is_object;
 
 /**
- * @api
+ * @internal
+ *
+ * @psalm-internal Snicco\Component\EventDispatcher
  */
 trait AssertListenerResponse
 {
@@ -19,27 +21,33 @@ trait AssertListenerResponse
         if (is_object($event)) {
             $event = get_class($event);
         }
+
         $GLOBALS['test']['sniccowp_listeners'][$event][$key] = $response;
     }
 
-    private function assertListenerRun($event, string $key, $expected): void
+    private function assertListenerRun(string $event, string $key, string $expected): void
     {
         Assert::assertArrayHasKey(
             $event,
             $GLOBALS['test']['sniccowp_listeners'],
-            "No listeners were called for the event [{$event}]."
+            sprintf('No listeners were called for the event [%s].', $event)
         );
 
         Assert::assertArrayHasKey(
             $key,
             $GLOBALS['test']['sniccowp_listeners'][$event],
-            "No listeners with key [{$key}] were called for the event [{$event}]."
+            sprintf('No listeners with key [%s] were called for the event [%s].', $key, $event)
         );
 
         Assert::assertSame(
             $expected,
             $actual = $GLOBALS['test']['sniccowp_listeners'][$event][$key],
-            "The response from the listener with key [{$key}] was [{$actual}]. Expected: [{$expected}]."
+            sprintf(
+                'The response from the listener with key [%s] was [%s]. Expected: [%s].',
+                $key,
+                (string) $actual,
+                $expected
+            )
         );
     }
 
@@ -49,7 +57,7 @@ trait AssertListenerResponse
             Assert::assertArrayNotHasKey(
                 $key,
                 $GLOBALS['test']['sniccowp_listeners'][$event],
-                "The listener with key [{$key}] was run."
+                sprintf('The listener with key [%s] was run.', $key)
             );
         } else {
             $this->assertTrue(true);

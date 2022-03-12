@@ -38,13 +38,10 @@ final class MiddlewareTest extends TestCase
         parent::setUp();
         $pimple = new Container();
         $this->pimple = $pimple;
+
         $this->pimple_psr = new \Pimple\Psr11\Container($pimple);
-        $pimple[ResponseFactory::class] = function (): ResponseFactory {
-            return $this->createResponseFactory();
-        };
-        $pimple[UrlGenerator::class] = function (): UrlGenerator {
-            return $this->createUrlGenerator();
-        };
+        $pimple[ResponseFactory::class] = fn (): ResponseFactory => $this->createResponseFactory();
+        $pimple[UrlGenerator::class] = fn (): UrlGenerator => $this->createUrlGenerator();
     }
 
     /**
@@ -101,6 +98,7 @@ final class MiddlewareTest extends TestCase
             }
         };
         $middleware->setContainer($this->pimple_psr);
+
         $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
@@ -148,30 +146,6 @@ final class MiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_if_current_request_is_not_set(): void
-    {
-        $middleware = new class() extends Middleware {
-            // Handle method is made public.
-            public function handle(Request $request, NextMiddleware $next): ResponseInterface
-            {
-                return $this->respondWith()
-                    ->refresh();
-            }
-        };
-        $middleware->setContainer($this->pimple_psr);
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('current request not set on middleware');
-
-        $middleware->handle(
-            Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', '/foo')),
-            $this->getNext()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function test_next_middleware_can_be_called_with_handle_method(): void
     {
         $middleware = new class() extends Middleware {
@@ -181,6 +155,7 @@ final class MiddlewareTest extends TestCase
             }
         };
         $middleware->setContainer($this->pimple_psr);
+
         $rf = $this->createResponseFactory();
 
         $response = $middleware->process(
@@ -254,9 +229,34 @@ final class MiddlewareTest extends TestCase
         $middleware->process($this->frontendRequest(), $this->getNext());
     }
 
+    /**
+     * @test
+     */
+    public function test_exception_if_current_request_is_not_set(): void
+    {
+        $middleware = new class() extends Middleware {
+            // Handle method is made public on purpose
+            // @noRector
+            public function handle(Request $request, NextMiddleware $next): ResponseInterface
+            {
+                return $this->respondWith()
+                    ->refresh();
+            }
+        };
+        $middleware->setContainer($this->pimple_psr);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('current request not set on middleware');
+
+        $middleware->handle(
+            Request::fromPsr($this->psrServerRequestFactory()->createServerRequest('GET', '/foo')),
+            $this->getNext()
+        );
+    }
+
     private function getNext(): NextMiddleware
     {
-        return new NextMiddleware(function () {
+        return new NextMiddleware(function (): void {
             throw new RuntimeException('Next should not be called.');
         });
     }

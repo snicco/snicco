@@ -8,7 +8,7 @@ use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 
-class FilterableEvent implements Event
+final class FilterableEvent implements Event
 {
     use ClassAsName;
     use ClassAsPayload;

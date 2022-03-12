@@ -17,7 +17,7 @@ final class JsonExceptionDisplayer implements ExceptionDisplayer
             'title' => $exception_information->safeTitle(),
             'details' => $exception_information->safeDetails(),
             'identifier' => $exception_information->identifier(),
-        ]);
+        ], JSON_THROW_ON_ERROR);
     }
 
     public function supportedContentType(): string

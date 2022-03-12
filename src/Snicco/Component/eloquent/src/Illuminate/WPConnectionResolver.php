@@ -58,7 +58,7 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
     public function connection($name = null): ConnectionInterface
     {
         if (null === $name) {
-            $name = $this->getDefaultConnection();
+            $name = $this->default_connection;
         }
 
         return $this->resolveConnection($name);
@@ -84,13 +84,14 @@ final class WPConnectionResolver implements IlluminateConnectionResolver
 
     private function resolveConnection(string $name): ConnectionInterface
     {
-        if ($name !== $this->getDefaultConnection()) {
+        if ($name !== $this->default_connection) {
             return $this->connection_resolver->connection($name);
         }
 
         if (isset($this->mysqli_connection)) {
             return $this->mysqli_connection;
         }
+
         $this->mysqli_connection = $this->mysqli_connection_factory->create();
 
         return $this->mysqli_connection;

@@ -87,7 +87,7 @@ final class ViewEngineTest extends TestCase
         $path = realpath($this->view_dir . '/foo.php');
 
         if (false === $path) {
-            throw new RuntimeException("test view [{$path}] does not exist.");
+            throw new RuntimeException(sprintf('test view [%s] does not exist.', $this->view_dir . '/foo.php'));
         }
 
         $view = $this->view_engine->make($path);
@@ -112,10 +112,10 @@ final class ViewEngineTest extends TestCase
     public function a_nested_view_can_be_rendered_with_dot_notation(): void
     {
         $view = $this->view_engine->make('components.input');
-        $this->assertEquals('input-component', $view->render());
+        $this->assertSame('input-component', $view->render());
 
         $view = $this->view_engine->make('components.input.php');
-        $this->assertEquals('input-component', $view->render());
+        $this->assertSame('input-component', $view->render());
     }
 
     /**
@@ -242,15 +242,13 @@ final class ViewEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', function (View $view) {
-            return $view->with([
-                'test_context' => [
-                    'foo' => [
-                        'bar' => 'biz',
-                    ],
+        $this->composers->addComposer('context-priority', fn (View $view): View => $view->with([
+            'test_context' => [
+                'foo' => [
+                    'bar' => 'biz',
                 ],
-            ]);
-        });
+            ],
+        ]));
 
         $view = $this->view_engine->make('context-priority');
 
@@ -268,15 +266,13 @@ final class ViewEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', function (View $view) {
-            return $view->with([
-                'test_context' => [
-                    'foo' => [
-                        'bar' => 'biz',
-                    ],
+        $this->composers->addComposer('context-priority', fn (View $view): View => $view->with([
+            'test_context' => [
+                'foo' => [
+                    'bar' => 'biz',
                 ],
-            ]);
-        });
+            ],
+        ]));
 
         $view = $this->view_engine->make('context-priority');
         $view = $view->with([
@@ -366,7 +362,7 @@ final class ViewEngineTest extends TestCase
      */
     public function extended_parents_view_are_also_passed_through_view_composers(): void
     {
-        $this->composers->addComposer('post-layout', fn (View $view) => $view->with('sidebar', 'hi'));
+        $this->composers->addComposer('post-layout', fn (View $view): View => $view->with('sidebar', 'hi'));
 
         $view = $this->view_engine->make('partials.post-title');
         $view = $view->with('post_title', 'Foobar');
@@ -457,7 +453,7 @@ final class ViewEngineTest extends TestCase
     }
 }
 
-class TestTwigViewFactory implements ViewFactory
+final class TestTwigViewFactory implements ViewFactory
 {
     public function make(string $view): View
     {

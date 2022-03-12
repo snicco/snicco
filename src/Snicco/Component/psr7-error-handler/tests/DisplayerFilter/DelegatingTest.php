@@ -61,7 +61,7 @@ final class DelegatingTest extends TestCase
     }
 }
 
-class VerbosePlain implements ExceptionDisplayer
+final class VerbosePlain implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -84,7 +84,7 @@ class VerbosePlain implements ExceptionDisplayer
     }
 }
 
-class NonVerbosePlain implements ExceptionDisplayer
+final class NonVerbosePlain implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -107,7 +107,7 @@ class NonVerbosePlain implements ExceptionDisplayer
     }
 }
 
-class VerboseJson implements ExceptionDisplayer
+final class VerboseJson implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {
@@ -130,7 +130,7 @@ class VerboseJson implements ExceptionDisplayer
     }
 }
 
-class NonVerboseJson implements ExceptionDisplayer
+final class NonVerboseJson implements ExceptionDisplayer
 {
     public function display(ExceptionInformation $exception_information): string
     {

@@ -12,6 +12,9 @@ final class GenericEvent implements Event
 
     private string $name;
 
+    /**
+     * @param mixed[] $arguments
+     */
     public function __construct(string $name, array $arguments = [])
     {
         $this->arguments = $arguments;

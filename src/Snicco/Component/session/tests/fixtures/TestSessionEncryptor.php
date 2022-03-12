@@ -6,7 +6,7 @@ namespace Snicco\Component\Session\Tests\fixtures;
 
 use Snicco\Component\Session\SessionEncryptor;
 
-class TestSessionEncryptor implements SessionEncryptor
+final class TestSessionEncryptor implements SessionEncryptor
 {
     public function decrypt(string $data): string
     {

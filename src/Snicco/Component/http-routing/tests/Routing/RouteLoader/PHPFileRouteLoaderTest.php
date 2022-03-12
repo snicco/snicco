@@ -25,15 +25,27 @@ use function dirname;
  */
 final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
 {
+    /**
+     * @var string
+     */
     public const WEB_PATH = '/web';
 
+    /**
+     * @var string
+     */
     public const PARTIAL_PATH = '/partial';
 
+    /**
+     * @var string
+     */
     public const ADMIN_PATH = '/admin.php/foo';
 
-    public static bool $web_include_partial = false;
+    /**
+     * @var string
+     */
+    private const BASE_PREFIX = '/sniccowp';
 
-    private string $base_prefix = '/sniccowp';
+    public static bool $web_include_partial = false;
 
     private string $bad_routes;
 
@@ -203,11 +215,11 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],
-            new DefaultRouteLoadingOptions($this->base_prefix)
+            new DefaultRouteLoadingOptions(self::BASE_PREFIX)
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runNewPipeline($this->frontendRequest($this->base_prefix . '/partials/cart'));
+        $response = $this->runNewPipeline($this->frontendRequest(self::BASE_PREFIX . '/partials/cart'));
 
         $response->assertOk()
             ->assertSeeText(RoutingTestController::static);
@@ -221,7 +233,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],
-            new DefaultRouteLoadingOptions($this->base_prefix)
+            new DefaultRouteLoadingOptions(self::BASE_PREFIX)
         );
         $routing = $this->newRoutingFacade($loader);
 
@@ -243,11 +255,11 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],
-            new DefaultRouteLoadingOptions($this->base_prefix)
+            new DefaultRouteLoadingOptions(self::BASE_PREFIX)
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runNewPipeline($this->frontendRequest($this->base_prefix . '/partials/cart'));
+        $response = $this->runNewPipeline($this->frontendRequest(self::BASE_PREFIX . '/partials/cart'));
 
         // Bar middleware is not included by default
         $response->assertOk()
@@ -262,11 +274,11 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],
-            new DefaultRouteLoadingOptions($this->base_prefix)
+            new DefaultRouteLoadingOptions(self::BASE_PREFIX)
         );
         $routing = $this->newRoutingFacade($loader);
 
-        $response = $this->runNewPipeline($this->frontendRequest($this->base_prefix . '/rest/v1/posts'));
+        $response = $this->runNewPipeline($this->frontendRequest(self::BASE_PREFIX . '/rest/v1/posts'));
 
         $response->assertOk()
             ->assertNotDelegated();
@@ -286,11 +298,11 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $loader = new PHPFileRouteLoader(
             [$this->routes_dir],
             [$this->api_routes],
-            new DefaultRouteLoadingOptions($this->base_prefix, true)
+            new DefaultRouteLoadingOptions(self::BASE_PREFIX, true)
         );
         $this->newRoutingFacade($loader);
 
-        $response = $this->runNewPipeline($this->frontendRequest($this->base_prefix . '/rest/v1/posts'));
+        $response = $this->runNewPipeline($this->frontendRequest(self::BASE_PREFIX . '/rest/v1/posts'));
 
         $response->assertSeeText('static:bar_middleware');
     }
@@ -606,7 +618,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     }
 }
 
-class TestLoadingOptions implements RouteLoadingOptions
+final class TestLoadingOptions implements RouteLoadingOptions
 {
     private bool $fail_because_of_array;
 
@@ -632,6 +644,7 @@ class TestLoadingOptions implements RouteLoadingOptions
         if ($this->fail_because_of_array) {
             $att['middleware'] = 'foo';
         }
+
         if ($this->fail_because_of_wrong_type) {
             $att['middleware'] = ['foo', 1];
         }
@@ -645,12 +658,16 @@ class TestLoadingOptions implements RouteLoadingOptions
     }
 }
 
-class ConfigurableLoadingOptions implements RouteLoadingOptions
+final class ConfigurableLoadingOptions implements RouteLoadingOptions
 {
     private array $return_api;
 
     private array $return_normal;
 
+    /**
+     * @param mixed[] $return_api
+     * @param mixed[] $return_normal
+     */
     public function __construct(array $return_api, array $return_normal = [])
     {
         $this->return_api = $return_api;

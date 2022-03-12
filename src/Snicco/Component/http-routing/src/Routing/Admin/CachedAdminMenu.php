@@ -6,7 +6,6 @@ namespace Snicco\Component\HttpRouting\Routing\Admin;
 
 use RuntimeException;
 
-use function count;
 use function unserialize;
 
 final class CachedAdminMenu implements AdminMenu
@@ -14,12 +13,12 @@ final class CachedAdminMenu implements AdminMenu
     /**
      * @var string[]
      */
-    private array $serialized_menu_items;
+    private array $serialized_menu_items = [];
 
     /**
      * @var list<AdminMenuItem>
      */
-    private array $hydrated_items;
+    private array $hydrated_items = [];
 
     /**
      * @param string[] $serialized_menu_items
@@ -40,7 +39,7 @@ final class CachedAdminMenu implements AdminMenu
      */
     private function getItems(): array
     {
-        if (count($this->hydrated_items)) {
+        if ([] !== $this->hydrated_items) {
             return $this->hydrated_items;
         }
 
@@ -53,6 +52,7 @@ final class CachedAdminMenu implements AdminMenu
                     "Cached admin menu is corrupted.\nOne item could not be unserialized: [{$item}]"
                 );
             }
+
             $items[] = $res;
         }
 

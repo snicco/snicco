@@ -62,9 +62,14 @@ final class MiddlewarePipeline
     public function through(array $middleware): MiddlewarePipeline
     {
         foreach ($middleware as $m) {
-            if ($m instanceof MiddlewareInterface || $m instanceof MiddlewareBlueprint) {
+            if ($m instanceof MiddlewareInterface) {
                 continue;
             }
+
+            if ($m instanceof MiddlewareBlueprint) {
+                continue;
+            }
+
             Reflector::assertInterfaceString($m, MiddlewareInterface::class);
         }
 
@@ -104,7 +109,7 @@ final class MiddlewarePipeline
 
     private function lazyNext(): NextMiddleware
     {
-        return new NextMiddleware(function (Request $request) {
+        return new NextMiddleware(function (Request $request): ResponseInterface {
             try {
                 return $this->runNext($request);
             } catch (Throwable $e) {
@@ -157,6 +162,7 @@ final class MiddlewarePipeline
             if ('true' === strtolower($value)) {
                 return true;
             }
+
             if ('false' === strtolower($value)) {
                 return false;
             }

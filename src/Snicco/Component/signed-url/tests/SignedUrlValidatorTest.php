@@ -97,7 +97,7 @@ final class SignedUrlValidatorTest extends TestCase
 
         $this->expectException(InvalidSignature::class);
 
-        $string = preg_replace('/expires=\d+/', 'expires=' . (string) (time() + 100), $signed_url->asString());
+        $string = preg_replace('#expires=\d+#', 'expires=' . (string) (time() + 100), $signed_url->asString());
 
         if (null === $string) {
             throw new RuntimeException('preg_replace failed in test');
@@ -199,11 +199,12 @@ final class SignedUrlValidatorTest extends TestCase
         $wrong_identifier = Base64UrlSafe::encode(random_bytes(16));
 
         $string = $signed_url->asString();
-        preg_match_all('/signature=([^|]+)/', $string, $matches);
+        preg_match_all('#signature=([^|]+)#', $string, $matches);
 
         if (! isset($matches[1][0])) {
             throw new RuntimeException('Cant extract correct signature in test.');
         }
+
         $correct_identifier = $matches[1][0];
 
         $string = str_replace($correct_identifier, $wrong_identifier, $string);
@@ -314,6 +315,7 @@ final class SignedUrlValidatorTest extends TestCase
         } else {
             $_SERVER['HTTP_USER_AGENT'] = $pre;
         }
+
         $this->assertTrue(true);
     }
 }

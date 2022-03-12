@@ -12,8 +12,6 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 
 use function dirname;
 
-use const DIRECTORY_SEPARATOR;
-
 /**
  * @internal
  */
@@ -23,13 +21,10 @@ final class ConfigLoaderTest extends TestCase
 
     private string $fixtures_dir;
 
-    private string $cache_dir;
-
     protected function setUp(): void
     {
         parent::setUp();
         $this->fixtures_dir = dirname(__DIR__) . '/fixtures';
-        $this->cache_dir = $this->fixtures_dir . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache';
     }
 
     /**

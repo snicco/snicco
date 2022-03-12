@@ -10,6 +10,7 @@ use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use Snicco\Bundle\BetterWPCache\Option\BetterWPCacheOption;
 use Snicco\Component\BetterWPCache\CacheFactory;
+use Snicco\Component\BetterWPCache\WPObjectCachePsr6;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
@@ -22,6 +23,9 @@ use function is_file;
 
 final class BetterWPCacheBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/better-wp-cache-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -40,7 +44,7 @@ final class BetterWPCacheBundle implements Bundle
     public function register(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(CacheItemPoolInterface::class, function () use ($kernel) {
+            ->shared(CacheItemPoolInterface::class, function () use ($kernel): WPObjectCachePsr6 {
                 /** @var non-empty-string $group */
                 $group = $kernel->config()
                     ->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
@@ -48,7 +52,7 @@ final class BetterWPCacheBundle implements Bundle
                 return CacheFactory::psr6($group);
             });
         $kernel->container()
-            ->shared(CacheInterface::class, function () use ($kernel) {
+            ->shared(CacheInterface::class, function () use ($kernel): CacheInterface {
                 /** @var non-empty-string $group */
                 $group = $kernel->config()
                     ->getString('better-wp-cache.' . BetterWPCacheOption::CACHE_GROUP);
@@ -56,9 +60,13 @@ final class BetterWPCacheBundle implements Bundle
                 return CacheFactory::psr16($group);
             });
         $kernel->container()
-            ->shared(TaggableCacheItemPoolInterface::class, function () use ($kernel) {
-                return CacheFactory::taggable($kernel->container()->make(CacheItemPoolInterface::class));
-            });
+            ->shared(
+                TaggableCacheItemPoolInterface::class,
+                fn (): TaggableCacheItemPoolInterface => CacheFactory::taggable(
+                    $kernel->container()
+                        ->make(CacheItemPoolInterface::class)
+                )
+            );
     }
 
     public function bootstrap(Kernel $kernel): void
@@ -75,6 +83,7 @@ final class BetterWPCacheBundle implements Bundle
         if (! $kernel->env()->isDevelop()) {
             return;
         }
+
         $destination = $kernel->directories()
             ->configDir() . '/better-wp-cache.php';
         if (is_file($destination)) {
@@ -83,9 +92,12 @@ final class BetterWPCacheBundle implements Bundle
 
         $copied = copy(dirname(__DIR__) . '/config/better-wp-cache.php', $destination);
 
-        if (false === $copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Could not copy the default templating config to destination [{$destination}]");
+            throw new RuntimeException(sprintf(
+                'Could not copy the default templating config to destination [%s]',
+                $destination
+            ));
             // @codeCoverageIgnoreEnd
         }
     }

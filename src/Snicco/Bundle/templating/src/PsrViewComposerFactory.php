@@ -44,6 +44,7 @@ final class PsrViewComposerFactory implements ViewComposerFactory
                     gettype($instance)
                 ));
             }
+
             /**
              * @psalm-var  T $instance
              */

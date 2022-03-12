@@ -15,7 +15,7 @@ final class MiddlewareRecursion extends InvalidArgumentException
     /**
      * @var string[]
      */
-    private array $build_trace;
+    private array $build_trace = [];
 
     private string $first_duplicate;
 
@@ -28,7 +28,7 @@ final class MiddlewareRecursion extends InvalidArgumentException
         $this->first_duplicate = $first_duplicate;
         $collapsed = implode('->', $build_trace) . '->' . $first_duplicate;
 
-        parent::__construct("Detected middleware recursion: {$collapsed}", 0, $prev);
+        parent::__construct(sprintf('Detected middleware recursion: %s', $collapsed), 0, $prev);
     }
 
     /**

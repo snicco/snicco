@@ -7,12 +7,15 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 use Snicco\Bridge\Blade\BladeComponent;
 use Snicco\Bridge\Blade\Tests\fixtures\TestDependencies\Foo;
 
-class Dependency extends BladeComponent
+final class Dependency extends BladeComponent
 {
     public Foo $foo;
 
     public string $message;
 
+    /**
+     * @var array
+     */
     protected $except = ['foo'];
 
     public function __construct(Foo $foo, string $message)

@@ -252,6 +252,24 @@ final class InspectsRequestTest extends TestCase
     /**
      * @test
      */
+    public function accepts_one_of_with_wildcard_accepts_headers(): void
+    {
+        $request = $this->frontendRequest('/', [], 'POST')
+            ->withAddedHeader('Accept', '*/*');
+
+        $this->assertTrue($request->acceptsOneOf(['application/json', 'application/json+ld']));
+        $this->assertTrue($request->acceptsOneOf(['text/html', 'application/json+ld']));
+
+        $request = $this->frontendRequest('/', [], 'POST')
+            ->withAddedHeader('Accept', '*');
+
+        $this->assertTrue($request->acceptsOneOf(['application/json', 'application/json+ld']));
+        $this->assertTrue($request->acceptsOneOf(['text/html', 'application/json+ld']));
+    }
+
+    /**
+     * @test
+     */
     public function accepts_html(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')->withAddedHeader('Accept', 'text/html');

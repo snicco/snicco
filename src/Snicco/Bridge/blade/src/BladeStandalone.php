@@ -31,10 +31,7 @@ final class BladeStandalone
      */
     private array $view_directories;
 
-    /**
-     * @var Application|Container
-     */
-    private $illuminate_container;
+    private Container $illuminate_container;
 
     private BladeViewComposer $blade_view_composer;
 
@@ -81,21 +78,19 @@ final class BladeStandalone
     {
         $wp = $wp ?: new BetterWPAPI();
 
-        Blade::if('auth', fn () => $wp->isUserLoggedIn());
+        Blade::if('auth', fn (): bool => $wp->isUserLoggedIn());
 
-        Blade::if('guest', fn () => ! $wp->isUserLoggedIn());
+        Blade::if('guest', fn (): bool => ! $wp->isUserLoggedIn());
 
-        Blade::if('role', function (string $expression) use ($wp) {
+        Blade::if('role', function (string $expression) use ($wp): bool {
             if ('admin' === $expression) {
                 $expression = 'administrator';
             }
-            $user = $wp->currentUser();
-            if (! empty($user->roles) && is_array($user->roles)
-                && in_array($expression, $user->roles, true)) {
-                return true;
-            }
 
-            return false;
+            $user = $wp->currentUser();
+
+            return ! empty($user->roles) && is_array($user->roles)
+                && in_array($expression, $user->roles, true);
         });
     }
 
@@ -108,7 +103,7 @@ final class BladeStandalone
             $config['view.paths'] = $this->view_directories;
         } else {
             // Blade only needs some config element that works with array access.
-            $this->illuminate_container->singleton('config', function () {
+            $this->illuminate_container->singleton('config', function (): Fluent {
                 $config = new Fluent();
                 $config['view.compiled'] = $this->view_cache_directory;
                 $config['view.paths'] = $this->view_directories;
@@ -117,29 +112,24 @@ final class BladeStandalone
             });
         }
 
-        $this->illuminate_container->bindIf('files', function () {
-            return new Filesystem();
-        }, true);
+        $this->illuminate_container->bindIf('files', fn (): Filesystem => new Filesystem(), true);
 
-        $this->illuminate_container->bindIf('events', function () {
-            return new Dispatcher();
-        }, true);
+        $this->illuminate_container->bindIf('events', fn (): Dispatcher => new Dispatcher(), true);
         /**
          * @psalm-suppress MixedReturnStatement
          * @psalm-suppress MixedInferredReturnType
          */
-        $this->illuminate_container->bindIf(Factory::class, function (): Factory {
-            return $this->illuminate_container->make('view');
-        });
-        $this->illuminate_container->bindIf(Application::class, function (): DummyApplication {
-            return new DummyApplication();
-        });
+        $this->illuminate_container->bindIf(
+            Factory::class,
+            fn (): Factory => $this->illuminate_container->make('view')
+        );
+        $this->illuminate_container->bindIf(Application::class, fn (): DummyApplication => new DummyApplication());
     }
 
     private function bootIlluminateViewServiceProvider(): void
     {
         /**
-         * @psalm-suppress PossiblyInvalidArgument
+         * @psalm-suppress InvalidArgument
          */
         ((new ViewServiceProvider($this->illuminate_container)))
             ->register();
@@ -154,17 +144,17 @@ final class BladeStandalone
 
     private function disableUnsupportedDirectives(): void
     {
-        Blade::directive('service', function () {
+        Blade::directive('service', function (): void {
             throw new BadMethodCallException('The service directive is not supported. Dont use it. Its evil.');
         });
 
-        Blade::directive('csrf', function () {
+        Blade::directive('csrf', function (): void {
             throw new BadMethodCallException(
                 'The csrf directive is not supported as it requires the entire laravel framework.'
             );
         });
 
-        Blade::directive('method', function () {
+        Blade::directive('method', function (): void {
             throw new BadMethodCallException(
                 'The method directive is not supported because form-method spoofing is not supported in WordPress.'
             );
@@ -176,8 +166,12 @@ final class BladeStandalone
      */
     private function bindFrameworkDependencies(): void
     {
-        $this->illuminate_container->bindIf(BladeViewFactory::class, function (IlluminateContainer $container) {
-            return new BladeViewFactory($container->make('view'), $this->view_directories);
-        }, true);
+        $this->illuminate_container->bindIf(
+            BladeViewFactory::class,
+            fn (IlluminateContainer $container): BladeViewFactory => new BladeViewFactory($container->make(
+                'view'
+            ), $this->view_directories),
+            true
+        );
     }
 }

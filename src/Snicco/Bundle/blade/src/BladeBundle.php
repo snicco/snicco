@@ -18,6 +18,9 @@ use function is_dir;
 
 final class BladeBundle implements Bundle
 {
+    /**
+     * @var string
+     */
     public const ALIAS = 'sniccowp/blade-bundle';
 
     public function shouldRun(Environment $env): bool
@@ -36,7 +39,7 @@ final class BladeBundle implements Bundle
         }
 
         $container = $kernel->container();
-        $container->shared(BladeViewFactory::class, function () use ($kernel) {
+        $container->shared(BladeViewFactory::class, function () use ($kernel): BladeViewFactory {
             $composers = $kernel->container()
                 ->make(ViewComposerCollection::class);
 

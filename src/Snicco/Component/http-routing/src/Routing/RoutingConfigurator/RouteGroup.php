@@ -27,7 +27,7 @@ final class RouteGroup
     /**
      * @var string[]
      */
-    public array $middleware;
+    public array $middleware = [];
 
     /**
      * @param array{namespace?:string, prefix?:string|UrlPath, name?:string, middleware?: string|string[]} $attributes

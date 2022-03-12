@@ -129,13 +129,10 @@ final class Generator implements UrlGenerator
 
     private function isValidUrl(string $path): bool
     {
-        if (preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path)) {
-            if (false !== filter_var($path, FILTER_VALIDATE_URL)) {
-                return true;
-            }
-        }
-
-        return false;
+        return preg_match('#^(\#|//|https?://|(mailto|tel|sms):)#', $path) && false !== filter_var(
+            $path,
+            FILTER_VALIDATE_URL
+        );
     }
 
     /**
@@ -312,7 +309,7 @@ final class Generator implements UrlGenerator
      */
     private function toStringValues(array $extra): array
     {
-        return array_map(function ($value) {
+        return array_map(function ($value): string {
             if (! is_string($value) && ! is_int($value)) {
                 throw new InvalidArgumentException(
                     sprintf('Replacements must be string or integer. Got [%s].', gettype($value))

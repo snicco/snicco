@@ -21,7 +21,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_can_apply_to_all_methods(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('all', '/all', [MiddlewareController::class, 'all']);
         });
 
@@ -35,7 +35,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_can_apply_to_a_single_method(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('all', '/bar', [MiddlewareController::class, 'bar']);
         });
 
@@ -49,7 +49,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function controller_middleware_can_be_applied_to_all_but_some_methods(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('baz', '/baz', [MiddlewareController::class, 'baz']);
             $configurator->get('foo', '/foo', [MiddlewareController::class, 'foo']);
         });
@@ -65,7 +65,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
      */
     public function middleware_can_be_added_as_an_array(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('handle', '/handle', [ArrayMiddlewareController::class, 'handle']);
         });
         $response = $this->runNewPipeline($this->frontendRequest('/handle'));
@@ -73,7 +73,7 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
     }
 }
 
-class ArrayMiddlewareController extends Controller
+final class ArrayMiddlewareController extends Controller
 {
     public function __construct()
     {
@@ -86,7 +86,7 @@ class ArrayMiddlewareController extends Controller
     }
 }
 
-class MiddlewareController extends Controller
+final class MiddlewareController extends Controller
 {
     public function __construct()
     {

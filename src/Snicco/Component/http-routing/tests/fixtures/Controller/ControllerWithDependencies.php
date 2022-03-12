@@ -7,7 +7,7 @@ namespace Snicco\Component\HttpRouting\Tests\fixtures\Controller;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
-class ControllerWithDependencies
+final class ControllerWithDependencies
 {
     private Foo $foo;
 

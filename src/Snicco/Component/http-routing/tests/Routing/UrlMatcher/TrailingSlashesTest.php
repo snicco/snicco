@@ -18,7 +18,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function routes_can_be_defined_without_leading_slash(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo_route', 'foo', RoutingTestController::class);
         });
 
@@ -31,7 +31,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function routes_can_be_defined_with_leading_slash(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo_route', '/foo', RoutingTestController::class);
         });
 
@@ -44,7 +44,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function a_route_with_trailing_slash_does_not_match_a_path_without_trailing_slash(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo_route', '/foo/', RoutingTestController::class);
         });
 
@@ -60,7 +60,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function a_route_without_trailing_slash_does_not_match_a_path_with_trailing_slash(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo_route', '/foo', RoutingTestController::class);
         });
 
@@ -76,7 +76,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function test_required_route_segments_and_trailing_slashes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/route1/{param1}/{param2}', [RoutingTestController::class, 'twoParams']);
             $configurator->get('route2', '/route2/{param1}/{param2}/', [RoutingTestController::class, 'twoParams']);
         });
@@ -99,7 +99,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function test_optional_route_segments_and_trailing_slashes(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get(
                 'route1',
                 '/notrailing/{param1?}/{param2?}',
@@ -143,7 +143,7 @@ final class TrailingSlashesTest extends HttpRunnerTestCase
      */
     public function test_with_only_one_optional_segment(): void
     {
-        $this->webRouting(function (WebRoutingConfigurator $configurator) {
+        $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('route1', '/no_trailing/{param1?}', [RoutingTestController::class, 'dynamic']);
             $configurator->get('route2', '/trailing/{param1?}/', [RoutingTestController::class, 'dynamic']);
         });

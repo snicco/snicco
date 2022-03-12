@@ -25,6 +25,7 @@ final class ConfigFilesRollbackTest extends TestCase
         if (is_file($file = $this->fixturesDir() . '/config/other-config.php')) {
             unlink($file);
         }
+
         $this->bundle_test = new BundleTest($this->fixturesDir());
     }
 
@@ -33,6 +34,7 @@ final class ConfigFilesRollbackTest extends TestCase
         if (is_file($file = $this->fixturesDir() . '/config/other-config.php')) {
             unlink($file);
         }
+
         parent::tearDown();
     }
 

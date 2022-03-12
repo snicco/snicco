@@ -21,6 +21,7 @@ final class SessionId
         if (24 !== Binary::safeStrlen($selector) || 24 !== Binary::safeStrlen($verifier)) {
             [$selector, $verifier] = $this->newTokens();
         }
+
         $this->selector = $selector;
         $this->validator = $verifier;
     }

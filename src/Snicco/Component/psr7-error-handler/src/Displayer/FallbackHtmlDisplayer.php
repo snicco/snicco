@@ -21,7 +21,7 @@ final class FallbackHtmlDisplayer implements ExceptionDisplayer
 
         if (false === $content) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("Cant read fallback error template at location [{$file}].");
+            throw new RuntimeException(sprintf('Cant read fallback error template at location [%s].', $file));
             // @codeCoverageIgnoreEnd
         }
 

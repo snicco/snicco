@@ -20,7 +20,6 @@ use Throwable;
 
 use function array_keys;
 use function array_map;
-use function array_merge;
 use function array_values;
 use function count;
 use function implode;
@@ -75,8 +74,8 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function preparedQuery(string $sql, array $bindings = []): mysqli_stmt
     {
@@ -88,6 +87,7 @@ final class BetterWPDB
             } catch (mysqli_sql_exception $e) {
                 throw QueryException::fromMysqliE($sql, $bindings, $e);
             }
+
             $start = microtime(true);
 
             try {
@@ -121,6 +121,7 @@ final class BetterWPDB
             } catch (mysqli_sql_exception $e) {
                 throw QueryException::fromMysqliE($sql, [], $e);
             }
+
             $end = microtime(true);
             $this->log(new QueryInfo($start, $end, $sql, []));
 
@@ -136,10 +137,10 @@ final class BetterWPDB
      *
      * @param Closure(BetterWPDB):T $callback
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
-     * @return T
+     * @psalm-return  T
      */
     public function transactional(Closure $callback)
     {
@@ -159,6 +160,7 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('START TRANSACTION', [], $e);
                 }
+
                 /** @codeCoverageIgnoreEnd */
                 $end = microtime(true);
 
@@ -174,6 +176,7 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('COMMIT', [], $e);
                 }
+
                 /** @codeCoverageIgnoreEnd */
                 $end = microtime(true);
 
@@ -197,8 +200,8 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null>                               $changes     !!! IMPORTANT !!!
      *                                                                                                  Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function updateByPrimary(string $table, $primary_key, array $changes): int
     {
@@ -220,8 +223,8 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $changes    !!! IMPORTANT !!!
      *                                                                   Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function update(string $table, array $conditions, array $changes): int
     {
@@ -230,7 +233,7 @@ final class BetterWPDB
         $this->validateProvidedColumnNames(array_keys($changes));
 
         $table = $this->escIdentifier($table);
-        $sql = "update {$table} set ";
+        $sql = sprintf('update %s set ', $table);
 
         $updates = [];
         $bindings = [];
@@ -245,7 +248,7 @@ final class BetterWPDB
         $sql .= implode(', ', $updates);
         $sql .= ' where ' . implode(' and ', $wheres);
 
-        $stmt = $this->preparedQuery($sql, array_merge($bindings, $where_bindings));
+        $stmt = $this->preparedQuery($sql, [...$bindings, ...$where_bindings]);
 
         return $stmt->affected_rows;
     }
@@ -254,8 +257,8 @@ final class BetterWPDB
      * @param non-empty-string                               $table
      * @param non-empty-array<non-empty-string, scalar|null> $conditions
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return int The number of deleted records
      */
@@ -264,9 +267,9 @@ final class BetterWPDB
         $this->validateTableName($table);
 
         $table = $this->escIdentifier($table);
-        $sql = "delete from {$table} where ";
+        $sql = sprintf('delete from %s where ', $table);
 
-        list($wheres, $bindings) = $this->buildWhereArray($conditions);
+        [$wheres, $bindings] = $this->buildWhereArray($conditions);
 
         $sql .= implode(' and ', $wheres);
 
@@ -279,8 +282,8 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
@@ -298,8 +301,8 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return list<array<string, bool|float|int|string|null>>
      */
@@ -317,9 +320,9 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
+     * @throws InvalidArgumentException
      * @throws NoMatchingRowFound
      * @throws QueryException
-     * @throws InvalidArgumentException
      *
      * @return array<string, float|int|string|null> Booleans are returned as (int) 1 or (int) 0
      */
@@ -332,6 +335,7 @@ final class BetterWPDB
         if (! is_array($res)) {
             throw new NoMatchingRowFound('No matching row found', $sql, $bindings);
         }
+
         /**
          * @var array<string, float|int|string|null> $res
          */
@@ -342,9 +346,9 @@ final class BetterWPDB
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
+     * @throws InvalidArgumentException
      * @throws NoMatchingRowFound
      * @throws QueryException
-     * @throws InvalidArgumentException
      *
      * @return mixed
      */
@@ -359,8 +363,8 @@ final class BetterWPDB
      * @param non-empty-string                              $table
      * @param non-empty-array<non-empty-string,scalar|null> $conditions
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function exists(string $table, array $conditions): bool
     {
@@ -368,7 +372,7 @@ final class BetterWPDB
         $this->validateProvidedColumnNames(array_keys($conditions));
 
         $table = $this->escIdentifier($table);
-        $sql = "select count(1) from {$table} where ";
+        $sql = sprintf('select count(1) from %s where ', $table);
 
         $bindings = [];
         $wheres = [];
@@ -376,9 +380,9 @@ final class BetterWPDB
         foreach ($conditions as $col_name => $value) {
             $col_name = $this->escIdentifier($col_name);
             if (null === $value) {
-                $wheres[] = "{$col_name} is null";
+                $wheres[] = sprintf('%s is null', $col_name);
             } else {
-                $wheres[] = "{$col_name} = ?";
+                $wheres[] = sprintf('%s = ?', $col_name);
                 $bindings[] = $value;
             }
         }
@@ -400,8 +404,8 @@ final class BetterWPDB
      * @param non-empty-string       $sql
      * @param array<int,scalar|null> $bindings
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return Generator<array<string,bool|float|int|string|null>>
      */
@@ -419,8 +423,8 @@ final class BetterWPDB
      * @param non-empty-array<non-empty-string, scalar|null> $data  !!! IMPORTANT !!!
      *                                                              Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function insert(string $table, array $data): mysqli_stmt
     {
@@ -442,8 +446,8 @@ final class BetterWPDB
      * @param iterable<array<non-empty-string,scalar|null>> $records !!! IMPORTANT !!!
      *                                                               Keys of $data MUST never be user provided
      *
-     * @throws QueryException
      * @throws InvalidArgumentException
+     * @throws QueryException
      *
      * @return int The number of inserted records
      */
@@ -461,15 +465,12 @@ final class BetterWPDB
                 if (empty($record)) {
                     throw new InvalidArgumentException('Each record has to be a non-empty-array.');
                 }
+
                 // only create the insert sql once.
-                $sql = null === $sql
-                    ? $this->buildInsertSql($table, array_keys($record))
-                    : $sql;
+                $sql ??= $this->buildInsertSql($table, array_keys($record));
 
                 // only create one prepared statement
-                $stmt = null === $stmt
-                    ? $this->mysqli->prepare($sql)
-                    : $stmt;
+                $stmt ??= $this->mysqli->prepare($sql);
 
                 $bindings = $this->convertBindings($record);
 
@@ -503,6 +504,7 @@ final class BetterWPDB
                         )
                     );
                 }
+
                 $stmt->bind_param($record_types, ...$bindings);
 
                 $start = microtime(true);
@@ -512,7 +514,7 @@ final class BetterWPDB
                 /** @var array<scalar|null> $bindings */
                 $this->log(new QueryInfo($start, $end, $sql, $bindings));
 
-                $inserted = $inserted + $stmt->affected_rows;
+                $inserted += $stmt->affected_rows;
             }
 
             return $inserted;
@@ -524,7 +526,7 @@ final class BetterWPDB
      *
      * @param Closure():T $run_query
      *
-     * @return T
+     * @psalm-return  T
      */
     private function runWithErrorHandling(Closure $run_query)
     {
@@ -533,7 +535,7 @@ final class BetterWPDB
         }
 
         if (! isset($this->original_sql_mode)) {
-            $this->queryOriginalSqlMode();
+            $this->original_sql_mode = $this->queryOriginalSqlMode();
         }
 
         // Turn on error reporting
@@ -554,12 +556,12 @@ final class BetterWPDB
             // Turn back to previous error reporting so that shitty wpdb doesn't break.
             $this->mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 0);
             mysqli_report(MYSQLI_REPORT_OFF);
-            $this->mysqli->query("SET SESSION sql_mode='{$this->original_sql_mode}'");
+            $this->mysqli->query(sprintf("SET SESSION sql_mode='%s'", $this->original_sql_mode));
             $this->is_handling_errors = false;
         }
     }
 
-    private function queryOriginalSqlMode(): void
+    private function queryOriginalSqlMode(): string
     {
         $stmt = $this->mysqli->query('SELECT @@SESSION.sql_mode');
         if (! $stmt instanceof mysqli_result) {
@@ -567,29 +569,33 @@ final class BetterWPDB
             throw new RuntimeException('Could not determine current mysqli mode.');
             // @codeCoverageIgnoreEnd
         }
+
         $res = $stmt->fetch_row();
         if (! is_array($res) || ! isset($res[0]) || ! is_string($res[0])) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not determine current mysqli mode.');
             // @codeCoverageIgnoreEnd
         }
-        $this->original_sql_mode = $res[0];
+
+        return$res[0];
     }
 
     /**
      * @param non-empty-string   $table
      * @param non-empty-string[] $column_names
      *
-     * @return non-empty-string
+     * @psalm-return non-empty-string
+     * @psalm-suppress MoreSpecificReturnType
      */
     private function buildInsertSql(string $table, array $column_names): string
     {
-        $column_names = array_map(fn ($column_name) => $this->escIdentifier($column_name), $column_names);
+        $column_names = array_map(fn ($column_name): string => $this->escIdentifier($column_name), $column_names);
         $columns = implode(',', $column_names);
         $table = $this->escIdentifier($table);
         $placeholders = str_repeat('?,', count($column_names) - 1) . '?';
 
-        return "insert into {$table} ({$columns}) values ({$placeholders})";
+        /** @psalm-suppress LessSpecificReturnStatement */
+        return sprintf('insert into %s (%s) values (%s)', $table, $columns, $placeholders);
     }
 
     /**
@@ -652,9 +658,11 @@ final class BetterWPDB
             if (! is_scalar($binding) && null !== $binding) {
                 throw new InvalidArgumentException('All bindings have to be of type scalar or null.');
             }
+
             if (is_bool($binding)) {
                 $binding = $binding ? 1 : 0;
             }
+
             $b[] = $binding;
         }
 
@@ -673,6 +681,7 @@ final class BetterWPDB
         if (empty($data)) {
             throw new InvalidArgumentException('Column names can not be an empty array.');
         }
+
         foreach ($data as $name) {
             if (! is_string($name) || '' === $name) {
                 throw new InvalidArgumentException('All column names must be a non-empty-strings.');
@@ -700,9 +709,9 @@ final class BetterWPDB
 
             $col_name = $this->escIdentifier($col_name);
             if (null === $value) {
-                $wheres[] = "{$col_name} is null";
+                $wheres[] = sprintf('%s is null', $col_name);
             } else {
-                $wheres[] = "{$col_name} = ?";
+                $wheres[] = sprintf('%s = ?', $col_name);
                 $bindings[] = $value;
             }
         }

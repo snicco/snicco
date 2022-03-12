@@ -55,7 +55,7 @@ use const PREG_BAD_UTF8_OFFSET_ERROR;
 use const PREG_INTERNAL_ERROR;
 use const PREG_RECURSION_LIMIT_ERROR;
 
-class Str
+final class Str
 {
     /**
      * @var array<string,string>
@@ -84,9 +84,15 @@ class Str
     public static function contains(string $subject, $needles): bool
     {
         foreach ((array) $needles as $needle) {
-            if ('' !== $needle && false !== mb_strpos($subject, $needle)) {
-                return true;
+            if ('' === $needle) {
+                continue;
             }
+
+            if (false === mb_strpos($subject, $needle)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
@@ -132,7 +138,7 @@ class Str
 
         $parts = explode(' ', str_replace(['-', '_'], ' ', $value));
 
-        $parts = array_map(fn ($string) => self::ucfirst($string), $parts);
+        $parts = array_map(fn ($string): string => self::ucfirst($string), $parts);
 
         return self::$studly_cache[$key] = implode('', $parts);
     }
@@ -191,7 +197,7 @@ class Str
         $res = substr($subject, $position + strlen($search));
         if (false === $res) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException("substr returned false for subject [{$subject}].");
+            throw new RuntimeException(sprintf('substr returned false for subject [%s].', $subject));
             // @codeCoverageIgnoreEnd
         }
 
@@ -215,7 +221,11 @@ class Str
      */
     public static function betweenLast(string $subject, string $from, string $to): string
     {
-        if ('' === $from || '' === $to) {
+        if ('' === $from) {
+            return $subject;
+        }
+
+        if ('' === $to) {
             return $subject;
         }
 
@@ -252,7 +262,11 @@ class Str
      */
     public static function betweenFirst(string $subject, string $from, string $to): string
     {
-        if ('' === $from || '' === $to) {
+        if ('' === $from) {
+            return $subject;
+        }
+
+        if ('' === $to) {
             return $subject;
         }
 
@@ -294,11 +308,7 @@ class Str
         // pattern such as "library/*", making any string check convenient.
         $pattern = str_replace('\*', '.*', $pattern);
 
-        if (1 === preg_match('#^' . $pattern . '\z#u', $subject)) {
-            return true;
-        }
-
-        return false;
+        return 1 === preg_match('#^' . $pattern . '\z#u', $subject);
     }
 
     public static function replaceFirst(string $search, string $replace, string $subject): string
@@ -345,7 +355,7 @@ class Str
 
                     break;
                 case PREG_BAD_UTF8_OFFSET_ERROR:
-                    $message = 'Offset didn\'t correspond to the begin of a valid UTF-8 code point';
+                    $message = "Offset didn't correspond to the begin of a valid UTF-8 code point";
 
                     break;
                 default:

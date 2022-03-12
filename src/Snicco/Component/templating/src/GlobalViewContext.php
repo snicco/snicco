@@ -20,7 +20,9 @@ final class GlobalViewContext
     private array $context = [];
 
     /**
-     * @param Closure():mixed|mixed $context
+     * @param mixed|Closure $context
+     *
+     * @psalm-param mixed|Closure():mixed $context
      */
     public function add(string $name, $context): void
     {
@@ -40,18 +42,20 @@ final class GlobalViewContext
     {
         /** @psalm-suppress MissingClosureParamType */
         /** @psalm-suppress MissingClosureReturnType */
-        return array_map(function ($context) {
-            return ($context instanceof Closure)
-                ? $context()
-                : $context;
-        }, $this->context);
+        return array_map(fn ($context) => ($context instanceof Closure) ? $context() : $context, $this->context);
     }
 
+    /**
+     * @param mixed[] $context
+     */
     private function getArrayAccess(array $context): ArrayAccess
     {
         return new class($context) implements ArrayAccess {
             private array $context;
 
+            /**
+             * @param mixed[] $context
+             */
             public function __construct(array $context)
             {
                 $this->context = $context;

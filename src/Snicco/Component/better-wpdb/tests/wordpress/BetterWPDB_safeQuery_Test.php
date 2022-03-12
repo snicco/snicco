@@ -77,6 +77,6 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
 
         $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
-        $this->assertTrue($logger->queries[0]->end > $logger->queries[0]->start);
+        $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
 }

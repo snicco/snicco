@@ -13,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
+use Webmozart\Assert\Assert;
+
 use function sprintf;
 
 final class LazyHttpErrorHandler implements HttpErrorHandler
@@ -31,6 +33,7 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
                 sprintf('The psr container needs a service for id [%s].', HttpErrorHandler::class)
             );
         }
+
         $this->psr_container = $c;
     }
 
@@ -41,8 +44,9 @@ final class LazyHttpErrorHandler implements HttpErrorHandler
     public function handle(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         if (! isset($this->error_handler)) {
-            /** @var HttpErrorHandler error_handler */
-            $this->error_handler = $this->psr_container->get(HttpErrorHandler::class);
+            $handler = $this->psr_container->get(HttpErrorHandler::class);
+            Assert::isInstanceOf($handler, HttpErrorHandler::class);
+            $this->error_handler = $handler;
         }
 
         return $this->error_handler->handle($e, $request);

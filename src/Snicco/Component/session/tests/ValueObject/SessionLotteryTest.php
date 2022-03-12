@@ -44,6 +44,7 @@ final class SessionLotteryTest extends TestCase
                 $this->fail('0% lottery won');
             }
         }
+
         $this->assertTrue(true);
     }
 
@@ -58,6 +59,7 @@ final class SessionLotteryTest extends TestCase
                 $this->fail('100% lottery failed');
             }
         }
+
         $this->assertTrue(true);
     }
 }

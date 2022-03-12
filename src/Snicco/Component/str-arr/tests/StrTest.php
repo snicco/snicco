@@ -95,9 +95,9 @@ final class StrTest extends TestCase
      */
     public function test_random(): void
     {
-        $this->assertEquals(32, strlen(Str::random()));
+        $this->assertSame(32, strlen(Str::random()));
         $randomInteger = random_int(1, 100);
-        $this->assertEquals($randomInteger * 2, strlen(Str::random($randomInteger)));
+        $this->assertSame($randomInteger * 2, strlen(Str::random($randomInteger)));
         $this->assertIsString(Str::random());
     }
 

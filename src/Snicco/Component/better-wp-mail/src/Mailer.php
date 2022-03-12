@@ -90,43 +90,52 @@ final class Mailer
                     sprintf('The mail template renderer does not support text template [%s]', $text_template)
                 );
             }
+
             $text = $this->mail_renderer->render($text_template, $mail->context());
             $mail = $mail->withTextBody($text);
         }
 
-        if (! count($mail->from())) {
+        if (0 === count($mail->from())) {
             $from = $this->default_config->getFrom();
             $mail = $mail->withFrom($from);
         }
 
-        if (! count($mail->replyTo())) {
+        if (0 === count($mail->replyTo())) {
             $reply_to = $this->default_config->getReplyTo();
             $mail = $mail->withReplyTo($reply_to);
         }
 
-        if (null === $mail->textBody() && null === $mail->htmlBody() && ! count($mail->attachments())) {
+        if (null === $mail->textBody() && null === $mail->htmlBody() && [] === $mail->attachments()) {
             throw new LogicException('An email must have a text or an HTML body or attachments.');
         }
 
-        if (! count($mail->cc()) && ! count($mail->to()) && ! count($mail->bcc())) {
-            throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
+        if (count($mail->cc()) > 0) {
+            return $mail;
         }
 
-        return $mail;
+        if (count($mail->to()) > 0) {
+            return $mail;
+        }
+
+        if (count($mail->bcc()) > 0) {
+            return $mail;
+        }
+
+        throw new LogicException('An email must have a "To", "Cc", or "Bcc" header.');
     }
 
     // We make a clone of the objects so that no hooked listener can modify them and event other
     // listeners that might fire later.
     private function determineSender(Email $mail): Mailbox
     {
-        if ($sender = $mail->sender()) {
+        if (($sender = $mail->sender()) !== null) {
             return $sender;
         }
 
         $from = $mail->from()
             ->toArray();
 
-        if (count($from)) {
+        if ([] !== $from) {
             return $from[0];
         }
 

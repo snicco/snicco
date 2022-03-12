@@ -8,7 +8,7 @@ final class Baz
 {
     public string $value;
 
-    public function __construct($value = 'baz')
+    public function __construct(string $value = 'baz')
     {
         $this->value = $value;
     }

@@ -42,7 +42,7 @@ abstract class Controller
     {
         $middleware = array_filter(
             $this->middleware,
-            fn (ControllerMiddleware $m) => $m->appliesTo($controller_method)
+            fn (ControllerMiddleware $m): bool => $m->appliesTo($controller_method)
         );
 
         $middleware_for_method = [];

@@ -573,7 +573,7 @@ final class InteractsWithInputTest extends TestCase
             'email' => 'foo',
         ]);
         $this->assertFalse($request->missing(['name', 'email']));
-        $this->assertTrue($request->missing('surname', 'password'));
+        $this->assertTrue($request->missing('surname'));
         $this->assertTrue($request->missing(['surname', 'password']));
 
         $request = $this->request->withQueryParams([

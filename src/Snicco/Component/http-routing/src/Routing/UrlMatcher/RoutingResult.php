@@ -17,7 +17,7 @@ final class RoutingResult
     /**
      * @var array<string,string>
      */
-    private array $captured_segments;
+    private array $captured_segments = [];
 
     /**
      * @var array<string,int|string>
@@ -79,7 +79,7 @@ final class RoutingResult
      */
     public function withCapturedSegments(array $segments): RoutingResult
     {
-        return new self($this->route(), $segments);
+        return new self($this->route, $segments);
     }
 
     /**

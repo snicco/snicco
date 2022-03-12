@@ -22,7 +22,7 @@ final class CouldNotDestroySessions extends RuntimeException
     ): CouldNotDestroySessions {
         return new self(
             sprintf('Cant destroy session ids [%s] with the [%s] driver.', implode(',', $ids), $driver_identifier),
-            (int) ($previous ? $previous->getCode() : 0),
+            (int) (null !== $previous ? $previous->getCode() : 0),
             $previous
         );
     }

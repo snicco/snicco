@@ -21,9 +21,9 @@ final class PHPSerializer implements Serializer
 
     public function deserialize(string $data): array
     {
-        set_error_handler(function (int $code, string $message) {
+        set_error_handler(function (int $code, string $message): void {
             throw new RuntimeException(
-                'Could not unserialize session content in ' . __CLASS__ . "\nMessage: " . $message,
+                'Could not unserialize session content in ' . self::class . "\nMessage: " . $message,
                 $code
             );
         });

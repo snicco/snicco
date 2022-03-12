@@ -72,7 +72,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      */
     final public function instance(string $id, object $service): void
     {
-        $this->shared($id, fn () => $service);
+        $this->shared($id, fn (): object => $service);
     }
 
     /**
@@ -80,13 +80,13 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $offset
      *
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      *
      * @return T
      */
     #[ReturnTypeWillChange]
-    final public function offsetGet($offset)
+    final public function offsetGet($offset): object
     {
         Assert::stringNotEmpty($offset);
 
@@ -112,6 +112,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
 
             return;
         }
+
         $this->instance($offset, $value);
     }
 
@@ -120,12 +121,12 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @param class-string<T> $id
      *
-     * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      *
-     * @return T
+     * @psalm-return T
      */
-    final public function make(string $id)
+    final public function make(string $id): object
     {
         /**
          * @var mixed $res

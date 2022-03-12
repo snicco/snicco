@@ -15,7 +15,6 @@ use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 use Snicco\Component\BetterWPMail\WPMailAPI;
 
 use function count;
-use function func_get_args;
 use function get_class;
 use function is_array;
 use function is_string;
@@ -29,7 +28,7 @@ final class FakeTransport implements Transport
     /**
      * @var array<class-string, array<array{0: Email, 1: Envelope}>>
      */
-    private $sent_mails = [];
+    private array $sent_mails = [];
 
     public function __construct(WPMailAPI $wp = null)
     {
@@ -43,17 +42,26 @@ final class FakeTransport implements Transport
 
     public function interceptWordPressEmails(): void
     {
-        $this->wp->addFilter('pre_wp_mail', /** @psalm-suppress MixedArgumentTypeCoercion */ function (): bool {
-            $args = func_get_args();
-            if (! isset($args[1]) || ! is_array($args[1])) {
-                // @codeCoverageIgnoreStart
-                throw new RuntimeException('pre_wp_mail did not receive correct arguments');
-                // @codeCoverageIgnoreEnd
-            }
-            $this->recordWPMail($args[1]);
+        $this->wp->addFilter(
+            'pre_wp_mail',
+            /**
+             * @param mixed[] $args
+             */
+            function (...$args): bool {
+                if (! isset($args[1]) || ! is_array($args[1])) {
+                    // @codeCoverageIgnoreStart
+                    throw new RuntimeException('pre_wp_mail did not receive correct arguments');
+                    // @codeCoverageIgnoreEnd
+                }
 
-            return false;
-        }, PHP_INT_MAX, 1000);
+                /** @psalm-suppress MixedArgumentTypeCoercion */
+                $this->recordWPMail($args[1]);
+
+                return false;
+            },
+            PHP_INT_MAX,
+            1000
+        );
     }
 
     public function reset(): void
@@ -63,7 +71,7 @@ final class FakeTransport implements Transport
 
     public function assertNotSent(string $email_class): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($email_class, fn () => true));
+        $times = count($this->sentEmailsThatMatchCondition($email_class, fn (): bool => true));
 
         PHPUnit::assertSame(
             0,
@@ -74,7 +82,7 @@ final class FakeTransport implements Transport
 
     public function assertSentTimes(string $mailable_class, int $expected): void
     {
-        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn () => true));
+        $times = count($this->sentEmailsThatMatchCondition($mailable_class, fn (): bool => true));
 
         PHPUnit::assertSame(
             $expected,
@@ -100,10 +108,8 @@ final class FakeTransport implements Transport
 
         $this->assertSent(
             $email_class,
-            function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()
-                    ->has($expected_recipient);
-            }
+            fn (Email $email, Envelope $envelope): bool => $envelope->recipients()
+                ->has($expected_recipient)
         );
     }
 
@@ -120,7 +126,7 @@ final class FakeTransport implements Transport
             sprintf('No email of type [%s] was sent.', $email_class),
         );
 
-        if ($closure) {
+        if (null !== $closure) {
             $matching = $this->sentEmailsThatMatchCondition($email_class, $closure);
             $count = count($this->sent_mails[$email_class] ?? []);
 
@@ -150,10 +156,8 @@ final class FakeTransport implements Transport
         $expected_recipient = Mailbox::create($recipient);
         $matching = $this->sentEmailsThatMatchCondition(
             $email_class,
-            function (Email $email, Envelope $envelope) use ($expected_recipient): bool {
-                return $envelope->recipients()
-                    ->has($expected_recipient);
-            }
+            fn (Email $email, Envelope $envelope): bool => $envelope->recipients()
+                ->has($expected_recipient)
         );
 
         $count = count($matching);
@@ -197,29 +201,33 @@ final class FakeTransport implements Transport
         $site_url = $this->wp->siteUrl();
         $site_name = parse_url($site_url, PHP_URL_HOST);
         if (! is_string($site_name)) {
-            throw new RuntimeException("Cant parse site url [{$site_url}].");
+            throw new RuntimeException(sprintf('Cant parse site url [%s].', $site_url));
         }
+
         if ('www.' === substr($site_name, 0, 4)) {
             $site_name = substr($site_name, 4);
         }
+
         $from = 'wordpress@' . ((string) $site_name);
 
         foreach (($headers) as $header) {
             if (false !== strpos($header, 'Cc:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $carbon_copies[] = Mailbox::create($matches['value']);
             }
+
             if (false !== strpos($header, 'Bcc:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $blind_carbon_copies[] = Mailbox::create($matches['value']);
             }
 
             if (false !== strpos($header, 'From:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $from = $matches['value'];
             }
+
             if (false !== strpos($header, 'Reply-To:')) {
-                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                preg_match('#\w+:\s(?<value>.+)#', $header, $matches);
                 $reply_to[] = Mailbox::create($matches['value']);
             }
         }
@@ -236,15 +244,17 @@ final class FakeTransport implements Transport
 
         $recipients = new MailboxList($to);
 
-        if (count($carbon_copies)) {
+        if ([] !== $carbon_copies) {
             $wp_mail = $wp_mail->withCc($carbon_copies);
             $recipients = $recipients->merge($carbon_copies);
         }
-        if (count($blind_carbon_copies)) {
+
+        if ([] !== $blind_carbon_copies) {
             $wp_mail = $wp_mail->withBcc($blind_carbon_copies);
             $recipients = $recipients->merge($blind_carbon_copies);
         }
-        if (count($reply_to)) {
+
+        if ([] !== $reply_to) {
             $wp_mail = $wp_mail->withReplyTo($reply_to);
         }
 

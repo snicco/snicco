@@ -43,9 +43,10 @@ final class MiddlewareFactoryTest extends TestCase
         $foo->value = 'FOO_CHANGED';
         $bar = new Bar();
         $bar->value = 'BAR_CHANGED';
-        $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies($foo, $bar);
-        };
+        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+            $foo,
+            $bar
+        );
 
         $m = $this->factory->create(MiddlewareWithDependencies::class);
         $this->assertInstanceOf(MiddlewareWithDependencies::class, $m);
@@ -59,9 +60,7 @@ final class MiddlewareFactoryTest extends TestCase
     public function if_middleware_without_constructor_args_is_defined_in_the_container_its_resolved(): void
     {
         $foo_m = new FooMiddleware();
-        $this->pimple[FooMiddleware::class] = function () use ($foo_m): FooMiddleware {
-            return $foo_m;
-        };
+        $this->pimple[FooMiddleware::class] = fn (): FooMiddleware => $foo_m;
         $this->assertSame($foo_m, $this->factory->create(FooMiddleware::class));
     }
 
@@ -75,9 +74,10 @@ final class MiddlewareFactoryTest extends TestCase
         $bar = new Bar();
         $bar->value = 'BAR_CHANGED';
 
-        $this->pimple[MiddlewareWithDependencies::class] = function () use ($foo, $bar): MiddlewareWithDependencies {
-            return new MiddlewareWithDependencies($foo, $bar);
-        };
+        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+            $foo,
+            $bar
+        );
 
         $m = $this->factory->create(MiddlewareWithDependencies::class, [
             'foo' => 'bar',
@@ -108,9 +108,11 @@ final class MiddlewareFactoryTest extends TestCase
     public function a_middleware_that_needs_both_constructor_args_and_runtime_args_can_be_returned_as_closure_from_the_container(
         ): void {
         $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(
-            function (string $bar, string $baz) {
-                return new MiddlewareWithContextualAndRuntimeArgs(new Foo(), $bar, $baz);
-            }
+            fn (string $bar, string $baz): \Snicco\Component\HttpRouting\Tests\Middleware\MiddlewareWithContextualAndRuntimeArgs => new MiddlewareWithContextualAndRuntimeArgs(
+                new Foo(),
+                $bar,
+                $baz
+            )
         );
 
         $middleware = $this->factory->create(
@@ -128,11 +130,7 @@ final class MiddlewareFactoryTest extends TestCase
      */
     public function test_exception_if_container_closure_doesnt_return_instance_of_middleware(): void
     {
-        $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(
-            function () {
-                return new Foo();
-            }
-        );
+        $this->pimple[MiddlewareWithContextualAndRuntimeArgs::class] = $this->pimple->protect(fn (): Foo => new Foo());
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -147,13 +145,13 @@ final class MiddlewareFactoryTest extends TestCase
     }
 }
 
-class MiddlewareWithContextualAndRuntimeArgs extends Middleware
+final class MiddlewareWithContextualAndRuntimeArgs extends Middleware
 {
     public string $bar;
 
     public string $baz;
 
-    private Foo $foo;
+    public Foo $foo;
 
     public function __construct(Foo $foo, string $bar, string $baz)
     {
@@ -162,7 +160,7 @@ class MiddlewareWithContextualAndRuntimeArgs extends Middleware
         $this->baz = $baz;
     }
 
-    public function handle(Request $request, NextMiddleware $next): ResponseInterface
+    protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         return $next($request);
     }

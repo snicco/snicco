@@ -48,7 +48,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         $this->commit();
     }
 
-    public function getItem($key): CacheItemInterface
+    public function getItem($key): WPCacheItem
     {
         $this->validateKey($key);
 
@@ -60,6 +60,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         if ([] === $keys) {
             return [];
         }
+
         foreach ($keys as $key) {
             $this->validateKey($key);
         }
@@ -161,6 +162,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
                 $saved = false;
             }
         }
+
         $this->deferred_items = [];
 
         return $saved;
@@ -177,10 +179,12 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         if (! is_string($key)) {
             throw new Psr6InvalidArgumentException(sprintf('Cache key must be string, "%s" given', gettype($key)));
         }
+
         if ('' === $key) {
             throw new Psr6InvalidArgumentException('Cache key cannot be an empty string');
         }
-        if (preg_match('|[\{\}\(\)/\\\@\:]|', $key)) {
+
+        if (preg_match('#[\{\}\(\)/\\\@\:]#', $key)) {
             throw new Psr6InvalidArgumentException(
                 sprintf(
                     'Invalid key: "%s". The key contains one or more characters reserved for future extension: {}()/\@:',
@@ -198,12 +202,10 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         unset($this->deferred_items[$key]);
 
         $deleted = $this->wp_object_cache->cacheDelete($key, $this->wp_cache_group);
-        if (false === $deleted) {
-            // Deleting a value that doesn't exist should return true in the psr-interface.
-            // The wp object cache will return false for deleting missing keys.
-            if (! $this->internalHas($key)) {
-                $deleted = true;
-            }
+        // Deleting a value that doesn't exist should return true in the psr-interface.
+        // The wp object cache will return false for deleting missing keys.
+        if (! $deleted && ! $this->internalHas($key)) {
+            $deleted = true;
         }
 
         return $deleted;
@@ -238,7 +240,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
      */
     private function internalGet(string $key): WPCacheItem
     {
-        if ($item = $this->internalGetDeferred($key)) {
+        if (($item = $this->internalGetDeferred($key)) !== null) {
             return $item;
         }
 
@@ -285,6 +287,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         if (! isset($this->deferred_items[$key])) {
             return null;
         }
+
         $deferred = $this->deferred_items[$key];
 
         // Deferred items values must not be changed once in the queue.
@@ -294,6 +297,7 @@ final class WPObjectCachePsr6 implements CacheItemPoolInterface
         if (null === $expiration) {
             return $item;
         }
+
         if ($expiration <= time()) {
             unset($this->deferred_items[$key]);
 

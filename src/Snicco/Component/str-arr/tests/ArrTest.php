@@ -201,9 +201,7 @@ final class ArrTest extends TestCase
             ],
         ];
         $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', 'dayle'));
-        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', function () {
-            return 'dayle';
-        }));
+        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', fn (): string => 'dayle'));
 
         // test keys with dots have priority
         $array = [
@@ -336,26 +334,18 @@ final class ArrTest extends TestCase
         $this->assertSame('bar', Arr::first([], null, 'bar'));
 
         // Callback is null and array is not empty
-        $this->assertEquals(100, Arr::first($array));
+        $this->assertSame(100, Arr::first($array));
 
         // Callback is not null and array is not empty
-        $value = Arr::first($array, function (int $value) {
-            return $value >= 150;
-        });
-        $this->assertEquals(200, $value);
+        $value = Arr::first($array, fn (int $value): bool => $value >= 150);
+        $this->assertSame(200, $value);
 
         // Callback is not null, array is not empty but no satisfied item
-        $value2 = Arr::first($array, function (int $value) {
-            return $value > 300;
-        });
+        $value2 = Arr::first($array, fn (int $value): bool => $value > 300);
 
-        $value3 = Arr::first($array, function (int $value) {
-            return $value > 300;
-        }, 500);
+        $value3 = Arr::first($array, fn (int $value): bool => $value > 300, 500);
 
-        $value4 = Arr::first($array, function (int $value) {
-            return $value > 300;
-        }, 600);
+        $value4 = Arr::first($array, fn (int $value): bool => $value > 300, 600);
 
         $this->assertNull($value2);
         $this->assertSame(500, $value3);
@@ -1100,13 +1090,11 @@ final class ArrTest extends TestCase
         $this->assertSame('Taylor', Arr::dataGet($array, '0.users.0.name'));
         $this->assertNull(Arr::dataGet($array, '0.users.3'));
         $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', 'Not found'));
-        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', function () {
-            return 'Not found';
-        }));
+        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', fn (): string => 'Not found'));
         $this->assertSame('Taylor', Arr::dataGet($dottedArray, ['users', 'first.name']));
         $this->assertNull(Arr::dataGet($dottedArray, ['users', 'middle.name']));
         $this->assertSame('Not found', Arr::dataGet($dottedArray, ['users', 'last.name'], 'Not found'));
-        $this->assertEquals(56, Arr::dataGet($arrayAccess, 'price'));
+        $this->assertSame(56, Arr::dataGet($arrayAccess, 'price'));
         $this->assertSame('John', Arr::dataGet($arrayAccess, 'user.name'));
         $this->assertSame('void', Arr::dataGet($arrayAccess, 'foo', 'void'));
         $this->assertSame('void', Arr::dataGet($arrayAccess, 'user.foo', 'void'));
@@ -1224,10 +1212,13 @@ final class ArrTest extends TestCase
     }
 }
 
-class SupportTestArrayAccess implements ArrayAccess
+final class SupportTestArrayAccess implements ArrayAccess
 {
     private array $attributes;
 
+    /**
+     * @param mixed[] $attributes
+     */
     public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
@@ -1235,11 +1226,9 @@ class SupportTestArrayAccess implements ArrayAccess
 
     /**
      * @param int|string $offset
-     *
-     * @return bool
      */
     #[ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->attributes);
     }
@@ -1260,7 +1249,7 @@ class SupportTestArrayAccess implements ArrayAccess
      * @param mixed      $value
      */
     #[ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->attributes[$offset] = $value;
     }
@@ -1269,7 +1258,7 @@ class SupportTestArrayAccess implements ArrayAccess
      * @param int|string $offset
      */
     #[ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->attributes[$offset]);
     }

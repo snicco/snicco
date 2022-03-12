@@ -28,7 +28,12 @@ trait AuthenticateWithWordPress
 
     final protected function assertIsGuest(): void
     {
-        PHPUnit::assertSame(0, $actual = wp_get_current_user()->ID, "The current user [{$actual}] is not a guest.");
+        PHPUnit::assertSame(
+            0,
+            $actual = wp_get_current_user()
+                ->ID,
+            sprintf('The current user [%s] is not a guest.', $actual)
+        );
     }
 
     /**
@@ -45,7 +50,7 @@ trait AuthenticateWithWordPress
         PHPUnit::assertSame(
             $expected_id,
             $actual,
-            "The current user [{$actual}] is not the expected one [{$expected_id}].",
+            sprintf('The current user [%s] is not the expected one [%s].', $actual, $expected_id),
         );
     }
 }

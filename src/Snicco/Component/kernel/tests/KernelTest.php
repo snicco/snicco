@@ -158,7 +158,7 @@ final class KernelTest extends TestCase
 
         $dir = $this->base_dir . '/base_dir_without_app_config/config';
 
-        $this->expectExceptionMessage("The [app.php] config file was not found in the config dir [{$dir}].");
+        $this->expectExceptionMessage(sprintf('The [app.php] config file was not found in the config dir [%s].', $dir));
 
         $app->boot();
     }
@@ -235,7 +235,7 @@ final class KernelTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
 
-        $kernel->afterRegister(function (Kernel $kernel) {
+        $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(stdClass::class, new stdClass());
         });
@@ -258,7 +258,7 @@ final class KernelTest extends TestCase
             Directories::fromDefaults($this->base_dir)
         );
 
-        $kernel->afterConfigurationLoaded(function (WritableConfig $config, Kernel $kernel) {
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config, Kernel $kernel): void {
             $config->set('foo', $kernel->env()->asString());
         });
 
@@ -283,7 +283,7 @@ final class KernelTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('register callbacks can not be added after the kernel was booted.');
 
-        $kernel->afterRegister(function () {
+        $kernel->afterRegister(function (): void {
         });
     }
 
@@ -303,7 +303,7 @@ final class KernelTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('configuration callbacks can not be added after the kernel was booted.');
 
-        $kernel->afterConfigurationLoaded(function () {
+        $kernel->afterConfigurationLoaded(function (): void {
         });
     }
 

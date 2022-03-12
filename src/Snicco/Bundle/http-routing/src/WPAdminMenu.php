@@ -23,7 +23,7 @@ final class WPAdminMenu
 
     public function setUp(string $text_domain = 'default'): void
     {
-        add_action('admin_menu', function () use ($text_domain) {
+        add_action('admin_menu', function () use ($text_domain): void {
             $this->buildMenu($text_domain);
         });
     }

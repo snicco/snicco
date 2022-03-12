@@ -6,7 +6,7 @@ namespace Snicco\Bridge\Blade\Tests\fixtures\Components;
 
 use Snicco\Bridge\Blade\BladeComponent;
 
-class ToUppercaseComponent extends BladeComponent
+final class ToUppercaseComponent extends BladeComponent
 {
     public function render(): string
     {

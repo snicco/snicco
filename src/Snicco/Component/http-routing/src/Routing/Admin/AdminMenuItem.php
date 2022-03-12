@@ -15,14 +15,29 @@ use function mb_convert_case;
 
 final class AdminMenuItem
 {
+    /**
+     * @var string
+     */
     public const PAGE_TITLE = 'page_title';
 
+    /**
+     * @var string
+     */
     public const MENU_TITLE = 'menu_title';
 
+    /**
+     * @var string
+     */
     public const ICON = 'icon';
 
+    /**
+     * @var string
+     */
     public const CAPABILITY = 'capability';
 
+    /**
+     * @var string
+     */
     public const POSITION = 'position';
 
     private string $page_title;
@@ -60,11 +75,13 @@ final class AdminMenuItem
         if (null !== $capability) {
             Assert::stringNotEmpty($capability, '$capability has to be null or non empty string.');
         }
+
         $this->capability = $capability;
 
         if (null !== $icon) {
             Assert::stringNotEmpty($icon, '$icon has to be null or non empty string.');
         }
+
         $this->icon = $icon;
 
         $this->position = $position;
@@ -72,6 +89,7 @@ final class AdminMenuItem
         if (null !== $parent_slug) {
             Assert::stringNotEmpty($parent_slug, '$parent_slug has to be null or non empty string.');
         }
+
         $this->parent_slug = $parent_slug;
     }
 
@@ -103,7 +121,7 @@ final class AdminMenuItem
 
         if (isset($attributes[self::PAGE_TITLE])) {
             $page_title = $attributes[self::PAGE_TITLE];
-            $menu_title = $menu_title ?? $page_title;
+            $menu_title ??= $page_title;
         }
 
         if (null === $page_title) {
@@ -158,7 +176,7 @@ final class AdminMenuItem
     public function parentSlug(): UrlPath
     {
         if (! $this->parent_slug) {
-            throw new LogicException("Menu item [{$this->menu_slug}] does not have a parent item.");
+            throw new LogicException(sprintf('Menu item [%s] does not have a parent item.', $this->menu_slug));
         }
 
         return UrlPath::fromString($this->parent_slug);
@@ -174,9 +192,7 @@ final class AdminMenuItem
         $parts = explode(' ', str_replace(['.', '_', '-'], ' ', $route_name));
 
         if (count($parts) > 1) {
-            $parts = array_map(function (string $part) {
-                return mb_convert_case($part, MB_CASE_TITLE, 'UTF-8');
-            }, $parts);
+            $parts = array_map(fn (string $part): string => mb_convert_case($part, MB_CASE_TITLE, 'UTF-8'), $parts);
         }
 
         return implode(' ', $parts);

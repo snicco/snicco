@@ -7,10 +7,10 @@ namespace Snicco\Component\BetterWPCache\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use DateTime;
 use Psr\Cache\CacheItemInterface;
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use Snicco\Component\BetterWPCache\WPObjectCachePsr6;
 use stdClass;
-use Traversable;
 use WP_Object_Cache;
 
 use function chr;
@@ -31,9 +31,9 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @var array with functionName => reason
      */
-    protected $skippedTests = [];
+    protected array $skippedTests = [];
 
-    protected ?WPObjectCachePsr6 $cache;
+    protected ?WPObjectCachePsr6 $cache = null;
 
     protected function setUp(): void
     {
@@ -53,7 +53,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         }
     }
 
-    public function createCachePool()
+    public function createCachePool(): WPObjectCachePsr6
     {
         return new WPObjectCachePsr6('testing');
     }
@@ -61,7 +61,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @before
      */
-    public function setupService()
+    public function setupService(): void
     {
         $this->cache = $this->createCachePool();
     }
@@ -69,7 +69,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @after
      */
-    public function tearDownService()
+    public function tearDownService(): void
     {
         if (null !== $this->cache) {
             $this->cache->clear();
@@ -78,10 +78,8 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
     /**
      * Data provider for invalid keys.
-     *
-     * @return array
      */
-    public static function invalidKeys()
+    public static function invalidKeys(): array
     {
         return [
             [true],
@@ -107,7 +105,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function basic_usage()
+    public function basic_usage(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -115,10 +113,12 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('4711');
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key2');
         $item->set('4712');
+
         $this->cache->save($item);
 
         $fooItem = $this->cache->getItem('key');
@@ -143,7 +143,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function basic_usage_with_long_key()
+    public function basic_usage_with_long_key(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -174,7 +174,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function item_modifiers_returns_static()
+    public function item_modifiers_returns_static(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -189,7 +189,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function get_item()
+    public function get_item(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -197,6 +197,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         // get existing item
@@ -213,7 +214,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function get_items()
+    public function get_items(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -260,7 +261,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function get_items_empty()
+    public function get_items_empty(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -268,7 +269,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $items = $this->cache->getItems([]);
         $this->assertTrue(
-            is_array($items) || $items instanceof Traversable,
+            is_iterable($items),
             'A call to getItems with an empty array must always return an array or \Traversable.'
         );
 
@@ -283,7 +284,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function has_item()
+    public function has_item(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -291,6 +292,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         // has existing item
@@ -303,7 +305,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function clear()
+    public function clear(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -311,6 +313,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         $return = $this->cache->clear();
@@ -327,7 +330,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function clear_with_deferred_items()
+    public function clear_with_deferred_items(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -335,6 +338,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         $this->cache->clear();
@@ -346,7 +350,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function delete_item()
+    public function delete_item(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -354,6 +358,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         $this->assertTrue($this->cache->deleteItem('key'));
@@ -366,7 +371,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function delete_items()
+    public function delete_items(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -398,7 +403,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function save()
+    public function save(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -406,6 +411,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $return = $this->cache->save($item);
 
         $this->assertTrue($return, 'save() should return true when items are saved.');
@@ -415,7 +421,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function save_expired()
+    public function save_expired(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -424,6 +430,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAt(DateTime::createFromFormat('U', (string) (time() + 10)));
+
         $this->cache->save($item);
         $item->expiresAt(DateTime::createFromFormat('U', (string) (time() - 1)));
         $this->cache->save($item);
@@ -434,7 +441,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function save_without_expire()
+    public function save_without_expire(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -442,6 +449,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('test_ttl_null');
         $item->set('data');
+
         $this->cache->save($item);
 
         // Use a new pool instance to ensure that we don't hit any caches
@@ -455,7 +463,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function deferred_save()
+    public function deferred_save(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -463,11 +471,13 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('4711');
+
         $return = $this->cache->saveDeferred($item);
         $this->assertTrue($return, 'save() should return true when items are saved.');
 
         $item = $this->cache->getItem('key2');
         $item->set('4712');
+
         $this->cache->saveDeferred($item);
 
         // They are not saved yet but should be a hit
@@ -492,7 +502,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function deferred_expired()
+    public function deferred_expired(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -501,6 +511,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('4711');
         $item->expiresAt(DateTime::createFromFormat('U', (string) (time() - 1)));
+
         $this->cache->saveDeferred($item);
 
         $this->assertFalse($this->cache->hasItem('key'), 'Cache should not have expired deferred item');
@@ -512,7 +523,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function delete_deferred_item()
+    public function delete_deferred_item(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -520,6 +531,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('4711');
+
         $this->cache->saveDeferred($item);
         $this->assertTrue($this->cache->getItem('key')->isHit());
 
@@ -542,7 +554,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function deferred_save_without_commit()
+    public function deferred_save_without_commit(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -562,7 +574,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function commit()
+    public function commit(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -570,6 +582,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
         $return = $this->cache->commit();
 
@@ -585,7 +598,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function expiration()
+    public function expiration(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -594,6 +607,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAfter(2);
+
         $this->cache->save($item);
 
         sleep(3);
@@ -605,7 +619,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function expires_at()
+    public function expires_at(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -614,6 +628,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAt(new DateTime('+2hours'));
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -623,7 +638,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function expires_at_with_null()
+    public function expires_at_with_null(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -632,6 +647,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAt(null);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -641,7 +657,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function expires_after_with_null()
+    public function expires_after_with_null(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -650,6 +666,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAfter(null);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -659,7 +676,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function key_length()
+    public function key_length(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -680,13 +697,13 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function get_item_invalid_keys($key)
+    public function get_item_invalid_keys($key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->getItem($key);
     }
 
@@ -697,13 +714,13 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function get_items_invalid_keys($key)
+    public function get_items_invalid_keys($key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->getItems(['key1', $key, 'key2']);
     }
 
@@ -714,13 +731,13 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function has_item_invalid_keys($key)
+    public function has_item_invalid_keys($key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->hasItem($key);
     }
 
@@ -731,13 +748,13 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function delete_item_invalid_keys($key)
+    public function delete_item_invalid_keys($key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->deleteItem($key);
     }
 
@@ -748,20 +765,20 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function delete_items_invalid_keys($key)
+    public function delete_items_invalid_keys($key): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $this->expectException('Psr\Cache\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->cache->deleteItems(['key1', $key, 'key2']);
     }
 
     /**
      * @test
      */
-    public function data_type_string()
+    public function data_type_string(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -769,6 +786,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('5');
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -779,7 +797,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function data_type_integer()
+    public function data_type_integer(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -787,6 +805,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(5);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -797,7 +816,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function data_type_null()
+    public function data_type_null(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -805,6 +824,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(null);
+
         $this->cache->save($item);
 
         $this->assertTrue(
@@ -820,7 +840,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function data_type_float()
+    public function data_type_float(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -829,6 +849,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $float = 1.23456789;
         $item = $this->cache->getItem('key');
         $item->set($float);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -840,7 +861,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function data_type_boolean()
+    public function data_type_boolean(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -848,6 +869,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(true);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -857,6 +879,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key2');
         $item->set(false);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key2');
@@ -868,7 +891,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function data_type_array()
+    public function data_type_array(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -880,6 +903,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         ];
         $item = $this->cache->getItem('key');
         $item->set($array);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -891,7 +915,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function data_type_object()
+    public function data_type_object(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -901,6 +925,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $object->a = 'foo';
         $item = $this->cache->getItem('key');
         $item->set($object);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -912,7 +937,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function binary_data()
+    public function binary_data(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -925,6 +950,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set($data);
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -934,7 +960,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function is_hit()
+    public function is_hit(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -942,6 +968,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
@@ -951,7 +978,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function is_hit_deferred()
+    public function is_hit_deferred(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -959,6 +986,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         // Test accessing the value before it is committed
@@ -973,7 +1001,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function save_deferred_when_changing_values()
+    public function save_deferred_when_changing_values(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -981,6 +1009,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         $item = $this->cache->getItem('key');
@@ -1005,7 +1034,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function save_deferred_overwrite()
+    public function save_deferred_overwrite(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -1013,10 +1042,12 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set('value');
+
         $this->cache->saveDeferred($item);
 
         $item = $this->cache->getItem('key');
         $item->set('new value');
+
         $this->cache->saveDeferred($item);
 
         $item = $this->cache->getItem('key');
@@ -1030,7 +1061,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
     /**
      * @test
      */
-    public function saving_object()
+    public function saving_object(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -1038,11 +1069,12 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
 
         $item = $this->cache->getItem('key');
         $item->set(new DateTime());
+
         $this->cache->save($item);
 
         $item = $this->cache->getItem('key');
         $value = $item->get();
-        $this->assertInstanceOf('DateTime', $value, 'You must be able to store objects in cache.');
+        $this->assertInstanceOf(DateTime::class, $value, 'You must be able to store objects in cache.');
     }
 
     /**
@@ -1050,7 +1082,7 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
      *
      * @test
      */
-    public function has_item_returns_false_when_deferred_item_is_expired()
+    public function has_item_returns_false_when_deferred_item_is_expired(): void
     {
         if (isset($this->skippedTests[__FUNCTION__])) {
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
@@ -1059,19 +1091,21 @@ final class WPObjectCachePsr6IntegrationTest extends WPTestCase
         $item = $this->cache->getItem('key');
         $item->set('value');
         $item->expiresAfter(2);
+
         $this->cache->saveDeferred($item);
 
         sleep(3);
         $this->assertFalse($this->cache->hasItem('key'));
     }
 
-    private function prepareDeferredSaveWithoutCommit()
+    private function prepareDeferredSaveWithoutCommit(): void
     {
         $cache = $this->cache;
         $this->cache = null;
 
         $item = $cache->getItem('key');
         $item->set('4711');
+
         $cache->saveDeferred($item);
     }
 }

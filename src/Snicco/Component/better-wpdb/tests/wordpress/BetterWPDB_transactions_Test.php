@@ -26,7 +26,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $this->assertRecordCount(0);
 
         try {
-            $this->better_wpdb->transactional(function (BetterWPDB $db) {
+            $this->better_wpdb->transactional(function (BetterWPDB $db): void {
                 $res = $db->insert('test_table', [
                     'test_string' => 'foo',
                 ]);
@@ -51,7 +51,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
     {
         $this->assertRecordCount(0);
 
-        $return = $this->better_wpdb->transactional(function (BetterWPDB $db) {
+        $return = $this->better_wpdb->transactional(function (BetterWPDB $db): string {
             $db->insert('test_table', [
                 'test_string' => 'foo',
             ]);
@@ -72,11 +72,12 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
     public function test_nested_transactions_throw_expection(): void
     {
         try {
-            $this->better_wpdb->transactional(function (BetterWPDB $db) {
-                $db->transactional(function () {
+            $this->better_wpdb->transactional(function (BetterWPDB $db): void {
+                $db->transactional(function (): void {
                     throw new RuntimeException('should never run.');
                 });
             });
+            // @noRector
             $this->fail('No exception thrown for nested transaction.');
         } catch (LogicException $e) {
             $this->assertSame('Nested transactions are currently not supported.', $e->getMessage());
@@ -91,7 +92,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->transactional(function (BetterWPDB $db) {
+        $db->transactional(function (BetterWPDB $db): void {
             $db->insert('test_table', [
                 'test_string' => 'foo',
             ]);
@@ -108,22 +109,22 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
         $being_trans = $logger->queries[0];
         $this->assertSame('START TRANSACTION', $being_trans->sql_with_placeholders);
         $this->assertSame([], $being_trans->bindings);
-        $this->assertTrue($being_trans->end > $being_trans->start);
+        $this->assertGreaterThan($being_trans->start, $being_trans->end);
 
         $first_insert = $logger->queries[1];
         $this->assertSame('insert into `test_table` (`test_string`) values (?)', $first_insert->sql_with_placeholders);
         $this->assertSame(['foo'], $first_insert->bindings);
-        $this->assertTrue($first_insert->end > $first_insert->start);
+        $this->assertGreaterThan($first_insert->start, $first_insert->end);
 
         $second_insert = $logger->queries[2];
         $this->assertSame('insert into `test_table` (`test_string`) values (?)', $second_insert->sql_with_placeholders);
         $this->assertSame(['bar'], $second_insert->bindings);
-        $this->assertTrue($second_insert->end > $second_insert->start);
+        $this->assertGreaterThan($second_insert->start, $second_insert->end);
 
         $commit = $logger->queries[3];
         $this->assertSame('COMMIT', $commit->sql_with_placeholders);
         $this->assertSame([], $commit->bindings);
-        $this->assertTrue($commit->end > $commit->start);
+        $this->assertGreaterThan($commit->start, $commit->end);
     }
 
     /**
@@ -142,13 +143,14 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
                 if ('COMMIT' === $info->sql_with_placeholders) {
                     throw new RuntimeException('cant log.');
                 }
+
                 $this->queries[] = $info;
             }
         };
         $db = BetterWPDB::fromWpdb($logger);
 
         try {
-            $db->transactional(function (BetterWPDB $db) {
+            $db->transactional(function (BetterWPDB $db): void {
                 $db->insert('test_table', [
                     'test_string' => 'foo',
                 ]);

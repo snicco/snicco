@@ -45,7 +45,7 @@ final class AuthenticateTest extends MiddlewareTestCase
     }
 }
 
-class WPAPI extends BetterWPAPI
+final class WPAPI extends BetterWPAPI
 {
     private bool $is_logged_in;
 
