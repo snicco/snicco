@@ -8,7 +8,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Webmozart\Assert\Assert;
 
 use function explode;
-use function is_string;
 use function ltrim;
 use function rtrim;
 use function trim;
