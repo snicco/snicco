@@ -58,12 +58,8 @@ final class WPAdminArea implements AdminArea
     public function rewriteForRouting(Request $request): string
     {
         $path = $request->path();
-        $page = $request->query('page');
-        if (! $page) {
-            return $request->path();
-        }
-
-        if (! is_string($page)) {
+        $page = (string) $request->query('page');
+        if ('' === $page) {
             return $request->path();
         }
 

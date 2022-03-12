@@ -6,6 +6,7 @@ namespace Snicco\Middleware\OpenRedirectProtection;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\RedirectResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
@@ -58,20 +59,15 @@ final class OpenRedirectProtection extends Middleware
 
         $target = $response->getHeaderLine('location');
 
-        $is_same_site = $this->isSameSiteRedirect($request, $target);
+        $parts = (array) parse_url($target);
+        $parts['host'] ??= '';
 
         // Always allow relative redirects
-        if ($is_same_site) {
+        if ($this->isSameSiteRedirect($request->getUri(), $parts['host'])) {
             return $response;
         }
 
-        $target_host = parse_url($target, PHP_URL_HOST);
-        // Only allow redirects away to whitelisted hosts.
-        if (! $target_host) {
-            return $this->forbiddenRedirect($target);
-        }
-
-        if (! $this->isWhitelisted($target_host)) {
+        if (! $this->isWhitelisted($parts['host'])) {
             return $this->forbiddenRedirect($target);
         }
 
@@ -102,18 +98,13 @@ final class OpenRedirectProtection extends Middleware
         return $this->allSubdomains($this->host);
     }
 
-    private function isSameSiteRedirect(Request $request, string $location): bool
+    private function isSameSiteRedirect(UriInterface $uri, string $redirect_host): bool
     {
-        $parsed = parse_url($location);
-        $target = $parsed['host'] ?? null;
-
-        if (! $target && isset($parsed['path'])) {
+        if('' === $redirect_host){
             return true;
         }
 
-        $uri = $request->getUri();
-
-        return $uri->getHost() === $target;
+        return $uri->getHost() === $redirect_host;
     }
 
     private function isWhitelisted(string $host): bool

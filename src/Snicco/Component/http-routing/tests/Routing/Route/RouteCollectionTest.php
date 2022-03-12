@@ -13,7 +13,7 @@ use Snicco\Component\HttpRouting\Routing\Route\RouteCollection;
 /**
  * @internal
  */
-final class RuntimeRouteCollectionTest extends TestCase
+final class RouteCollectionTest extends TestCase
 {
     /**
      * @test
@@ -78,4 +78,18 @@ final class RuntimeRouteCollectionTest extends TestCase
 
         new RouteCollection([$r1, $r2]);
     }
+
+    /**
+     * @test
+     */
+    public function test_to_array(): void
+    {
+        $r1 = Route::create('/foo', Route::DELEGATE, 'r1');
+        $r2 = Route::create('/bar', Route::DELEGATE, 'r2');
+
+        $routes = new RouteCollection([$r1, $r2]);
+
+        $this->assertSame(['r1' => $r1,  'r2' => $r2], $routes->toArray());
+    }
+
 }

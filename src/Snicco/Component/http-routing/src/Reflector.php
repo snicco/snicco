@@ -79,10 +79,6 @@ final class Reflector
             return null;
         }
 
-        if (! $parameters[0] instanceof ReflectionParameter) {
-            return null;
-        }
-
         $param = $parameters[0];
 
         $type = $param->getType();
