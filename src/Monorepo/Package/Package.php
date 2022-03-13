@@ -72,6 +72,8 @@ final class Package implements JsonSerializable
      */
     public string $package_dir_abs;
 
+    public string $description;
+
     public ComposerJson $composer_json;
 
     public function __construct(string $package_dir_rel, string $package_dir_abs, ComposerJson $composer_json)
@@ -85,10 +87,10 @@ final class Package implements JsonSerializable
         /** @var non-empty-string $full_name */
         $full_name = sprintf('%s/%s', $this->vendor_name, $this->name);
         $this->full_name = $full_name;
-
         $this->package_dir_rel = $package_dir_rel;
         $this->package_dir_abs = $package_dir_abs;
         $this->composer_json = $composer_json;
+        $this->description = $this->composer_json->description();
     }
 
     /**
@@ -99,7 +101,7 @@ final class Package implements JsonSerializable
         $all = array_keys($this->composer_json->allRequired());
 
         /** @psalm-suppress ImpureFunctionCall */
-        return array_filter($all, fn (string $name): bool => Str::startsWith($name, $this->vendor_name));
+        return array_filter($all, fn(string $name): bool => Str::startsWith($name, $this->vendor_name));
     }
 
     public function jsonSerialize(): array

@@ -44,6 +44,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'webmozart/assert' => '^1.10',
             'php-stubs/wordpress-stubs' => '^5.9.0',
             'symfony/finder' => '^5.0',
+            'knplabs/github-api' => '^3.0',
+            'guzzlehttp/guzzle' => '^7.0.1',
+            'guzzlehttp/psr7' => '^2.1',
         ],
         ComposerJsonSection::AUTOLOAD_DEV => [
             'psr-4' => [
