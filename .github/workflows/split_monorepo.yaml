@@ -7,7 +7,7 @@ on:
       - master
     tags:
       - '*'
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   provide_packages_json:
