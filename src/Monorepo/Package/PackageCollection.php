@@ -8,6 +8,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
+use Webmozart\Assert\Assert;
 
 use function array_filter;
 use function array_map;
@@ -61,7 +62,7 @@ final class PackageCollection implements Countable, JsonSerializable, IteratorAg
      */
     public function toArray(): array
     {
-        return array_values(array_map(fn (Package $package): array => $package->toArray(), $this->packages));
+        return array_values(array_map(fn(Package $package): array => $package->toArray(), $this->packages));
     }
 
     public function merge(PackageCollection $collection): PackageCollection
@@ -90,5 +91,11 @@ final class PackageCollection implements Countable, JsonSerializable, IteratorAg
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator(array_values($this->packages));
+    }
+
+    public function get(string $composer_name): Package
+    {
+        Assert::true(isset($this->packages[$composer_name]), "The package [$composer_name] is not in the collection.");
+        return $this->packages[$composer_name];
     }
 }

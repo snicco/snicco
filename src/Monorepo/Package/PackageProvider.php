@@ -11,6 +11,7 @@ use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;
 
 use function array_map;
+use function dirname;
 use function file_exists;
 use function ltrim;
 
@@ -29,14 +30,14 @@ final class PackageProvider
     private array $package_directories;
 
     /**
-     * @param non-empty-string $repository_root_dir
      * @param string[] $package_directories
      */
     public function __construct(string $repository_root_dir, array $package_directories)
     {
-        $this->repository_root_dir = $repository_root_dir;
         Assert::notEmpty($package_directories);
         Assert::allReadable($package_directories);
+        Assert::stringNotEmpty($repository_root_dir);
+        $this->repository_root_dir = $repository_root_dir;
         $this->package_directories = $package_directories;
     }
 
@@ -96,6 +97,21 @@ final class PackageProvider
         return $directly_affected_packages->merge($indirectly_affected_packages);
     }
 
+    public function get(string $path_to_composer_json): Package
+    {
+        $path_to_composer_json = $this->makeAbsolute($path_to_composer_json);
+        $composer_json = ComposerJson::for($path_to_composer_json);
+
+        $dir = dirname($path_to_composer_json);
+        $rel_path = ltrim(Str::afterFirst($dir, $this->repository_root_dir), DIRECTORY_SEPARATOR);
+
+        return new Package(
+            $rel_path,
+            $dir,
+            $composer_json
+        );
+    }
+
     /**
      * @param string[] $directories
      */
@@ -118,7 +134,7 @@ final class PackageProvider
         $file = $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
 
         if (!file_exists($file)) {
-            throw new InvalidArgumentException(sprintf('Invalid [%s] provided.', $file));
+            throw new InvalidArgumentException(sprintf('Non-existent file [%s] provided.', $file));
         }
 
         return $file;

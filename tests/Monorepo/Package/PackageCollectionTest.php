@@ -51,4 +51,20 @@ final class PackageCollectionTest extends TestCase
             $this->assertArrayHasKey(Package::RELATIVE_PATH, $package);
         }
     }
+
+    /**
+     * @test
+     */
+    public function that_one_package_can_be_filtered_out(): void
+    {
+        $all = $this->provider->getAll();
+
+        $package = $all->get('sniccowp/component-a-name');
+
+        $this->assertSame('sniccowp/component-a-name', $package->full_name);
+
+        $this->expectExceptionMessage('The package [sniccowp/bogus] is not in the collection.');
+        $all->get('sniccowp/bogus');
+    }
+
 }
