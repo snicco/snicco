@@ -252,6 +252,9 @@ final class Str
         return mb_substr($subject, $start, $length, 'UTF-8');
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function afterFirst(string $subject, string $search): string
     {
         return '' === $search ? $subject : array_reverse(explode($search, $subject, 2))[0];
