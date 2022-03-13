@@ -105,22 +105,22 @@ final class GetAffectedPackagesTest extends TestCase
 
         $expected = new PackageCollection([
             new Package(
-                '/packages/Bundle/bundle-a',
+                'packages/Bundle/bundle-a',
                 $this->fixtures_dir . '/packages/Bundle/bundle-a',
                 ComposerJson::for($this->fixtures_dir . '/packages/Bundle/bundle-a/composer.json')
             ),
             new Package(
-                '/packages/Bundle/bundle-b',
+                'packages/Bundle/bundle-b',
                 $this->fixtures_dir . '/packages/Bundle/bundle-b',
                 ComposerJson::for($this->fixtures_dir . '/packages/Bundle/bundle-b/composer.json')
             ),
             new Package(
-                '/packages/Component/component-a',
+                'packages/Component/component-a',
                 $this->fixtures_dir . '/packages/Component/component-a',
                 ComposerJson::for($this->fixtures_dir . '/packages/Component/component-a/composer.json')
             ),
             new Package(
-                '/packages/Component/component-b',
+                'packages/Component/component-b',
                 $this->fixtures_dir . '/packages/Component/component-b',
                 ComposerJson::for($this->fixtures_dir . '/packages/Component/component-b/composer.json')
             ),

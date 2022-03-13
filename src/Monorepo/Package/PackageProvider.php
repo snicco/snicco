@@ -30,7 +30,7 @@ final class PackageProvider
 
     /**
      * @param non-empty-string $repository_root_dir
-     * @param string[]         $package_directories
+     * @param string[] $package_directories
      */
     public function __construct(string $repository_root_dir, array $package_directories)
     {
@@ -53,7 +53,7 @@ final class PackageProvider
             $composer_json = ComposerJson::for($dir_path_absolute . DIRECTORY_SEPARATOR . 'composer.json');
 
             $package = new Package(
-                Str::afterFirst($dir_path_absolute, $this->repository_root_dir),
+                ltrim(Str::afterFirst($dir_path_absolute, $this->repository_root_dir), DIRECTORY_SEPARATOR),
                 $dir_path_absolute,
                 $composer_json
             );
@@ -70,7 +70,7 @@ final class PackageProvider
     public function getAffected(array $changed_files): PackageCollection
     {
         $modified_files_abs_path = array_map(
-            fn (string $file): string => $this->makeAbsolute($file),
+            fn(string $file): string => $this->makeAbsolute($file),
             $changed_files
         );
 
@@ -117,7 +117,7 @@ final class PackageProvider
 
         $file = $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
 
-        if (! file_exists($file)) {
+        if (!file_exists($file)) {
             throw new InvalidArgumentException(sprintf('Invalid [%s] provided.', $file));
         }
 

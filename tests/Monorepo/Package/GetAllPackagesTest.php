@@ -61,32 +61,32 @@ final class GetAllPackagesTest extends TestCase
             new PackageCollection(
                 [
                     new Package(
-                        '/packages/Bundle/bundle-a',
+                        'packages/Bundle/bundle-a',
                         $this->valid_fixtures_dir . '/packages/Bundle/bundle-a',
                         ComposerJson::for($this->valid_fixtures_dir . '/packages/Bundle/bundle-a/composer.json')
                     ),
                     new Package(
-                        '/packages/Bundle/bundle-b',
+                        'packages/Bundle/bundle-b',
                         $this->valid_fixtures_dir . '/packages/Bundle/bundle-b',
                         ComposerJson::for($this->valid_fixtures_dir . '/packages/Bundle/bundle-b/composer.json')
                     ),
                     new Package(
-                        '/packages/Bundle/bundle-d',
+                        'packages/Bundle/bundle-d',
                         $this->valid_fixtures_dir . '/packages/Bundle/bundle-d',
                         ComposerJson::for($this->valid_fixtures_dir . '/packages/Bundle/bundle-d/composer.json')
                     ),
                     new Package(
-                        '/packages/Component/component-a',
+                        'packages/Component/component-a',
                         $this->valid_fixtures_dir . '/packages/Component/component-a',
                         ComposerJson::for($this->valid_fixtures_dir . '/packages/Component/component-a/composer.json')
                     ),
                     new Package(
-                        '/packages/Component/component-b',
+                        'packages/Component/component-b',
                         $this->valid_fixtures_dir . '/packages/Component/component-b',
                         ComposerJson::for($this->valid_fixtures_dir . '/packages/Component/component-b/composer.json')
                     ),
                     new Package(
-                        '/packages/Component/component-c',
+                        'packages/Component/component-c',
                         $this->valid_fixtures_dir . '/packages/Component/component-c',
                         ComposerJson::for($this->valid_fixtures_dir . '/packages/Component/component-c/composer.json')
                     ),
