@@ -74,6 +74,7 @@ final class GlobalViewContext
              *
              * @return mixed
              */
+            #[ReturnTypeWillChange]
             public function offsetGet($offset)
             {
                 return Arr::get($this->context, (string) $offset);

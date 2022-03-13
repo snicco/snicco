@@ -43,7 +43,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'symplify/easy-coding-standard' => '^10.1',
             'symplify/package-builder' => '^9.3.26',
             'webmozart/assert' => '^1.10',
-            'php-stubs/wordpress-stubs' => '^5.9.0'
+            'php-stubs/wordpress-stubs' => '^5.9.0',
         ],
         ComposerJsonSection::AUTOLOAD_DEV => [
             'psr-4' => [

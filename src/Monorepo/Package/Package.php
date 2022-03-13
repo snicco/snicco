@@ -82,7 +82,10 @@ final class Package implements JsonSerializable
 
         $this->vendor_name = $parts[0];
         $this->name = $parts[1];
-        $this->full_name = sprintf('%s/%s', $this->vendor_name, $this->name);
+        /** @var non-empty-string $full_name */
+        $full_name = sprintf('%s/%s', $this->vendor_name, $this->name);
+        $this->full_name = $full_name;
+
         $this->package_dir_rel = $package_dir_rel;
         $this->package_dir_abs = $package_dir_abs;
         $this->composer_json = $composer_json;
