@@ -1,7 +1,12 @@
 # Inspired by https://github.com/symplify/symplify/blob/main/.github/workflows/split_monorepo.yaml
 name: Split Monorepo
+
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
 
 jobs:
   provide_packages_json:
@@ -33,39 +38,47 @@ jobs:
         packages: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
 
     steps:
-      - run: |
-          echo "Package name ${{ matrix.packages.name }}"
-          echo "Package path rel ${{ matrix.packages.vendor_name }}"
-          echo "Package path rel ${{ matrix.packages.relative_path }}"
 
-#      # no tag
-#      - if: "!startsWith(github.ref, 'refs/tags/')"
-#        # Uses an action in the root directory
-#        name: Monorepo Split of ${{ matrix.package }}
-#        uses: symplify/github-action-monorepo-split@2.0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-#        with:
-#          package-directory: '${{ matrix.package_path_rel }}'
-#          split-repository-organization: 'sniccowp'
-#          split-repository-name: '${{ matrix.package_name }}'
-#          user-name: "GitHub Action"
-#          user-email: "action@github.com"
-#          branch: "main"
-#
-#      # with tag
-#      - if: "startsWith(github.ref, 'refs/tags/')"
-#        # Uses an action in the root directory
-#        name: Monorepo Tagged Split of ${{ matrix.package }}
-#        uses: symplify/github-action-monorepo-split@2.0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-#        with:
-#          tag: ${GITHUB_REF#refs/tags/}
-#
-#          package-directory: 'packages/${{ matrix.package }}'
-#          split-repository-organization: 'symplify'
-#          split-repository-name: '${{ matrix.package }}'
-#          user-name: "GitHub Action"
-#          user-email: "action@github.com"
-#          branch: "main"
+      - name: Import GPG keys
+          uses: crazy-max/ghaction-import-gpg@v3
+          with:
+            gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+            passphrase: ${{ secrets.GPG_PASSPHRASE }}
+            git-user-signingkey: true
+            git-commit-gpgsign: true
+
+      #      - run: |
+      #          echo "Package name ${{ matrix.packages.name }}"
+      #          echo "Package path rel ${{ matrix.packages.vendor_name }}"
+      #          echo "Package path rel ${{ matrix.packages.relative_path }}"
+
+      # no tag
+      - if: "!startsWith(github.ref, 'refs/tags/')"
+        # Uses an action in the root directory
+        name: Monorepo Split of ${{ matrix.packages.full_name }}
+        uses: symplify/github-action-monorepo-split@2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          package-directory: '${{ matrix.packages.relative_path }}'
+          split-repository-organization: '${{ matrix.packages.vendor_name }}'
+          split-repository-name: '${{ matrix.packages.name }}'
+          user-name: "sniccowp-bot"
+          user-email: "sniccowp-github@snicco.de"
+          branch: "master"
+
+      # with tag
+      - if: "startsWith(github.ref, 'refs/tags/')"
+
+        name: Monorepo Tagged Split of ${{ matrix.packages.full_name }}
+        uses: symplify/github-action-monorepo-split@2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag: ${GITHUB_REF#refs/tags/}
+          package-directory: '${{ matrix.packages.relative_path }}'
+          split-repository-organization: '${{ matrix.packages.vendor_name }}'
+          split-repository-name: '${{ matrix.packages.name }}'
+          user-name: "sniccowp-bot"
+          user-email: "sniccowp-github@snicco.de"
+          branch: "master"
