@@ -39,6 +39,10 @@ jobs:
         packages: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
 
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Import GPG keys
         uses: crazy-max/ghaction-import-gpg@v3
