@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-12 18:05:44        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-13 20:27:09        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1355,7 +1355,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@0000000013bbc798000000007a03aaf4",
+        "name": "\\anonymous@000000007294a4ea000000007ee9cc1c",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1536,7 +1536,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@0000000013bbda27000000007a03aaf4",
+        "name": "\\anonymous@000000007294bd7b000000007ee9cc1c",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2463,7 +2463,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@0000000013bbd1ad000000007a03aaf4",
+        "name": "\\anonymous@000000007294b6f1000000007ee9cc1c",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
@@ -3597,6 +3597,61 @@
             "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
             "\\Snicco\\Component\\StrArr\\Str"
         ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\PackageProvider",
+        "size": 3000,
+        "relations": [
+            "\\Webmozart\\Assert\\Assert",
+            "\\Snicco\\Monorepo\\Package\\PackageCollection",
+            "\\Snicco\\Monorepo\\Package\\ComposerJson",
+            "\\Snicco\\Component\\StrArr\\Str",
+            "\\Snicco\\Monorepo\\Package\\Package",
+            "\\Snicco\\Monorepo\\Package\\GetDependentPackages",
+            "\\Symfony\\Component\\Finder\\Finder",
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\PackageCollection",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Monorepo\\Package\\PackageCollection",
+            "\\ArrayIterator"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\ComposerJson",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\Package",
+        "size": 3000,
+        "relations": [
+            "\\JsonSerializable",
+            "\\Snicco\\Monorepo\\Package\\ComposerJson",
+            "\\Webmozart\\Assert\\Assert",
+            "\\Snicco\\Component\\StrArr\\Str"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\GetDependentPackages",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Monorepo\\Package\\PackageCollection",
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Symfony\\Component\\Finder\\Finder",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\JsonSerializable",
+        "size": 3000,
+        "relations": []
     }
 ];
 
