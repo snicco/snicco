@@ -19,6 +19,7 @@
             <directory suffix="Test.php">src/Snicco/Component/*/tests/</directory>
             <directory suffix="Test.php">src/Snicco/Middleware/*/tests/</directory>
             <directory suffix="Test.php">src/Snicco/Bundle/*/tests/</directory>
+            <directory suffix="Test.php">tests/Monorepo</directory>
             <exclude>src/Snicco/*/*/tests/integration</exclude>
             <exclude>src/Snicco/*/*/tests/wordpress</exclude>
         </testsuite>
@@ -52,6 +53,11 @@
             <directory suffix="Test.php">src/Snicco/Component/*/tests/integration</directory>
             <directory suffix="Test.php">src/Snicco/Middleware/*/tests/integration</directory>
         </testsuite>
+
+        <testsuite name="monorepo">
+            <directory suffix="Test.php">tests/Monorepo</directory>
+        </testsuite>
+
     </testsuites>
 
     <coverage includeUncoveredFiles="true" processUncoveredFiles="true">
