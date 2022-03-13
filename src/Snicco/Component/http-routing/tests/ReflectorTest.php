@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use Iterator;
 use JsonSerializable;
 use PHPUnit\Framework\TestCase;
+use ReturnTypeWillChange;
 use Snicco\Component\HttpRouting\Reflector;
 use Traversable;
 
@@ -72,8 +73,11 @@ final class ReflectorTest extends TestCase
      */
     public function test_first_parameter_type_with_closure(): void
     {
-        $this->assertSame('string', Reflector::firstParameterType(function (string $foo): void {
-        }));
+        $this->assertSame(
+            'string',
+            Reflector::firstParameterType(function (string $foo): void {
+            })
+        );
     }
 
     /**
@@ -123,7 +127,6 @@ final class TestSubject implements Countable
 final class TestTraversable implements Iterator
 {
     #[ReturnTypeWillChange]
-
     public function current(): void
     {
     }
@@ -133,7 +136,6 @@ final class TestTraversable implements Iterator
     }
 
     #[ReturnTypeWillChange]
-
     public function key(): void
     {
     }
