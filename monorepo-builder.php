@@ -41,9 +41,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'vimeo/psalm' => '^4.10',
             'rector/rector' => '^0.12.17',
             'symplify/easy-coding-standard' => '^10.1',
-            'symplify/package-builder' => '^9.3.26',
             'webmozart/assert' => '^1.10',
             'php-stubs/wordpress-stubs' => '^5.9.0',
+            'symfony/finder' => '^5.0',
         ],
         ComposerJsonSection::AUTOLOAD_DEV => [
             'psr-4' => [

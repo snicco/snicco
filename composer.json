@@ -65,7 +65,6 @@
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "^10.1",
         "symplify/monorepo-builder": "9.4.70",
-        "symplify/package-builder": "^9.3.26",
         "vimeo/psalm": "^4.10",
         "vlucas/phpdotenv": "5.4.1"
     },
