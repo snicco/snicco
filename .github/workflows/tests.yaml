@@ -12,9 +12,32 @@ env:
 
 jobs:
 
-  unit_tests:
+  # These jobs are set in the branch protection rules for the master branch. They must run otherwise every PR
+  # will be stuck at "Expected — Waiting for status to be reported ". For this reason we can not use GitHub's native path filters.
+  # It's also not possible to run each job conditionally. The job must run. The only option is to run all steps conditionally.
+  changes:
+    name: Filter path for tests
+    runs-on: ubuntu-20.04
+    outputs:
+      php: ${{ steps.filter.outputs.php }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      - name: Filter changed paths
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            php:
+              - 'src/**/*.php'
+              - 'tests/**/*.php'
+              - 'phpunit.xml.dist'
+              - 'codeception/*dist.yml'
+
+  unit_tests:
     name: Unit Tests
+    needs: changes
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -24,9 +47,11 @@ jobs:
 
     steps:
       - name: Checkout code
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v2
 
       - name: Setup PHP [${{ matrix.php }}]
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -35,16 +60,18 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: Install composer dependencies
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run phpunit, testsuite unit
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         run: composer phpunit:all
 
   wordpress_tests:
-
     name: WordPress Tests
+    needs: changes
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -54,7 +81,6 @@ jobs:
         dependencies: [ lowest, highest ]
 
     services:
-
       mysql:
         image: mysql:8.0.21
         env:
@@ -71,11 +97,12 @@ jobs:
         options: --entrypoint redis-server
 
     steps:
-
       - name: Checkout code
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v2
 
       - name: Setup PHP [${{ matrix.php }}]
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -84,12 +111,14 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: Install composer dependencies
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: "ramsey/composer-install@v1"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
       # Config value must match the ones in env.testing.dist
       - name: Download WordPress [${{ matrix.wp }}]
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         run: |
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=${{ matrix.wp }}
@@ -103,4 +132,5 @@ jobs:
         working-directory: /tmp
 
       - name: Run WordPress tests with codeception
+        if: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         run: composer codeception:all

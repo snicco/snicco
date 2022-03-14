@@ -11,14 +11,45 @@ env:
   COMPOSER_ROOT_VERSION: "dev-master"
 
 jobs:
-  code_analysis:
+  changes:
+    name: Filter path for tests
     runs-on: ubuntu-20.04
+    outputs:
+      php: ${{ steps.filter.outputs.php }}
+      composer: ${{ steps.filter.outputs.composer }}
+      deptrac: ${{ steps.filter.outputs.composer }}
+      psalm: ${{ steps.filter.outputs.psalm }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Filter changed paths
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            php:
+              - 'src/**/*.php'
+              - 'tests/**/*.php'
+              - 'bin/*.php'
+            composer:
+              - 'composer.json'
+            deptrac:
+              - 'deptrac/**'
+            plsam:
+              - 'psalm.xml'
+              - 'psalm/**'
+
+  code_analysis:
     name: ${{ matrix.actions.name }}
+    needs: changes
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         actions:
           - name: 'Deptrac'
+            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.deptrac == 'true' }}
             run: |
               curl -LS https://github.com/qossmic/deptrac/releases/download/0.19.3/deptrac.phar -o deptrac.phar
               sudo chmod +x deptrac.phar
@@ -26,6 +57,7 @@ jobs:
               composer deptrac -- --formatter=github-actions
 
           - name: 'Composer require checker'
+            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.composer == 'true' }}
             run: |
               curl -LS https://github.com/maglnet/ComposerRequireChecker/releases/download/3.8.0/composer-require-checker.phar -o require-checker.phar
               sudo chmod +x require-checker.phar
@@ -33,6 +65,7 @@ jobs:
               require-checker check composer.json --config-file=$GITHUB_WORKSPACE/composer-require-checker.json
 
           - name: 'Composer unused'
+            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.composer == 'true' }}
             run: |
               curl -LS https://github.com/composer-unused/composer-unused/releases/download/0.7.12/composer-unused.phar -o composer-unused.phar
               sudo chmod +x composer-unused.phar
@@ -40,22 +73,30 @@ jobs:
               composer-unused
 
           - name: 'Composer Validate'
+            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.composer == 'true' }}
             run: composer validate
 
           - name: 'Psalm'
+            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.psalm == 'true' }}
             run: composer psalm -- --shepherd --stats
 
+    # The value of matrix.actions.should_run is (bool) true. Not (string) true as in the matrix.
     steps:
       - name: 'Checkout repo'
+        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v2
 
       - name: 'Setup PHP'
+        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
           coverage: none
 
       - name: 'Install dependencies'
+        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: ramsey/composer-install@v1
 
-      - run: ${{ matrix.actions.run }}
+      - name: ${{ matrix.actions.name }}
+        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        run: ${{ matrix.actions.run }}
