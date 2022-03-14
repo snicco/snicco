@@ -58,6 +58,9 @@ jobs:
       - name: Maybe Create GitHub Repo for package ${{ matrix.packages.full_name }}
         run: php bin/create-single-repo ${{ matrix.packages.relative_path }} --token=${{ secrets.ACCESS_TOKEN }}
 
+      - name: Sleep 3s
+        run: sleep 3s
+
       # no tag
       - if: "!startsWith(github.ref, 'refs/tags/')"
         # Uses an action in the root directory
@@ -88,6 +91,9 @@ jobs:
           user-name: "sniccowp-bot"
           user-email: "sniccowp-github@snicco.de"
           branch: "master"
+
+      - name: Sleep 3s
+        run: sleep 3s
 
       - name: Maybe publish package ${{ matrix.packages.full_name }} at packagist.org
         run: php bin/push-to-packagist ${{ matrix.packages.relative_path }} --token=${{ secrets.PACKAGIST_API_TOKEN }} --u=${{ secrets.PACKAGIST_USERNAME }}
