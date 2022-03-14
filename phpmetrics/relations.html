@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-13 21:51:06        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-14 14:21:21        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1355,7 +1355,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005e3530a8000000004c611141",
+        "name": "\\anonymous@000000001c5ee90a0000000048f515d3",
         "size": 3000,
         "relations": [
             "\\ArrayAccess",
@@ -1536,7 +1536,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005e352939000000004c611141",
+        "name": "\\anonymous@000000001c5ef09b0000000048f515d3",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\BetterWPDB\\QueryLogger",
@@ -2463,7 +2463,7 @@
         "relations": []
     },
     {
-        "name": "\\anonymous@000000005e3522b3000000004c611141",
+        "name": "\\anonymous@000000001c5efb110000000048f515d3",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
@@ -3599,6 +3599,22 @@
         ]
     },
     {
+        "name": "\\Snicco\\Monorepo\\Input",
+        "size": 3000,
+        "relations": [
+            "\\Webmozart\\Assert\\Assert",
+            "\\Snicco\\Component\\StrArr\\Str",
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\SniccoWPPackageProvider",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Monorepo\\Package\\PackageProvider"
+        ]
+    },
+    {
         "name": "\\Snicco\\Monorepo\\Package\\PackageProvider",
         "size": 3000,
         "relations": [
@@ -3613,15 +3629,18 @@
         ]
     },
     {
-        "name": "\\Snicco\\Monorepo\\Package\\PackageCollection",
+        "name": "\\Snicco\\Monorepo\\Packagist\\CreatePackage",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Monorepo\\Package\\PackageCollection",
-            "\\ArrayIterator"
+            "\\Webmozart\\Assert\\Assert",
+            "\\GuzzleHttp\\Client",
+            "\\Snicco\\Monorepo\\Package\\Package",
+            "\\Snicco\\Monorepo\\Packagist\\AlreadyAtPackagist",
+            "\\RuntimeException"
         ]
     },
     {
-        "name": "\\Snicco\\Monorepo\\Package\\ComposerJson",
+        "name": "\\GuzzleHttp\\Client",
         "size": 3000,
         "relations": []
     },
@@ -3634,6 +3653,50 @@
             "\\Webmozart\\Assert\\Assert",
             "\\Snicco\\Component\\StrArr\\Str"
         ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Packagist\\AlreadyAtPackagist",
+        "size": 3000,
+        "relations": [
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\GitHub\\CreateRepository",
+        "size": 3000,
+        "relations": [
+            "\\Webmozart\\Assert\\Assert",
+            "\\Github\\Client",
+            "\\Snicco\\Monorepo\\Package\\Package",
+            "\\Snicco\\Monorepo\\GitHub\\AlreadyARepository"
+        ]
+    },
+    {
+        "name": "\\Github\\Client",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\GitHub\\AlreadyARepository",
+        "size": 3000,
+        "relations": [
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\PackageCollection",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Monorepo\\Package\\PackageCollection",
+            "\\ArrayIterator",
+            "\\Snicco\\Monorepo\\Package\\Package",
+            "\\Webmozart\\Assert\\Assert"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Monorepo\\Package\\ComposerJson",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Snicco\\Monorepo\\Package\\GetDependentPackages",

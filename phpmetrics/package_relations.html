@@ -50,7 +50,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-13 21:51:06        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-14 14:21:21        , with PHPMetrics v2.7.4 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -1888,6 +1888,16 @@
         ]
     },
     {
+        "name": "Snicco\\Monorepo",
+        "size": 3000,
+        "relations": [
+            "Webmozart\\Assert",
+            "Snicco\\Component\\StrArr",
+            "global",
+            "Snicco\\Monorepo\\Package"
+        ]
+    },
+    {
         "name": "Snicco\\Monorepo\\Package",
         "size": 3000,
         "relations": [
@@ -1896,6 +1906,36 @@
             "Symfony\\Component\\Finder",
             "global"
         ]
+    },
+    {
+        "name": "Snicco\\Monorepo\\Packagist",
+        "size": 3000,
+        "relations": [
+            "Webmozart\\Assert",
+            "GuzzleHttp",
+            "Snicco\\Monorepo\\Package",
+            "global"
+        ]
+    },
+    {
+        "name": "GuzzleHttp",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Monorepo\\GitHub",
+        "size": 3000,
+        "relations": [
+            "Webmozart\\Assert",
+            "Github",
+            "Snicco\\Monorepo\\Package",
+            "global"
+        ]
+    },
+    {
+        "name": "Github",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Symfony\\Component\\Finder",

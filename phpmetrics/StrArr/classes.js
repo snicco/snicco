@@ -183,7 +183,7 @@ var classes = [
         "totalSystemComplexity": 391,
         "package": "Snicco\\Component\\StrArr\\",
         "pageRank": 0.01,
-        "afferentCoupling": 22,
+        "afferentCoupling": 23,
         "efferentCoupling": 1,
         "instability": 0.04,
         "violations": {}
