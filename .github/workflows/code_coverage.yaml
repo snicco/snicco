@@ -12,9 +12,29 @@ env:
 
 jobs:
 
+  changes:
+    name: Filter path for tests
+    runs-on: ubuntu-20.04
+    outputs:
+      coverage: ${{ steps.filter.outputs.coverage }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Filter changed paths
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            coverage:
+              - 'src/**/*.php'
+              - 'codecov.yml'
+  
+
   unit_tests_coverage:
 
     name: Unit Tests Coverage
+    needs: changes
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -24,9 +44,11 @@ jobs:
 
     steps:
       - name: Checkout code
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: actions/checkout@v2
 
       - name: Setup PHP [${{ matrix.php }}]
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -37,29 +59,34 @@ jobs:
           fail-fast: true
 
       - name: Install composer dependencies
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run phpunit, testsuite component, middleware and bridge (=> testsuite unit)
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         run: |
           composer phpunit:all -- --coverage-clover coverage-phpunit.xml
 
       - name: Archive code coverage results
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: actions/upload-artifact@v2
         with:
           name: coverage-phpunit.xml
           path: coverage-phpunit.xml
 
       - name: Upload Code Coverage to Codecov
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f coverage-phpunit.xml -Z
 
-  wordpress_tests_coverage:
 
+  wordpress_tests_coverage:
     name: WordPress Tests Coverage
+    needs: changes
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -86,9 +113,11 @@ jobs:
 
     steps:
       - name: Checkout code
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: actions/checkout@v2
 
       - name: Setup PHP [${{ matrix.php }}]
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -99,12 +128,14 @@ jobs:
           fail-fast: true
 
       - name: Install composer dependencies
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: "ramsey/composer-install@v1"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
       # Config value must match the ones in env.testing.dist
       - name: Download WordPress [${{ matrix.wp }}]
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         run: |
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=${{ matrix.wp }}
@@ -118,16 +149,20 @@ jobs:
         working-directory: /tmp
 
       - name: Run WordPress tests with codeception
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         run: |
           composer codeception:all -- --coverage-xml codeception-coverage.xml
 
+
       - name: Archive code coverage results
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         uses: actions/upload-artifact@v2
         with:
           name: codeception-coverage.xml
           path: _output/codeception-coverage.xml
 
       - name: Upload Code Coverage to Codecov
+        if: ${{ needs.changes.outputs.coverage == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
