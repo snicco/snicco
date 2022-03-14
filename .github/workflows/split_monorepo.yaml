@@ -71,8 +71,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: '${{ matrix.packages.relative_path }}'
-          split_repository-organization: '${{ matrix.packages.vendor_name }}'
-          split_repository-name: '${{ matrix.packages.name }}'
+          repository_organization: '${{ matrix.packages.vendor_name }}'
+          repository_name: '${{ matrix.packages.name }}'
           user_name: "sniccowp-bot"
           user_email: "sniccowp-github@snicco.de"
           branch: "master"
@@ -87,8 +87,8 @@ jobs:
         with:
           tag: ${GITHUB_REF#refs/tags/}
           package_directory: '${{ matrix.packages.relative_path }}'
-          split_repository-organization: '${{ matrix.packages.vendor_name }}'
-          split_repository-name: '${{ matrix.packages.name }}'
+          repository_organization: '${{ matrix.packages.vendor_name }}'
+          repository_name: '${{ matrix.packages.name }}'
           user_name: "sniccowp-bot"
           user_email: "sniccowp-github@snicco.de"
           branch: "master"
