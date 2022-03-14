@@ -51,7 +51,7 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
           git-user-signingkey: true
           git-commit-gpgsign: true
-          git_config_global: true
+          git-config-global: true
 
       - name: Install composer dependencies
         uses: "ramsey/composer-install@v1"
