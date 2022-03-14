@@ -52,6 +52,9 @@ jobs:
           git-user-signingkey: true
           git-commit-gpgsign: true
 
+      - name: Install composer dependencies
+        uses: "ramsey/composer-install@v1"
+
       - name: Maybe Create GitHub Repo for package ${{ matrix.packages.full_name }}
         run: php bin/create-single-repo ${{ matrix.packages.relative_path }} --token=${{ secrets.ACCESS_TOKEN }}
 
