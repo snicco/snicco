@@ -57,8 +57,8 @@ jobs:
           chmod +x codecov
           ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f coverage-phpunit.xml -Z
 
-  wordpress_tests_coverage:
 
+  wordpress_tests_coverage:
     name: WordPress Tests Coverage
     runs-on: ubuntu-20.04
     strategy:
@@ -120,6 +120,7 @@ jobs:
       - name: Run WordPress tests with codeception
         run: |
           composer codeception:all -- --coverage-xml codeception-coverage.xml
+
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
