@@ -13,7 +13,7 @@
   },
   "scripts": {
     "commit": "cz",
-    "prepare": "node bin/prepare.js",
+    "prepare": "node bin/node/prepare.js",
     "semantic-release": "semantic-release"
   },
   "config": {
