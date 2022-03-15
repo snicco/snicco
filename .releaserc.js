@@ -17,7 +17,7 @@ module.exports = {
                 "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
             },
             "writerOpts": {
-                groupBy: 'scope',
+                groupBy: 'type',
                 commitGroupsSort: 'title',
                 commitsSort: ['scope', 'subject'],
                 noteGroupsSort: 'title',
@@ -31,7 +31,7 @@ module.exports = {
                 "src/**/composer.json",
                 "monorepo-builder.php"
             ],
-            "message": "chore(release): ${nextRelease.version} [skip ci]"
+            "message": "chore(monorepo): release v${nextRelease.version} [skip ci]"
         }]
     ]
 }
