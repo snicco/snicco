@@ -1,6 +1,20 @@
 # [1.3.0](https://github.com/sniccowp/sniccowp/compare/v1.2.0...v1.3.0) (2022-03-15)
 
 
+### Bug Fixes
+
+* **monorepo:** test fix monorepo ([a8e9bb8](https://github.com/sniccowp/sniccowp/commit/a8e9bb81366e2e5ca405f5979d8cf2b94455799d))
+
+
+### Features
+
+* **monorepo:** test by scope ([33046a4](https://github.com/sniccowp/sniccowp/commit/33046a4bf33b8854a4311c18f86a8372ba95db71))
+* **monorepo:** test feat monorepo ([82fed4f](https://github.com/sniccowp/sniccowp/commit/82fed4f431cf485fd89d26536308b9c66e1958bc))
+* **session:** test feat session ([bb56b55](https://github.com/sniccowp/sniccowp/commit/bb56b5505cdace22fbb917254ca762d0ce62de6a))
+
+# [1.3.0](https://github.com/sniccowp/sniccowp/compare/v1.2.0...v1.3.0) (2022-03-15)
+
+
 ### monorepo
 
 * **monorepo:** test by scope ([33046a4](https://github.com/sniccowp/sniccowp/commit/33046a4bf33b8854a4311c18f86a8372ba95db71))
