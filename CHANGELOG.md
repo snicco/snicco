@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/sniccowp/sniccowp/compare/v1.1.1...v1.2.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* **monorepo:** test fix ([a3f8a38](https://github.com/sniccowp/sniccowp/commit/a3f8a387cf686c39c49a090f8e79460ba8d67566))
+
+
+### Features
+
+* **better-wp-api:** test feature ([c433373](https://github.com/sniccowp/sniccowp/commit/c433373e55a062062f97d5c6bca09166cc9ab842))
+
 ## [1.1.1](https://github.com/sniccowp/sniccowp/compare/v1.1.0...v1.1.1) (2022-03-15)
 
 
