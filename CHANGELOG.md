@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/sniccowp/sniccowp/compare/v1.3.0...v1.4.0) (2022-03-15)
+
+
+### Features
+
+* **monorepo:** add monorepo-builder to semantic-release ([4984ee5](https://github.com/sniccowp/sniccowp/commit/4984ee50b80334da47ff1fc3ed3fab06799fca7a))
+
 # [1.3.0](https://github.com/sniccowp/sniccowp/compare/v1.2.0...v1.3.0) (2022-03-15)
 
 
