@@ -23,6 +23,9 @@ module.exports = {
                 noteGroupsSort: 'title',
             }
         }],
+        ["@semantic-release/exec", {
+            "prepareCmd": "./bin/prepare-composer.sh ${nextRelease.version}",
+        }],
         "@semantic-release/changelog",
         "@semantic-release/github",
         ["@semantic-release/git", {
