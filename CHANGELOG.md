@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/sniccowp/sniccowp/compare/v1.1.0...v1.1.1) (2022-03-15)
+
+
+### Bug Fixes
+
+* force fix ([fdc4d77](https://github.com/sniccowp/sniccowp/commit/fdc4d770b56c05ea68484c9afc3b53a2f6c8095b))
+
 # [1.1.0](https://github.com/sniccowp/sniccowp/compare/v1.0.0...v1.1.0) (2022-03-15)
 
 
