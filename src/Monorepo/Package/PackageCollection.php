@@ -62,7 +62,7 @@ final class PackageCollection implements Countable, JsonSerializable, IteratorAg
      */
     public function toArray(): array
     {
-        return array_values(array_map(fn(Package $package): array => $package->toArray(), $this->packages));
+        return array_values(array_map(fn (Package $package): array => $package->toArray(), $this->packages));
     }
 
     public function merge(PackageCollection $collection): PackageCollection
@@ -95,7 +95,11 @@ final class PackageCollection implements Countable, JsonSerializable, IteratorAg
 
     public function get(string $composer_name): Package
     {
-        Assert::true(isset($this->packages[$composer_name]), "The package [$composer_name] is not in the collection.");
+        Assert::true(
+            isset($this->packages[$composer_name]),
+            sprintf('The package [%s] is not in the collection.', $composer_name)
+        );
+
         return $this->packages[$composer_name];
     }
 }
