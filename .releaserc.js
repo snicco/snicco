@@ -18,7 +18,7 @@ module.exports = {
             },
             "writerOpts": {
                 // Sort by scope first, then by subject.
-                "commitsSort": ["subject", "scope"]
+                "commitsSort": ["scope", "subject"]
             }
         }],
         "@semantic-release/changelog",
