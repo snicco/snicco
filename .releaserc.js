@@ -17,7 +17,7 @@ module.exports = {
                 "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
             },
             "writerOpts": {
-                groupBy: 'type',
+                groupBy: 'scope',
                 commitGroupsSort: 'title',
                 commitsSort: ['scope', 'subject'],
                 noteGroupsSort: 'title',
