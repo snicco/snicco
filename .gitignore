@@ -7,6 +7,8 @@ composer.lock
 codeception.yml
 /.deptrac.cache
 _output
+node_modules
+package-lock.json
 
 # repos
 /src/Snicco/*/*/codeception.yml
