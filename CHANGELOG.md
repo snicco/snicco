@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/sniccowp/sniccowp/compare/v1.0.0...v1.1.0) (2022-03-15)
+
+
+### Features
+
+* **release:** forced release ([2e670ed](https://github.com/sniccowp/sniccowp/commit/2e670ed068406efbe341f1d3d50e4eb15b18420d))
+
 # 1.0.0 (2022-03-15)
 
 
