@@ -15,7 +15,16 @@ module.exports = {
             "preset": "angular",
             "parserOpts": {
                 "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+            },
+            "writerOpts": {
+                groupBy: 'type',
+                commitGroupsSort: 'title',
+                commitsSort: ['scope', 'subject'],
+                noteGroupsSort: 'title',
             }
+        }],
+        ["@semantic-release/exec", {
+            "prepareCmd": "./bin/prepare-composer.sh ${nextRelease.version}",
         }],
         "@semantic-release/changelog",
         "@semantic-release/github",
@@ -25,7 +34,7 @@ module.exports = {
                 "src/**/composer.json",
                 "monorepo-builder.php"
             ],
-            "message": "chore(release): ${nextRelease.version} [skip ci]"
+            "message": "chore(monorepo): release v${nextRelease.version} [skip ci]"
         }]
     ]
 }
