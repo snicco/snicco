@@ -15,10 +15,6 @@ module.exports = {
             "preset": "angular",
             "parserOpts": {
                 "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
-            },
-            "writerOpts": {
-                // Sort by scope first, then by subject.
-                "commitsSort": ["scope", "subject"]
             }
         }],
         "@semantic-release/changelog",
