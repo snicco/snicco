@@ -15,6 +15,7 @@ module.exports = {
                 'style',
                 'revert',
                 'test',
+                'chore'
             ],
         ],
         'subject-case': [2, 'always', 'lower-case'],
@@ -23,7 +24,6 @@ module.exports = {
         'header-max-length': [2, 'always', 72],
         'body-max-line-length': [2, 'always', 80],
         'body-case': [2, 'always', 'sentence-case'],
-        'body-full-stop': [2, 'always', '.'],
         'footer-max-line-length': [2, 'always', 80],
     },
     prompt: {
