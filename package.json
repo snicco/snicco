@@ -1,18 +1,26 @@
 {
+  "name": "sniccowp",
+  "version": "0.0.0-development",
   "devDependencies": {
     "@commitlint/config-conventional": "^16.2.1",
     "@commitlint/cz-commitlint": "^16.2.1",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "semantic-release": "^19.0.2"
   },
   "scripts": {
     "commit": "cz",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "semantic-release": "semantic-release"
   },
   "config": {
     "commitizen": {
       "path": "@commitlint/cz-commitlint"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sniccowp/sniccowp.git"
   }
 }
