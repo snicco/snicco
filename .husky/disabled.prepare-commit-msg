@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# This caused some strange issues where the editor would open up after committing or commitizen being run twice.
+# https://github.com/commitizen/cz-cli/issues/907
+# https://github.com/commitizen/cz-cli/issues/839
+# https://github.com/typicode/husky/issues/862
+exec < /dev/tty && npx cz --hook || true
