@@ -45,7 +45,6 @@ jobs:
 
       - name: disable admin enforcement
         uses: actions/github-script@v6
-        if: always()
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
