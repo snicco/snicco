@@ -1,17 +1,15 @@
 name: 'Tests'
 
 on:
-  push:
-    branches: master
   pull_request:
-  workflow_dispatch:
+
 
 jobs:
 
-  diff:
+  should_run:
     runs-on: ubuntu-20.04
     outputs:
-      php: ${{ steps.diff.outputs.php }}
+      true: ${{ steps.get_diff.outputs.php === 'true' }}
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v2
@@ -19,7 +17,7 @@ jobs:
       - name: 'Generate diff'
         # https://github.com/dorny/paths-filter/tree/v2.10.2
         uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
-        id: diff
+        id: get_diff
         with:
           filters: |
             php:
@@ -30,7 +28,7 @@ jobs:
 
   unit_tests:
     name: 'Unit tests'
-    needs: diff
+    needs: should_run
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -39,17 +37,13 @@ jobs:
         dependencies: [ lowest, highest ]
 
     steps:
-      - name: 'Should run?'
-        id: should_run
-        outputs:
-          true: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
 
       - name: 'Checkout code'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         uses: actions/checkout@v2
 
       - name: 'Setup PHP [${{ matrix.php }}]'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -57,18 +51,18 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: 'Install composer dependencies'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: 'Run phpunit tests'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         run: composer phpunit:all
 
   wordpress_tests:
     name: 'WordPress tests'
-    needs: diff
+    needs: should_run
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -95,17 +89,12 @@ jobs:
 
     steps:
 
-      - name: 'Should run?'
-        id: should_run
-        outputs:
-          true: ${{ needs.changes.outputs.php == 'true' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
-
       - name: 'Checkout code'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         uses: actions/checkout@v2
 
       - name: 'Setup PHP [${{ matrix.php }}]'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -114,14 +103,14 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: 'Install composer dependencies'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       # The config values must match the ones in env.testing.dist
       - name: 'Download WordPress [${{ matrix.wp }}]'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         run: |
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=${{ matrix.wp }}
@@ -135,5 +124,5 @@ jobs:
         working-directory: /tmp
 
       - name: 'Run codeception tests'
-        if: steps.should_run.outputs.true
+        if: needs.should_run.outputs.true
         run: composer codeception:all
