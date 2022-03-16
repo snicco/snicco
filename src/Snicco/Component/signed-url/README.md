@@ -115,7 +115,7 @@ Validation signed urls should be performed in a middleware to avoid boilerplate.
 #### PSR-15 middleware
 
 If your favorite framework is psr7/psr15 compatible and supports middleware on a per-route basis, you can use our
-inbuilt [psr15 middleware](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-middleware)
+inbuilt [psr15 middleware](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-psr15-bridge)
 which makes usage dead simple.
 
 #### All PHP apps
@@ -198,8 +198,8 @@ $storage = new \Snicco\Component\SignedUrl\Storage\InMemoryStorage()
 ---
 
 There is a
-dedicated [PSR-16 bridge](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-psr16) that
-allows you to use any compatible cache driver.
+dedicated [PSR-16 bridge](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-psr16-bridge)
+that allows you to use any compatible cache driver.
 
 ### WordPress Object Cache
 

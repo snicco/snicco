@@ -31,7 +31,7 @@ parameters:
     - name: signed_url_middleware
       collectors:
         - type: className
-          regex: Snicco\\Bridge\\SignedUrlMiddleware\\.*
+          regex: Snicco\\Bridge\\SignedUrlPsr15\\.*
 
     - name: signed_url_psr16
       collectors:

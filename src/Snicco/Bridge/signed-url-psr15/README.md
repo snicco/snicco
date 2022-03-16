@@ -13,7 +13,7 @@ know how to instantiate the needed collaborators.<br>
 ## Installation
 
 ```shell
-composer require sniccowp/signed-url-middleware
+composer require sniccowp/signed-url-psr15-bridge
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ $hmac = /* */
 
 $validator = new \Snicco\Component\SignedUrl\SignedUrlValidator($storage, $hmac);
 
-$middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
+$middleware = new \Snicco\Bridge\SignedUrlPsr15\ValidateSignature(
     $validator,
 );
 // Attach $middleware to your route.
@@ -53,7 +53,7 @@ invalidated.
 ```php
 // Same as above.
 $validator = /* */
-$middleware = new \Snicco\Bridge\SignedUrlMiddleware\ValidateSignature(
+$middleware = new \Snicco\Bridge\SignedUrlPsr15\ValidateSignature(
     $validator,
     function(\Psr\Http\Message\RequestInterface $request) {
         return $request->getHeaderLine('User-Agent');
@@ -89,7 +89,7 @@ $psr3_logger = /* */
 // will trigger garbage collection.
 $percentage = 4;
 
-$middleware = new \Snicco\Bridge\SignedUrlMiddleware\CollectGarbage($percentage, $storage, $logger);
+$middleware = new \Snicco\Bridge\SignedUrlPsr15\CollectGarbage($percentage, $storage, $logger);
 
 // Attach middleware 
 /* */
