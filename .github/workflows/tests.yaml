@@ -126,7 +126,7 @@ jobs:
         if: ${{ needs.should_run.outputs.diff == 'true' }}
         run: composer codeception:all
 
-  test_matrix:
+  check_matrix:
     name: 'Tests'
     runs-on: ubuntu-20.04
     needs: [ phpunit_tests, codeception_tests ]
