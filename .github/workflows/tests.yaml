@@ -8,7 +8,7 @@ jobs:
   should_run:
     runs-on: ubuntu-20.04
     outputs:
-      true: ${{ steps.get_diff.outputs.php === 'true' }}
+      diff: ${{ steps.get_diff.outputs.php }}
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v2
@@ -38,11 +38,11 @@ jobs:
     steps:
 
       - name: 'Checkout code'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         uses: actions/checkout@v2
 
       - name: 'Setup PHP [${{ matrix.php }}]'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -50,13 +50,13 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: 'Install composer dependencies'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: 'Run phpunit tests'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         run: composer phpunit:all
 
   codeception_tests:
@@ -89,11 +89,11 @@ jobs:
     steps:
 
       - name: 'Checkout code'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         uses: actions/checkout@v2
 
       - name: 'Setup PHP [${{ matrix.php }}]'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -102,14 +102,14 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: 'Install composer dependencies'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
       # The config values must match the ones in env.testing.dist
       - name: 'Download WordPress [${{ matrix.wp }}]'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         run: |
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=${{ matrix.wp }}
@@ -123,5 +123,5 @@ jobs:
         working-directory: /tmp
 
       - name: 'Run codeception tests'
-        if: needs.should_run.outputs.true
+        if: ${{ needs.should_run.outputs.diff == 'true' }}
         run: composer codeception:all
