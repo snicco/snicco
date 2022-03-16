@@ -8,9 +8,9 @@ on:
 # from codecov.io
 jobs:
 
-  unit_tests_coverage:
+  phpunit_coverage:
 
-    name: 'Unit Tests Coverage'
+    name: 'PHPUnit coverage'
     runs-on: ubuntu-20.04
 
     steps:
@@ -44,8 +44,8 @@ jobs:
           ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f coverage-phpunit.xml -Z
 
 
-  wordpress_tests_coverage:
-    name: 'WordPress Tests Coverage'
+  codeception_coverage:
+    name: 'Codeception coverage'
     runs-on: ubuntu-20.04
 
     services:
