@@ -1,4 +1,4 @@
-name: Conventional Commits
+name: 'Conventional commits'
 on:
   pull_request:
     types:
@@ -10,7 +10,7 @@ on:
 jobs:
 
   lint_commits:
-    name: Lint commits
+    name: 'Lint commits'
     runs-on: ubuntu-latest
     steps:
       # see: https://github.com/conventional-changelog/commitlint/issues/586#issuecomment-663571375
@@ -20,12 +20,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Setup Node.js
+      - name: 'Setup Node.js'
         uses: actions/setup-node@v2
         with:
           node-version: 'lts/*'
 
-      - name: run commitlint
+      - name: 'Run commitlint'
         # todo: decide if we switch to npm ci, requires locking package.json
         run: |
           FIRST_COMMIT_SHA=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.pull_request.commits_url }} | jq -r '.[0].sha')
