@@ -1,5 +1,6 @@
 [
     "monorepo",
+    "*",
     "better-wp-api",
     "better-wp-cache",
     "better-wp-hooks",
