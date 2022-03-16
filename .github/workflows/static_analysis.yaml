@@ -1,4 +1,4 @@
-name: 'Code Analysis'
+name: 'Static analysis'
 
 on:
   pull_request:
@@ -30,8 +30,6 @@ jobs:
               - 'src/**/composer.json'
             deptrac:
               - 'deptrac/**'
-
-
 
   static_analysis:
     name: ${{ matrix.actions.name }}
