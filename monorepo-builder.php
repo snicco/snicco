@@ -53,18 +53,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'prefer-stable' => true,
     ]);
 
-    $parameters->set(Option::DATA_TO_REMOVE, [
-        ComposerJsonSection::REQUIRE => [
-            'sniccowp/http-routing' => '*',
-            'sniccowp/psr7-error-handler' => '*',
-            'sniccowp/pimple-bridge' => '*',
-        ],
-        ComposerJsonSection::REQUIRE_DEV => [
-            // temporary until split
-            'sniccowp/pimple-bridge' => '*',
-        ],
-    ]);
-
     $services = $containerConfigurator->services();
 
     /*
