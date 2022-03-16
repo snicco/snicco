@@ -7,7 +7,6 @@ module.exports = {
             2,
             'always',
             [
-                'build',
                 'ci',
                 'docs',
                 'feat',
@@ -66,7 +65,7 @@ module.exports = {
                     },
                     refactor: {
                         description:
-                            'A code change that neither fixes a bug nor adds a feature',
+                            'A code change in src/* that neither fixes a bug nor adds a feature',
                         title: 'Code Refactoring',
                         emoji: '📦',
                     },
@@ -80,15 +79,9 @@ module.exports = {
                         title: 'Tests',
                         emoji: '🚨',
                     },
-                    build: {
-                        description:
-                            'Changes that affect the build system or external dependencies (example scopes: composer, monorepo-builder)',
-                        title: 'Builds',
-                        emoji: '🛠',
-                    },
                     ci: {
                         description:
-                            'Changes to our CI configuration files and scripts (example scopes: github)',
+                            'Changes to our CI configuration files and scripts',
                         title: 'Continuous Integrations',
                         emoji: '⚙️',
                     },
