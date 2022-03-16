@@ -19,11 +19,11 @@ try {
 
     $create_repository = new CreateRepository($api_token);
 
-    echo "Creating GitHub Repo for package [$package->full_name].\n";
+    echo "Creating GitHub Repo for package [{$package->full_name}].\n";
 
     try {
         $url = $create_repository($package);
-        echo "Created GitHub Repo for package [$package->full_name] at [$url].\n";
+        echo "Created GitHub Repo for package [{$package->full_name}] at [{$url}].\n";
     } catch (AlreadyARepository $e) {
         echo $e->getMessage() . "\n";
     }
@@ -31,4 +31,5 @@ try {
     echo sprintf("[%s] %d - %s\n", get_class($e), $e->getCode(), $e->getMessage());
     exit(1);
 }
+
 exit(0);

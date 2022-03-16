@@ -39,7 +39,7 @@ final class QueryInfo
     public array $bindings = [];
 
     /**
-     * @param non-empty-string $sql_with_placeholders
+     * @param non-empty-string   $sql_with_placeholders
      * @param array<scalar|null> $bindings
      */
     public function __construct(float $start, float $end, string $sql_with_placeholders, array $bindings)
@@ -66,27 +66,27 @@ final class QueryInfo
     {
         $bindings = array_map(function ($binding): string {
             if (is_int($binding)) {
-                return (string)$binding;
+                return (string) $binding;
             }
 
             if (is_float($binding)) {
-                return (string)$binding;
+                return (string) $binding;
             }
 
             if (null === $binding) {
                 return 'null';
             }
 
-            $binding = (string)$binding;
+            $binding = (string) $binding;
 
             return sprintf("'%s'", $binding);
         }, $bindings);
 
-        return (string)preg_replace_callback('#\?#', function () use (&$bindings): string {
+        return (string) preg_replace_callback('#\?#', function () use (&$bindings): string {
             /**
              * @var string[] $bindings
              */
-            return (string)(array_shift($bindings));
+            return (string) (array_shift($bindings));
         }, $sql_with_placeholders);
     }
 }

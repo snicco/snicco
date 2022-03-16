@@ -20,11 +20,11 @@ try {
 
     $create_package = new CreatePackage($user_name, $api_token);
 
-    echo "Pushing package [$package->full_name] to https://packagist.org.\n";
+    echo "Pushing package [{$package->full_name}] to https://packagist.org.\n";
 
     try {
         $url = $create_package($package);
-        echo "Pushed package [$package->full_name] to $url.\n";
+        echo "Pushed package [{$package->full_name}] to {$url}.\n";
     } catch (AlreadyAtPackagist $e) {
         echo $e->getMessage() . "\n";
     }
@@ -32,4 +32,5 @@ try {
     echo sprintf("[%s] %d - %s\n", get_class($e), $e->getCode(), $e->getMessage());
     exit(1);
 }
+
 exit(0);
