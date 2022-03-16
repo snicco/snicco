@@ -3,7 +3,6 @@ name: 'Tests'
 on:
   pull_request:
 
-
 jobs:
 
   should_run:
@@ -27,7 +26,7 @@ jobs:
               - 'codeception/*dist.yml'                
 
   unit_tests:
-    name: 'Unit tests'
+    name: 'PHPUnit tests'
     needs: should_run
     runs-on: ubuntu-20.04
     strategy:
@@ -60,8 +59,8 @@ jobs:
         if: needs.should_run.outputs.true
         run: composer phpunit:all
 
-  wordpress_tests:
-    name: 'WordPress tests'
+  codeception_tests:
+    name: 'Codeception tests'
     needs: should_run
     runs-on: ubuntu-20.04
     strategy:
