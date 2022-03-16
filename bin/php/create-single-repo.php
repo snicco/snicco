@@ -7,7 +7,7 @@ use Snicco\Monorepo\GitHub\CreateRepository;
 use Snicco\Monorepo\Input;
 use Snicco\Monorepo\SniccoWPPackageProvider;
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 try {
     $input = new Input($argv);
