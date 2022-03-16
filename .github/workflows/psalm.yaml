@@ -3,8 +3,9 @@ name: 'Psalm'
 on:
   pull_request:
   push:
-    # psalm needs to run on push to master, otherwise stats will never be sent to shepherd.io
-    - master
+    branches:
+      # psalm needs to run on push to master, otherwise stats will never be sent to shepherd.io
+      - master
 
 jobs:
   psalm:
