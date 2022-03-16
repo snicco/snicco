@@ -47,6 +47,7 @@ jobs:
           GIT_AUTHOR_EMAIL: sniccowp-github@snicco.de
           GIT_COMMITTER_NAME: sniccowp-bot
           GIT_COMMITTER_EMAIL: sniccowp-github@snicco.de
+        # This needs to be executable before the release.
         run: |
           chmod +x ./bin/prepare-composer.sh
           npx semantic-release
