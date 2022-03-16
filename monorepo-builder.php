@@ -67,6 +67,21 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services = $containerConfigurator->services();
 
+    /*
+     * We do only need these three release workers which run during the prepare command of the semantic release
+     * node package. Before the release commit is added we update:
+     * 1. the "replace" key in the root composer.json
+     * 2. the "conflicts" key of each package composer.json
+     * 3. all mutual dependencies between packages to the new version that is being released.
+     *
+     * In contrast to the classical monorepo builder approach (https://github.com/symplify/monorepo-builder#6-release-flow),
+     * we do not need to increase any branch aliases or make any manual tags.
+     *
+     * Branch aliases are not needed because the monorepo is only split if a release is made.
+     * Releases are only made for feat/fix/perf commits and thus there should never be the need for somebody to require
+     * "dev-master" of a single package. "dev-master" of any package is by design always identical to the
+     * latest tag of the package.
+     */
     $services->set(UpdateReplaceReleaseWorker::class);
     $services->set(SetCurrentMutualConflictsReleaseWorker::class);
     $services->set(SetCurrentMutualDependenciesReleaseWorker::class);
