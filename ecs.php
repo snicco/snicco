@@ -34,7 +34,7 @@ return static function (ContainerConfigurator $configurator): void {
         __DIR__ . '/tests',
         __DIR__ . '/ecs.php',
         __DIR__ . '/rector.php',
-        __DIR__ . '/bin',
+        __DIR__ . '/bin/php',
     ]);
     $parameters->set(Option::PARALLEL, true);
 

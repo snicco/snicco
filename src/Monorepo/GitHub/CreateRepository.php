@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Monorepo\GitHub;
 
 use Github\Api\Repo;
@@ -14,7 +13,6 @@ use Webmozart\Assert\Assert;
 
 final class CreateRepository
 {
-
     private Repo $github_client;
 
     public function __construct(string $access_token)
@@ -22,6 +20,7 @@ final class CreateRepository
         Assert::stringNotEmpty($access_token);
         $client = new Client();
         $client->authenticate($access_token, AuthMethod::ACCESS_TOKEN);
+
         $this->github_client = $client->repo();
     }
 
@@ -34,6 +33,7 @@ final class CreateRepository
         if (null === $repo_url) {
             return $this->createRepository($package);
         }
+
         throw new AlreadyARepository($repo_url, $package->full_name);
     }
 
@@ -43,11 +43,13 @@ final class CreateRepository
             $repo = $this->github_client->show($package->vendor_name, $package->name);
             Assert::true(isset($repo['html_url']));
             Assert::stringNotEmpty($repo['html_url']);
+
             return $repo['html_url'];
         } catch (Throwable $e) {
             if (404 === $e->getCode()) {
                 return null;
             }
+
             throw $e;
         }
     }
@@ -59,7 +61,7 @@ final class CreateRepository
     {
         $repo = $this->github_client->create(
             $package->name,
-            "[READ ONLY] Subtree split of the $package->full_name package (see sniccowp/sniccowp).",
+            sprintf('[READ ONLY] Subtree split of the %s package (see sniccowp/sniccowp).', $package->full_name),
             'https://github.com/sniccowp/sniccowp',
             true,
             $package->vendor_name,
@@ -76,5 +78,4 @@ final class CreateRepository
 
         return $repo['html_url'];
     }
-
 }

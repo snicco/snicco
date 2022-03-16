@@ -23,19 +23,23 @@ try {
                 $invalid[] = sprintf('Component package [%s] must not contain [middleware,bundle,bridge]', $name);
             }
         } elseif (Str::startsWith($rel_dir, 'src/Snicco/Bundle')) {
-            if (!Str::endsWith($name, '-bundle')) {
+            if (! Str::endsWith($name, '-bundle')) {
                 $invalid[] = sprintf('Bundle package [%s] must end with suffix "-bundle"', $name);
             }
         } elseif (Str::startsWith($rel_dir, 'src/Snicco/Middleware')) {
-            if (!Str::endsWith($name, '-middleware')) {
+            if (! Str::endsWith($name, '-middleware')) {
                 $invalid[] = sprintf('Middleware package [%s] must end with suffix "-middleware"', $name);
             }
         } elseif (Str::startsWith($rel_dir, 'src/Snicco/Bridge')) {
-            if (!Str::endsWith($name, '-bridge')) {
+            if (! Str::endsWith($name, '-bridge')) {
                 $invalid[] = sprintf('Bridge package [%s] must end with suffix "-bridge"', $name);
             }
         } else {
-            throw new InvalidArgumentException("Invalid relative directory $rel_dir for package $name");
+            throw new InvalidArgumentException(sprintf(
+                'Invalid relative directory %s for package %s',
+                $rel_dir,
+                $name
+            ));
         }
     }
 
@@ -43,6 +47,7 @@ try {
         echo implode("\n", $invalid) . "\n";
         exit(1);
     }
+
     echo "All packages names are valid.\n";
 } catch (Throwable $e) {
     echo $e->getMessage();
