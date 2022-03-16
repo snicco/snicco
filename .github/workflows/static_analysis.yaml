@@ -63,7 +63,7 @@ jobs:
               sudo mv composer-unused.phar /usr/local/bin/composer-unused
               composer-unused
 
-          - name: 'Composer Validate'
+          - name: 'Composer validate'
             should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.composer == 'true' }}
             run: composer validate
 
@@ -87,3 +87,15 @@ jobs:
       - name: ${{ matrix.actions.name }}
         if: ${{ matrix.actions.should_run == true }}
         run: ${{ matrix.actions.run }}
+
+  check_matrix:
+    name: 'Static Analysis'
+    runs-on: ubuntu-20.04
+    needs: static_analysis
+    if: ${{ always() }}
+    steps:
+      - name: 'Check matrix success'
+        if: ${{ needs.static_analysis.result != 'success'}}
+        run: |
+          echo "At least one static analysis tool has failed."
+          exit 1
