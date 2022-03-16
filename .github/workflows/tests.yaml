@@ -25,7 +25,7 @@ jobs:
               - 'phpunit.xml.dist'
               - 'codeception/*dist.yml'                
 
-  unit_tests:
+  phpunit_tests:
     name: 'PHPUnit tests'
     needs: should_run
     runs-on: ubuntu-20.04
@@ -125,3 +125,20 @@ jobs:
       - name: 'Run codeception tests'
         if: ${{ needs.should_run.outputs.diff == 'true' }}
         run: composer codeception:all
+
+  test_matrix:
+    name: 'Tests'
+    runs-on: ubuntu-20.04
+    needs: [ phpunit_tests, codeception_tests ]
+    if: ${{ always() }}
+    steps:
+      - name: 'Check phpunit tests'
+        if: ${{ needs.phpunit_tests.result != 'success'}}
+        run: |
+          echo "At least one PHPUnit step has failed."
+          exit 1
+      - name: 'Check codeception tests'
+        if: ${{ needs.codeception_tests.result != 'success'}}
+        run: |
+          echo "At least one Codeception step has failed."
+          exit
