@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\SignedUrlMiddleware\Tests;
+namespace Snicco\Bridge\SignedUrlPsr15\Tests;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Snicco\Bridge\SignedUrlMiddleware\ValidateSignature;
+use Snicco\Bridge\SignedUrlPsr15\ValidateSignature;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
 use Snicco\Component\SignedUrl\Exception\SignedUrlExpired;
@@ -117,7 +117,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
     {
         $m = new ValidateSignature(
             $this->validator,
-            fn (ServerRequestInterface $request): string => $request->getHeaderLine('User-Agent')
+            fn(ServerRequestInterface $request): string => $request->getHeaderLine('User-Agent')
         );
 
         $current_request = $this->frontendRequest()
