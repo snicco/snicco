@@ -223,20 +223,9 @@ final class Route
     }
 
     /**
-     * @param array<string,array<scalar>|scalar> $defaults
-     */
-    public function defaults(array $defaults): Route
-    {
-        foreach ($defaults as $key => $value) {
-            $this->addDefaultValue($key, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param '!'|class-string<RouteCondition> $condition
-     * @param scalar                           $args
+     * @param scalar $args
+     *
+     * @psalm-param  class-string<RouteCondition>|'!' $condition
      */
     public function condition(string $condition, ...$args): Route
     {
@@ -249,6 +238,18 @@ final class Route
         );
 
         $this->conditions[$b->class] = $b;
+
+        return $this;
+    }
+
+    /**
+     * @param array<string,array<scalar>|scalar> $defaults
+     */
+    public function defaults(array $defaults): Route
+    {
+        foreach ($defaults as $key => $value) {
+            $this->addDefaultValue($key, $value);
+        }
 
         return $this;
     }
@@ -453,6 +454,7 @@ final class Route
 
     /**
      * @param array<scalar>|scalar $value
+     *
      * @psalm-suppress DocblockTypeContradiction
      */
     private function addDefaultValue(string $key, $value): void
