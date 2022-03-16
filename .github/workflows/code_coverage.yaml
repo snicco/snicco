@@ -4,6 +4,8 @@ on:
   pull_request:
   workflow_dispatch:
 
+# These jobs must always run, otherwise the status check "project" will always be stuck waiting for a response
+# from codecov.io
 jobs:
 
   unit_tests_coverage:
