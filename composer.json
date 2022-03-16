@@ -183,10 +183,7 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "captainhook/plugin-composer": true
-        }
+        "sort-packages": true
     },
     "scripts": {
         "phpunit:all": "vendor/bin/phpunit --testsuite unit",
