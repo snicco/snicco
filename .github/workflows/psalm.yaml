@@ -1,0 +1,44 @@
+name: 'Psalm'
+
+on:
+  pull_request:
+  push:
+    # psalm needs to run on push to master, otherwise stats will never be sent to shepherd.io
+    - master
+
+jobs:
+  psalm:
+    name: 'Psalm'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Generate diff'
+        # https://github.com/dorny/paths-filter/tree/v2.10.2
+        uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
+        id: diff
+        with:
+          filters: |
+            psalm:
+              - 'src/**/*.php'
+              - 'tests/**/*.php'
+              - 'bin/*.php'
+              - 'psalm.xml'
+              - 'psalm/**'
+
+      - name: 'Setup PHP'
+        if: steps.diff.outputs.psalm == 'true'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: 'Install dependencies'
+        if: steps.diff.outputs.psalm == 'true'
+        uses: ramsey/composer-install@v1
+
+      - name: 'Psalm'
+        if: steps.diff.outputs.psalm == 'true'
+        run: composer psalm -- --shepherd --stats
