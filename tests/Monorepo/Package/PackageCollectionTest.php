@@ -66,5 +66,4 @@ final class PackageCollectionTest extends TestCase
         $this->expectExceptionMessage('The package [sniccowp/bogus] is not in the collection.');
         $all->get('sniccowp/bogus');
     }
-
 }

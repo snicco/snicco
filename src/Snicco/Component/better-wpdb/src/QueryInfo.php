@@ -60,7 +60,7 @@ final class QueryInfo
      * @psalm-suppress LessSpecificReturnStatement
      * @psalm-suppress MoreSpecificReturnType
      *
-     * @return non-empty-string
+     * @psalm-return non-empty-string
      */
     private function replacePlaceholders(string $sql_with_placeholders, array $bindings): string
     {

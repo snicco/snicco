@@ -89,8 +89,6 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
 
     /**
      * @param array{title: string, message:string} $info
-     *
-     * @psalm-suppress DocblockTypeContradiction
      */
     private function addMessage(int $status_code, array $info): void
     {
@@ -98,11 +96,17 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             throw new InvalidArgumentException('$status_code must be greater >= 400.');
         }
 
-        /** @var positive-int $status_code */
+        /**
+         * @var positive-int $status_code
+         * @psalm-suppress DocblockTypeContradiction
+         */
         if (! isset($info['title']) || ! is_string($info['title'])) {
             throw new InvalidArgumentException(sprintf('$title must be string for status code [%d].', $status_code));
         }
 
+        /**
+         * @psalm-suppress DocblockTypeContradiction
+         */
         if (! isset($info['message']) || ! is_string($info['message'])) {
             throw new InvalidArgumentException(sprintf('$message must be string for status code [%d].', $status_code));
         }

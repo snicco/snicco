@@ -89,10 +89,8 @@ final class CollectGarbageTest extends MiddlewareTestCase
         $this->runMiddleware($middleware, $this->frontendRequest())
             ->assertNextMiddlewareCalled();
 
-        $this->assertTrue(
-            $logger->hasError([
-                'message' => 'GC fail.',
-            ])
-        );
+        $this->assertTrue($logger->hasError([
+            'message' => 'GC fail.',
+        ]));
     }
 }

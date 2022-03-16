@@ -1,12 +1,13 @@
-name: Release
+name: 'Release'
 on:
   workflow_dispatch:
   push:
     branches:
       - master
+
 jobs:
   release:
-    name: Release
+    name: 'Release'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,25 +18,26 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: 'Setup Node.js'
         uses: actions/setup-node@v2
         with:
           node-version: 'lts/*'
 
-      - name: Setup PHP
+      - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
           coverage: none
 
-      - name: Install composer dependencies
+      - name: 'Install composer dependencies'
         uses: ramsey/composer-install@v1
 
-      - name: Install npm dependencies
+      - name: 'Install npm dependencies'
         run: npm install
 
-      - name: Import GPG keys
-        uses: crazy-max/ghaction-import-gpg@v3
+      - name: 'Import GPG keys'
+        # https://github.com/crazy-max/ghaction-import-gpg/releases/tag/v4.3.0
+        uses: crazy-max/ghaction-import-gpg@4d58d49bfefed583addec96996588e8bc4b306b8
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -43,7 +45,7 @@ jobs:
           git-commit-gpgsign: true
           git-config-global: true
 
-      - name: disable admin enforcement
+      - name: 'Disable admin enforcement'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.ACCESS_TOKEN }}
@@ -54,7 +56,7 @@ jobs:
               branch: 'master'
             })
 
-      - name: Release
+      - name: 'Semantic release'
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GIT_AUTHOR_NAME: sniccowp-bot
@@ -67,7 +69,7 @@ jobs:
           npx semantic-release
         shell: bash
 
-      - name: reenable admin enforcment
+      - name: 'Reenable admin enforcment'
         uses: actions/github-script@v6
         if: always()
         with:

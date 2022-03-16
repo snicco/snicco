@@ -13,9 +13,7 @@ try {
 
     $packages = $package_provider->getAll();
 
-    $packages = $packages->filter(function (Package $package): bool {
-        return !Str::contains($package->name, 'eloquent');
-    });
+    $packages = $packages->filter(fn (Package $package): bool => ! Str::contains($package->name, 'eloquent'));
 
     $packages = json_encode($packages, JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {

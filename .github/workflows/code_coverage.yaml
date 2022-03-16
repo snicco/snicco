@@ -1,57 +1,43 @@
-name: Code Coverage
+name: 'Code coverage'
 
 on:
-  push:
-    branches: master
   pull_request:
   workflow_dispatch:
 
-env:
-  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
-  COMPOSER_ROOT_VERSION: "dev-master"
-
+# These jobs must always run, otherwise the status check "project" will always be stuck waiting for a response
+# from codecov.io
 jobs:
 
   unit_tests_coverage:
 
-    name: Unit Tests Coverage
+    name: 'Unit Tests Coverage'
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [ 7.4 ]
-        dependencies: [ highest ]
 
     steps:
-      - name: Checkout code
+      - name: 'Checkout code'
         uses: actions/checkout@v2
 
-      - name: Setup PHP [${{ matrix.php }}]
+      - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          tools: composer:v2
+          php-version: 7.4
           coverage: xdebug3
           ini-values: error_reporting=E_ALL
-        env:
-          fail-fast: true
 
       - name: Install composer dependencies
         uses: ramsey/composer-install@v1
-        with:
-          dependency-versions: ${{ matrix.dependencies }}
 
-      - name: Run phpunit, testsuite component, middleware and bridge (=> testsuite unit)
+      - name: 'Collect phpunit coverage'
         run: |
           composer phpunit:all -- --coverage-clover coverage-phpunit.xml
 
-      - name: Archive code coverage results
+      - name: 'Archive code coverage artifacts'
         uses: actions/upload-artifact@v2
         with:
           name: coverage-phpunit.xml
           path: coverage-phpunit.xml
 
-      - name: Upload Code Coverage to Codecov
+      - name: 'Upload coverage to codecov.io'
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
@@ -59,14 +45,8 @@ jobs:
 
 
   wordpress_tests_coverage:
-    name: WordPress Tests Coverage
+    name: 'WordPress Tests Coverage'
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [ 7.4 ]
-        wp: [ 5.9 ]
-        dependencies: [ highest ]
 
     services:
       mysql:
@@ -85,29 +65,25 @@ jobs:
         options: --entrypoint redis-server
 
     steps:
-      - name: Checkout code
+      - name: 'Checkout code'
         uses: actions/checkout@v2
 
-      - name: Setup PHP [${{ matrix.php }}]
+      - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          tools: composer:v2, wp-cli
+          php-version: 7.4
+          tools: wp-cli
           coverage: xdebug3
           ini-values: error_reporting=E_ALL
-        env:
-          fail-fast: true
 
-      - name: Install composer dependencies
+      - name: 'Install composer dependencies'
         uses: "ramsey/composer-install@v1"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
 
-      # Config value must match the ones in env.testing.dist
+      # The config values here must match the ones in env.testing.dist
       - name: Download WordPress [${{ matrix.wp }}]
         run: |
           mkdir wordpress && cd wordpress
-          wp core download --force --skip-content --version=${{ matrix.wp }}
+          wp core download --force --skip-content --version=5.9
           wp config create --dbname="sniccowp_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
           wp core install --url="sniccowp.test" --title="SniccoWP" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
           wp core update-db
@@ -117,18 +93,17 @@ jobs:
           wp redis enable
         working-directory: /tmp
 
-      - name: Run WordPress tests with codeception
+      - name: 'Collect codeception coverage'
         run: |
           composer codeception:all -- --coverage-xml codeception-coverage.xml
 
-
-      - name: Archive code coverage results
+      - name: 'Archive code coverage results'
         uses: actions/upload-artifact@v2
         with:
           name: codeception-coverage.xml
           path: _output/codeception-coverage.xml
 
-      - name: Upload Code Coverage to Codecov
+      - name: 'Upload coverage to codecov.io'
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov

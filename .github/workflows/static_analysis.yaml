@@ -1,31 +1,24 @@
-name: Code Analysis
+name: 'Static analysis'
 
 on:
-  push:
-    branches: master
   pull_request:
-  workflow_dispatch:
-
-env:
-  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
-  COMPOSER_ROOT_VERSION: "dev-master"
 
 jobs:
-  changes:
-    name: Filter path for tests
+
+  diff:
+    name: 'Generate diff'
     runs-on: ubuntu-20.04
     outputs:
-      php: ${{ steps.filter.outputs.php }}
-      composer: ${{ steps.filter.outputs.composer }}
-      deptrac: ${{ steps.filter.outputs.composer }}
-      psalm: ${{ steps.filter.outputs.psalm }}
+      php: ${{ steps.diff.outputs.php }}
+      composer: ${{ steps.diff.outputs.composer }}
+      deptrac: ${{ steps.diff.outputs.deptrac }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Filter changed paths
-        uses: dorny/paths-filter@v2
-        id: filter
+        # https://github.com/dorny/paths-filter/tree/v2.10.2
+      - uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
+        id: diff
         with:
           filters: |
             php:
@@ -34,22 +27,20 @@ jobs:
               - 'bin/*.php'
             composer:
               - 'composer.json'
+              - 'src/**/composer.json'
             deptrac:
               - 'deptrac/**'
-            plsam:
-              - 'psalm.xml'
-              - 'psalm/**'
 
-  code_analysis:
+  static_analysis:
     name: ${{ matrix.actions.name }}
-    needs: changes
+    needs: diff
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         actions:
           - name: 'Deptrac'
-            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.deptrac == 'true' }}
+            should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.deptrac == 'true' }}
             run: |
               curl -LS https://github.com/qossmic/deptrac/releases/download/0.19.3/deptrac.phar -o deptrac.phar
               sudo chmod +x deptrac.phar
@@ -57,7 +48,7 @@ jobs:
               composer deptrac -- --formatter=github-actions
 
           - name: 'Composer require checker'
-            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.composer == 'true' }}
+            should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.composer == 'true' }}
             run: |
               curl -LS https://github.com/maglnet/ComposerRequireChecker/releases/download/3.8.0/composer-require-checker.phar -o require-checker.phar
               sudo chmod +x require-checker.phar
@@ -65,7 +56,7 @@ jobs:
               require-checker check composer.json --config-file=$GITHUB_WORKSPACE/composer-require-checker.json
 
           - name: 'Composer unused'
-            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.composer == 'true' }}
+            should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.composer == 'true' }}
             run: |
               curl -LS https://github.com/composer-unused/composer-unused/releases/download/0.7.12/composer-unused.phar -o composer-unused.phar
               sudo chmod +x composer-unused.phar
@@ -73,30 +64,26 @@ jobs:
               composer-unused
 
           - name: 'Composer Validate'
-            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.composer == 'true' }}
+            should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.composer == 'true' }}
             run: composer validate
-
-          - name: 'Psalm'
-            should_run: ${{ needs.changes.outputs.php == 'true' || needs.changes.outputs.psalm == 'true' }}
-            run: composer psalm -- --shepherd --stats
 
     # The value of matrix.actions.should_run is (bool) true. Not (string) true as in the matrix.
     steps:
       - name: 'Checkout repo'
-        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ matrix.actions.should_run == true }}
         uses: actions/checkout@v2
 
       - name: 'Setup PHP'
-        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ matrix.actions.should_run == true }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
           coverage: none
 
       - name: 'Install dependencies'
-        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ matrix.actions.should_run == true }}
         uses: ramsey/composer-install@v1
 
       - name: ${{ matrix.actions.name }}
-        if: ${{ matrix.actions.should_run == true || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ matrix.actions.should_run == true }}
         run: ${{ matrix.actions.run }}

@@ -71,7 +71,7 @@ final class PackageProvider
     public function getAffected(array $changed_files): PackageCollection
     {
         $modified_files_abs_path = array_map(
-            fn(string $file): string => $this->makeAbsolute($file),
+            fn (string $file): string => $this->makeAbsolute($file),
             $changed_files
         );
 
@@ -105,11 +105,7 @@ final class PackageProvider
         $dir = dirname($path_to_composer_json);
         $rel_path = ltrim(Str::afterFirst($dir, $this->repository_root_dir), DIRECTORY_SEPARATOR);
 
-        return new Package(
-            $rel_path,
-            $dir,
-            $composer_json
-        );
+        return new Package($rel_path, $dir, $composer_json);
     }
 
     /**
@@ -133,7 +129,7 @@ final class PackageProvider
 
         $file = $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
 
-        if (!file_exists($file)) {
+        if (! file_exists($file)) {
             throw new InvalidArgumentException(sprintf('Non-existent file [%s] provided.', $file));
         }
 
