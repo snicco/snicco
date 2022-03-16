@@ -232,9 +232,13 @@
       "@psalm:clear-cache",
       "@psalm --update-baseline"
     ],
-    "lint": [
+    "lint:fix": [
       "vendor/bin/rector process",
       "vendor/bin/ecs --fix"
+    ],
+    "lint": [
+      "vendor/bin/rector process --dry-run",
+      "vendor/bin/ecs check"
     ]
   },
   "replace": {
