@@ -1,5 +1,5 @@
 {
-  "name": "sniccowp/signed-url-middleware",
+  "name": "sniccowp/signed-url-psr15-bridge",
   "description": "Psr15 middleware integration for sniccowp/signed-url.",
   "license": "MIT",
   "authors": [
@@ -22,12 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Bridge\\SignedUrlMiddleware\\": "src"
+      "Snicco\\Bridge\\SignedUrlPsr15\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Bridge\\SignedUrlMiddleware\\Tests\\": "tests"
+      "Snicco\\Bridge\\SignedUrlPsr15\\Tests\\": "tests"
     }
   },
   "conflict": {
@@ -45,10 +45,10 @@
     "sniccowp/session": "<1.0.0",
     "sniccowp/better-wp-api": "<1.0.0",
     "sniccowp/kernel": "<1.0.0",
-    "sniccowp/session-wp": "<1.0.0",
-    "sniccowp/session-psr16": "<1.0.0",
+    "sniccowp/session-wp-bridge": "<1.0.0",
+    "sniccowp/session-psr16-bridge": "<1.0.0",
     "sniccowp/blade-bridge": "<1.0.0",
-    "sniccowp/signed-url-psr16": "<1.0.0",
+    "sniccowp/signed-url-psr16-bridge": "<1.0.0",
     "sniccowp/illuminate-container-bridge": "<1.0.0",
     "sniccowp/pimple-bridge": "<1.0.0",
     "sniccowp/no-robots-middleware": "<1.0.0",

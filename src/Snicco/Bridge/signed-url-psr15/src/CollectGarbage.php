@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\SignedUrlMiddleware;
+namespace Snicco\Bridge\SignedUrlPsr15;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

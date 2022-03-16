@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\SignedUrlMiddleware\Tests;
+namespace Snicco\Bridge\SignedUrlPsr15\Tests;
 
 use Psr\Log\Test\TestLogger;
-use Snicco\Bridge\SignedUrlMiddleware\CollectGarbage;
+use Snicco\Bridge\SignedUrlPsr15\CollectGarbage;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\SignedUrl\Exception\UnavailableStorage;
 use Snicco\Component\SignedUrl\HMAC;
@@ -89,8 +89,10 @@ final class CollectGarbageTest extends MiddlewareTestCase
         $this->runMiddleware($middleware, $this->frontendRequest())
             ->assertNextMiddlewareCalled();
 
-        $this->assertTrue($logger->hasError([
-            'message' => 'GC fail.',
-        ]));
+        $this->assertTrue(
+            $logger->hasError([
+                'message' => 'GC fail.',
+            ])
+        );
     }
 }
