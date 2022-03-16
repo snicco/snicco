@@ -43,7 +43,7 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             $this->addMessage($status_code, $title_and_details);
         }
 
-        if (! isset($this->default_messages[500])) {
+        if (!isset($this->default_messages[500])) {
             throw new InvalidArgumentException('Data for the 500 status code must be provided.');
         }
 
@@ -89,8 +89,6 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
 
     /**
      * @param array{title: string, message:string} $info
-     *
-     * @psalm-suppress DocblockTypeContradiction
      */
     private function addMessage(int $status_code, array $info): void
     {
@@ -98,12 +96,18 @@ final class InformationProviderWithTransformation implements ExceptionInformatio
             throw new InvalidArgumentException('$status_code must be greater >= 400.');
         }
 
-        /** @var positive-int $status_code */
-        if (! isset($info['title']) || ! is_string($info['title'])) {
+        /**
+         * @var positive-int $status_code
+         * @psalm-suppress DocblockTypeContradiction
+         */
+        if (!isset($info['title']) || !is_string($info['title'])) {
             throw new InvalidArgumentException(sprintf('$title must be string for status code [%d].', $status_code));
         }
 
-        if (! isset($info['message']) || ! is_string($info['message'])) {
+        /**
+         * @psalm-suppress DocblockTypeContradiction
+         */
+        if (!isset($info['message']) || !is_string($info['message'])) {
             throw new InvalidArgumentException(sprintf('$message must be string for status code [%d].', $status_code));
         }
 
