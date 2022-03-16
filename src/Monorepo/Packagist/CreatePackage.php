@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Monorepo\Packagist;
 
 use GuzzleHttp\Client;
@@ -15,9 +14,10 @@ use function sprintf;
 
 final class CreatePackage
 {
-
     private string $username;
+
     private string $api_token;
+
     private Client $client;
 
     public function __construct(string $username, string $api_token)
@@ -34,6 +34,7 @@ final class CreatePackage
         if ($this->isPackagistRepo($package)) {
             throw new AlreadyAtPackagist($package->full_name, $this->packageUrlHtml($package));
         }
+
         return $this->creatPackagistPackage($package);
     }
 
@@ -53,14 +54,16 @@ final class CreatePackage
             $response = $this->client->get($this->packageUrlJson($package), [
                 'headers' => [
                     'User-Agent' => 'sniccowp/sniccowp',
-                    'Accept' => 'application/json'
-                ]
+                    'Accept' => 'application/json',
+                ],
             ]);
-            return $response->getStatusCode() === 200;
+
+            return 200 === $response->getStatusCode();
         } catch (ClientException $e) {
             if (404 === $e->getCode()) {
                 return false;
             }
+
             throw $e;
         }
     }
@@ -70,21 +73,28 @@ final class CreatePackage
         $response = $this->client->post('https://packagist.org/api/create-package', [
             'headers' => [
                 'User-Agent' => 'sniccowp/sniccowp monorepo',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ],
-            'query' => ['username' => $this->username, 'apiToken' => $this->api_token],
+            'query' => [
+                'username' => $this->username,
+                'apiToken' => $this->api_token,
+            ],
             'json' => [
                 'repository' => [
-                    'url' => 'https://github.com/' . $package->full_name
-                ]
-            ]
+                    'url' => 'https://github.com/' . $package->full_name,
+                ],
+            ],
         ]);
         if (202 !== $response->getStatusCode()) {
             throw new RuntimeException(
-                "Packagist returned unexpected status code [{$response->getStatusCode()}] while creating package [$package->full_name]."
+                sprintf(
+                    'Packagist returned unexpected status code [%s] while creating package [%s].',
+                    $response->getStatusCode(),
+                    $package->full_name
+                )
             );
         }
+
         return $this->packageUrlJson($package);
     }
-
 }

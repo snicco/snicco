@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Monorepo;
 
 use InvalidArgumentException;
@@ -11,9 +10,11 @@ use Webmozart\Assert\Assert;
 
 final class Input
 {
-
     private array $argv;
 
+    /**
+     * @param mixed[] $argv
+     */
     public function __construct(array $argv)
     {
         $this->argv = $argv;
@@ -29,13 +30,14 @@ final class Input
          * @var mixed $input
          */
         foreach ($this->argv as $input) {
-            $input = (string)$input;
+            $input = (string) $input;
 
             if (Str::startsWith($input, $key . '=')) {
                 return Str::afterFirst($input, $key . '=');
             }
         }
-        throw new InvalidArgumentException("Required input [$key] not provided.");
+
+        throw new InvalidArgumentException(sprintf('Required input [%s] not provided.', $key));
     }
 
     public function mainArg(): string
@@ -43,7 +45,7 @@ final class Input
         Assert::true(isset($this->argv[1]), 'Main input not provided.');
         $value = $this->argv[1];
         Assert::string($value);
+
         return $value;
     }
-
 }

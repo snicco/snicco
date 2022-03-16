@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Monorepo\Package;
 
 use InvalidArgumentException;
@@ -11,10 +10,13 @@ use Snicco\Monorepo\Package\PackageProvider;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class GetPackageTest extends TestCase
 {
-
     private string $fixtures_dir;
+
     private PackageProvider $package_provider;
 
     protected function setUp(): void
@@ -41,7 +43,6 @@ final class GetPackageTest extends TestCase
         $this->assertSame($this->fixtures_dir . '/packages/Component/component-a', $package->package_dir_abs);
         $this->assertSame('component-a-name', $package->name);
 
-
         $package = $this->package_provider->get('packages/Component/component-a/composer.json');
         $this->assertSame(
             $this->fixtures_dir . '/packages/Component/component-a/composer.json',
@@ -55,5 +56,4 @@ final class GetPackageTest extends TestCase
         $this->expectExceptionMessage('Non-existent file');
         $this->package_provider->get($this->fixtures_dir . '/packages/Component/component-bogus/composer.json');
     }
-
 }
