@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+composer lint || { echo "Please run composer lint:fix before pushing" && exit 1; }

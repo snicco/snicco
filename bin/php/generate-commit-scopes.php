@@ -40,7 +40,7 @@ try {
     $merged = [...$extra_scopes, ...$components, ...$bridge, ...$bundles, ...$middleware];
 
     $json = json_encode($merged, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
-    $res = file_put_contents($f = dirname(__DIR__, 2) . '/commit-scopes.json', (string)$json);
+    $res = file_put_contents($f = dirname(__DIR__, 2) . '/commit-scopes.json', (string) $json);
     Assert::notFalse($res, 'Could not update commit scopes.');
     echo sprintf("Updated commit scopes at [%s]\n", $f);
 } catch (Throwable $e) {
