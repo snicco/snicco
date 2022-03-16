@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          # If we use the default token the sniccowp-bot is authenticated correctly for some reason.
+          # Commits will then fail due to branch protection rules.
+          token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -40,6 +43,18 @@ jobs:
           git-commit-gpgsign: true
           git-config-global: true
 
+      - name: disable admin enforcement
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            result = github.rest.repos.deleteAdminBranchProtection({
+              owner: 'sniccowp',
+              repo: 'sniccowp',
+              branch: 'master'
+            })
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -52,3 +67,15 @@ jobs:
           chmod +x ./bin/prepare-composer.sh
           npx semantic-release
         shell: bash
+
+      - name: reenable admin enforcment
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            result = github.rest.repos.setAdminBranchProtection({
+              owner: 'sniccowp',
+              repo: 'sniccowp',
+              branch: 'master'
+            })
