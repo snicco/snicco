@@ -153,6 +153,12 @@ jobs:
           ./vendor/bin/monorepo-builder localize-composer-paths ${{ matrix.packages.composer_json_path }} --ansi
           composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
 
+      - name: 'Parse .env file'
+        run: |
+          echo ${{github.env}}
+          cat ./tests/.env.testing.dist >> $GITHUB_ENV
+          echo ${{github.env}}
+
       - name: 'Run codeception tests'
         run: vendor/bin/codecept run wordpress
         working-directory: ${{ matrix.packages.absolute_path }}
