@@ -10,10 +10,12 @@ _output
 node_modules
 package-lock.json
 
+# temporary
+/bin/change-packages
+
 # repos
 /src/Snicco/*/*/codeception.yml
 /src/Snicco/*/*/vendor
 /src/Snicco/*/*/composer.lock
 /src/Snicco/*/*/phpunit.xml
 /src/Snicco/*/*/tests/_output/*
-/bin/change-composer
