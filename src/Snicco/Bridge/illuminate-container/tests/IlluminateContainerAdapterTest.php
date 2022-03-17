@@ -6,15 +6,15 @@ namespace Snicco\Bridge\IlluminateContainer\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Bridge\IlluminateContainer\IlluminateContainerAdapter;
+use Snicco\Component\DIContainerTest\DIContainerContractTests;
 use Snicco\Component\Kernel\DIContainer;
-use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
 /**
  * @internal
  */
 final class IlluminateContainerAdapterTest extends TestCase
 {
-    use DIContainerContractTest;
+    use DIContainerContractTests;
 
     public function createContainer(): DIContainer
     {

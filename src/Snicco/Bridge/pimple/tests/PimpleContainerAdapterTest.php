@@ -6,15 +6,15 @@ namespace Snicco\Bridge\Pimple\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
+use Snicco\Component\DIContainerTest\DIContainerContractTests;
 use Snicco\Component\Kernel\DIContainer;
-use Snicco\Component\Kernel\Testing\DIContainerContractTest;
 
 /**
  * @internal
  */
 final class PimpleContainerAdapterTest extends TestCase
 {
-    use DIContainerContractTest;
+    use DIContainerContractTests;
 
     public function createContainer(): DIContainer
     {
