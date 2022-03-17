@@ -80,7 +80,7 @@ jobs:
         uses: "ramsey/composer-install@v1"
 
       # The config values here must match the ones in env.testing.dist
-      - name: Download WordPress [${{ matrix.wp }}]
+      - name: Download WordPress 5.9
         run: |
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=5.9

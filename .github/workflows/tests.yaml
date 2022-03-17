@@ -6,6 +6,7 @@ on:
 jobs:
 
   should_run:
+    name: 'Generate diff'
     runs-on: ubuntu-20.04
     outputs:
       diff: ${{ steps.get_diff.outputs.php }}
