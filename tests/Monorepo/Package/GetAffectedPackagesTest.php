@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Monorepo\Tests\Package;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Monorepo\Package\ComposerJson;
-use Snicco\Monorepo\Package\Package;
 use Snicco\Monorepo\Package\PackageCollection;
 use Snicco\Monorepo\Package\PackageProvider;
 
@@ -94,55 +91,5 @@ final class GetAffectedPackagesTest extends TestCase
         $this->assertTrue($packages->contains('sniccowp/component-a-name'));
     }
 
-    /**
-     * @test
-     */
-    public function that_dependencies_are_resolved_from_composer_json_recursively(): void
-    {
-        $packages = $this->package_provider->getAffected(
-            [dirname(__DIR__) . '/fixtures/packages/Component/component-b/component-b.php']
-        );
 
-        $expected = new PackageCollection([
-            new Package(
-                'packages/Bundle/bundle-a',
-                $this->fixtures_dir . '/packages/Bundle/bundle-a',
-                ComposerJson::for($this->fixtures_dir . '/packages/Bundle/bundle-a/composer.json')
-            ),
-            new Package(
-                'packages/Bundle/bundle-b',
-                $this->fixtures_dir . '/packages/Bundle/bundle-b',
-                ComposerJson::for($this->fixtures_dir . '/packages/Bundle/bundle-b/composer.json')
-            ),
-            new Package(
-                'packages/Component/component-a',
-                $this->fixtures_dir . '/packages/Component/component-a',
-                ComposerJson::for($this->fixtures_dir . '/packages/Component/component-a/composer.json')
-            ),
-            new Package(
-                'packages/Component/component-b',
-                $this->fixtures_dir . '/packages/Component/component-b',
-                ComposerJson::for($this->fixtures_dir . '/packages/Component/component-b/composer.json')
-            ),
-        ]);
-
-        $this->assertEquals($expected, $packages);
-
-        $packages = $this->package_provider->getAffected(['/packages/Component/component-b/component-b.php']);
-        $this->assertEquals($expected, $packages);
-    }
-
-    /**
-     * @test
-     */
-    public function that_recursion_is_detected(): void
-    {
-        $provider = new PackageProvider($this->fixtures_dir, [$this->fixtures_dir . '/wrong-packages/recursion']);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Package [sniccowp/package-c] requires a package that itself requires package [sniccowp/package-c] somewhere in the dependency chain.'
-        );
-        $provider->getAffected(['/wrong-packages/recursion/package-c/package-c.php']);
-    }
 }

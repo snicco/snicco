@@ -12,8 +12,10 @@ use Webmozart\Assert\Assert;
 
 use function array_map;
 use function dirname;
-use function file_exists;
+use function is_file;
 use function ltrim;
+use function realpath;
+use function sprintf;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -71,7 +73,7 @@ final class PackageProvider
     public function getAffected(array $changed_files): PackageCollection
     {
         $modified_files_abs_path = array_map(
-            fn (string $file): string => $this->makeAbsolute($file),
+            fn(string $file): string => $this->makeAbsolute($file),
             $changed_files
         );
 
@@ -89,7 +91,7 @@ final class PackageProvider
             return false;
         });
 
-        $indirectly_affected_packages = (new GetDependentPackages())(
+        $indirectly_affected_packages = (new GetDirectlyDependentPackages())(
             $directly_affected_packages,
             $all_packages
         );
@@ -123,16 +125,18 @@ final class PackageProvider
 
     private function makeAbsolute(string $file): string
     {
-        if (file_exists($file)) {
-            return $file;
+        $realpath = (string)realpath($file);
+
+        if (is_file($realpath)) {
+            return $realpath;
         }
 
-        $file = $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
+        $concat = $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
 
-        if (! file_exists($file)) {
-            throw new InvalidArgumentException(sprintf('Non-existent file [%s] provided.', $file));
+        if (is_file($concat)) {
+            return $concat;
         }
 
-        return $file;
+        throw new InvalidArgumentException(sprintf('Non-existent file [%s] provided.', $file));
     }
 }
