@@ -76,5 +76,6 @@
         "sniccowp/blade-bundle": "<1.0.0",
         "sniccowp/better-wp-mail-bundle": "<1.0.0"
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

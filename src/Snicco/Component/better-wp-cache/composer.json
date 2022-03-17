@@ -84,5 +84,7 @@
         "sniccowp/better-wp-cache-bundle": "<1.0.0",
         "sniccowp/session-bundle": "<1.0.0",
         "sniccowp/encryption-bundle": "<1.0.0"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
