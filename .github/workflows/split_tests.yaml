@@ -1,0 +1,85 @@
+name: 'Split tests'
+
+on:
+  pull_request:
+
+env:
+  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+  COMPOSER_ROOT_VERSION: "dev-master"
+
+jobs:
+
+  should_run:
+    runs-on: ubuntu-20.04
+    outputs:
+      files: ${{ steps.get_diff.outputs.php_files }}
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Generate diff'
+        # https://github.com/dorny/paths-filter/tree/v2.10.2
+        uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
+        id: get_diff
+        with:
+          list-files: 'shell'
+          filters: |
+            php:
+              - 'src/**/*.php'
+              - 'src/**/*.composer.json'
+              - 'src/**/*.phpunit.xml.dist'
+              - 'src/**/*.codeception.dist.yml'
+
+  provide_affected_packages:
+    name: 'Provide affected package matrix'
+    needs: should_run
+    if: ${{ needs.should_run.diff.php != '[]' && needs.should_run.diff.php != '' }}
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.affected_packages.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - uses: "ramsey/composer-install@v1"
+
+      - id: affected_packages
+        run: echo "::set-output name=matrix::$(php bin/affected-packages needs.should_run.outputs.files}"
+
+  phpunit_split_tests:
+    name: 'PHPUnit split tests'
+    needs: provide_affected_packages
+    if: ${{ needs.provide_affected_packages.outputs.matrix.phpunit != '[]' }}
+    runs-on: ubuntu-20.04
+    matrix:
+      packages: ${{fromJson(needs.provide_affected_packages.outputs.matrix.phpunit)}}
+      php: [ '7.4' ]
+      dependencies: [ highest ]
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP [${{ matrix.php }}]'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: 'Install composer dependencies'
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: 'Localize composer paths'
+        run: |
+          ./vendor/bin/monorepo-builder localize-composer-paths ${{ matrix.packages.composer_json_path }} --ansi
+          composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
+
+      - name: 'Run composer tests of package ${{ matrix.packages.full_name }}'
+        run: vendor/bin/phpunit
+        working-directory: ${{ matrix.packages.absolute_path }}'
