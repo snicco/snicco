@@ -104,7 +104,7 @@ final class Package implements JsonSerializable
         $all = array_keys($this->composer_json->allRequired());
 
         /** @psalm-suppress ImpureFunctionCall */
-        return array_values(array_filter($all, fn(string $name): bool => Str::startsWith($name, $this->vendor_name)));
+        return array_values(array_filter($all, fn (string $name): bool => Str::startsWith($name, $this->vendor_name)));
     }
 
     public function jsonSerialize(): array

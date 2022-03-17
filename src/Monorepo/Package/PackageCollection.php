@@ -62,7 +62,7 @@ final class PackageCollection implements Countable, JsonSerializable, IteratorAg
      */
     public function toArray(): array
     {
-        return array_values(array_map(fn(Package $package): array => $package->toArray(), $this->packages));
+        return array_values(array_map(fn (Package $package): array => $package->toArray(), $this->packages));
     }
 
     public function merge(PackageCollection $collection): PackageCollection

@@ -73,7 +73,7 @@ final class PackageProvider
     public function getAffected(array $changed_files): PackageCollection
     {
         $modified_files_abs_path = array_map(
-            fn(string $file): string => $this->makeAbsolute($file),
+            fn (string $file): string => $this->makeAbsolute($file),
             $changed_files
         );
 
@@ -125,7 +125,7 @@ final class PackageProvider
 
     private function makeAbsolute(string $file): string
     {
-        $realpath = (string)realpath($file);
+        $realpath = (string) realpath($file);
 
         if (is_file($realpath)) {
             return $realpath;
