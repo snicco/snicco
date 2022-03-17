@@ -14,18 +14,14 @@ try {
     $input = $argv;
     array_shift($input);
     $diff = $input;
-    
+
     Assert::allString($diff);
 
     $package_provider = SniccoWPPackageProvider::create();
     $packages = $package_provider->getAffected($diff);
 
-    $codeception = $packages->filter(function (Package $package): bool {
-        return $package->usesCodeception();
-    });
-    $phpunit = $packages->filter(function (Package $package): bool {
-        return $package->usesPHPUnit();
-    });
+    $codeception = $packages->filter(fn (Package $package): bool => $package->usesCodeception());
+    $phpunit = $packages->filter(fn (Package $package): bool => $package->usesPHPUnit());
 
     $matrix = [
         'phpunit' => $phpunit,

@@ -90,6 +90,4 @@ final class GetAffectedPackagesTest extends TestCase
         $this->assertTrue($packages->contains('sniccowp/bundle-a-name'));
         $this->assertTrue($packages->contains('sniccowp/component-a-name'));
     }
-
-
 }

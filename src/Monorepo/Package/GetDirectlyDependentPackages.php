@@ -13,7 +13,6 @@ use function in_array;
  */
 final class GetDirectlyDependentPackages
 {
-
     public function __invoke(PackageCollection $packages, PackageCollection $all_packages): PackageCollection
     {
         return $this->resolveDependents($packages, $all_packages);
@@ -35,12 +34,7 @@ final class GetDirectlyDependentPackages
     private function resolveDependentsForPackage(string $name, PackageCollection $all_packages): PackageCollection
     {
         return $all_packages->filter(
-            fn(Package $package): bool => in_array(
-                $name,
-                $package->firstPartyDependencyNames(),
-                true
-            )
+            fn (Package $package): bool => in_array($name, $package->firstPartyDependencyNames(), true)
         );
     }
-
 }
