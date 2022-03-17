@@ -67,7 +67,7 @@ final class ComposerJson
             throw new RuntimeException(sprintf('Could not read contents of file [%s]', $composer_json_file));
         }
 
-        $content = (array) json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        $content = (array)json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
 
         /**
          * @psalm-var array<string,mixed> $content
@@ -82,7 +82,7 @@ final class ComposerJson
      */
     public function require(): array
     {
-        $require = (array) ($this->composer_json_contents[self::REQUIRE] ?? []);
+        $require = (array)($this->composer_json_contents[self::REQUIRE] ?? []);
         Assert::allString($require);
         Assert::allString(array_keys($require));
 
@@ -98,7 +98,7 @@ final class ComposerJson
      */
     public function requireDev(): array
     {
-        $require = (array) ($this->composer_json_contents[self::REQUIRE_DEV] ?? []);
+        $require = (array)($this->composer_json_contents[self::REQUIRE_DEV] ?? []);
         Assert::allString($require);
         Assert::allString(array_keys($require));
 
@@ -142,5 +142,10 @@ final class ComposerJson
         Assert::string($description);
 
         return $description;
+    }
+
+    public function contents(): array
+    {
+        return $this->composer_json_contents;
     }
 }
