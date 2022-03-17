@@ -16,3 +16,4 @@ package-lock.json
 /src/Snicco/*/*/composer.lock
 /src/Snicco/*/*/phpunit.xml
 /src/Snicco/*/*/tests/_output/*
+/bin/change-composer
