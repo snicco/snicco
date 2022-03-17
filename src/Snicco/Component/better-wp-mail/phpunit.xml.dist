@@ -11,5 +11,12 @@
          failOnWarning="true"
          verbose="true"
          colors="true"
+         bootstrap="vendor/autoload.php"
 >
+    <testsuites>
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests</directory>
+            <exclude>tests/wordpress</exclude>
+        </testsuite>
+    </testsuites>
 </phpunit>

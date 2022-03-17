@@ -11,16 +11,12 @@
          failOnWarning="true"
          verbose="true"
          colors="true"
+         bootstrap="vendor/autoload.php"
 >
     <testsuites>
-        <testsuite name="all">
-            <directory>tests</directory>
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests</directory>
+            <exclude>tests/wordpress</exclude>
         </testsuite>
     </testsuites>
-    <coverage cacheDirectory=".phpunit.cache/code-coverage"
-              processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </coverage>
 </phpunit>

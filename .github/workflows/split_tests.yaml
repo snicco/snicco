@@ -86,5 +86,5 @@ jobs:
           composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
 
       - name: 'Run composer tests of package ${{ matrix.packages.full_name }}'
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --testsuite unit
         working-directory: ${{ matrix.packages.absolute_path }}
