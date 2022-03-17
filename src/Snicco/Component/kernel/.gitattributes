@@ -3,4 +3,3 @@
 phpunit.dist.xml export-ignore
 *.md export-ignore
 /tests export-ignore
-/testing export-ignore

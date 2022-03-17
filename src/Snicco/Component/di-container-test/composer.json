@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/di-container-test",
+  "description": "Provides a trait to a class implementing the DIContainer contract",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/kernel": "^1.0",
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\DIContainerTest\\": "src"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
