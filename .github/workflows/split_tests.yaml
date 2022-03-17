@@ -10,6 +10,7 @@ env:
 jobs:
 
   should_run:
+    name: 'Generate diff'
     runs-on: ubuntu-20.04
     outputs:
       files: ${{ steps.get_diff.outputs.php_files }}
@@ -33,7 +34,7 @@ jobs:
   provide_affected_packages:
     name: 'Provide affected package matrix'
     needs: should_run
-    if: ${{ needs.should_run.diff.php != '[]' && needs.should_run.diff.php != '' }}
+    if: ${{ needs.should_run.outputs.files != '[]' && needs.should_run.outputs.files != '' }}
     runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.affected_packages.outputs.matrix }}
@@ -48,17 +49,21 @@ jobs:
       - uses: "ramsey/composer-install@v1"
 
       - id: affected_packages
-        run: echo "::set-output name=matrix::$(php bin/affected-packages needs.should_run.outputs.files}"
+        run: echo "::set-output name=matrix::$(php bin/affected-packages-matrix ${{ needs.should_run.outputs.files }})"
+
+      - run:
+          echo $(php bin/affected-packages-matrix ${{ needs.should_run.outputs.files }})
 
   phpunit_split_tests:
     name: 'PHPUnit split tests'
     needs: provide_affected_packages
-    if: ${{ needs.provide_affected_packages.outputs.matrix.phpunit != '[]' }}
     runs-on: ubuntu-20.04
-    matrix:
-      packages: ${{fromJson(needs.provide_affected_packages.outputs.matrix.phpunit)}}
-      php: [ '7.4' ]
-      dependencies: [ highest ]
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: ${{ fromJson(needs.provide_affected_packages.outputs.matrix).phpunit }}
+        php: [ '7.4' ]
+        dependencies: [ highest ]
 
     steps:
       - name: 'Checkout code'
