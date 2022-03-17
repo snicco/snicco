@@ -14,7 +14,7 @@ $possible_autoloader = [
 ];
 
 foreach ($possible_autoloader as $file) {
-    if (file_exists($file)) {
+    if (is_file($file)) {
         require $file;
 
         break;
