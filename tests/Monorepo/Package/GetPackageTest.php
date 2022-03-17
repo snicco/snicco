@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Monorepo\Package;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Monorepo\Package\PackageProvider;
 
@@ -51,9 +50,5 @@ final class GetPackageTest extends TestCase
         $this->assertSame('packages/Component/component-a', $package->package_dir_rel);
         $this->assertSame($this->fixtures_dir . '/packages/Component/component-a', $package->package_dir_abs);
         $this->assertSame('component-a-name', $package->name);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Non-existent file');
-        $this->package_provider->get($this->fixtures_dir . '/packages/Component/component-bogus/composer.json');
     }
 }
