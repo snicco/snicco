@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Monorepo\Package;
 
-use InvalidArgumentException;
 use JsonException;
 use Snicco\Component\StrArr\Str;
 use Symfony\Component\Finder\Finder;
@@ -15,7 +14,6 @@ use function dirname;
 use function is_file;
 use function ltrim;
 use function realpath;
-use function sprintf;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -131,12 +129,8 @@ final class PackageProvider
             return $realpath;
         }
 
-        $concat = $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
-
-        if (is_file($concat)) {
-            return $concat;
-        }
-
-        throw new InvalidArgumentException(sprintf('Non-existent file [%s] provided.', $file));
+        // Don't throw exceptions here because a file does not exist because file deletion produced
+        // by the git diff command is a reason to test the package.
+        return $this->repository_root_dir . DIRECTORY_SEPARATOR . ltrim($file, DIRECTORY_SEPARATOR);
     }
 }
