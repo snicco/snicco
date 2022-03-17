@@ -85,6 +85,74 @@ jobs:
           ./vendor/bin/monorepo-builder localize-composer-paths ${{ matrix.packages.composer_json_path }} --ansi
           composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
 
-      - name: 'Run composer tests of package ${{ matrix.packages.full_name }}'
+      - name: 'Run phpunit tests of package ${{ matrix.packages.full_name }}'
         run: vendor/bin/phpunit --testsuite unit
+        working-directory: ${{ matrix.packages.absolute_path }}
+
+  codeception_split_tests:
+    name: 'Codeception split tests'
+    needs: provide_affected_packages
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: ${{ fromJson(needs.provide_affected_packages.outputs.matrix).codeception }}
+        php: [ '7.4' ]
+        dependencies: [ highest ]
+        wp: [ '5.9' ]
+
+    services:
+      mysql:
+        image: mysql:8.0.21
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: sniccowp_1
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=3s --health-timeout=3s --health-retries=10
+
+      redis:
+        image: redis:5.0
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP [${{ matrix.php }}]'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: wp-cli
+          coverage: none
+          ini-values: error_reporting=E_ALL
+
+      - name: 'Install composer dependencies'
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+        # The config values must match the ones in env.testing.dist
+      - name: 'Download WordPress [${{ matrix.wp }}]'
+        run: |
+          mkdir wordpress && cd wordpress
+          wp core download --force --skip-content --version=${{ matrix.wp }}
+          wp config create --dbname="sniccowp_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
+          wp core install --url="sniccowp.test" --title="SniccoWP" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
+          wp core update-db
+          wp rewrite structure '/%postname%/'
+          wp plugin install redis-cache
+          wp plugin activate redis-cache
+          wp redis enable
+        working-directory: /tmp
+
+      - name: 'Localize composer paths'
+        run: |
+          ./vendor/bin/monorepo-builder localize-composer-paths ${{ matrix.packages.composer_json_path }} --ansi
+          composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
+
+      - name: 'Run codeception tests'
+        run: vendor/bin/codecept run wordpress
         working-directory: ${{ matrix.packages.absolute_path }}
