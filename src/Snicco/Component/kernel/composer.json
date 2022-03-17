@@ -15,7 +15,8 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
-        "sniccowp/pimple-bridge": "dev-master"
+        "sniccowp/pimple-bridge": "dev-master",
+        "phpunit/phpunit": "9.5.13"
     },
     "autoload": {
         "psr-4": {
@@ -80,5 +81,5 @@
         "sniccowp/better-wp-cache-bundle": "<1.0.0",
         "sniccowp/session-bundle": "<1.0.0",
         "sniccowp/encryption-bundle": "<1.0.0"
-  }
+    }
 }
