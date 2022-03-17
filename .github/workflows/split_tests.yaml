@@ -27,7 +27,7 @@ jobs:
           filters: |
             php:
               - 'src/**/*.php'
-              - 'src/**/*.composer.json'
+              - 'src/**/composer.json'
               - 'src/**/*.phpunit.xml.dist'
               - 'src/**/*.codeception.dist.yml'
 
@@ -87,4 +87,4 @@ jobs:
 
       - name: 'Run composer tests of package ${{ matrix.packages.full_name }}'
         run: vendor/bin/phpunit
-        working-directory: ${{ matrix.packages.absolute_path }}'
+        working-directory: ${{ matrix.packages.absolute_path }}
