@@ -62,7 +62,7 @@ jobs:
 
           - name: 'Easy coding standards'
             should_run: ${{ needs.diff.outputs.php == 'true' }}
-            run: vendor/bin/ecs check --fix
+            run: vendor/bin/ecs check
 
     # The value of matrix.actions.should_run is (bool) true. Not (string) true as in the matrix.
     steps:
