@@ -1,5 +1,0 @@
-imports:
-  - components.yaml
-  - middleware.yaml
-  - bridge.yaml
-  - bundle.yaml

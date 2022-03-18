@@ -1,0 +1,27 @@
+{
+  "name": "sniccowp/kernel-testing",
+  "description": "Provides test utils for sniccowp/kernel",
+  "authors": [
+    {
+      "name": "Calvin Alkan",
+      "email": "calvin@snicco.de"
+    }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "sniccowp/kernel": "^1.0",
+    "phpunit/phpunit": "9.5.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Snicco\\Component\\Kernel\\Testing\\": "src"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

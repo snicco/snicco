@@ -12,9 +12,9 @@ use ReflectionParameter;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 
 /**
- * @psalm-internal Snicco\Component\EventDispatcher
- *
  * @interal
+ *
+ * @psalm-internal Snicco\Component\EventDispatcher
  */
 final class ClosureTypeHint
 {

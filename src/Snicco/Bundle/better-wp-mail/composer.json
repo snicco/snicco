@@ -17,7 +17,10 @@
     "phpunit/phpunit": "9.5.13",
     "sniccowp/testing-bundle": "^1.0",
     "sniccowp/better-wp-hooks-bundle": "^1.0",
-    "sniccowp/templating-bundle": "^1.0"
+    "sniccowp/templating-bundle": "^1.0",
+    "codeception/codeception": "4.1.29",
+    "lucatume/wp-browser": "~3.1.4",
+    "sniccowp/better-wp-mail-testing": "^1.0"
   },
   "autoload": {
     "psr-4": {
@@ -74,5 +77,6 @@
     "sniccowp/session-bundle": "<1.0.0",
     "sniccowp/encryption-bundle": "<1.0.0"
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

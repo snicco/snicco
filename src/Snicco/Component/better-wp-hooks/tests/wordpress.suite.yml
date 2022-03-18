@@ -1,4 +1,4 @@
-namespace: Snicco\Component\BetterWPHooks\Tests\wordpress
+namespace: Snicco\Component\BetterWPHooks\Tests
 modules:
   enabled:
     - WPLoader

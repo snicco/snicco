@@ -1,0 +1,200 @@
+name: 'Split tests'
+
+on:
+  pull_request:
+
+env:
+  # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+  COMPOSER_ROOT_VERSION: "dev-master"
+
+jobs:
+
+  should_run:
+    name: 'Generate diff'
+    runs-on: ubuntu-20.04
+    outputs:
+      files: ${{ steps.get_diff.outputs.php_files }}
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Generate diff'
+        # https://github.com/dorny/paths-filter/tree/v2.10.2
+        uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
+        id: get_diff
+        with:
+          list-files: 'shell'
+          filters: |
+            php:
+              - 'src/**/*.php'
+              - 'src/**/composer.json'
+              - 'src/**/*.phpunit.xml.dist'
+              - 'src/**/*.codeception.dist.yml'
+
+  provide_affected_packages:
+    name: 'Provide affected package matrix'
+    needs: should_run
+    if: ${{ needs.should_run.outputs.files != '[]' && needs.should_run.outputs.files != '' }}
+    runs-on: ubuntu-20.04
+    outputs:
+      phpunit: ${{ toJson(fromJson(steps.affected_packages.outputs.matrix).phpunit) }}
+      codeception: ${{ toJson(fromJson(steps.affected_packages.outputs.matrix).codeception) }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - uses: "ramsey/composer-install@v1"
+
+      - id: affected_packages
+        run: echo "::set-output name=matrix::$(php bin/affected-packages-matrix ${{ needs.should_run.outputs.files }})"
+
+  phpunit_split_tests:
+    name: 'PHPUnit split tests'
+    needs: provide_affected_packages
+    if: ${{ needs.provide_affected_packages.outputs.phpunit != '[]' }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: ${{ fromJson(needs.provide_affected_packages.outputs.phpunit) }}
+        php: [ '7.4' ]
+        dependencies: [ highest ]
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP [${{ matrix.php }}]'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: 'Install composer dependencies'
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: 'Localize composer paths'
+        run: |
+          ./vendor/bin/monorepo-builder localize-composer-paths ${{ matrix.packages.composer_json_path }} --ansi
+          composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
+
+      - name: 'Run phpunit tests of package ${{ matrix.packages.full_name }}'
+        run: vendor/bin/phpunit --testsuite unit
+        working-directory: ${{ matrix.packages.absolute_path }}
+
+  codeception_split_tests:
+    name: 'Codeception split tests'
+    needs: provide_affected_packages
+    if: ${{ needs.provide_affected_packages.outputs.codeception != '[]' }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: ${{ fromJson(needs.provide_affected_packages.outputs.codeception) }}
+        php: [ '7.4' ]
+        dependencies: [ highest ]
+        wp: [ '5.9' ]
+
+    services:
+      mysql:
+        image: mysql:8.0.21
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: sniccowp_1
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=3s --health-timeout=3s --health-retries=10
+
+      redis:
+        image: redis:5.0
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP [${{ matrix.php }}]'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: wp-cli
+          coverage: none
+          ini-values: error_reporting=E_ALL
+
+      - name: 'Install composer dependencies'
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+        # The config values must match the ones in env.testing.dist
+      - name: 'Download WordPress [${{ matrix.wp }}]'
+        run: |
+          mkdir wordpress && cd wordpress
+          wp core download --force --skip-content --version=${{ matrix.wp }}
+          wp config create --dbname="sniccowp_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
+          wp core install --url="sniccowp.test" --title="SniccoWP" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
+          wp core update-db
+          wp rewrite structure '/%postname%/'
+          wp plugin install redis-cache
+          wp plugin activate redis-cache
+          wp redis enable
+        working-directory: /tmp
+
+      - name: 'Localize composer paths'
+        run: |
+          ./vendor/bin/monorepo-builder localize-composer-paths ${{ matrix.packages.composer_json_path }} --ansi
+          composer update --no-progress --ansi --working-dir ${{ matrix.packages.absolute_path }}
+
+      - name: 'Parse .env file'
+        run: |
+          echo ${{github.env}}
+          cat ./tests/.env.testing.dist >> $GITHUB_ENV
+          echo ${{github.env}}
+
+      - name: 'Run codeception tests of package ${{ matrix.packages.full_name }}'
+        run: vendor/bin/codecept run wordpress
+        working-directory: ${{ matrix.packages.absolute_path }}
+
+  check_matrix:
+    name: 'Split tests'
+    if: always()
+    needs: [ phpunit_split_tests, codeception_split_tests ]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Verify PHPUnit'
+        run: |
+          if [ ${{ needs.phpunit_split_tests.result }} == 'success' ]; then
+            echo "All phpunit tests passing."
+            exit 0
+          fi
+          
+          if [ ${{ needs.phpunit_split_tests.result }} == 'skipped' ]; then
+            echo "PHPUnit tests skipped."
+            exit 0
+          fi
+          
+          echo "At least one phpunit test failed or the workflow was cancelled."
+          exit 1
+
+      - name: 'Verify codeception'
+        run: |
+          if [ ${{ needs.codeception_split_tests.result }} == 'success' ]; then
+            echo "All codeception tests passing."
+            exit 0
+          fi
+          
+          if [ ${{ needs.codeception_split_tests.result }} == 'skipped' ]; then
+            echo "Codeceptions tests skipped."
+            exit 0
+          fi
+          
+          echo "At least one codeception test failed or the workflow was cancelled."
+          exit 1

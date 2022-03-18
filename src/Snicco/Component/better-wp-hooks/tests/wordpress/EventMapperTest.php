@@ -17,7 +17,6 @@ use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
-use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
 use stdClass;
 
 use function add_action;
@@ -38,8 +37,6 @@ use const PHP_INT_MIN;
  */
 final class EventMapperTest extends WPTestCase
 {
-    use AssertListenerResponse;
-
     private EventMapper $event_mapper;
 
     private BaseEventDispatcher $dispatcher;
@@ -49,13 +46,6 @@ final class EventMapperTest extends WPTestCase
         parent::setUp();
         $this->dispatcher = new BaseEventDispatcher(new NewableListenerFactory());
         $this->event_mapper = new EventMapper($this->dispatcher, new WPHookAPI());
-        $this->resetListenersResponses();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetListenersResponses();
-        parent::tearDown();
     }
 
     /**
@@ -69,79 +59,83 @@ final class EventMapperTest extends WPTestCase
     {
         $this->event_mapper->map('foo', EmptyActionEvent::class);
 
-        $this->dispatcher->listen(EmptyActionEvent::class, function (): void {
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
+        $run = false;
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$run): void {
+            $run = true;
         });
 
         do_action('bogus');
 
-        $this->assertListenerNotRun(EmptyActionEvent::class, 'closure1');
+        $this->assertFalse($run);
     }
 
     /**
      * @test
      */
-    public function a_wordpress_action_can_be_mapped_to_a_custom_event_and_the_event_will_dispatch(): void
+    public function that_a_wordpress_action_can_be_mapped_to_a_custom_event_and_the_event_will_dispatch(): void
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
 
-        $this->dispatcher->listen(EmptyActionEvent::class, function (EmptyActionEvent $event): void {
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', $event->value);
+        $run = false;
+        $this->dispatcher->listen(EmptyActionEvent::class, function (EmptyActionEvent $event) use (&$run): void {
+            $this->assertSame('foo', $event->value);
+            $run = true;
         });
 
         do_action('empty');
 
-        $this->assertListenerRun(EmptyActionEvent::class, 'closure1', 'foo');
+        $this->assertTrue($run);
     }
 
     /**
      * @test
      */
-    public function arguments_from_actions_are_passed_to_the_event(): void
+    public function that_arguments_from_actions_are_passed_to_the_event(): void
     {
         $this->event_mapper->map('foo_action', FooActionEvent::class);
 
-        $this->dispatcher->listen(function (FooActionEvent $event): void {
-            $this->respondedToEvent(FooActionEvent::class, 'closure1', $event->value());
+        $run = false;
+        $this->dispatcher->listen(function (FooActionEvent $event) use (&$run): void {
+            $this->assertSame('foobarbaz', $event->value());
+            $run = true;
         });
 
         do_action('foo_action', 'foo', 'bar', 'baz');
 
-        $this->assertListenerRun(FooActionEvent::class, 'closure1', 'foobarbaz');
+        $this->assertTrue($run);
 
-        $this->resetListenersResponses();
+        $run = false;
 
         $this->event_mapper->map('foo_action_array', ActionWithArrayArguments::class);
-        $this->dispatcher->listen(function (ActionWithArrayArguments $event): void {
-            $this->respondedToEvent(ActionWithArrayArguments::class, 'closure2', $event->message);
+
+        $this->dispatcher->listen(function (ActionWithArrayArguments $event) use (&$run): void {
+            $this->assertSame('foo|bar:baz', $event->message);
+            $run = true;
         });
         do_action('foo_action_array', ['foo', 'bar'], 'baz');
-
-        $this->assertListenerRun(ActionWithArrayArguments::class, 'closure2', 'foo|bar:baz');
     }
 
     /**
      * @test
      */
-    public function events_mapped_to_a_wordpress_action_are_passed_by_reference(): void
+    public function events_mapped_to_a_wordpress_action_are_passed_by_reference_between_listeners(): void
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
 
-        $this->dispatcher->listen(function (EmptyActionEvent $event): void {
-            $val = $event->value;
-            $event->value = 'foobar';
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', $val);
-        });
+        $run = false;
 
         $this->dispatcher->listen(function (EmptyActionEvent $event): void {
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure2', $event->value);
+            $event->value = 'foobar';
+        });
+
+        $this->dispatcher->listen(function (EmptyActionEvent $event) use (&$run): void {
+            $this->assertSame('foobar', $event->value);
+            $run = true;
         });
 
         do_action('empty');
 
-        $this->assertListenerRun(EmptyActionEvent::class, 'closure1', 'foo');
-
-        $this->assertListenerRun(EmptyActionEvent::class, 'closure2', 'foobar');
+        $this->assertTrue($run);
     }
 
     /**
@@ -158,12 +152,10 @@ final class EventMapperTest extends WPTestCase
 
         $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count): void {
             $this->assertSame(0, $count, 'Priority mapping did not work correctly.');
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
         });
 
         do_action('empty');
 
-        $this->assertListenerRun(EmptyActionEvent::class, 'closure1', 'foo');
         $this->assertSame(1, $count);
     }
 
@@ -229,13 +221,13 @@ final class EventMapperTest extends WPTestCase
     {
         $this->event_mapper->map('foo', EmptyActionEvent::class);
 
-        $this->dispatcher->listen(EmptyActionEvent::class, function (): void {
-            $this->respondedToEvent(EmptyActionEvent::class, 'closure1', 'foo');
+        $this->dispatcher->listen(EmptyActionEvent::class, function (EmptyActionEvent $event): void {
+            $event->value = 'bar';
         });
 
-        apply_filters('bogus', 'foo');
+        $res = apply_filters('bogus', 'foo');
 
-        $this->assertListenerNotRun(EmptyActionEvent::class, 'closure1');
+        $this->assertSame('foo', $res);
     }
 
     /**
@@ -605,11 +597,11 @@ final class EventMapperTest extends WPTestCase
     {
         $this->event_mapper->map('action', ConditionalAction::class);
 
+        $count = 0;
         $this->dispatcher->listen(ConditionalAction::class, function (ConditionalAction $event): void {
-            $this->respondedToEvent(ConditionalAction::class, 'listener1', $event->value);
+            $event->value = 'did run';
         });
 
-        $count = 0;
         add_action('action', function (string $value) use (&$count): void {
             $this->assertSame('PREVENT', $value);
             ++$count;
@@ -617,7 +609,6 @@ final class EventMapperTest extends WPTestCase
 
         do_action('action', 'PREVENT');
 
-        $this->assertListenerNotRun(ConditionalAction::class, 'listener1');
         $this->assertSame(1, $count);
     }
 

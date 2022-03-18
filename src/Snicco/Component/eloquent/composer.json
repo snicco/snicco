@@ -19,10 +19,12 @@
     "sniccowp/better-wp-api": "^1.0"
   },
   "require-dev": {
-    "fakerphp/faker": "^1.0.0-stable",
     "phpunit/phpunit": "9.5.13",
+    "codeception/codeception": "4.1.29",
     "lucatume/wp-browser": "~3.1.4",
-    "sniccowp/str-arr": "^1.0"
+    "sniccowp/str-arr": "^1.0",
+    "illuminate/events": "^8.81",
+    "fakerphp/faker": "^1.0.0-stable"
   },
   "autoload": {
     "psr-4": {
@@ -82,5 +84,6 @@
     "sniccowp/session-bundle": "<1.0.0",
     "sniccowp/encryption-bundle": "<1.0.0"
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

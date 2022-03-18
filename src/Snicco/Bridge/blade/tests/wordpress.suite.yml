@@ -1,4 +1,4 @@
-namespace: Snicco\Bridge\Blade\Tests\wordpress
+namespace: Snicco\Bridge\Blade\Tests
 modules:
   enabled:
     - WPLoader

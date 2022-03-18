@@ -1,6 +1,0 @@
-{
-  "name": "sniccowp/package-b",
-  "require": {
-    "sniccowp/package-c": "dev-master"
-  }
-}

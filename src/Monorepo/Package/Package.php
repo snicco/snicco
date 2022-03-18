@@ -10,7 +10,9 @@ use Webmozart\Assert\Assert;
 
 use function array_filter;
 use function array_keys;
+use function array_values;
 use function explode;
+use function is_file;
 
 /**
  * @psalm-immutable
@@ -95,14 +97,14 @@ final class Package implements JsonSerializable
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
-    public function firstPartyDependencies(): array
+    public function firstPartyDependencyNames(): array
     {
         $all = array_keys($this->composer_json->allRequired());
 
         /** @psalm-suppress ImpureFunctionCall */
-        return array_filter($all, fn (string $name): bool => Str::startsWith($name, $this->vendor_name));
+        return array_values(array_filter($all, fn (string $name): bool => Str::startsWith($name, $this->vendor_name)));
     }
 
     public function jsonSerialize(): array
@@ -130,6 +132,18 @@ final class Package implements JsonSerializable
             self::RELATIVE_PATH => $this->package_dir_rel,
             self::COMPOSER_JSON_PATH => $this->composer_json->realPath(),
         ];
+    }
+
+    public function usesPHPUnit(): bool
+    {
+        /** @psalm-suppress ImpureFunctionCall file_exists is pure */
+        return is_file($this->package_dir_rel . '/phpunit.xml.dist');
+    }
+
+    public function usesCodeception(): bool
+    {
+        /** @psalm-suppress ImpureFunctionCall file_exists is pure */
+        return is_file($this->package_dir_rel . '/codeception.dist.yml');
     }
 
     /**
