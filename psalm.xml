@@ -19,6 +19,7 @@
 >
     <projectFiles>
         <directory name="src"/>
+        <directory name="bin/php"/>
         <ignoreFiles>
             <directory name="vendor"/>
             <!--            Only references global WP constants -->
