@@ -172,19 +172,19 @@ final class BetterWPMailBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (!$kernel->env()->isDevelop()) {
+        if (! $kernel->env()->isDevelop()) {
             return;
         }
 
         $destination = $kernel->directories()
-                ->configDir() . '/mail.php';
+            ->configDir() . '/mail.php';
         if (is_file($destination)) {
             return;
         }
 
         $copied = copy(dirname(__DIR__) . '/config/mail.php', $destination);
 
-        if (!$copied) {
+        if (! $copied) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException(
                 sprintf('Could not copy the default templating config to destination [%s]', $destination)

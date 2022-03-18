@@ -18,8 +18,8 @@ try {
     $package_provider = SniccoWPPackageProvider::create();
     $packages = $package_provider->getAffected($diff);
 
-    $codeception = $packages->filter(fn(Package $package): bool => $package->usesCodeception());
-    $phpunit = $packages->filter(fn(Package $package): bool => $package->usesPHPUnit());
+    $codeception = $packages->filter(fn (Package $package): bool => $package->usesCodeception());
+    $phpunit = $packages->filter(fn (Package $package): bool => $package->usesPHPUnit());
 
     $matrix = [
         'phpunit' => $phpunit,
