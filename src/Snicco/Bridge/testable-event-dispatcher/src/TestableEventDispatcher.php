@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\EventDispatcher\Testing;
+namespace Snicco\Bridge\TestableEventDispatcher;
 
 use Closure;
 use InvalidArgumentException;
@@ -117,7 +117,7 @@ final class TestableEventDispatcher implements EventDispatcher
     }
 
     /**
-     * @param Closure(mixed):bool|string $event_name
+     * @param string|Closure(mixed):bool $event_name
      * @param null|Closure(mixed...):bool $condition
      *
      * @throws ReflectionException

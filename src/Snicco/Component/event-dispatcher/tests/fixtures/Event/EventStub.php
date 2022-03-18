@@ -8,6 +8,11 @@ use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 
+/**
+ * @internal
+ *
+ * @psalm-internal Snicco\Component\EventDispatcher\Tests
+ */
 final class EventStub implements Event
 {
     use ClassAsName;

@@ -2,19 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\EventDispatcher\Tests;
+namespace Snicco\Bridge\TestableEventDispatcher\Tests;
 
+use Closure;
 use LogicException;
+use PHPUnit\Framework\Assert as PHPUnit;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
+use Snicco\Component\EventDispatcher\ClassAsName;
+use Snicco\Component\EventDispatcher\ClassAsPayload;
+use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
-use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
-use Snicco\Component\EventDispatcher\Tests\fixtures\AssertListenerResponse;
-use Snicco\Component\EventDispatcher\Tests\fixtures\AssertPHPUnitFailures;
-use Snicco\Component\EventDispatcher\Tests\fixtures\Event\EventStub;
 use stdClass;
 
+use function get_class;
 use function sprintf;
 
 /**
@@ -22,23 +26,13 @@ use function sprintf;
  */
 final class TestableDispatcherAssertionsTest extends TestCase
 {
-    use AssertPHPUnitFailures;
-    use AssertListenerResponse;
-
     private TestableEventDispatcher $fake_dispatcher;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->resetListenersResponses();
         $dispatcher = new BaseEventDispatcher(new NewableListenerFactory());
         $this->fake_dispatcher = new TestableEventDispatcher($dispatcher);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->resetListenersResponses();
-        parent::tearDown();
     }
 
     /**
@@ -46,8 +40,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_nothing_dispatched_can_pass(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val): void {
-            $this->respondedToEvent('foo_event', 'closure1', $val);
+        $this->fake_dispatcher->listen('foo_event', function (): void {
         });
 
         $this->fake_dispatcher->assertNotingDispatched();
@@ -58,8 +51,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_nothing_dispatched_can_fail(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val): void {
-            $this->respondedToEvent('foo_event', 'closure1', $val);
+        $this->fake_dispatcher->listen('foo_event', function (): void {
         });
 
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
@@ -75,8 +67,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_pass(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val): void {
-            $this->respondedToEvent('foo_event', 'closure1', $val);
+        $this->fake_dispatcher->listen('foo_event', function (): void {
         });
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO']));
 
@@ -88,8 +79,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_fail(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val): void {
-            $this->respondedToEvent('foo_event', 'closure1', $val);
+        $this->fake_dispatcher->listen('foo_event', function (): void {
         });
 
         $this->assertFailsWithMessageStarting(
@@ -105,14 +95,13 @@ final class TestableDispatcherAssertionsTest extends TestCase
      */
     public function assert_dispatched_can_pass_with_truthful_condition_about_the_event(): void
     {
-        $this->fake_dispatcher->listen('foo_event', function ($val): void {
-            $this->respondedToEvent('foo_event', 'closure1', $val);
+        $this->fake_dispatcher->listen('foo_event', function (): void {
         });
         $this->fake_dispatcher->dispatch(new GenericEvent('foo_event', ['FOO', 'BAR']));
 
         $this->fake_dispatcher->assertDispatched(
             'foo_event',
-            fn ($foo, $bar): bool => 'FOO' === $foo && 'BAR' === $bar
+            fn (string $foo, string $bar): bool => 'FOO' === $foo && 'BAR' === $bar
         );
     }
 
@@ -126,7 +115,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
             function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     'foo_event',
-                    fn ($foo, $bar): bool => 'FOO' === $foo && 'BAR' === $bar
+                    fn (string $foo, string $bar): bool => 'FOO' === $foo && 'BAR' === $bar
                 );
             }
         );
@@ -144,7 +133,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
             function (): void {
                 $this->fake_dispatcher->assertDispatched(
                     'foo_event',
-                    fn ($foo, $bar): bool => 'FOO' === $foo && 'BAR' === $bar
+                    fn (string $foo, string $bar): bool => 'FOO' === $foo && 'BAR' === $bar
                 );
             }
         );
@@ -223,7 +212,7 @@ final class TestableDispatcherAssertionsTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('did not return bool');
 
-        $this->fake_dispatcher->assertDispatched(fn (EventStub $event_stub): string => '1');
+        $this->fake_dispatcher->assertDispatched(fn (EventStub $event): string => get_class($event));
     }
 
     /**
@@ -341,5 +330,35 @@ final class TestableDispatcherAssertionsTest extends TestCase
                 fn (EventStub $event_stub): bool => 'FOO' === $event_stub->val1 && 'BAZ' === $event_stub->val2
             )
         );
+    }
+
+    private function assertFailsWithMessageStarting(string $message, Closure $closure): void
+    {
+        try {
+            $closure();
+            PHPUnit::fail('The test was expected to fail a PHPUnit assertion.');
+        } catch (ExpectationFailedException $e) {
+            PHPUnit::assertStringStartsWith(
+                $message,
+                $e->getMessage(),
+                'The test failed but the failure message was not as expected.'
+            );
+        }
+    }
+}
+
+final class EventStub implements Event
+{
+    use ClassAsName;
+    use ClassAsPayload;
+
+    public string $val1;
+
+    public string $val2;
+
+    public function __construct(string $foo, string $bar)
+    {
+        $this->val1 = $foo;
+        $this->val2 = $bar;
     }
 }

@@ -6,11 +6,11 @@ namespace Snicco\Bundle\BetterWPHooks\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
-use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
