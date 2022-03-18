@@ -11,7 +11,6 @@ jobs:
     outputs:
       php: ${{ steps.diff.outputs.php }}
       composer: ${{ steps.diff.outputs.composer }}
-      deptrac: ${{ steps.diff.outputs.deptrac }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,8 +27,6 @@ jobs:
             composer:
               - 'composer.json'
               - 'src/**/composer.json'
-            deptrac:
-              - 'deptrac/**'
 
   static_analysis:
     name: ${{ matrix.actions.name }}
@@ -39,14 +36,6 @@ jobs:
       fail-fast: false
       matrix:
         actions:
-          - name: 'Deptrac'
-            should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.deptrac == 'true' }}
-            run: |
-              curl -LS https://github.com/qossmic/deptrac/releases/download/0.19.3/deptrac.phar -o deptrac.phar
-              sudo chmod +x deptrac.phar
-              sudo mv deptrac.phar /usr/local/bin/deptrac
-              composer deptrac -- --formatter=github-actions
-
           - name: 'Composer require checker'
             should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.composer == 'true' }}
             run: |
