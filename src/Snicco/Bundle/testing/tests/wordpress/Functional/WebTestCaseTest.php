@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 
 use LogicException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
+use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
 use Snicco\Bundle\HttpRouting\Event\HandlingRequest;
 use Snicco\Bundle\Session\SessionBundle;
@@ -14,6 +16,7 @@ use Snicco\Bundle\Testing\Functional\WebTestCase;
 use Snicco\Bundle\Testing\Tests\wordpress\fixtures\MiddlewareThatAlwaysThrowsException;
 use Snicco\Bundle\Testing\Tests\wordpress\fixtures\WebTestCaseController;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use stdClass;
 
@@ -25,7 +28,7 @@ use function dirname;
 final class WebTestCaseTest extends WebTestCase
 {
     /**
-     * @var array<class-string<\Snicco\Bundle\Testing\Tests\wordpress\Functional\DummyTestExtension>>
+     * @var array<class-string<DummyTestExtension>>
      */
     private const EXTENSIONS = [DummyTestExtension::class];
 
@@ -155,6 +158,21 @@ final class WebTestCaseTest extends WebTestCase
 
         $response->assertOk()
             ->assertSeeText('https://sniccowp.test/full-url');
+    }
+
+    /**
+     * @test
+     */
+    public function that_the_testable_event_dispatcher_is_registered_automatically(): void
+    {
+        $kernel = $this->getBootedKernel();
+        $event_dispatcher = $kernel->container()
+            ->make(EventDispatcher::class);
+        $psr_event_dispatcher = $kernel->container()
+            ->make(EventDispatcherInterface::class);
+
+        $this->assertSame($event_dispatcher, $psr_event_dispatcher);
+        $this->assertInstanceOf(TestableEventDispatcher::class, $event_dispatcher);
     }
 
     /**
@@ -370,7 +388,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertable_do_m_is_available_after_request(): void
+    public function test_assertable_dom_is_available_after_request(): void
     {
         $browser = $this->getBrowser();
 
@@ -387,7 +405,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertable_do_m_throws_exception_if_response_was_delegated(): void
+    public function test_assertable_dom_throws_exception_if_response_was_delegated(): void
     {
         $browser = $this->getBrowser();
 
@@ -401,7 +419,7 @@ final class WebTestCaseTest extends WebTestCase
     /**
      * @test
      */
-    public function test_assertable_do_m_throws_exception_before_request(): void
+    public function test_assertable_dom_throws_exception_before_request(): void
     {
         $browser = $this->getBrowser();
         $this->expectException(LogicException::class);

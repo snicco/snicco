@@ -1,5 +1,7 @@
 {
-  "name": "sniccowp/better-wp-hooks-bundle",
+  "name": "sniccowp/testable-event-dispatcher-bridge",
+  "license": "MIT",
+  "description": "Provides a testable adapter for the sniccowp/event-dispatcher component",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -8,26 +10,23 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "sniccowp/kernel": "^1.0",
     "sniccowp/event-dispatcher": "^1.0",
-    "sniccowp/better-wp-hooks": "^1.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "9.5.13",
-    "sniccowp/testing-bundle": "^1.0"
+    "phpunit/phpunit": "9.5.13"
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Bundle\\BetterWPHooks\\": "src"
+      "Snicco\\Bridge\\TestableEventDispatcher\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Bundle\\BetterWPHooks\\Tests\\": "tests"
+      "Snicco\\Bridge\\TestableEventDispatcher\\Tests\\": "tests"
     }
   },
-  "suggest": {
-    "sniccowp/testable-event-dispatcher-bridge": "For automatic registration of a testable event-dispatcher during tests."
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
   },
   "conflict": {
     "sniccowp/http-routing": "<1.0.0",
@@ -37,11 +36,13 @@
     "sniccowp/psr7-error-handler": "<1.0.0",
     "sniccowp/better-wpdb": "<1.0.0",
     "sniccowp/str-arr": "<1.0.0",
+    "sniccowp/better-wp-hooks": "<1.0.0",
     "sniccowp/eloquent": "<1.0.0",
     "sniccowp/better-wp-mail": "<1.0.0",
     "sniccowp/better-wp-cache": "<1.0.0",
     "sniccowp/session": "<1.0.0",
     "sniccowp/better-wp-api": "<1.0.0",
+    "sniccowp/kernel": "<1.0.0",
     "sniccowp/session-wp-bridge": "<1.0.0",
     "sniccowp/session-psr16-bridge": "<1.0.0",
     "sniccowp/blade-bridge": "<1.0.0",
@@ -69,6 +70,7 @@
     "sniccowp/debug-bundle": "<1.0.0",
     "sniccowp/templating-bundle": "<1.0.0",
     "sniccowp/better-wpdb-bundle": "<1.0.0",
+    "sniccowp/better-wp-hooks-bundle": "<1.0.0",
     "sniccowp/blade-bundle": "<1.0.0",
     "sniccowp/better-wp-mail-bundle": "<1.0.0",
     "sniccowp/better-wp-cache-bundle": "<1.0.0",

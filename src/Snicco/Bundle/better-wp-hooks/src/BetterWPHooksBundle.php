@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\BetterWPHooks;
 
+use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
-use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
@@ -41,35 +42,46 @@ final class BetterWPHooksBundle implements Bundle
 
         $hook_api = new WPHookAPI();
 
-        $container->shared(EventDispatcher::class, function () use (
-            $kernel,
-            $container,
-            $hook_api
-        ): EventDispatcherInterface {
-            $listener_factory = new PsrListenerFactory($container);
-            $dispatcher = new WPEventDispatcher(new BaseEventDispatcher($listener_factory), $hook_api);
-            if ($kernel->env()->isTesting() && class_exists(TestableEventDispatcher::class)) {
-                $dispatcher = new TestableEventDispatcher($dispatcher);
-            }
+        $container->shared(
+            EventDispatcher::class,
+            function () use ($kernel, $container, $hook_api): EventDispatcherInterface {
+                $listener_factory = new PsrListenerFactory($container);
+                $dispatcher = new WPEventDispatcher(new BaseEventDispatcher($listener_factory), $hook_api);
+                if ($kernel->env()->isTesting() && class_exists(TestableEventDispatcher::class)) {
+                    $dispatcher = new TestableEventDispatcher($dispatcher);
+                }
 
-            return $dispatcher;
-        });
+                return $dispatcher;
+            }
+        );
+
         $container->shared(
             EventDispatcherInterface::class,
             fn (): EventDispatcher => $container->make(EventDispatcher::class)
         );
 
-        if ($kernel->env()->isTesting()) {
-            $container->shared(
-                TestableEventDispatcher::class,
-                fn (): EventDispatcher => $container->make(EventDispatcher::class)
-            );
-        }
-
         $container->shared(
             EventMapper::class,
             fn (): EventMapper => new EventMapper($container->make(EventDispatcher::class), $hook_api)
         );
+        if (! $kernel->env()->isTesting()) {
+            return;
+        }
+
+        if (! class_exists(TestableEventDispatcher::class)) {
+            return;
+        }
+
+        $container->shared(TestableEventDispatcher::class, function () use ($container): TestableEventDispatcher {
+            $dispatcher = $container->make(EventDispatcher::class);
+            if (! $dispatcher instanceof TestableEventDispatcher) {
+                throw new LogicException(
+                    'The testable event dispatcher did not get bound correctly. This should never happen.'
+                );
+            }
+
+            return $dispatcher;
+        });
     }
 
     public function bootstrap(Kernel $kernel): void

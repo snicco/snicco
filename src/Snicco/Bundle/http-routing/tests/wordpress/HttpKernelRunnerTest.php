@@ -7,6 +7,7 @@ namespace Snicco\Bundle\HttpRouting\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use ReflectionProperty;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
+use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Bundle\HttpRouting\Event\HandledRequest;
 use Snicco\Bundle\HttpRouting\Event\HandlingRequest;
 use Snicco\Bundle\HttpRouting\Event\ResponseSent;
@@ -17,7 +18,6 @@ use Snicco\Bundle\HttpRouting\Tests\fixtures\Controller\HttpRunnerTestController
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
 use Snicco\Bundle\Testing\Bundle\BundleTest;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
-use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\Kernel\Kernel;
@@ -111,7 +111,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(
             'test_emitter',
             fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
-            && ! $response instanceof DelegatedResponse
+                && ! $response instanceof DelegatedResponse
         );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
@@ -525,7 +525,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(
             'test_emitter',
             fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
-            && ! $response instanceof DelegatedResponse
+                && ! $response instanceof DelegatedResponse
         );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }

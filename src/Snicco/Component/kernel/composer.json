@@ -25,8 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Snicco\\Component\\Kernel\\Tests\\": "tests",
-            "Snicco\\Component\\Kernel\\Testing\\": "testing"
+            "Snicco\\Component\\Kernel\\Tests\\": "tests"
         }
     },
     "config": {

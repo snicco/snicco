@@ -23,8 +23,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Snicco\\Component\\EventDispatcher\\Tests\\": "tests",
-            "Snicco\\Component\\EventDispatcher\\Testing\\": "testing"
+            "Snicco\\Component\\EventDispatcher\\Tests\\": "tests"
         }
     },
     "suggest": {

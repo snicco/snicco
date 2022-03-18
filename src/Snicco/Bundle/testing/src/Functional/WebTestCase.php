@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
@@ -16,7 +17,6 @@ use Snicco\Bundle\Testing\Functional\Concerns\AuthenticateWithWordPress;
 use Snicco\Bundle\Testing\Functional\Concerns\CreateWordPressUsers;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 use Snicco\Component\BetterWPMail\Transport\Transport;
-use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
@@ -283,10 +283,9 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getKernel();
         if ($kernel->booted()) {
-            throw new LogicException(sprintf(
-                'Method [%s] can not be used if the kernel was already booted.',
-                $__METHOD__
-            ));
+            throw new LogicException(
+                sprintf('Method [%s] can not be used if the kernel was already booted.', $__METHOD__)
+            );
         }
 
         return $kernel;
@@ -295,10 +294,9 @@ abstract class WebTestCase extends WPTestCase
     private function assertBrowserNotCreated(string $__METHOD__): void
     {
         if (isset($this->browser)) {
-            throw new LogicException(sprintf(
-                'Method [%s] can not be used if the browser was already created.',
-                $__METHOD__
-            ));
+            throw new LogicException(
+                sprintf('Method [%s] can not be used if the browser was already created.', $__METHOD__)
+            );
         }
     }
 }
