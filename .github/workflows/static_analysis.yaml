@@ -56,6 +56,14 @@ jobs:
             should_run: ${{ needs.diff.outputs.php == 'true' || needs.diff.outputs.composer == 'true' }}
             run: composer validate
 
+          - name: 'Rector'
+            should_run: ${{ needs.diff.outputs.php == 'true' }}
+            run: vendor/bin/rector process --dry-run
+
+          - name: 'Easy coding standards'
+            should_run: ${{ needs.diff.outputs.php == 'true' }}
+            run: vendor/bin/ecs check --fix
+
     # The value of matrix.actions.should_run is (bool) true. Not (string) true as in the matrix.
     steps:
       - name: 'Checkout repo'
