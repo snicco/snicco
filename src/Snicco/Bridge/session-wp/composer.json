@@ -15,7 +15,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
-    "lucatume/wp-browser": "~3.1.4"
+    "lucatume/wp-browser": "~3.1.4",
+    "codeception/codeception": "4.1.29",
+    "sniccowp/session-testing": "^1.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -72,5 +74,6 @@
     "sniccowp/session-bundle": "<1.0.0",
     "sniccowp/encryption-bundle": "<1.0.0"
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

@@ -283,10 +283,9 @@ abstract class WebTestCase extends WPTestCase
     {
         $kernel = $this->getKernel();
         if ($kernel->booted()) {
-            throw new LogicException(sprintf(
-                'Method [%s] can not be used if the kernel was already booted.',
-                $__METHOD__
-            ));
+            throw new LogicException(
+                sprintf('Method [%s] can not be used if the kernel was already booted.', $__METHOD__)
+            );
         }
 
         return $kernel;
@@ -295,10 +294,9 @@ abstract class WebTestCase extends WPTestCase
     private function assertBrowserNotCreated(string $__METHOD__): void
     {
         if (isset($this->browser)) {
-            throw new LogicException(sprintf(
-                'Method [%s] can not be used if the browser was already created.',
-                $__METHOD__
-            ));
+            throw new LogicException(
+                sprintf('Method [%s] can not be used if the browser was already created.', $__METHOD__)
+            );
         }
     }
 }

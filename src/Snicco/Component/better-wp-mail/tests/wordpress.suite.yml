@@ -1,4 +1,4 @@
-namespace: Snicco\Component\BetterWPMail\Tests\wordpress
+namespace: Snicco\Component\BetterWPMail\Tests
 modules:
   enabled:
     - WPLoader

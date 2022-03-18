@@ -10,6 +10,8 @@ use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponsePreparation;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
+use function ini_get;
+
 /**
  * @internal
  */

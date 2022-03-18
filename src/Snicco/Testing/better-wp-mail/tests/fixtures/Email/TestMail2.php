@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Snicco\Component\BetterWPMail\Tests\Testing\fixtures\Email;
+
+use Snicco\Component\BetterWPMail\ValueObject\Email;
+
+final class TestMail2 extends Email
+{
+    public function __construct()
+    {
+        $this->subject = 'subject';
+        $this->text = 'bar';
+    }
+}

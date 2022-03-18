@@ -34,12 +34,14 @@ try {
             if (! Str::endsWith($name, '-bridge')) {
                 $invalid[] = sprintf('Bridge package [%s] must end with suffix "-bridge"', $name);
             }
+        } elseif (Str::startsWith($rel_dir, 'src/Snicco/Testing')) {
+            if (! Str::endsWith($name, '-testing')) {
+                $invalid[] = sprintf('Testing package [%s] must end with suffix "-testing"', $name);
+            }
         } else {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid relative directory %s for package %s',
-                $rel_dir,
-                $name
-            ));
+            throw new InvalidArgumentException(
+                sprintf('Invalid relative directory %s for package %s', $rel_dir, $name)
+            );
         }
     }
 

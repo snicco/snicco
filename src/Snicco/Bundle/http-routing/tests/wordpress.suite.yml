@@ -1,4 +1,4 @@
-namespace: Snicco\Bundle\HttpRouting\Tests\wordpress
+namespace: Snicco\Bundle\HttpRouting\Tests
 modules:
   enabled:
     - WPLoader

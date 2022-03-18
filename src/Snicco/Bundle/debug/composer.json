@@ -15,7 +15,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
-    "sniccowp/testing-bundle": "^1.0"
+    "sniccowp/testing-bundle": "^1.0",
+    "nyholm/psr7": "^1.0.0"
   },
   "autoload": {
     "psr-4": {
@@ -74,5 +75,6 @@
     "sniccowp/session-bundle": "<1.0.0",
     "sniccowp/encryption-bundle": "<1.0.0"
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

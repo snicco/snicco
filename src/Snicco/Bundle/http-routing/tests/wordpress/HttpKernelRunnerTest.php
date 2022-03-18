@@ -111,7 +111,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(
             'test_emitter',
             fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
-            && ! $response instanceof DelegatedResponse
+                && ! $response instanceof DelegatedResponse
         );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
@@ -525,7 +525,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(
             'test_emitter',
             fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
-            && ! $response instanceof DelegatedResponse
+                && ! $response instanceof DelegatedResponse
         );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }

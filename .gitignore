@@ -10,6 +10,9 @@ _output
 node_modules
 package-lock.json
 
+# temporary
+/bin/change-packages
+
 # repos
 /src/Snicco/*/*/codeception.yml
 /src/Snicco/*/*/vendor

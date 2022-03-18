@@ -28,7 +28,10 @@
     "phpunit/phpunit": "9.5.13",
     "nyholm/psr7": "^1.0.0",
     "sniccowp/testing-bundle": "^1.0",
-    "sniccowp/testable-clock": "^1.0"
+    "sniccowp/testable-clock": "^1.0",
+    "sniccowp/http-routing-testing": "^1.0",
+    "codeception/codeception": "4.1.29",
+    "lucatume/wp-browser": "~3.1.4"
   },
   "autoload": {
     "psr-4": {
@@ -74,5 +77,6 @@
     "sniccowp/blade-bundle": "<1.0.0",
     "sniccowp/better-wp-mail-bundle": "<1.0.0"
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

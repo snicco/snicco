@@ -32,6 +32,7 @@ use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr16Integration
 use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr6IntegrationTest;
 use Snicco\Component\BetterWPCache\WPCacheAPI;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -75,6 +76,7 @@ return static function (ContainerConfigurator $configurator): void {
             _classFile(WPCacheAPI::class),
             _classFile(HttpException::class),
             _classFile(BetterWPAPI::class),
+            _classFile(Response::class),
         ],
     ]);
 

@@ -24,8 +24,9 @@
     "webmozart/assert": "^1.10"
   },
   "require-dev": {
-    "nyholm/psr7": "^1.0.0",
-    "pimple/pimple": "^3.5"
+    "pimple/pimple": "^3.5",
+    "phpunit/phpunit": "9.5.13",
+    "sniccowp/http-routing-testing": "^1.0"
   },
   "suggest": {
     "nyholm/psr7": "To use as a fast PSR7 implementation."
@@ -37,8 +38,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Component\\HttpRouting\\Tests\\": "tests",
-      "Snicco\\Component\\HttpRouting\\Testing\\": "testing"
+      "Snicco\\Component\\HttpRouting\\Tests\\": "tests"
     }
   },
   "config": {
@@ -93,5 +93,7 @@
     "sniccowp/better-wp-cache-bundle": "<1.0.0",
     "sniccowp/session-bundle": "<1.0.0",
     "sniccowp/encryption-bundle": "<1.0.0"
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

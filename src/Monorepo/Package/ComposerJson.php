@@ -143,4 +143,9 @@ final class ComposerJson
 
         return $description;
     }
+
+    public function contents(): array
+    {
+        return $this->composer_json_contents;
+    }
 }

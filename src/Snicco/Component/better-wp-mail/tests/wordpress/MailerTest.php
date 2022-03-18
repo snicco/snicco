@@ -70,10 +70,13 @@ final class MailerTest extends WPTestCase
 
         $email = new Email();
         $email = $email->withTo([['c@web.de', 'Calvin Alkan'], ['m@web.de', 'Marlon Alkan']])
-            ->withCc([[
-                'name' => 'Jon',
-                'email' => 'jon@web.de',
-            ], ['jane@web.de', 'Jane Doe']])
+            ->withCc([
+                [
+                    'name' => 'Jon',
+                    'email' => 'jon@web.de',
+                ],
+                ['jane@web.de', 'Jane Doe'],
+            ])
             ->withBcc([$admin1, $admin2])
             ->withSubject('Hi Calvin')
             ->withHtmlBody('<h1>whats up</h1>')

@@ -15,7 +15,8 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
-        "sniccowp/pimple-bridge": "dev-master"
+        "sniccowp/pimple-bridge": "dev-master",
+        "phpunit/phpunit": "9.5.13"
     },
     "autoload": {
         "psr-4": {
@@ -24,8 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Snicco\\Component\\Kernel\\Tests\\": "tests",
-            "Snicco\\Component\\Kernel\\Testing\\": "testing"
+            "Snicco\\Component\\Kernel\\Tests\\": "tests"
         }
     },
     "config": {
@@ -80,5 +80,7 @@
         "sniccowp/better-wp-cache-bundle": "<1.0.0",
         "sniccowp/session-bundle": "<1.0.0",
         "sniccowp/encryption-bundle": "<1.0.0"
-  }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

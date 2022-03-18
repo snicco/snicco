@@ -41,6 +41,8 @@ use function file_put_contents;
 use function is_file;
 use function var_export;
 
+use const DB_NAME;
+
 /**
  * @internal
  */
@@ -60,7 +62,13 @@ final class SessionBundleTest extends WPTestCase
         $this->better_wpdb = BetterWPDB::fromWpdb();
         $this->better_wpdb->unprepared('drop table if exists `my_plugin_sessions`');
 
-        $this->dbname = (string) ($_ENV['DB_NAME'] ?? '');
+        /**
+         * @var string $dbname
+         * @psalm-suppress UndefinedConstant
+         */
+        $dbname = DB_NAME;
+
+        $this->dbname = $dbname;
     }
 
     protected function tearDown(): void
@@ -262,10 +270,7 @@ final class SessionBundleTest extends WPTestCase
         });
         $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
-                ->shared(
-                    TestSerializer::class,
-                    fn (): \Snicco\Bundle\Session\Tests\wordpress\TestSerializer => new TestSerializer()
-                );
+                ->shared(TestSerializer::class, fn (): TestSerializer => new TestSerializer());
         });
         $kernel->boot();
         $this->assertCanBeResolved(SessionManager::class, $kernel);

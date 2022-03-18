@@ -21,6 +21,7 @@ final class SniccoWPPackageProvider
                 $root_dir . '/src/Snicco/Middleware',
                 $root_dir . '/src/Snicco/Bridge',
                 $root_dir . '/src/Snicco/Bundle',
+                $root_dir . '/src/Snicco/Testing',
             ]
         );
     }

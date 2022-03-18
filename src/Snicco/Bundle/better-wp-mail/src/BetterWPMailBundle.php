@@ -28,6 +28,7 @@ use Snicco\Component\Templating\ViewEngine;
 
 use function array_map;
 use function array_replace;
+use function class_exists;
 use function copy;
 use function dirname;
 use function is_file;
@@ -110,7 +111,7 @@ final class BetterWPMailBundle implements Bundle
     {
         $kernel->container()
             ->shared(Transport::class, function () use ($kernel): Transport {
-                if ($kernel->env()->isTesting()) {
+                if ($kernel->env()->isTesting() && class_exists(FakeTransport::class)) {
                     return new FakeTransport();
                 }
 
@@ -185,10 +186,9 @@ final class BetterWPMailBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException(sprintf(
-                'Could not copy the default templating config to destination [%s]',
-                $destination
-            ));
+            throw new RuntimeException(
+                sprintf('Could not copy the default templating config to destination [%s]', $destination)
+            );
             // @codeCoverageIgnoreEnd
         }
     }

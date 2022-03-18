@@ -29,7 +29,7 @@ abstract class DIContainer implements ArrayAccess, PsrContainer
      *
      * @throws FrozenService
      *
-     * @psalm-internal Snicco\Component\Kernel
+     * @psalm-internal Snicco
      */
     abstract public function lock(): void;
 

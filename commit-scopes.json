@@ -48,5 +48,10 @@
     "trailing-slash-middleware",
     "wp-auth-only-middleware",
     "wp-capability-middleware",
-    "wp-nonce-middleware"
+    "wp-nonce-middleware",
+    "better-wp-mail-testing",
+    "event-dispatcher-testing",
+    "http-routing-testing",
+    "kernel-testing",
+    "session-testing"
 ]
