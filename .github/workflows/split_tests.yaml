@@ -37,7 +37,8 @@ jobs:
     if: ${{ needs.should_run.outputs.files != '[]' && needs.should_run.outputs.files != '' }}
     runs-on: ubuntu-20.04
     outputs:
-      matrix: ${{ steps.affected_packages.outputs.matrix }}
+      phpunit: ${{ toJson(fromJson(steps.affected_packages.outputs.matrix).phpunit) }}
+      codeception: ${{ toJson(fromJson(steps.affected_packages.outputs.matrix).codeception) }}
     steps:
       - uses: actions/checkout@v2
 
@@ -51,17 +52,15 @@ jobs:
       - id: affected_packages
         run: echo "::set-output name=matrix::$(php bin/affected-packages-matrix ${{ needs.should_run.outputs.files }})"
 
-      - run:
-          echo $(php bin/affected-packages-matrix ${{ needs.should_run.outputs.files }})
-
   phpunit_split_tests:
     name: 'PHPUnit split tests'
     needs: provide_affected_packages
+    if: ${{ needs.provide_affected_packages.outputs.phpunit != '[]' }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        packages: ${{ fromJson(needs.provide_affected_packages.outputs.matrix).phpunit }}
+        packages: ${{ fromJson(needs.provide_affected_packages.outputs.phpunit) }}
         php: [ '7.4' ]
         dependencies: [ highest ]
 
@@ -92,11 +91,12 @@ jobs:
   codeception_split_tests:
     name: 'Codeception split tests'
     needs: provide_affected_packages
+    if: ${{ needs.provide_affected_packages.outputs.codeception != '[]' }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        packages: ${{ fromJson(needs.provide_affected_packages.outputs.matrix).codeception }}
+        packages: ${{ fromJson(needs.provide_affected_packages.outputs.codeception) }}
         php: [ '7.4' ]
         dependencies: [ highest ]
         wp: [ '5.9' ]
@@ -162,3 +162,39 @@ jobs:
       - name: 'Run codeception tests of package ${{ matrix.packages.full_name }}'
         run: vendor/bin/codecept run wordpress
         working-directory: ${{ matrix.packages.absolute_path }}
+
+  check_matrix:
+    name: 'Split tests'
+    if: always()
+    needs: [ phpunit_split_tests, codeception_split_tests ]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Verify PHPUnit'
+        run: |
+          if [ ${{ needs.phpunit_split_tests.result }} == 'success' ]; then
+            echo "All phpunit tests passing."
+            exit 0
+          fi
+          
+          if [ ${{ needs.phpunit_split_tests.result }} == 'skipped' ]; then
+            echo "PHPUnit tests skipped."
+            exit 0
+          fi
+          
+          echo "At least one phpunit test failed or the workflow was cancelled."
+          exit 1
+
+      - name: 'Verify codeception'
+        run: |
+          if [ ${{ needs.codeception_split_tests.result }} == 'success' ]; then
+            echo "All codeception tests passing."
+            exit 0
+          fi
+          
+          if [ ${{ needs.codeception_split_tests.result }} == 'skipped' ]; then
+            echo "Codeceptions tests skipped."
+            exit 0
+          fi
+          
+          echo "At least one codeception test failed or the workflow was cancelled."
+          exit 1
