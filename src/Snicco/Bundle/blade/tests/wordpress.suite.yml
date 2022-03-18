@@ -1,4 +1,4 @@
-namespace: Snicco\Bundle\Blade\Tests\wordpress
+namespace: Snicco\Bundle\Blade\Tests
 modules:
   enabled:
     - WPLoader
