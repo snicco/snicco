@@ -1,7 +1,11 @@
 codecov:
-  require_ci_to_pass: yes
+  # codecov.io should send its reports ASAP
+  # https://docs.codecov.com/docs/codecovyml-reference#codecovrequire_ci_to_pass
+  require_ci_to_pass: false
   notify:
-    wait_for_ci: yes
+    # codecov.io should send its reports ASAP
+    # https://docs.codecov.com/docs/codecovyml-reference#codecovnotifywait_for_ci
+    wait_for_ci: false
     after_n_builds: 2 # Only send notifications after 2 builds because we upload 2 times currently (1x PHPUnit / 1x Codeception)
 
 coverage:
@@ -41,6 +45,6 @@ comment:
   layout: "reach,diff,files"
   behavior: default
   require_changes: false
-  require_head: yes
-  require_base: yes
+  require_head: true
+  require_base: true
   after_n_builds: 2 # Only send notifications after 2 builds because we upload 2 times currently (1x PHPUnit / 1x Codeception)
