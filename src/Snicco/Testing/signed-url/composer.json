@@ -1,5 +1,7 @@
 {
-  "name": "sniccowp/session-wp-bridge",
+  "name": "sniccowp/signed-url-testing",
+  "description": "Provides testing utils for sniccowp/signed-url",
+  "license": "MIT",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -8,40 +10,31 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "sniccowp/session": "^1.0",
-    "sniccowp/session-psr16-bridge": "^1.0",
-    "sniccowp/better-wpdb": "^1.0",
-    "sniccowp/better-wp-cache": "^1.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "9.5.13",
-    "lucatume/wp-browser": "~3.1.4",
-    "codeception/codeception": "4.1.29",
-    "sniccowp/session-testing": "^1.0.0"
+    "sniccowp/testable-clock": "^1.0",
+    "sniccowp/signed-url": "^1.0",
+    "phpunit/phpunit": "9.5.13"
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Bridge\\SessionWP\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Bridge\\SessionWP\\Tests\\": "tests"
+      "Snicco\\Component\\SignedUrl\\Testing\\": "src"
     }
   },
   "conflict": {
     "sniccowp/http-routing": "<1.0.0",
-    "sniccowp/testable-clock": "<1.0.0",
-    "sniccowp/signed-url": "<1.0.0",
     "sniccowp/templating": "<1.0.0",
     "sniccowp/psr7-error-handler": "<1.0.0",
+    "sniccowp/better-wpdb": "<1.0.0",
     "sniccowp/str-arr": "<1.0.0",
     "sniccowp/better-wp-hooks": "<1.0.0",
     "sniccowp/event-dispatcher": "<1.0.0",
     "sniccowp/eloquent": "<1.0.0",
     "sniccowp/better-wp-mail": "<1.0.0",
+    "sniccowp/better-wp-cache": "<1.0.0",
+    "sniccowp/session": "<1.0.0",
     "sniccowp/better-wp-api": "<1.0.0",
     "sniccowp/kernel": "<1.0.0",
+    "sniccowp/session-wp-bridge": "<1.0.0",
+    "sniccowp/session-psr16-bridge": "<1.0.0",
     "sniccowp/blade-bridge": "<1.0.0",
     "sniccowp/signed-url-psr16-bridge": "<1.0.0",
     "sniccowp/illuminate-container-bridge": "<1.0.0",

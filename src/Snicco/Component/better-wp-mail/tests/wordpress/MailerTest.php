@@ -13,8 +13,8 @@ use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
+use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\NamedViewRenderer;
-use Snicco\Component\BetterWPMail\Tests\Testing\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
@@ -943,11 +943,13 @@ final class MailerTest extends WPTestCase
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();
 
-        $user = $factory->user->create_and_get(array_merge($data, [
-            'role' => 'administrator',
-        ]));
+        $user = $factory->user->create_and_get(
+            array_merge($data, [
+                'role' => 'administrator',
+            ])
+        );
 
-        if (! $user instanceof WP_User) {
+        if (!$user instanceof WP_User) {
             throw new InvalidArgumentException('Must be WP_USER');
         }
 
