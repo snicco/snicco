@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Psr7ErrorHandler\Tests\Log;
 
-use GuzzleHttp\Psr7\ServerRequest;
 use InvalidArgumentException;
+use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LogLevel;
