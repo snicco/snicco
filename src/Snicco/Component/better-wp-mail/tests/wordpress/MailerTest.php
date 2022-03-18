@@ -943,13 +943,11 @@ final class MailerTest extends WPTestCase
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();
 
-        $user = $factory->user->create_and_get(
-            array_merge($data, [
-                'role' => 'administrator',
-            ])
-        );
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => 'administrator',
+        ]));
 
-        if (!$user instanceof WP_User) {
+        if (! $user instanceof WP_User) {
             throw new InvalidArgumentException('Must be WP_USER');
         }
 
