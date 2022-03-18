@@ -32,19 +32,19 @@ jobs:
 
       - name: 'Collect phpunit coverage'
         run: |
-          composer phpunit:all -- --coverage-clover coverage-phpunit.xml
+          composer phpunit:all -- --coverage-clover phpunit-coverage.xml
 
       - name: 'Archive code coverage artifacts'
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-phpunit.xml
-          path: coverage-phpunit.xml
+          name: phpunit-coverage.xml
+          path: phpunit-coverage.xml
 
       - name: 'Upload coverage to codecov.io'
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f coverage-phpunit.xml -Z
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f phpunit-coverage.xml -Z
 
 
   codeception_coverage:
@@ -110,4 +110,4 @@ jobs:
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f codeception-coverage.xml -Z
+          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f _output/codeception-coverage.xml -Z
