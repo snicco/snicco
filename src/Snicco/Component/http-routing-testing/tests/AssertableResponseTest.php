@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Testing;
+namespace Snicco\Component\HttpRouting\Testing\Tests;
 
 use Closure;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -13,7 +14,6 @@ use Snicco\Component\HttpRouting\Http\Cookies;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
-use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 
 use function json_encode;
 
@@ -22,14 +22,12 @@ use function json_encode;
  */
 final class AssertableResponseTest extends TestCase
 {
-    use CreateTestPsr17Factories;
-
     private ResponseFactory $response_factory;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->response_factory = $this->createResponseFactory();
+        $this->response_factory = new ResponseFactory(new Psr17Factory(), new Psr17Factory());
     }
 
     /**
@@ -861,9 +859,11 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_json_exact_can_pass(): void
     {
-        $response = new AssertableResponse($this->response_factory->json([
-            'foo' => 'bar',
-        ]));
+        $response = new AssertableResponse(
+            $this->response_factory->json([
+                'foo' => 'bar',
+            ])
+        );
 
         $response->assertExactJson([
             'foo' => 'bar',
@@ -875,9 +875,11 @@ final class AssertableResponseTest extends TestCase
      */
     public function test_assert_json_exact_can_fail(): void
     {
-        $response = new AssertableResponse($this->response_factory->json([
-            'foo' => 'bar',
-        ]));
+        $response = new AssertableResponse(
+            $this->response_factory->json([
+                'foo' => 'bar',
+            ])
+        );
 
         $this->expectFailureWithMessageContaining(
             'Response json body does not match expected [' . (string) json_encode([

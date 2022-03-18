@@ -21,9 +21,6 @@ use function trim;
 
 use const JSON_THROW_ON_ERROR;
 
-/**
- * @api
- */
 final class AssertableResponse
 {
     private Response $psr_response;

@@ -115,8 +115,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
                 ])
         );
 
-        $response->assertNextMiddlewareCalled()
-            ->assertableResponse()
+        $response->assertNextMiddlewareCalled();
+        $response->assertableResponse()
             ->assertOk();
     }
 
@@ -163,8 +163,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
                 ])
         );
 
-        $response->assertNextMiddlewareCalled()
-            ->assertableResponse()
+        $response->assertNextMiddlewareCalled();
+        $response->assertableResponse()
             ->assertOk();
     }
 
@@ -207,8 +207,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
                 ])
         );
 
-        $response->assertNextMiddlewareCalled()
-            ->assertableResponse()
+        $response->assertNextMiddlewareCalled();
+        $response->assertableResponse()
             ->assertOk();
     }
 
@@ -222,8 +222,8 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
         $this->withNextMiddlewareResponse(fn (Response $response): Response => $response);
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
-        $response->assertNextMiddlewareCalled()
-            ->assertableResponse()
+        $response->assertNextMiddlewareCalled();
+        $response->assertableResponse()
             ->assertOk();
     }
 }

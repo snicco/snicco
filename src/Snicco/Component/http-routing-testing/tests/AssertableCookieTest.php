@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Testing;
+namespace Snicco\Component\HttpRouting\Testing\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\HttpRouting\Testing\AssertableCookie;

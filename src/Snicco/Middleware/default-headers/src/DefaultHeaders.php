@@ -14,7 +14,7 @@ final class DefaultHeaders implements MiddlewareInterface
     /**
      * @var array<string,string>
      */
-    private array $default_headers = [];
+    private array $default_headers;
 
     /**
      * @param array<string,string> $default_headers

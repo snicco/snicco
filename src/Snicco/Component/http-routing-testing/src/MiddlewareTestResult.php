@@ -21,18 +21,14 @@ final class MiddlewareTestResult
         $this->response = new AssertableResponse($response);
     }
 
-    public function assertNextMiddlewareCalled(): MiddlewareTestResult
+    public function assertNextMiddlewareCalled(): void
     {
         PHPUnit::assertTrue($this->next_middleware_called, 'The next middleware was not called.');
-
-        return $this;
     }
 
-    public function assertNextMiddlewareNotCalled(): MiddlewareTestResult
+    public function assertNextMiddlewareNotCalled(): void
     {
         PHPUnit::assertFalse($this->next_middleware_called, 'The next middleware was called.');
-
-        return $this;
     }
 
     public function assertableResponse(): AssertableResponse
