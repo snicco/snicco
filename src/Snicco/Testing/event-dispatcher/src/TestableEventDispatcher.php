@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\TestableEventDispatcher;
+namespace Snicco\Component\EventDispatcher\Testing;
 
 use Closure;
 use InvalidArgumentException;

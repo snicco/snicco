@@ -6,13 +6,13 @@ namespace Snicco\Bundle\BetterWPHooks;
 
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 use Snicco\Component\BetterWPHooks\WPHookAPI;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\ListenerFactory\PsrListenerFactory;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;

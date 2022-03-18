@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\TestableEventDispatcher\Tests;
+namespace Snicco\Component\EventDispatcher\Tests\Testing;
 
 use Closure;
 use LogicException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\ClassAsName;
 use Snicco\Component\EventDispatcher\ClassAsPayload;
 use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use stdClass;
 
 use function get_class;

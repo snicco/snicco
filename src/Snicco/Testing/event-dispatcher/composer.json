@@ -1,5 +1,5 @@
 {
-  "name": "sniccowp/testable-event-dispatcher-bridge",
+  "name": "sniccowp/event-dispatcher-testing",
   "license": "MIT",
   "description": "Provides a testable adapter for the sniccowp/event-dispatcher component",
   "authors": [
@@ -15,12 +15,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Bridge\\TestableEventDispatcher\\": "src"
+      "Snicco\\Component\\EventDispatcher\\Testing\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Bridge\\TestableEventDispatcher\\Tests\\": "tests"
+      "Snicco\\Component\\EventDispatcher\\Tests\\Testing\\": "tests"
     }
   },
   "config": {

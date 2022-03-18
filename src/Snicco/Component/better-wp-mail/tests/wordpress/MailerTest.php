@@ -13,8 +13,8 @@ use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\Renderer\AggregateRenderer;
 use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
-use Snicco\Component\BetterWPMail\Tests\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Tests\fixtures\NamedViewRenderer;
+use Snicco\Component\BetterWPMail\Tests\Testing\fixtures\Email\TestMail;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
@@ -70,10 +70,13 @@ final class MailerTest extends WPTestCase
 
         $email = new Email();
         $email = $email->withTo([['c@web.de', 'Calvin Alkan'], ['m@web.de', 'Marlon Alkan']])
-            ->withCc([[
-                'name' => 'Jon',
-                'email' => 'jon@web.de',
-            ], ['jane@web.de', 'Jane Doe']])
+            ->withCc([
+                [
+                    'name' => 'Jon',
+                    'email' => 'jon@web.de',
+                ],
+                ['jane@web.de', 'Jane Doe'],
+            ])
             ->withBcc([$admin1, $admin2])
             ->withSubject('Hi Calvin')
             ->withHtmlBody('<h1>whats up</h1>')

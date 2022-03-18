@@ -14,12 +14,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Snicco\\Component\\BetterWPMail\\": "src",
-            "Snicco\\Component\\BetterWPMail\\Testing\\": "testing"
-        },
-        "exclude-from-classmap": [
-            "/testing/"
-        ]
+            "Snicco\\Component\\BetterWPMail\\": "src"
+        }
     },
     "autoload-dev": {
         "psr-4": {

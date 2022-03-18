@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\TestableEventDispatcher\Tests;
+namespace Snicco\Component\EventDispatcher\Tests\Testing;
 
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\EventSubscriber;
 use Snicco\Component\EventDispatcher\GenericEvent;
 use Snicco\Component\EventDispatcher\ListenerFactory\NewableListenerFactory;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use stdClass;
 
 use function property_exists;

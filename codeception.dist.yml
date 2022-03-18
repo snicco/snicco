@@ -1,9 +1,6 @@
 # If this file is not in the root directory things get messy with codeception.
 include:
-  - src/Snicco/Component/*
-  - src/Snicco/Middleware/*
-  - src/Snicco/Bridge/*
-  - src/Snicco/Bundle/*
+  - src/Snicco/*
 paths:
   output: _output
   tests: tests
