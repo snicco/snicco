@@ -2,7 +2,7 @@ codecov:
   require_ci_to_pass: yes
   notify:
     wait_for_ci: yes
-    after_n_builds: 2 # Only send notifications after 2 builds because we upload 2 times currently (1x PHPUnit / 1x Codeception)
+    after_n_builds: 1
 
 coverage:
   status:

@@ -11,9 +11,8 @@ on:
 # from codecov.io
 jobs:
 
-  phpunit_coverage:
-
-    name: 'PHPUnit coverage'
+  collect_phpunit_coverage:
+    name: 'Collect phpunit coverage'
     runs-on: ubuntu-20.04
 
     steps:
@@ -40,18 +39,8 @@ jobs:
           name: coverage-phpunit.xml
           path: coverage-phpunit.xml
 
-      - name: 'Upload phpunit coverage to codecov.io'
-        # v2.1
-        uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage-phpunit.xml
-          fail_ci_if_error: true
-          verbose: true
-
-
-  codeception_coverage:
-    name: 'Codeception coverage'
+  collect_codeception_coverage:
+    name: 'Collect codeception coverage'
     runs-on: ubuntu-20.04
 
     services:
@@ -101,19 +90,31 @@ jobs:
 
       - name: 'Collect codeception coverage'
         run: |
-          composer codeception:all -- --coverage-xml codeception-coverage.xml
+          composer codeception:all -- --coverage-xml coverage-codeception.xml
 
       - name: 'Archive code coverage results'
         uses: actions/upload-artifact@v2
         with:
           name: codeception-coverage.xml
-          path: _output/codeception-coverage.xml
+          path: _output/coverage-codeception.xml
 
-      - name: 'Upload codeception coverage to codecov.io'
+  upload_coverage:
+    name: 'Upload coverage to codecov.io'
+    runs-on: ubuntu-20.04
+    needs: [ collect_phpunit_coverage, collect_codeception_coverage ]
+    steps:
+
+      - name: 'Download coverage from artifacts'
+        uses: actions/download-artifact@v3
+        with:
+          path: coverage-reports
+
+      - name: 'Upload artifacts to codecov.io'
         # v2.1
         uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./codeception-coverage.xml
+          directory: coverage-reports
+          files: coverage-codeception.xml, coverage-phpunit.xml
           fail_ci_if_error: true
           verbose: true
