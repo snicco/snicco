@@ -16,7 +16,7 @@
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.13",
-    "sniccowp/di-container-test": "^1.0"
+    "sniccowp/kernel-testing": "^1.0"
   },
   "autoload": {
     "psr-4": {

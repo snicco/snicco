@@ -26,9 +26,6 @@
       "Snicco\\Bundle\\BetterWPHooks\\Tests\\": "tests"
     }
   },
-  "suggest": {
-    "sniccowp/testable-event-dispatcher-bridge": "For automatic registration of a testable event-dispatcher during tests."
-  },
   "conflict": {
     "sniccowp/http-routing": "<1.0.0",
     "sniccowp/testable-clock": "<1.0.0",

@@ -1,6 +1,6 @@
 {
-  "name": "sniccowp/di-container-test",
-  "description": "Provides a trait to a class implementing the DIContainer contract",
+  "name": "sniccowp/kernel-testing",
+  "description": "Provides test utils for sniccowp/kernel",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Component\\DIContainerTest\\": "src"
+      "Snicco\\Component\\Kernel\\Testing\\": "src"
     }
   },
   "config": {

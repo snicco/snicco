@@ -7,7 +7,6 @@ namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
 use Snicco\Bundle\HttpRouting\Event\HandlingRequest;
 use Snicco\Bundle\Session\SessionBundle;
@@ -17,6 +16,7 @@ use Snicco\Bundle\Testing\Tests\wordpress\fixtures\MiddlewareThatAlwaysThrowsExc
 use Snicco\Bundle\Testing\Tests\wordpress\fixtures\WebTestCaseController;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\EventDispatcher\EventDispatcher;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use stdClass;
 

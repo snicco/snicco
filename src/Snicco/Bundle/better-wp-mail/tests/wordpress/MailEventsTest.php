@@ -6,7 +6,6 @@ namespace Snicco\Bundle\BetterWPMailDB\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use RuntimeException;
-use Snicco\Bridge\TestableEventDispatcher\TestableEventDispatcher;
 use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Bundle\BetterWPMail\BetterWPMailBundle;
 use Snicco\Bundle\BetterWPMail\Option\MailOption;
@@ -17,6 +16,7 @@ use Snicco\Component\BetterWPMail\Mailer;
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
 use Snicco\Component\BetterWPMail\Transport\Transport;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;

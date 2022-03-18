@@ -1,6 +1,6 @@
 {
   "name": "sniccowp/http-routing-testing",
-  "description": "Provides test utilities for sniccowp/http-routing",
+  "description": "Provides testing utilities for sniccowp/http-routing",
   "authors": [
     {
       "name": "Calvin Alkan",

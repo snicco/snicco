@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\DIContainerTest;
+namespace Snicco\Component\Kernel\Testing;
 
 use LogicException;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -226,7 +226,7 @@ trait DIContainerContractTests
         $container[Foo::class] = new Bar();
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Expected an instance of Snicco\Component\DIContainerTest\Foo');
+        $this->expectExceptionMessage('Expected an instance of Snicco\Component\Kernel\Testing\Foo');
         // @noRector
         $container->make(Foo::class);
     }

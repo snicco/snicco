@@ -1,5 +1,6 @@
 {
-  "name": "sniccowp/testing-bundle",
+  "name": "sniccowp/better-wp-mail-testing",
+  "description": "Provides test utilities for sniccowp/better-wp-mail",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -8,40 +9,23 @@
   ],
   "require": {
     "php": "^7.4|^8.0",
-    "phpunit/phpunit": "9.5.13",
-    "lucatume/wp-browser": "~3.1.4",
-    "codeception/codeception": "4.1.29",
-    "sniccowp/kernel": "^1.0",
-    "sniccowp/psr7-error-handler": "dev-master",
-    "sniccowp/session": "^1.0",
-    "sniccowp/session-bundle": "^1.0",
-    "sniccowp/http-routing": "^1.0",
-    "sniccowp/event-dispatcher": "^1.0",
-    "sniccowp/event-dispatcher-testing": "^1.0",
     "sniccowp/better-wp-mail": "^1.0",
-    "sniccowp/http-routing-bundle": "^1.0",
-    "sniccowp/pimple-bridge": "dev-master",
-    "symfony/browser-kit": "^5.4",
-    "symfony/dom-crawler": "^5.4.6",
-    "symfony/css-selector": "^5.4",
-    "webmozart/assert": "^1.10"
-  },
-  "require-dev": {
-    "sniccowp/better-wpdb-bundle": "^1.0",
-    "sniccowp/str-arr": "^1.0",
-    "nyholm/psr7": "^1.0.0"
+    "phpunit/phpunit": "9.5.13",
+    "codeception/codeception": "4.1.29",
+    "lucatume/wp-browser": "~3.1.4"
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Bundle\\Testing\\": "src"
+      "Snicco\\Component\\BetterWPMail\\Testing\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Bundle\\Testing\\Tests\\": "tests"
+      "Snicco\\Component\\BetterWPMail\\Tests\\Testing\\": "tests"
     }
   },
   "conflict": {
+    "sniccowp/http-routing": "<1.0.0",
     "sniccowp/testable-clock": "<1.0.0",
     "sniccowp/signed-url": "<1.0.0",
     "sniccowp/templating": "<1.0.0",
@@ -49,9 +33,11 @@
     "sniccowp/better-wpdb": "<1.0.0",
     "sniccowp/str-arr": "<1.0.0",
     "sniccowp/better-wp-hooks": "<1.0.0",
+    "sniccowp/event-dispatcher": "<1.0.0",
     "sniccowp/eloquent": "<1.0.0",
     "sniccowp/better-wp-cache": "<1.0.0",
-    "sniccowp/better-wp-api": "<1.0.0",
+    "sniccowp/session": "<1.0.0",
+    "sniccowp/kernel": "<1.0.0",
     "sniccowp/session-wp-bridge": "<1.0.0",
     "sniccowp/session-psr16-bridge": "<1.0.0",
     "sniccowp/blade-bridge": "<1.0.0",
@@ -74,6 +60,8 @@
     "sniccowp/https-only-middleware": "<1.0.0",
     "sniccowp/guests-only-middleware": "<1.0.0",
     "sniccowp/trailing-slash-middleware": "<1.0.0",
+    "sniccowp/testing-bundle": "<1.0.0",
+    "sniccowp/http-routing-bundle": "<1.0.0",
     "sniccowp/debug-bundle": "<1.0.0",
     "sniccowp/templating-bundle": "<1.0.0",
     "sniccowp/better-wpdb-bundle": "<1.0.0",
@@ -81,6 +69,7 @@
     "sniccowp/blade-bundle": "<1.0.0",
     "sniccowp/better-wp-mail-bundle": "<1.0.0",
     "sniccowp/better-wp-cache-bundle": "<1.0.0",
+    "sniccowp/session-bundle": "<1.0.0",
     "sniccowp/encryption-bundle": "<1.0.0"
   },
   "minimum-stability": "dev",

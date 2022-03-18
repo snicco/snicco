@@ -14,7 +14,7 @@ use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 /**
  * @interal
  *
- * @psalm-internal Snicco
+ * @psalm-internal Snicco\Component\EventDispatcher
  */
 final class ClosureTypeHint
 {

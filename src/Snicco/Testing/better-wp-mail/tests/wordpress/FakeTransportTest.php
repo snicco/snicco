@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\BetterWPMail\Tests\wordpress;
+namespace Snicco\Component\BetterWPMail2\Tests\Testing\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use RuntimeException;

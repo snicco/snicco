@@ -6,11 +6,9 @@
     "better-wp-hooks",
     "better-wp-mail",
     "better-wpdb",
-    "di-container-test",
     "eloquent",
     "event-dispatcher",
     "http-routing",
-    "http-routing-testing",
     "kernel",
     "psr7-error-handler",
     "session",
@@ -25,7 +23,6 @@
     "session-wp-bridge",
     "signed-url-psr15-bridge",
     "signed-url-psr16-bridge",
-    "testable-event-dispatcher-bridge",
     "better-wp-cache-bundle",
     "better-wp-hooks-bundle",
     "better-wp-mail-bundle",
@@ -51,5 +48,10 @@
     "trailing-slash-middleware",
     "wp-auth-only-middleware",
     "wp-capability-middleware",
-    "wp-nonce-middleware"
+    "wp-nonce-middleware",
+    "better-wp-mail-testing",
+    "event-dispatcher-testing",
+    "http-routing-testing",
+    "kernel-testing",
+    "session-testing"
 ]

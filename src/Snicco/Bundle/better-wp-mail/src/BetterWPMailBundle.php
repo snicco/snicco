@@ -185,10 +185,9 @@ final class BetterWPMailBundle implements Bundle
 
         if (! $copied) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException(sprintf(
-                'Could not copy the default templating config to destination [%s]',
-                $destination
-            ));
+            throw new RuntimeException(
+                sprintf('Could not copy the default templating config to destination [%s]', $destination)
+            );
             // @codeCoverageIgnoreEnd
         }
     }

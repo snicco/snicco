@@ -6,9 +6,7 @@ use Snicco\Monorepo\Package\Package;
 use Snicco\Monorepo\SniccoWPPackageProvider;
 use Webmozart\Assert\Assert;
 
-$root_dir = dirname(__DIR__, 2);
-
-require_once $root_dir . '/vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 try {
     $input = $argv;
@@ -20,8 +18,8 @@ try {
     $package_provider = SniccoWPPackageProvider::create();
     $packages = $package_provider->getAffected($diff);
 
-    $codeception = $packages->filter(fn (Package $package): bool => $package->usesCodeception());
-    $phpunit = $packages->filter(fn (Package $package): bool => $package->usesPHPUnit());
+    $codeception = $packages->filter(fn(Package $package): bool => $package->usesCodeception());
+    $phpunit = $packages->filter(fn(Package $package): bool => $package->usesPHPUnit());
 
     $matrix = [
         'phpunit' => $phpunit,
