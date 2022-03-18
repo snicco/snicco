@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Testing;
+namespace Snicco\Component\HttpRouting\Testing\Tests;
 
 use LogicException;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -240,8 +240,8 @@ final class MiddlewareTestCaseTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function assert_next_middleware_called_works_if_the_middleware_under_test_generated_a_custom_responses(): void
-    {
+    public function assert_next_middleware_called_works_if_the_middleware_under_test_generated_a_custom_responses(
+    ): void {
         $middleware = new class() extends Middleware {
             protected function handle(Request $request, NextMiddleware $next): ResponseInterface
             {

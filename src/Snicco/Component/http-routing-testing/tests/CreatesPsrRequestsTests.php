@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\HttpRouting\Tests\Testing;
+namespace Snicco\Component\HttpRouting\Testing\Tests;
 
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
@@ -104,10 +104,7 @@ final class CreatesPsrRequestsTests extends TestCase
         ]);
 
         $this->assertInstanceOf(Request::class, $request);
-        $this->assertSame(
-            'https://foo.com/wp-admin/admin.php?page=foo&city=foo%20bar',
-            (string) $request->getUri()
-        );
+        $this->assertSame('https://foo.com/wp-admin/admin.php?page=foo&city=foo%20bar', (string) $request->getUri());
         $this->assertEquals([
             'city' => 'foo bar',
             'page' => 'foo',

@@ -24,8 +24,7 @@ final class AllowMutableSessionForReadVerbsTest extends MiddlewareTestCase
 
         $request = $this->frontendRequest();
 
-        $response = $this->runMiddleware($middleware, $request)
-            ->assertNextMiddlewareCalled();
+        $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
 
         $this->assertTrue($this->receivedRequest()->getAttribute(StatefulRequest::ALLOW_WRITE_SESSION_FOR_READ_VERBS));

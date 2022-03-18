@@ -10,6 +10,7 @@
     "eloquent",
     "event-dispatcher",
     "http-routing",
+    "http-routing-testing",
     "kernel",
     "psr7-error-handler",
     "session",
