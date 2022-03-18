@@ -11,10 +11,7 @@ coverage:
         target: auto
         threshold: 0.01%
         paths:
-          - "src/Snicco/Component"
-          - "src/Snicco/Bridge"
-          - "src/Snicco/Middleware"
-          - "src/Snicco/Bundle"
+          - "src/Snicco/*"
         if_not_found: failure
         if_ci_failed: error
 
@@ -24,10 +21,7 @@ coverage:
         target: auto
         threshold: 0.05%
         paths:
-          - "src/Snicco/Component"
-          - "src/Snicco/Bridge"
-          - "src/Snicco/Middleware"
-          - "src/Snicco/Bundle"
+          - "src/Snicco/*"
         if_not_found: failure
         if_ci_failed: error
 
