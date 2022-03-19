@@ -27,9 +27,9 @@ final class WPObjectCacheDriver implements SessionDriver
         $this->driver->write($selector, $session);
     }
 
-    public function destroy(array $selectors): void
+    public function destroy(string $selector): void
     {
-        $this->driver->destroy($selectors);
+        $this->driver->destroy($selector);
     }
 
     public function gc(int $seconds_without_activity): void

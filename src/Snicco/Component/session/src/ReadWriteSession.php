@@ -364,7 +364,7 @@ final class ReadWriteSession implements Session
             $driver->touch($this->id->selector(), $this->last_activity);
         } else {
             if ($this->invalidated_id instanceof SessionId) {
-                $driver->destroy([$this->invalidated_id->selector()]);
+                $driver->destroy($this->invalidated_id->selector());
                 $this->put('_sniccowp.timestamps.last_rotated', $this->last_activity);
             }
 

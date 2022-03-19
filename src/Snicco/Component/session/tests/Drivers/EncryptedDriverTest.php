@@ -56,7 +56,7 @@ final class EncryptedDriverTest extends TestCase
         $this->expectExceptionMessage('destroyAll');
 
         $driver = new EncryptedDriver($this->notUserSessionDriver(), new TestSessionEncryptor());
-        $driver->destroyAll();
+        $driver->destroyAllForAllUsers();
     }
 
     /**
@@ -126,7 +126,7 @@ final class EncryptedDriverTest extends TestCase
                 throw new BadMethodCallException(__METHOD__);
             }
 
-            public function destroy(array $selectors): void
+            public function destroy(string $selector): void
             {
                 throw new BadMethodCallException(__METHOD__);
             }
