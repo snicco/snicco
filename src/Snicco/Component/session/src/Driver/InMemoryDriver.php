@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Driver;
 
-use Snicco\Component\Session\Exception\BadSessionID;
-use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotDestroySession;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
@@ -27,19 +27,15 @@ final class InMemoryDriver implements UserSessionsDriver
         $this->fail_gc = $fail_gc;
     }
 
-    public function destroy(array $selectors): void
+    public function destroy(string $selector): void
     {
-        foreach ($selectors as $session_id) {
-            if (isset($this->storage[$session_id])) {
-                unset($this->storage[$session_id]);
-            }
-        }
+        unset($this->storage[$selector]);
     }
 
     public function gc(int $seconds_without_activity): void
     {
         if ($this->fail_gc) {
-            throw new CouldNotDestroySessions('InMemory driver force-failed garbage collection.');
+            throw new CouldNotDestroySession('InMemory driver force-failed garbage collection.');
         }
 
         $expiration = $this->calculateExpiration($seconds_without_activity);
@@ -54,7 +50,7 @@ final class InMemoryDriver implements UserSessionsDriver
     public function read(string $selector): SerializedSession
     {
         if (! isset($this->storage[$selector])) {
-            throw BadSessionID::forSelector($selector, 'array');
+            throw UnknownSessionSelector::forSelector($selector, self::class);
         }
 
         return SerializedSession::fromString(
@@ -68,7 +64,7 @@ final class InMemoryDriver implements UserSessionsDriver
     public function touch(string $selector, int $current_timestamp): void
     {
         if (! isset($this->storage[$selector])) {
-            throw BadSessionID::forSelector($selector, self::class);
+            throw UnknownSessionSelector::forSelector($selector, self::class);
         }
 
         $this->storage[$selector]['last_activity'] = $current_timestamp;
@@ -84,7 +80,7 @@ final class InMemoryDriver implements UserSessionsDriver
         ];
     }
 
-    public function destroyAll(): void
+    public function destroyAllForAllUsers(): void
     {
         $this->storage = [];
     }

@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
-use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotDestroySession;
 use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
 use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
 use Snicco\Component\Session\Testing\SessionDriverTests;
@@ -34,7 +34,7 @@ final class Psr16SessionDriverTest extends TestCase
     public function test_exception_if_cache_cant_delete_ids(): void
     {
         $cache = new class() extends ArrayCachePool {
-            public function deleteMultiple($keys): bool
+            public function delete($key): bool
             {
                 return false;
             }
@@ -44,10 +44,10 @@ final class Psr16SessionDriverTest extends TestCase
 
         $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
 
-        $this->expectException(CouldNotDestroySessions::class);
-        $this->expectExceptionMessage('Cant destroy session ids [id1]');
+        $this->expectException(CouldNotDestroySession::class);
+        $this->expectExceptionMessage('Cant destroy session with selector [id1]');
 
-        $driver->destroy(['id1']);
+        $driver->destroy('id1');
     }
 
     /**
@@ -56,7 +56,7 @@ final class Psr16SessionDriverTest extends TestCase
     public function a_custom_exception_is_thrown_if_the_cache_throws_an_invalid_key_exception(): void
     {
         $cache = new class() extends ArrayCachePool {
-            public function deleteMultiple($keys): void
+            public function delete($key): void
             {
                 throw new Exception('bad key');
             }
@@ -64,12 +64,12 @@ final class Psr16SessionDriverTest extends TestCase
 
         $driver = new Psr16SessionDriver($cache, 10);
 
-        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()),);
+        $driver->write('id1', SerializedSession::fromString('foo', 'val', time()));
 
-        $this->expectException(CouldNotDestroySessions::class);
-        $this->expectExceptionMessage('Cant destroy session ids [id1]');
+        $this->expectException(CouldNotDestroySession::class);
+        $this->expectExceptionMessage('Cant destroy session with selector [id1]');
 
-        $driver->destroy(['id1']);
+        $driver->destroy('id1');
     }
 
     /**

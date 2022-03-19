@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Driver;
 
-use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotDestroySession;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 
 interface UserSessionsDriver extends SessionDriver
 {
     /**
-     * @throws CouldNotDestroySessions
+     * @throws CouldNotDestroySession
      */
-    public function destroyAll(): void;
+    public function destroyAllForAllUsers(): void;
 
     /**
      * @param int|string $user_id
      *
-     * @throws CouldNotDestroySessions
+     * @throws CouldNotDestroySession
      */
     public function destroyAllForUserId($user_id): void;
 
     /**
      * @param int|string $user_id
      *
-     * @throws CouldNotDestroySessions
+     * @throws CouldNotDestroySession
      */
     public function destroyAllForUserIdExcept(string $selector, $user_id): void;
 
