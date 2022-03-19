@@ -159,10 +159,9 @@ final class ComposerJson
     public function autoloadPsr4(): array
     {
         if (! isset($this->composer_json_contents['autoload']) || ! isset($this->composer_json_contents['autoload']['psr-4'])) {
-            throw new InvalidArgumentException(sprintf(
-                'Missing autoload declaration for package [%s}].',
-                $this->name()
-            ));
+            throw new InvalidArgumentException(
+                sprintf('Missing autoload declaration for package [%s}].', $this->name())
+            );
         }
 
         /** @psalm-suppress ImpureMethodCall */
@@ -171,6 +170,7 @@ final class ComposerJson
         Assert::allString($autoload_psr4);
         Assert::allString(array_keys($autoload_psr4));
 
+        /** @psalm-var array<string,string> $autoload_psr4 */
         return $autoload_psr4;
     }
 }
