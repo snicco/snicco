@@ -17,7 +17,10 @@ coverage:
         paths:
           - "src/Snicco/*"
         if_not_found: failure
-        if_ci_failed: error
+        # codecov.io should only care about its own status.
+        # We don't want codecov.io to set its check to error if
+        # let's say the commit message linting failed.
+        if_ci_failed: success
 
     # The difference is explained quite vague at https://docs.codecov.com/docs/commit-status#patch-status
     patch:
@@ -27,7 +30,10 @@ coverage:
         paths:
           - "src/Snicco/*"
         if_not_found: failure
-        if_ci_failed: error
+        # codecov.io should only care about its own status.
+        # We don't want codecov.io to set its check to error if
+        # let's say the commit message linting failed.
+        if_ci_failed: success
 
   precision: 3
   round: nearest
