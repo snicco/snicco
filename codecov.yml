@@ -16,20 +16,29 @@ coverage:
         threshold: 0.01%
         paths:
           - "src/Snicco/*"
-        if_not_found: failure
+
+        # codecov.io should not fail or PRs if we don't upload coverage.
+        # If this option is set to error we have to upload coverage
+        # for every commit even if no source code changed.
+        if_not_found: success
+
         # codecov.io should only care about its own status.
         # We don't want codecov.io to set its check to error if
         # let's say the commit message linting failed.
         if_ci_failed: success
 
-    # The difference is explained quite vague at https://docs.codecov.com/docs/commit-status#patch-status
     patch:
       default:
         target: auto
         threshold: 0.05%
         paths:
           - "src/Snicco/*"
-        if_not_found: failure
+
+        # codecov.io should not fail or PRs if we don't upload coverage.
+        # If this option is set to error we have to upload coverage
+        # for every commit even if no source code changed.
+        if_not_found: success
+
         # codecov.io should only care about its own status.
         # We don't want codecov.io to set its check to error if
         # let's say the commit message linting failed.
