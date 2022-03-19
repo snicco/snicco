@@ -10,7 +10,7 @@ use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\EventDispatcher\NullSessionDispatcher;
 use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
-use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\SessionManager\FactorySessionManager;
@@ -192,7 +192,7 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertFalse($new_session->has('foo'));
 
         // old id is gone.
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $this->driver->read($old_id->selector());
     }
 
@@ -214,7 +214,7 @@ final class FactorySessionManagerTest extends TestCase
 
         $this->assertNotNull($this->driver->read($new_id->selector()));
 
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $this->driver->read($old_id->selector());
     }
 
@@ -248,7 +248,7 @@ final class FactorySessionManagerTest extends TestCase
         $this->assertFalse($new_session->has('foo'));
 
         // old id is gone.
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $this->driver->read($old_id->selector());
     }
 
@@ -386,7 +386,7 @@ final class FactorySessionManagerTest extends TestCase
 
         $this->assertFalse($old_id->sameAs($new_id));
 
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $this->driver->read($old_session->id()->selector());
     }
 
@@ -415,7 +415,7 @@ final class FactorySessionManagerTest extends TestCase
 
         $manager->gc();
 
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $this->driver->read($old_id->selector());
     }
 
@@ -533,7 +533,8 @@ final class FactorySessionManagerTest extends TestCase
         try {
             $this->getSessionManager()
                 ->start(CookiePool::fromSuperGlobals());
-            $this->fail('Invalid session validator accepted.');
+
+            throw new RuntimeException('Invalid session validator accepted.');
         } catch (RuntimeException $e) {
             $this->assertStringContainsString(
                 "Possible session brute force attack.\nHashed validator did not match for session selector [{$parts[0]}].",
@@ -541,7 +542,7 @@ final class FactorySessionManagerTest extends TestCase
             );
         }
 
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $this->driver->read($id->selector());
     }
 

@@ -20,9 +20,9 @@ final class EncryptedDriver implements UserSessionsDriver
         $this->encryptor = $encryptor;
     }
 
-    public function destroy(array $selectors): void
+    public function destroy(string $selector): void
     {
-        $this->driver->destroy($selectors);
+        $this->driver->destroy($selector);
     }
 
     public function gc(int $seconds_without_activity): void
@@ -63,13 +63,13 @@ final class EncryptedDriver implements UserSessionsDriver
         );
     }
 
-    public function destroyAll(): void
+    public function destroyAllForAllUsers(): void
     {
         if (! $this->driver instanceof UserSessionsDriver) {
             throw new BadMethodCallException(__METHOD__ . ' needs an implementation of ' . UserSessionsDriver::class);
         }
 
-        $this->driver->destroyAll();
+        $this->driver->destroyAllForAllUsers();
     }
 
     public function destroyAllForUserId($user_id): void

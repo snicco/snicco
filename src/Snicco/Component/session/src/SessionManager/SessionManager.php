@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\SessionManager;
 
-use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotDestroySession;
 use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
 use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
 use Snicco\Component\Session\ImmutableSession;
@@ -30,7 +30,7 @@ interface SessionManager
     public function save(Session $session): void;
 
     /**
-     * @throws CouldNotDestroySessions
+     * @throws CouldNotDestroySession
      */
     public function gc(): void;
 }
