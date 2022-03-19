@@ -7,7 +7,7 @@ namespace Snicco\Component\Session\Testing;
 use DateTimeImmutable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Session\Driver\SessionDriver;
-use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\TestClock;
@@ -31,7 +31,7 @@ trait SessionDriverTests
         try {
             $driver->read('id2');
             PHPUnit::fail('An exception should have been thrown for reading a bad session id.');
-        } catch (BadSessionID $e) {
+        } catch (UnknownSessionSelector $e) {
             PHPUnit::assertStringContainsString('id2', $e->getMessage());
         }
     }
@@ -89,41 +89,13 @@ trait SessionDriverTests
 
         $driver->write('session1', SerializedSession::fromString('foo', 'validator', time()),);
 
-        $driver->destroy(['session1']);
+        $driver->destroy('session1');
 
         try {
             $driver->read('session1');
             PHPUnit::fail('A session should not be readable after being destroyed.');
-        } catch (BadSessionID $e) {
+        } catch (UnknownSessionSelector $e) {
             PHPUnit::assertStringContainsString('session1', $e->getMessage());
-        }
-    }
-
-    /**
-     * @test
-     */
-    final public function multiple_session_ids_can_be_destroyed(): void
-    {
-        $driver = $this->createDriver(new TestClock());
-
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time()),);
-        $driver->write('session2', SerializedSession::fromString('foo', 'validator2', time()),);
-
-        // bogus throws no exception
-        $driver->destroy(['session1', 'session2', 'bogus']);
-
-        try {
-            $driver->read('session1');
-            PHPUnit::fail('Session [session1] should not have been read.');
-        } catch (BadSessionID $e) {
-            PHPUnit::assertStringContainsString('session1', $e->getMessage());
-        }
-
-        try {
-            $driver->read('session2');
-            PHPUnit::fail('Session [session2] should not have been read.');
-        } catch (BadSessionID $e) {
-            PHPUnit::assertStringContainsString('session2', $e->getMessage());
         }
     }
 
@@ -158,7 +130,7 @@ trait SessionDriverTests
         try {
             $driver->read('session1');
             PHPUnit::fail('Session1 should have been garbage collected.');
-        } catch (BadSessionID $e) {
+        } catch (UnknownSessionSelector $e) {
             PHPUnit::assertStringContainsString('session1', $e->getMessage());
         }
     }
@@ -198,7 +170,7 @@ trait SessionDriverTests
 
         $driver->touch('session1', $clock->currentTimestamp() + 1);
 
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
 
         $driver->touch('session2', $clock->currentTimestamp() + 1);
     }

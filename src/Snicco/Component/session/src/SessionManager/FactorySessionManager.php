@@ -8,7 +8,7 @@ use RuntimeException;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\EventDispatcher\NullSessionDispatcher;
 use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
-use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\Serializer;
@@ -117,7 +117,7 @@ final class FactorySessionManager implements SessionManager
             // Do we have a timing-based side-channel attack?
             if (! hash_equals($stored_validator, $provided_validator)) {
                 try {
-                    $this->driver->destroy([$id->selector()]);
+                    $this->driver->destroy($id->selector());
                 } // @codeCoverageIgnoreStart
                 catch (Throwable $e) {
                     // Don't handle this exception. Its more important to let the developer know about a possible attack.
@@ -133,7 +133,7 @@ final class FactorySessionManager implements SessionManager
             $data = $this->serializer->deserialize($serialized_session->data());
 
             return new ReadWriteSession($id, $data, $serialized_session->lastActivity());
-        } catch (BadSessionID $e) {
+        } catch (UnknownSessionSelector $e) {
             $session = ReadWriteSession::createEmpty($this->clock->currentTimestamp());
         }
 

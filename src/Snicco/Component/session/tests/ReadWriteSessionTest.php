@@ -242,9 +242,12 @@ final class ReadWriteSessionTest extends TestCase
         ]);
 
         $this->assertSame([
-            'bar', 'bar', [
+            'bar',
+            'bar',
+            [
                 'baz' => 'biz',
-            ], ], $session->get('foo'));
+            ],
+        ], $session->get('foo'));
 
         $session->push('int', 'foo');
         $this->assertSame(['foo'], $session->get('int'));
@@ -1124,7 +1127,7 @@ final class SpyDriver implements SessionDriver
         $this->written[$selector] = $session;
     }
 
-    public function destroy(array $selectors): void
+    public function destroy(string $selector): void
     {
         throw new BadMethodCallException('destroy not implemented');
     }

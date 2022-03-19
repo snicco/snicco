@@ -7,15 +7,12 @@ namespace Snicco\Bridge\SessionWP;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPDB\Exception\NoMatchingRowFound;
 use Snicco\Component\Session\Driver\UserSessionsDriver;
-use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\TestableClock\Clock;
 use Snicco\Component\TestableClock\SystemClock;
 
-use function count;
 use function is_numeric;
-use function rtrim;
-use function str_repeat;
 
 final class WPDBSessionDriver implements UserSessionsDriver
 {
@@ -46,7 +43,7 @@ final class WPDBSessionDriver implements UserSessionsDriver
                 [$selector]
             );
         } catch (NoMatchingRowFound $e) {
-            throw BadSessionID::forSelector($selector, self::class);
+            throw UnknownSessionSelector::forSelector($selector, self::class);
         }
 
         return $this->instantiate($session);
@@ -72,12 +69,9 @@ final class WPDBSessionDriver implements UserSessionsDriver
         );
     }
 
-    public function destroy(array $selectors): void
+    public function destroy(string $selector): void
     {
-        $count = count($selectors);
-        $placeholders = rtrim(str_repeat('?,', $count), ',');
-
-        $this->db->preparedQuery("delete from `{$this->table_name}`where selector in ({$placeholders})", $selectors);
+        $this->db->preparedQuery("delete from `{$this->table_name}` where `selector`= ?", [$selector]);
     }
 
     public function gc(int $seconds_without_activity): void
@@ -107,10 +101,10 @@ final class WPDBSessionDriver implements UserSessionsDriver
             return;
         }
 
-        throw BadSessionID::forSelector($selector, self::class);
+        throw UnknownSessionSelector::forSelector($selector, self::class);
     }
 
-    public function destroyAll(): void
+    public function destroyAllForAllUsers(): void
     {
         $this->db->unprepared("delete from `{$this->table_name}`");
     }

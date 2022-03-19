@@ -6,7 +6,7 @@ namespace Snicco\Component\Session\Tests\SessionManager;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\Driver\InMemoryDriver;
-use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\SessionManager\SingleSessionSessionManager;
 use Snicco\Component\Session\Tests\fixtures\SessionHelpers;
 use Snicco\Component\Session\ValueObject\CookiePool;
@@ -113,7 +113,7 @@ final class SingleSessionManagerTest extends TestCase
 
         $manager->gc();
 
-        $this->expectException(BadSessionID::class);
+        $this->expectException(UnknownSessionSelector::class);
         $driver->read($old_id->selector());
     }
 }

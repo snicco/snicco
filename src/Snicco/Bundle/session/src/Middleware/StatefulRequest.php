@@ -14,7 +14,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
-use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotDestroySession;
 use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\Session;
@@ -229,7 +229,7 @@ final class StatefulRequest extends Middleware
     {
         try {
             $this->session_manager->gc();
-        } catch (CouldNotDestroySessions $e) {
+        } catch (CouldNotDestroySession $e) {
             $this->logger->log(LogLevel::ERROR, 'Garbage collection failed.', [
                 'exception' => $e,
             ]);

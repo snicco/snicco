@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Component\Session\Driver\UserSessionsDriver;
-use Snicco\Component\Session\Exception\BadSessionID;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\ValueObject\SerializedSession;
@@ -44,13 +44,13 @@ trait UserSessionDriverTests
         PHPUnit::assertCount(1, $user_sessions->getAllForUserId(3));
         PHPUnit::assertCount(2, $user_sessions->getAllForUserId('string-uuid'));
 
-        $user_sessions->destroyAll();
+        $user_sessions->destroyAllForAllUsers();
 
         foreach (['session_no_user1', 'session_no_user2'] as $selector) {
             try {
                 $user_sessions->read($selector);
                 PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
-            } catch (BadSessionID $e) {
+            } catch (UnknownSessionSelector $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
         }
@@ -59,7 +59,7 @@ trait UserSessionDriverTests
             try {
                 $user_sessions->read($selector);
                 PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
-            } catch (BadSessionID $e) {
+            } catch (UnknownSessionSelector $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
         }
@@ -92,7 +92,7 @@ trait UserSessionDriverTests
             try {
                 $user_sessions->read($selector);
                 PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
-            } catch (BadSessionID $e) {
+            } catch (UnknownSessionSelector $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
         }
@@ -168,7 +168,7 @@ trait UserSessionDriverTests
             try {
                 $user_session_driver->read($selector);
                 PHPUnit::fail(sprintf('User session [%s] was not deleted.', $selector));
-            } catch (BadSessionID $e) {
+            } catch (UnknownSessionSelector $e) {
                 PHPUnit::assertStringContainsString($selector, $e->getMessage());
             }
         }

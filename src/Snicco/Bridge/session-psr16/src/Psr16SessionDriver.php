@@ -8,10 +8,10 @@ use Exception;
 use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 use Snicco\Component\Session\Driver\SessionDriver;
-use Snicco\Component\Session\Exception\BadSessionID;
-use Snicco\Component\Session\Exception\CouldNotDestroySessions;
+use Snicco\Component\Session\Exception\CouldNotDestroySession;
 use Snicco\Component\Session\Exception\CouldNotReadSessionContent;
 use Snicco\Component\Session\Exception\CouldNotWriteSessionContent;
+use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Throwable;
 
@@ -59,19 +59,16 @@ final class Psr16SessionDriver implements SessionDriver
         );
     }
 
-    /**
-     * @throws CouldNotWriteSessionContent
-     */
-    public function destroy(array $selectors): void
+    public function destroy(string $selector): void
     {
         try {
-            $res = $this->cache->deleteMultiple($selectors);
+            $res = $this->cache->delete($selector);
         } catch (Throwable $e) {
-            throw CouldNotDestroySessions::forSessionIDs($selectors, get_class($this->cache), $e);
+            throw CouldNotDestroySession::forSelector($selector, get_class($this->cache), $e);
         }
 
         if (! $res) {
-            throw CouldNotDestroySessions::forSessionIDs($selectors, get_class($this->cache));
+            throw CouldNotDestroySession::forSelector($selector, get_class($this->cache));
         }
     }
 
@@ -105,7 +102,7 @@ final class Psr16SessionDriver implements SessionDriver
         }
 
         if (null === $payload) {
-            throw BadSessionID::forSelector($session_id, get_class($this->cache));
+            throw UnknownSessionSelector::forSelector($session_id, get_class($this->cache));
         }
 
         if (! is_array($payload)) {
