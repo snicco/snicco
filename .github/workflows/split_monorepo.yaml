@@ -1,0 +1,106 @@
+name: 'Split monorepo'
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  provide_packages_json:
+    name: 'Create package matrix'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.package_json.outputs.matrix }}
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP@7.4'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: none
+
+      - name: 'Install dependencies'
+        uses: "ramsey/composer-install@v1"
+
+      - name: 'Create package matrix'
+        id: package_json
+        run: echo "::set-output name=matrix::$(php bin/monorepo_split_matrix)"
+
+  split_monorepo:
+    name: 'Split packages'
+    needs: provide_packages_json
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: ${{fromJson(needs.provide_packages_json.outputs.matrix)}}
+
+    steps:
+      - name: 'Checkout repo'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          fetch-depth: 0
+
+      - name: 'Import GPG keys'
+        # https://github.com/crazy-max/ghaction-import-gpg/releases/tag/v4.3.0
+        uses: crazy-max/ghaction-import-gpg@4d58d49bfefed583addec96996588e8bc4b306b8
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_config_global: true
+
+      - name: 'Install composer dependencies'
+        uses: "ramsey/composer-install@v1"
+
+      - name: 'Maybe Create GitHub Repo for package ${{ matrix.packages.full_name }}'
+        run: php bin/create-single-repo ${{ matrix.packages.relative_path }} --token=${{ secrets.ACCESS_TOKEN }}
+
+      - name: 'Wait 3 seconds'
+        run: sleep 3s
+
+      - name: 'Get tag and branch'
+        id: ref
+        run: |
+          REF=$(printf "%q" "${{ github.ref }}")
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            TAG=${REF/refs\/tags\//}
+            echo $TAG
+          
+            RAW=$(git branch -r --contains $TAG);
+            echo $RAW
+          
+            BRANCH=${RAW/origin\/}
+            echo $BRANCH
+          
+            echo "::set-output name=tag::$TAG"
+            echo "::set-output name=branch::$BRANCH"
+            echo "::set-output name=is_tagged::true"
+          else
+            BRANCH=${REF/refs\/heads\//}
+            echo ::set-output name=is_tagged::false
+            echo "::set-output name=branch::$BRANCH"
+          fi
+        shell: bash
+
+      - name: 'Monorepo split of ${{ matrix.packages.full_name }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          ORGANIZATION: ${{ matrix.packages.vendor_name }}
+          REPOSITORY: ${{ matrix.packages.name }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          BRANCH: ${{ steps.ref.outputs.branch }}
+          TAG: ${{ steps.ref.outputs.is_tagged && steps.ref.outputs.tag || '' }}
+        run: |
+          php bin/split-package ${{ matrix.packages.relative_path }}
+
+      - name: 'Wait 3 seconds'
+        run: sleep 3s
+
+      - name: 'Maybe publish package ${{ matrix.packages.full_name }} at packagist.org'
+        run: php bin/push-to-packagist ${{ matrix.packages.relative_path }} --token=${{ secrets.PACKAGIST_API_TOKEN }} --u=${{ secrets.PACKAGIST_USERNAME }}

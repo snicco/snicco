@@ -36,6 +36,13 @@ return static function (ContainerConfigurator $configurator): void {
         __DIR__ . '/rector.php',
         __DIR__ . '/bin/php',
     ]);
+    $parameters->set(Option::SKIP, [
+        LineLengthFixer::class => [
+            // Intentionally keep the execDebug statements on two lines.
+            __DIR__ . '/bin/php/split-package.php',
+        ],
+    ]);
+
     $parameters->set(Option::PARALLEL, true);
 
     $services = $configurator->services();
