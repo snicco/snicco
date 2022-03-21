@@ -45,18 +45,12 @@ final class ArrTest extends TestCase
      */
     public function test_get(): void
     {
-        $this->assertSame(
-            'bar',
-            Arr::get([
-                'foo' => 'bar',
-            ], 'foo')
-        );
-        $this->assertSame(
-            'default',
-            Arr::get([
-                'foo' => 'bar',
-            ], 'bogus', 'default')
-        );
+        $this->assertSame('bar', Arr::get([
+            'foo' => 'bar',
+        ], 'foo'));
+        $this->assertSame('default', Arr::get([
+            'foo' => 'bar',
+        ], 'bogus', 'default'));
 
         $array = [
             'products.desk' => [
@@ -193,7 +187,7 @@ final class ArrTest extends TestCase
             ],
         ];
         $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', 'dayle'));
-        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', fn(): string => 'dayle'));
+        $this->assertSame('dayle', Arr::get($array, 'names.otherDeveloper', fn (): string => 'dayle'));
 
         // test keys with dots have priority
         $array = [
@@ -213,40 +207,24 @@ final class ArrTest extends TestCase
     {
         $this->assertTrue(Arr::keyExists([1], 0));
         $this->assertTrue(Arr::keyExists([null], 0));
-        $this->assertTrue(
-            Arr::keyExists([
-                'a' => 1,
-            ], 'a')
-        );
-        $this->assertTrue(
-            Arr::keyExists([
-                'a' => null,
-            ], 'a')
-        );
-        $this->assertTrue(
-            Arr::keyExists(
-                new ArrayObject([
-                    'a' => null,
-                ]),
-                'a'
-            )
-        );
+        $this->assertTrue(Arr::keyExists([
+            'a' => 1,
+        ], 'a'));
+        $this->assertTrue(Arr::keyExists([
+            'a' => null,
+        ], 'a'));
+        $this->assertTrue(Arr::keyExists(new ArrayObject([
+            'a' => null,
+        ]), 'a'));
 
         $this->assertFalse(Arr::keyExists([1], 1));
         $this->assertFalse(Arr::keyExists([null], 1));
-        $this->assertFalse(
-            Arr::keyExists([
-                'a' => 1,
-            ], 0)
-        );
-        $this->assertFalse(
-            Arr::keyExists(
-                new ArrayObject([
-                    'a' => null,
-                ]),
-                'b'
-            )
-        );
+        $this->assertFalse(Arr::keyExists([
+            'a' => 1,
+        ], 0));
+        $this->assertFalse(Arr::keyExists(new ArrayObject([
+            'a' => null,
+        ]), 'b'));
     }
 
     /**
@@ -306,25 +284,19 @@ final class ArrTest extends TestCase
     {
         $this->assertTrue(Arr::accessible([]));
         $this->assertTrue(Arr::accessible([1, 2]));
-        $this->assertTrue(
-            Arr::accessible([
-                'a' => 1,
-                'b' => 2,
-            ])
-        );
+        $this->assertTrue(Arr::accessible([
+            'a' => 1,
+            'b' => 2,
+        ]));
         $this->assertTrue(Arr::accessible(new ArrayObject()));
 
         $this->assertFalse(Arr::accessible(null));
         $this->assertFalse(Arr::accessible('abc'));
         $this->assertFalse(Arr::accessible(new stdClass()));
-        $this->assertFalse(
-            Arr::accessible(
-                (object)[
-                    'a' => 1,
-                    'b' => 2,
-                ]
-            )
-        );
+        $this->assertFalse(Arr::accessible((object) [
+            'a' => 1,
+            'b' => 2,
+        ]));
     }
 
     /**
@@ -344,25 +316,28 @@ final class ArrTest extends TestCase
         $this->assertSame(100, Arr::first($array));
 
         // Callback is not null and array is not empty
-        $value = Arr::first($array, fn(int $value): bool => $value >= 150);
+        $value = Arr::first($array, fn (int $value): bool => $value >= 150);
         $this->assertSame(200, $value);
 
         // Callback is not null, array is not empty but no satisfied item
-        $value2 = Arr::first($array, fn(int $value): bool => $value > 300);
+        $value2 = Arr::first($array, fn (int $value): bool => $value > 300);
 
-        $value3 = Arr::first($array, fn(int $value): bool => $value > 300, 500);
+        $value3 = Arr::first($array, fn (int $value): bool => $value > 300, 500);
 
-        $value4 = Arr::first($array, fn(int $value): bool => $value > 300, 600);
+        $value4 = Arr::first($array, fn (int $value): bool => $value > 300, 600);
 
         $this->assertNull($value2);
         $this->assertSame(500, $value3);
         $this->assertSame(600, $value4);
 
-        $mixed_array = [100, 200, 300, 'foo' => 'bar'];
+        $mixed_array = [
+            100,
+            200,
+            300,
+            'foo' => 'bar',
+        ];
 
-        $value = Arr::first($mixed_array, function ($value): bool {
-            return 'bar' === $value;
-        });
+        $value = Arr::first($mixed_array, fn ($value): bool => 'bar' === $value);
         $this->assertSame('bar', $value);
     }
 
@@ -590,10 +565,6 @@ final class ArrTest extends TestCase
 
         $array = [[1], [2], [3], ['foo', 'bar'], new ArrayObject(['baz', 'boom'])];
         $this->assertEquals([1, 2, 3, 'foo', 'bar', 'baz', 'boom'], Arr::collapse($array));
-
-        // skips non arrays.
-        $array = [[1], 2, 3, ['foo', 'bar'], new ArrayObject(['baz', 'boom'])];
-        $this->assertEquals([1, 'foo', 'bar', 'baz', 'boom'], Arr::collapse($array));
     }
 
     /**
@@ -672,17 +643,14 @@ final class ArrTest extends TestCase
         $array = [
             [
                 'foo' => 'bar',
-                'baz' => [
-                    'biz'
-                ]
+                'baz' => ['biz'],
             ],
             [
-                'boo' => 'bam'
-            ]
+                'boo' => 'bam',
+            ],
         ];
         $this->assertEquals(['bar', 'biz', 'bam'], Arr::flatten($array));
         $this->assertEquals(['bar', ['biz'], 'bam'], Arr::flatten($array, 1));
-
 
         $array = ['#foo', '#bar', '#baz'];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arr::flatten($array, 5000));
@@ -726,7 +694,7 @@ final class ArrTest extends TestCase
                     ],
                 ]),
             ],
-            ['#baz']
+            ['#baz'],
         ];
         $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arr::flatten($array));
     }
@@ -908,11 +876,9 @@ final class ArrTest extends TestCase
 
         $this->assertFalse(Arr::has([''], ''));
 
-        $this->assertTrue(
-            Arr::has([
-                '' => 'some',
-            ], '')
-        );
+        $this->assertTrue(Arr::has([
+            '' => 'some',
+        ], ''));
 
         $this->assertFalse(Arr::has([], ''));
     }
@@ -920,7 +886,7 @@ final class ArrTest extends TestCase
     /**
      * @test
      */
-    public function test_hasAll(): void
+    public function test_has_all(): void
     {
         $array = [
             'products' => [
@@ -935,7 +901,9 @@ final class ArrTest extends TestCase
         $this->assertFalse(Arr::hasAll($array, []));
         $this->assertFalse(Arr::hasAll($array, ['foo']));
         $this->assertFalse(Arr::hasAll($array, ['products.desk', 'products.price']));
-        $this->assertFalse(Arr::hasAll(['foo' => 'bar'], []));
+        $this->assertFalse(Arr::hasAll([
+            'foo' => 'bar',
+        ], []));
     }
 
     /**
@@ -982,16 +950,13 @@ final class ArrTest extends TestCase
      */
     public function test_merge_recursive(): void
     {
-        $this->assertEquals(
-            [
-                'foo' => 'baz',
-            ],
-            Arr::mergeRecursive([
-                'foo' => 'bar',
-            ], [
-                'foo' => 'baz',
-            ])
-        );
+        $this->assertEquals([
+            'foo' => 'baz',
+        ], Arr::mergeRecursive([
+            'foo' => 'bar',
+        ], [
+            'foo' => 'baz',
+        ]));
 
         $this->assertEquals(
             [
@@ -1062,167 +1027,39 @@ final class ArrTest extends TestCase
 
     /**
      * @test
-     * @psalm-suppress InvalidScalarArgument
      */
-    public function test_data_get(): void
+    public function test_is_assoc(): void
     {
-        $array = [
-            'users' => [
-                [
-                    'name' => 'Taylor',
-                ],
-            ],
-        ];
-        $dottedArray = [
-            'users' => [
-                'first.name' => 'Taylor',
-                'middle.name' => null,
-            ],
-        ];
-        $arrayAccess = new SupportTestArrayAccess(
-            [
-                'price' => 56,
-                'user' => new SupportTestArrayAccess([
-                    'name' => 'John',
-                ]),
-                'email' => null,
-            ]
-        );
-
-        $this->assertSame('Taylor', Arr::dataGet($array, 'users.0.name'));
-        $this->assertNull(Arr::dataGet($array, '0.users.3'));
-        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', 'Not found'));
-        $this->assertSame('Not found', Arr::dataGet($array, '0.users.3', fn(): string => 'Not found'));
-        $this->assertSame('Taylor', Arr::dataGet($dottedArray, ['users', 'first.name']));
-        $this->assertNull(Arr::dataGet($dottedArray, ['users', 'middle.name']));
-        $this->assertSame('Not found', Arr::dataGet($dottedArray, ['users', 'last.name'], 'Not found'));
-        $this->assertSame(56, Arr::dataGet($arrayAccess, 'price'));
-        $this->assertSame('John', Arr::dataGet($arrayAccess, 'user.name'));
-        $this->assertSame('void', Arr::dataGet($arrayAccess, 'foo', 'void'));
-        $this->assertSame('void', Arr::dataGet($arrayAccess, 'user.foo', 'void'));
-        $this->assertNull(Arr::dataGet($arrayAccess, 'foo'));
-        $this->assertNull(Arr::dataGet($arrayAccess, 'user.foo'));
-        $this->assertNull(Arr::dataGet($arrayAccess, 'email', 'Not found'));
-
-        $this->expectException(InvalidArgumentException::class);
-        Arr::dataGet([], ['foo', 1]);
-        $this->expectExceptionMessage(
-            '$keys has to be a string or an array of string when calling [Snicco\Component\StrArr\Arr::dataGet()]'
-        );
-
-        $array = [
-            [
-                'name' => 'taylor',
-                'email' => 'taylorotwell@gmail.com',
-            ],
-            [
-                'name' => 'abigail',
-            ],
-            [
-                'name' => 'dayle',
-            ],
-        ];
-
-        $this->assertEquals(['taylor', 'abigail', 'dayle'], Arr::dataGet($array, '*.name'));
-        $this->assertEquals(['taylorotwell@gmail.com', null, null], Arr::dataGet($array, '*.email', 'irrelevant'));
-
-        $array = [
-            'users' => [
-                [
-                    'first' => 'taylor',
-                    'last' => 'otwell',
-                    'email' => 'taylorotwell@gmail.com',
-                ],
-                [
-                    'first' => 'abigail',
-                    'last' => 'otwell',
-                ],
-                [
-                    'first' => 'dayle',
-                    'last' => 'rees',
-                ],
-            ],
-            'posts' => null,
-        ];
-
-        $this->assertEquals(['taylor', 'abigail', 'dayle'], Arr::dataGet($array, 'users.*.first'));
-        $this->assertEquals(
-            ['taylorotwell@gmail.com', null, null],
-            Arr::dataGet($array, 'users.*.email', 'irrelevant')
-        );
-        $this->assertSame('not found', Arr::dataGet($array, 'posts.*.date', 'not found'));
-        $this->assertNull(Arr::dataGet($array, 'posts.*.date'));
-
-        $array = [
-            'posts' => [
-                [
-                    'comments' => [
-                        [
-                            'author' => 'taylor',
-                            'likes' => 4,
-                        ],
-                        [
-                            'author' => 'abigail',
-                            'likes' => 3,
-                        ],
-                    ],
-                ],
-                [
-                    'comments' => [
-                        [
-                            'author' => 'abigail',
-                            'likes' => 2,
-                        ],
-                        [
-                            'author' => 'dayle',
-                        ],
-                    ],
-                ],
-                [
-                    'comments' => [
-                        [
-                            'author' => 'dayle',
-                        ],
-                        [
-                            'author' => 'taylor',
-                            'likes' => 1,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->assertEquals(
-            ['taylor', 'abigail', 'abigail', 'dayle', 'dayle', 'taylor'],
-            Arr::dataGet($array, 'posts.*.comments.*.author')
-        );
-        $this->assertEquals([4, 3, 2, null, null, 1], Arr::dataGet($array, 'posts.*.comments.*.likes'));
-        $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name', 'irrelevant'));
-        $this->assertEquals([], Arr::dataGet($array, 'posts.*.users.*.name'));
-    }
-
-    /**
-     * @test
-     */
-    public function test_isAssoc(): void
-    {
-        $this->assertTrue(Arr::isAssoc(['foo' => 'bar', 'bar' => 'baz']));
+        $this->assertTrue(Arr::isAssoc([
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ]));
         $this->assertTrue(Arr::isAssoc([]));
-        $this->assertFalse(Arr::isAssoc(['foo' => 'bar', 'bar' => 'baz', 'baz']));
+        $this->assertFalse(Arr::isAssoc([
+            'foo' => 'bar',
+            'bar' => 'baz',
+            'baz',
+        ]));
         $this->assertFalse(Arr::isAssoc(['foo', 'bar']));
     }
 
     /**
      * @test
      */
-    public function test_isList(): void
+    public function test_is_list(): void
     {
         $this->assertTrue(Arr::isList([]));
         $this->assertTrue(Arr::isList(['foo', 'bar']));
-        $this->assertFalse(Arr::isList(['foo' => 'bar', 'bar' => 'baz']));
-        $this->assertFalse(Arr::isList(['foo', 'bar', 'baz' => 'biz']));
+        $this->assertFalse(Arr::isList([
+            'foo' => 'bar',
+            'bar' => 'baz',
+        ]));
+        $this->assertFalse(Arr::isList([
+            'foo',
+            'bar',
+            'baz' => 'biz',
+        ]));
     }
-
 }
 
 final class SupportTestArrayAccess implements ArrayAccess
@@ -1259,7 +1096,7 @@ final class SupportTestArrayAccess implements ArrayAccess
 
     /**
      * @param int|string $offset
-     * @param mixed $value
+     * @param mixed      $value
      */
     #[ReturnTypeWillChange]
     public function offsetSet($offset, $value): void

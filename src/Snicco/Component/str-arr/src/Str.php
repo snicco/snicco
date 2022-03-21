@@ -81,6 +81,7 @@ final class Str
         if ('' === $substring) {
             return false;
         }
+
         if ('' === $subject) {
             return false;
         }
@@ -96,7 +97,7 @@ final class Str
     public static function containsAll(string $subject, array $substrings): bool
     {
         foreach ($substrings as $substring) {
-            if (!self::contains($subject, $substring)) {
+            if (! self::contains($subject, $substring)) {
                 return false;
             }
         }
@@ -135,7 +136,7 @@ final class Str
 
         $parts = explode(' ', str_replace(['-', '_'], ' ', $value));
 
-        $parts = array_map(fn($string): string => self::ucfirst($string), $parts);
+        $parts = array_map(fn ($string): string => self::ucfirst($string), $parts);
 
         return self::$studly_cache[$key] = implode('', $parts);
     }
@@ -148,7 +149,7 @@ final class Str
         if (null === $encoding) {
             /** @psalm-suppress ImpureFunctionCall */
             $encoding = mb_internal_encoding();
-            if (!is_string($encoding)) {
+            if (! is_string($encoding)) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Internal multi-byte encoding not set.');
                 // @codeCoverageIgnoreEnd
@@ -156,11 +157,11 @@ final class Str
         }
 
         return mb_strtoupper(mb_substr($subject, 0, 1, $encoding), $encoding) . mb_substr(
-                $subject,
-                1,
-                null,
-                $encoding
-            );
+            $subject,
+            1,
+            null,
+            $encoding
+        );
     }
 
     /**
@@ -168,7 +169,7 @@ final class Str
      */
     public static function doesNotEndWith(string $subject, string $substring): bool
     {
-        return !self::endsWith($subject, $substring);
+        return ! self::endsWith($subject, $substring);
     }
 
     /**
@@ -403,5 +404,4 @@ final class Str
     {
         return bin2hex(random_bytes($bytes));
     }
-
 }

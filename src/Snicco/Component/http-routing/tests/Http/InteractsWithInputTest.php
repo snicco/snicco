@@ -171,9 +171,6 @@ final class InteractsWithInputTest extends TestCase
 
         $name = $request->query('products.0.name');
         $this->assertSame('shoe', $name);
-
-        $names = $request->query('products.*.name');
-        $this->assertSame(['shoe', 'shirt'], $names);
     }
 
     /**
@@ -223,9 +220,6 @@ final class InteractsWithInputTest extends TestCase
 
         $name = $request->post('products.0.name');
         $this->assertSame('shoe', $name);
-
-        $names = $request->post('products.*.name');
-        $this->assertSame(['shoe', 'shirt'], $names);
     }
 
     /**
@@ -236,7 +230,7 @@ final class InteractsWithInputTest extends TestCase
         $arr = [
             'foo' => 'bar',
         ];
-        $stdClass = (object)$arr;
+        $stdClass = (object) $arr;
         $request = $this->request->withParsedBody($stdClass);
 
         $this->assertSame($stdClass, $request->getParsedBody());
@@ -484,7 +478,7 @@ final class InteractsWithInputTest extends TestCase
     /**
      * @test
      */
-    public function test_hasAll(): void
+    public function test_has_all(): void
     {
         $request = $this->request->withQueryParams([
             'products' => [
