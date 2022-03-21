@@ -1,19 +1,30 @@
 <?php
 
 /*
- * Trimmed down version of the Illuminate/Str class with the following modifications
+ * This class is a derivative work of the Illuminate/Str class with the following modifications:
  * - full multibyte support for all methods
  * - strict type hinting
  * - final class attribute
  * - way less permissive with invalid input like null values.
  * - removal of all hidden dependencies.
  * - removal of unneeded doc-blocks
+ * - support for psalm
  *
- * https://github.com/laravel/framework/blob/v8.35.1/src/Illuminate/Support/Str.php
+ * The illuminate/support package is licensed under the MIT License:
+ * https://github.com/laravel/framework/blob/v8.35.1/LICENSE.md
  *
- * License: The MIT License (MIT) https://github.com/laravel/framework/blob/v8.35.1/LICENSE.md
+ * The MIT License (MIT)
  *
  * Copyright (c) Taylor Otwell
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
 
@@ -63,12 +74,29 @@ final class Str
     private static array $studly_cache = [];
 
     /**
-     * @param list<string> $needles
+     * @psalm-pure
      */
-    public static function containsAll(string $subject, array $needles): bool
+    public static function contains(string $subject, string $substring): bool
     {
-        foreach ($needles as $needle) {
-            if (! self::contains($subject, $needle)) {
+        if ('' === $substring) {
+            return false;
+        }
+        if ('' === $subject) {
+            return false;
+        }
+
+        return false !== mb_strpos($subject, $substring);
+    }
+
+    /**
+     * @param list<string> $substrings
+     *
+     * @psalm-pure
+     */
+    public static function containsAll(string $subject, array $substrings): bool
+    {
+        foreach ($substrings as $substring) {
+            if (!self::contains($subject, $substring)) {
                 return false;
             }
         }
@@ -77,33 +105,13 @@ final class Str
     }
 
     /**
-     * @param string|string[] $needles
+     * @param list<string> $substrings
      *
      * @psalm-pure
      */
-    public static function contains(string $subject, $needles): bool
+    public static function containsAny(string $subject, array $substrings): bool
     {
-        foreach ((array) $needles as $needle) {
-            if ('' === $needle) {
-                continue;
-            }
-
-            if (false === mb_strpos($subject, $needle)) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param list<string> $needles
-     */
-    public static function containsAny(string $subject, array $needles): bool
-    {
-        foreach ($needles as $needle) {
+        foreach ($substrings as $needle) {
             if (self::contains($subject, $needle)) {
                 return true;
             }
@@ -113,20 +121,9 @@ final class Str
     }
 
     /**
-     * Generates a random secret with the passed bytes as strength. The output
-     * is hex encoded and will have TWICE the length as $strength.
+     * This method converts: "snicco_wp-framework" => "SniccoWpFramework".
      *
-     * @param positive-int $bytes
-     *
-     * @throws Exception
-     */
-    public static function random(int $bytes = 16): string
-    {
-        return bin2hex(random_bytes($bytes));
-    }
-
-    /**
-     * "snicco_wp-framework" => "SniccoWpFramework".
+     * @psalm-external-mutation-free
      */
     public static function studly(string $value): string
     {
@@ -138,16 +135,20 @@ final class Str
 
         $parts = explode(' ', str_replace(['-', '_'], ' ', $value));
 
-        $parts = array_map(fn ($string): string => self::ucfirst($string), $parts);
+        $parts = array_map(fn($string): string => self::ucfirst($string), $parts);
 
         return self::$studly_cache[$key] = implode('', $parts);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function ucfirst(string $subject, ?string $encoding = null): string
     {
         if (null === $encoding) {
+            /** @psalm-suppress ImpureFunctionCall */
             $encoding = mb_internal_encoding();
-            if (! is_string($encoding)) {
+            if (!is_string($encoding)) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Internal multi-byte encoding not set.');
                 // @codeCoverageIgnoreEnd
@@ -155,46 +156,49 @@ final class Str
         }
 
         return mb_strtoupper(mb_substr($subject, 0, 1, $encoding), $encoding) . mb_substr(
-            $subject,
-            1,
-            null,
-            $encoding
-        );
-    }
-
-    public static function doesNotEndWith(string $subject, string $string): bool
-    {
-        return ! self::endsWith($subject, $string);
+                $subject,
+                1,
+                null,
+                $encoding
+            );
     }
 
     /**
      * @psalm-pure
      */
-    public static function endsWith(string $subject, string $needle): bool
+    public static function doesNotEndWith(string $subject, string $substring): bool
     {
-        if ('' === $needle) {
+        return !self::endsWith($subject, $substring);
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function endsWith(string $subject, string $substring): bool
+    {
+        if ('' === $substring) {
             return false;
         }
 
-        return substr($subject, -strlen($needle)) === $needle;
+        return substr($subject, -strlen($substring)) === $substring;
     }
 
     /**
      * @psalm-pure
      */
-    public static function afterLast(string $subject, string $search): string
+    public static function afterLast(string $subject, string $substring): string
     {
-        if ('' === $search) {
+        if ('' === $substring) {
             return $subject;
         }
 
-        $position = strrpos($subject, $search);
+        $position = strrpos($subject, $substring);
 
         if (false === $position) {
             return $subject;
         }
 
-        $res = substr($subject, $position + strlen($search));
+        $res = substr($subject, $position + strlen($substring));
         if (false === $res) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException(sprintf('substr returned false for subject [%s].', $subject));
@@ -207,17 +211,19 @@ final class Str
     /**
      * @psalm-pure
      */
-    public static function startsWith(string $subject, string $needle): bool
+    public static function startsWith(string $subject, string $substring): bool
     {
-        if ('' === $needle) {
+        if ('' === $substring) {
             return false;
         }
 
-        return 0 === strncmp($subject, $needle, strlen($needle));
+        return 0 === strncmp($subject, $substring, strlen($substring));
     }
 
     /**
-     * Str::betweenLast('xayyy', 'x', 'y') => 'xayy'.
+     * Usage: Str::betweenLast('xayyy', 'x', 'y') => 'xayy'.
+     *
+     * @psalm-pure
      */
     public static function betweenLast(string $subject, string $from, string $to): string
     {
@@ -232,36 +238,10 @@ final class Str
         return self::beforeLast(self::afterFirst($subject, $from), $to);
     }
 
-    public static function beforeLast(string $subject, string $search): string
-    {
-        if ('' === $search) {
-            return $subject;
-        }
-
-        $pos = mb_strrpos($subject, $search);
-
-        if (false === $pos) {
-            return $subject;
-        }
-
-        return self::substr($subject, 0, $pos);
-    }
-
-    public static function substr(string $subject, int $start, int $length = null): string
-    {
-        return mb_substr($subject, $start, $length, 'UTF-8');
-    }
-
     /**
+     * Usage: Str::betweenFirst('xayyy', 'x', 'y') => 'a'.
+     *
      * @psalm-pure
-     */
-    public static function afterFirst(string $subject, string $search): string
-    {
-        return '' === $search ? $subject : array_reverse(explode($search, $subject, 2))[0];
-    }
-
-    /**
-     * Str::betweenFirst('xayyy', 'x', 'y') => 'a'.
      */
     public static function betweenFirst(string $subject, string $from, string $to): string
     {
@@ -274,6 +254,40 @@ final class Str
         }
 
         return self::beforeFirst(self::afterFirst($subject, $from), $to);
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function beforeLast(string $subject, string $substring): string
+    {
+        if ('' === $substring) {
+            return $subject;
+        }
+
+        $pos = mb_strrpos($subject, $substring);
+
+        if (false === $pos) {
+            return $subject;
+        }
+
+        return self::substr($subject, 0, $pos);
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function substr(string $subject, int $start, int $length = null): string
+    {
+        return mb_substr($subject, $start, $length, 'UTF-8');
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function afterFirst(string $subject, string $search): string
+    {
+        return '' === $search ? $subject : array_reverse(explode($search, $subject, 2))[0];
     }
 
     /**
@@ -314,16 +328,19 @@ final class Str
         return 1 === preg_match('#^' . $pattern . '\z#u', $subject);
     }
 
-    public static function replaceFirst(string $search, string $replace, string $subject): string
+    /**
+     * @psalm-pure
+     */
+    public static function replaceFirst(string $subject, string $substring, string $replace): string
     {
-        if ('' === $search) {
+        if ('' === $substring) {
             return $subject;
         }
 
-        $position = strpos($subject, $search);
+        $position = strpos($subject, $substring);
 
         if (false !== $position) {
-            return substr_replace($subject, $replace, $position, strlen($search));
+            return substr_replace($subject, $replace, $position, strlen($substring));
         }
 
         return $subject;
@@ -331,6 +348,7 @@ final class Str
 
     /**
      * @param string $subject regex delimiters will not be added
+     *
      * @psalm-pure
      */
     public static function pregReplace(string $subject, string $pattern, string $replace): string
@@ -372,4 +390,18 @@ final class Str
 
         return $res;
     }
+
+    /**
+     * Generates a random secret with the passed bytes as strength. The output
+     * is hex encoded and will have TWICE the length as $strength.
+     *
+     * @param positive-int $bytes
+     *
+     * @throws Exception
+     */
+    public static function random(int $bytes = 16): string
+    {
+        return bin2hex(random_bytes($bytes));
+    }
+
 }

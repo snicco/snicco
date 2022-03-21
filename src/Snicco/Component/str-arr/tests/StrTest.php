@@ -1,13 +1,23 @@
 <?php
 
 /*
- * Modified version of the Illuminate/Str test case
+ * These tests are an extended version of the illuminate/str class tests.
  *
- * https://github.com/laravel/framework/blob/v8.35.1/tests/Support/SupportStrTest.php
+ * The illuminate/support package is licensed under the MIT License:
+ * https://github.com/laravel/framework/blob/v8.35.1/LICENSE.md
  *
- * License: The MIT License (MIT) https://github.com/laravel/framework/blob/v8.35.1/LICENSE.md
+ * The MIT License (MIT)
  *
  * Copyright (c) Taylor Otwell
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
 
@@ -52,12 +62,10 @@ final class StrTest extends TestCase
     {
         $this->assertTrue(Str::contains('taylor', 'ylo'));
         $this->assertTrue(Str::contains('taylor', 'taylor'));
-        $this->assertTrue(Str::contains('taylor', ['ylo']));
-        $this->assertTrue(Str::contains('taylor', ['xxx', 'ylo']));
         $this->assertFalse(Str::contains('taylor', 'xxx'));
-        $this->assertFalse(Str::contains('taylor', ['xxx']));
         $this->assertFalse(Str::contains('taylor', ''));
         $this->assertFalse(Str::contains('', ''));
+        $this->assertFalse(Str::contains('taylor', ''));
 
         $this->assertTrue(Str::contains('düsseldorf', 'ü'));
         $this->assertFalse(Str::contains('düsseldorf', 'ö'));
@@ -86,8 +94,8 @@ final class StrTest extends TestCase
         $this->assertTrue(Str::containsAny('taylor otwell', ['taylor', 'xxx']));
         $this->assertFalse(Str::containsAny('taylor otwell', ['yyy', 'xxx']));
 
-        $this->assertTrue(Str::contains('düsseldorf', ['ü', 'ö']));
-        $this->assertFalse(Str::contains('düsseldorf', ['ä', 'ö']));
+        $this->assertTrue(Str::containsAny('düsseldorf', ['ü', 'ö']));
+        $this->assertFalse(Str::containsAny('düsseldorf', ['ä', 'ö']));
     }
 
     /**
@@ -201,6 +209,8 @@ final class StrTest extends TestCase
         $this->assertSame('foo', Str::afterLast('----foo', '---'));
 
         $this->assertSame('xy', Str::afterLast('öööööööxy', 'ö'));
+
+        $this->assertSame('yvette', Str::afterLast('éééyvette', 'é'));
     }
 
     /**
@@ -358,14 +368,18 @@ final class StrTest extends TestCase
      */
     public function replace_first(): void
     {
-        $this->assertSame('fooqux foobar', Str::replaceFirst('bar', 'qux', 'foobar foobar'));
-        $this->assertSame('foo/qux? foo/bar?', Str::replaceFirst('bar?', 'qux?', 'foo/bar? foo/bar?'));
-        $this->assertSame('foo foobar', Str::replaceFirst('bar', '', 'foobar foobar'));
-        $this->assertSame('foobar foobar', Str::replaceFirst('xxx', 'yyy', 'foobar foobar'));
-        $this->assertSame('foobar foobar', Str::replaceFirst('', 'yyy', 'foobar foobar'));
+        $this->assertSame('fooqux foobar', Str::replaceFirst('foobar foobar', 'bar', 'qux'));
+        $this->assertSame('foo/qux? foo/bar?', Str::replaceFirst('foo/bar? foo/bar?', 'bar?', 'qux?'));
+        $this->assertSame('foo foobar', Str::replaceFirst('foobar foobar', 'bar', ''));
+        $this->assertSame('foobar foobar', Str::replaceFirst('foobar foobar', 'xxx', 'yyy'));
+        $this->assertSame('foobar foobar', Str::replaceFirst('foobar foobar', '', 'foo'));
+
         // Test for multibyte string support
-        $this->assertSame('Jxxxnköping Malmö', Str::replaceFirst('ö', 'xxx', 'Jönköping Malmö'));
-        $this->assertSame('Jönköping Malmö', Str::replaceFirst('', 'yyy', 'Jönköping Malmö'));
+        $this->assertSame('Jxxxnköping Malmö', Str::replaceFirst('Jönköping Malmö', 'ö', 'xxx'));
+        $this->assertSame('Jönköping Malmö', Str::replaceFirst('Jönköping Malmö', '', 'yyy'));
+
+        $this->assertSame('xxx你你好', Str::replaceFirst('你你你好', '你', 'xxx'));
+        $this->assertSame('好你好好', Str::replaceFirst('你你好好', '你', '好'));
     }
 
     /**

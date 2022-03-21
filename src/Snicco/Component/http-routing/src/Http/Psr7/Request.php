@@ -103,7 +103,7 @@ final class Request implements ServerRequestInterface
 
     public function userAgent(): ?string
     {
-        $user_agent = (string) substr($this->getHeaderLine('user-agent'), 0, 500);
+        $user_agent = (string)substr($this->getHeaderLine('user-agent'), 0, 500);
 
         if ('' === $user_agent) {
             return null;
@@ -117,7 +117,7 @@ final class Request implements ServerRequestInterface
      */
     public function url(): string
     {
-        $full = (string) $this->getUri();
+        $full = (string)$this->getUri();
 
         return Str::pregReplace($full, '/\?.*/', '');
     }
@@ -133,7 +133,7 @@ final class Request implements ServerRequestInterface
     {
         /** @var array<string,non-empty-list<string>|string> $cookies */
         $cookies = $this->getCookieParams();
-        if (! isset($cookies[$name])) {
+        if (!isset($cookies[$name])) {
             return $default;
         }
 
@@ -143,7 +143,7 @@ final class Request implements ServerRequestInterface
     public function routingResult(): RoutingResult
     {
         $res = $this->getAttribute(RoutingResult::class);
-        if (! $res instanceof RoutingResult) {
+        if (!$res instanceof RoutingResult) {
             return RoutingResult::noMatch();
         }
 
@@ -193,7 +193,7 @@ final class Request implements ServerRequestInterface
         ]);
 
         $segments = explode('/', $path);
-        $segments = array_map(fn ($part): string => rawurldecode($part), $segments);
+        $segments = array_map(fn($part): string => rawurldecode($part), $segments);
 
         return implode('/', $segments);
     }
@@ -220,7 +220,7 @@ final class Request implements ServerRequestInterface
     public function isSecure(): bool
     {
         return 'https' === $this->getUri()
-            ->getScheme();
+                ->getScheme();
     }
 
     public function isToFrontend(): bool
@@ -241,7 +241,7 @@ final class Request implements ServerRequestInterface
     public function ip(): ?string
     {
         $ip = $this->server('REMOTE_ADDR');
-        if (! is_string($ip)) {
+        if (!is_string($ip)) {
             return null;
         }
 
@@ -313,14 +313,14 @@ final class Request implements ServerRequestInterface
 
     public function isSendingJson(): bool
     {
-        return Str::contains($this->getHeaderLine('content-type'), ['/json', '+json']);
+        return Str::containsAny($this->getHeaderLine('content-type'), ['/json', '+json']);
     }
 
     public function isExpectingJson(): bool
     {
         $accepts = $this->getHeaderLine('accept');
 
-        return Str::contains($accepts, ['/json', '+json']);
+        return Str::containsAny($accepts, ['/json', '+json']);
     }
 
     public function acceptsHtml(): bool
@@ -386,9 +386,9 @@ final class Request implements ServerRequestInterface
      *
      * @param mixed $default
      *
+     * @return mixed
      * @throws RuntimeException if parsed body is not an array
      *
-     * @return mixed
      */
     public function post(?string $key = null, $default = null)
     {
@@ -398,7 +398,7 @@ final class Request implements ServerRequestInterface
             return $default;
         }
 
-        if (! is_array($parsed_body)) {
+        if (!is_array($parsed_body)) {
             throw new RuntimeException(sprintf('%s can not be used if parsed body is not an array.', __METHOD__));
         }
 
@@ -416,8 +416,8 @@ final class Request implements ServerRequestInterface
 
     public function all(): array
     {
-        $post = (array) $this->post();
-        $query = (array) $this->query();
+        $post = (array)$this->post();
+        $query = (array)$this->query();
 
         if ($this->isReadVerb()) {
             return $query + $post;
@@ -505,7 +505,7 @@ final class Request implements ServerRequestInterface
      */
     public function missing($keys): bool
     {
-        return ! $this->has($keys);
+        return !$this->has($keys);
     }
 
     /**
@@ -672,7 +672,7 @@ final class Request implements ServerRequestInterface
     {
         /** @var mixed $id */
         $id = $this->getAttribute('snicco.user_id');
-        if (! is_int($id) && null !== $id) {
+        if (!is_int($id) && null !== $id) {
             throw new InvalidArgumentException(
                 sprintf("snicco.user_id must be integer or null.\nGot [%s].", gettype($id))
             );
@@ -693,7 +693,7 @@ final class Request implements ServerRequestInterface
     {
         $route = $this->routingResult()
             ->route();
-        if (! $route instanceof Route) {
+        if (!$route instanceof Route) {
             return false;
         }
 
@@ -744,7 +744,7 @@ final class Request implements ServerRequestInterface
             ? $this->getParsedBody()
             : $this->getQueryParams();
 
-        if (! is_array($input)) {
+        if (!is_array($input)) {
             throw new RuntimeException(sprintf('%s can only be used if the parsed body is an array.', __METHOD__));
         }
 
@@ -764,6 +764,6 @@ final class Request implements ServerRequestInterface
             return true;
         }
 
-        return '' === trim((string) $value);
+        return '' === trim((string)$value);
     }
 }
