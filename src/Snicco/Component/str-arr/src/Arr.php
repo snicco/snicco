@@ -45,27 +45,24 @@ use function array_values;
 use function count;
 use function explode;
 use function gettype;
-use function in_array;
 use function is_array;
 use function is_int;
 use function is_iterable;
-use function is_object;
 use function is_string;
 use function sprintf;
 use function strpos;
 
 /**
- *
  * @note If the input array is multidimensional its KEYS must not contain '.' for any methods in this class
- *       that allow accessing a nested array by "dot" notation.
- *       {@see https://github.com/laravel/framework/issues/37318}
+ * that allow accessing a nested array by "dot" notation.
+ * {@see https://github.com/laravel/framework/issues/37318}
  */
 final class Arr
 {
     /**
      * @template TValue
      *
-     * @param array<TValue> $array
+     * @param array<TValue>   $array
      * @param string|string[] $keys
      *
      * @return array<string,TValue>
@@ -74,23 +71,21 @@ final class Arr
      */
     public static function only(array $array, $keys): array
     {
-        $keys = array_flip((array)$keys);
+        $keys = array_flip((array) $keys);
 
         /**
          * @psalm-var array<string,TValue> $intersection
          */
-        $intersection = array_intersect_key($array, $keys);
-
-        return $intersection;
+        return array_intersect_key($array, $keys);
     }
 
     /**
      * @template TKey
      * @template TVal
      *
-     * @param null|Closure(TVal,TKey):bool $condition
-     * @param iterable<TKey,TVal> $array
-     * @param TVal|null $default
+     * @param Closure(TVal,TKey):bool|null $condition
+     * @param iterable<TKey,TVal>          $array
+     * @param TVal|null                    $default
      *
      * @return TVal|null
      * @psalm-return (
@@ -122,7 +117,7 @@ final class Arr
      * @template T
      *
      * @param positive-int $number
-     * @param array<T> $array
+     * @param array<T>     $array
      *
      * @throws InvalidArgumentException If the requested count is greater than the number of array elements
      *
@@ -153,7 +148,7 @@ final class Arr
 
         $results = [];
 
-        foreach ((array)$keys as $key) {
+        foreach ((array) $keys as $key) {
             if (1 === $number) {
                 return $array[$key];
             }
@@ -195,12 +190,7 @@ final class Arr
             return true;
         }
 
-        return [true] === array_unique(
-                array_map(
-                    fn($val): bool => is_string($val),
-                    array_keys($array)
-                )
-            );
+        return [true] === array_unique(array_map(fn ($val): bool => is_string($val), array_keys($array)));
     }
 
     /**
@@ -217,11 +207,11 @@ final class Arr
     }
 
     /**
-     * Gets an item from an array using "." notation and returns the default value
-     * if the key does not exist.
+     * Gets an item from an array using "." notation and returns the default
+     * value if the key does not exist.
      *
-     * @param array|ArrayAccess $array
-     * @param int|string $key
+     * @param array|ArrayAccess     $array
+     * @param int|string            $key
      * @param mixed|Closure():mixed $default
      *
      * @return mixed
@@ -235,7 +225,7 @@ final class Arr
             return $array[$key];
         }
 
-        $key = (string)$key;
+        $key = (string) $key;
 
         if (false === strpos($key, '.')) {
             return $array[$key] ?? self::returnDefault($default);
@@ -272,7 +262,7 @@ final class Arr
             // If the key doesn't exist at this depth, we will just create an empty array
             // to hold the next value, allowing us to create the arrays to hold final
             // values at the correct depth. Then we'll keep digging into the array.
-            if (!isset($array[$key]) || !is_array($array[$key])) {
+            if (! isset($array[$key]) || ! is_array($array[$key])) {
                 $array[$key] = [];
             }
 
@@ -289,7 +279,7 @@ final class Arr
      * Check if an item or items exist in an array using "." notation.
      *
      * @param array|ArrayAccess $array
-     * @param int|string $key
+     * @param int|string        $key
      */
     public static function has($array, $key): bool
     {
@@ -300,7 +290,7 @@ final class Arr
             return false;
         }
 
-        $key = (string)$key;
+        $key = (string) $key;
 
         if (self::keyExists($array, $key)) {
             return true;
@@ -323,19 +313,20 @@ final class Arr
      * Determine if all the keys exist in an array using "dot" notation.
      *
      * @param array|ArrayAccess $array
-     * @param string[] $keys
+     * @param string[]          $keys
      */
     public static function hasAll($array, array $keys): bool
     {
         if ([] === $array) {
             return false;
         }
+
         if ([] === $keys) {
             return false;
         }
 
         foreach ($keys as $key) {
-            if (!self::has($array, $key)) {
+            if (! self::has($array, $key)) {
                 return false;
             }
         }
@@ -347,13 +338,14 @@ final class Arr
      * Determine if any of the keys exist in an array using "dot" notation.
      *
      * @param array|ArrayAccess $array
-     * @param string[] $keys
+     * @param string[]          $keys
      */
     public static function hasAny($array, array $keys): bool
     {
         if ([] === $array) {
             return false;
         }
+
         if ([] === $keys) {
             return false;
         }
@@ -400,7 +392,7 @@ final class Arr
      * Determine if the given key exists in the provided array.
      *
      * @param array|ArrayAccess $array
-     * @param int|string $key
+     * @param int|string        $key
      */
     public static function keyExists($array, $key): bool
     {
@@ -416,22 +408,15 @@ final class Arr
     /**
      * Collapses all iterables into a single array.
      *
-     * @param iterable<iterable|mixed> $array Non-iterable values will be skipped
+     * @param iterable<iterable> $array Non-iterable values will be skipped
      *
      * @return list<mixed>
      */
     public static function collapse(iterable $array): array
     {
-        /**
-         * @var list<mixed>
-         */
         $results = [];
 
         foreach ($array as $values) {
-            if (!is_iterable($values)) {
-                continue;
-            }
-
             /** @var mixed $value */
             foreach ($values as $value) {
                 /** @psalm-suppress MixedAssignment */
@@ -443,7 +428,8 @@ final class Arr
     }
 
     /**
-     * Flattens a multidimensional array. The resulting array contains only array values.
+     * Flattens a multidimensional array. The resulting array contains only
+     * array values.
      *
      * @return list<mixed>
      */
@@ -474,12 +460,12 @@ final class Arr
     }
 
     /**
-     * Returns a modified array without the specified keys.
-     * Keys can contain "." to traverse a multidimensional arrays.
+     * Returns a modified array without the specified keys. Keys can contain "."
+     * to traverse a multidimensional arrays.
      *
      * @template TVal
      *
-     * @param array<TVal> $array
+     * @param array<TVal>     $array
      * @param string|string[] $keys
      *
      * @return array<TVal>
@@ -494,7 +480,7 @@ final class Arr
     /**
      * Remove one or more array items from a given array using "dot" notation.
      *
-     * @param array $array Passed by reference
+     * @param array           $array Passed by reference
      * @param string|string[] $keys
      */
     public static function remove(array &$array, $keys): void
@@ -511,6 +497,7 @@ final class Arr
             // if the exact key exists in the top-level, remove it
             if (self::keyExists($array, $key)) {
                 unset($array[$key]);
+
                 continue;
             }
 
@@ -536,59 +523,13 @@ final class Arr
     }
 
     /**
-     * @param array|ArrayAccess|mixed|object $target
-     * @param string|string[] $key
-     * @param mixed $default
-     *
-     * @return array|mixed
-     *
-     * @psalm-suppress MixedAssignment
-     */
-    public static function dataGet($target, $key, $default = null)
-    {
-        self::assertAccessible($target, __METHOD__);
-        self::assertAllStrings(self::toArray($key), __METHOD__);
-
-        $keys = is_array($key) ? $key : explode('.', $key);
-
-        foreach ($keys as $i => $segment) {
-            unset($keys[$i]);
-
-            if ('*' === $segment) {
-                if (!is_array($target)) {
-                    return self::returnDefault($default);
-                }
-
-                $result = [];
-
-                foreach ($target as $item) {
-                    $result[] = self::dataGet($item, $keys);
-                }
-
-                return in_array('*', $keys, true) ? self::collapse($result) : $result;
-            }
-
-            if (self::accessible($target) && self::keyExists($target, $segment)) {
-                /** @var array|ArrayAccess $target */
-                $target = $target[$segment];
-            } elseif (is_object($target) && isset($target->{$segment})) {
-                $target = $target->{$segment};
-            } else {
-                return self::returnDefault($default);
-            }
-        }
-
-        return $target;
-    }
-
-    /**
      * @psalm-pure
      * @psalm-assert array<string,mixed> $keys
      */
     private static function assertAllStrings(array $keys, string $called_method): void
     {
         foreach ($keys as $key) {
-            if (!is_string($key)) {
+            if (! is_string($key)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         "\$keys has to be a string or an array of string when calling [%s].\nGot [%s]",
@@ -607,7 +548,7 @@ final class Arr
      */
     private static function assertAccessible($array, string $called_method): void
     {
-        if (!self::accessible($array)) {
+        if (! self::accessible($array)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "\$array has to be an array or instance of ArrayAccess when calling [%s].\nGot [%s]",
@@ -676,5 +617,4 @@ final class Arr
 
         return $default;
     }
-
 }
