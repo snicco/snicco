@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Trimmed down version of the Illuminate/Arr class with the following modifications
+ * This class is a derivative work of the Illuminate/Arr class with the following modifications:
  * - strict type hinting
  * - final class attribute
  * - way less permissive with invalid input like null values.
@@ -9,11 +9,21 @@
  * - removal of unneeded doc-blocks
  * - support for psalm
  *
- * https://github.com/laravel/framework/blob/v8.35.1/src/Illuminate/Collections/Arr.php
+ * The illuminate/support package is licensed under the MIT License:
+ * https://github.com/laravel/framework/blob/v8.35.1/LICENSE.md
  *
- * License: The MIT License (MIT) https://github.com/laravel/framework/blob/v8.35.1/LICENSE.md
+ * The MIT License (MIT)
  *
  * Copyright (c) Taylor Otwell
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
 
@@ -28,6 +38,7 @@ use InvalidArgumentException;
 use function array_flip;
 use function array_intersect_key;
 use function array_key_exists;
+use function array_keys;
 use function array_rand;
 use function array_shift;
 use function array_values;
@@ -43,23 +54,43 @@ use function is_string;
 use function sprintf;
 use function strpos;
 
+/**
+ *
+ * @note If the input array is multidimensional its KEYS must not contain '.' for any methods in this class
+ *       that allow accessing a nested array by "dot" notation.
+ *       {@see https://github.com/laravel/framework/issues/37318}
+ */
 final class Arr
 {
     /**
+     * @template TValue
+     *
+     * @param array<TValue> $array
      * @param string|string[] $keys
+     *
+     * @return array<string,TValue>
+     *
+     * @psalm-pure
      */
     public static function only(array $array, $keys): array
     {
-        return array_intersect_key($array, array_flip((array) $keys));
+        $keys = array_flip((array)$keys);
+
+        /**
+         * @psalm-var array<string,TValue> $intersection
+         */
+        $intersection = array_intersect_key($array, $keys);
+
+        return $intersection;
     }
 
     /**
      * @template TKey
      * @template TVal
      *
-     * @param Closure(TVal,TKey):bool|null $condition
-     * @param iterable<TKey,TVal>          $array
-     * @param TVal|null                    $default
+     * @param null|Closure(TVal,TKey):bool $condition
+     * @param iterable<TKey,TVal> $array
+     * @param TVal|null $default
      *
      * @return TVal|null
      * @psalm-return (
@@ -75,7 +106,6 @@ final class Arr
                 }
             }
 
-            /** @var TVal|null $default */
             return $default;
         }
 
@@ -83,7 +113,6 @@ final class Arr
             return $value;
         }
 
-        /** @var TVal|null $default */
         return $default;
     }
 
@@ -93,12 +122,14 @@ final class Arr
      * @template T
      *
      * @param positive-int $number
-     * @param array<T>     $array
+     * @param array<T> $array
      *
      * @throws InvalidArgumentException If the requested count is greater than the number of array elements
      *
      * @return non-empty-list<T>|T
-     * @psalm-return ($number is 1 ? T : list<T>)
+     *
+     * @psalm-return ($number is 1 ? T : non-empty-list<T>)
+     * @psalm-assert non-empty-array<T> $array
      */
     public static function random(array $array, int $number = 1)
     {
@@ -122,7 +153,7 @@ final class Arr
 
         $results = [];
 
-        foreach ((array) $keys as $key) {
+        foreach ((array)$keys as $key) {
             if (1 === $number) {
                 return $array[$key];
             }
@@ -130,37 +161,347 @@ final class Arr
             $results[] = $array[$key];
         }
 
+        /**
+         * @psalm-var non-empty-list<T>
+         */
         return $results;
     }
 
     /**
-     * Returns a modified array without the specified keys. Keys can use "dot"
-     * notation.
+     * @template T
      *
-     * @param string|string[] $keys
+     * @param T $value
+     *
+     * @psalm-return (T is array ? T : array{0: T})
+     *
+     * @psalm-pure
      */
-    public static function except(array $array, $keys): array
+    public static function toArray($value): array
     {
-        self::forget($array, $keys);
+        return is_array($value) ? $value : [$value];
+    }
+
+    /**
+     * Checks if all keys of the input array are strings.
+     *
+     * @psalm-param array $array
+     *
+     * @psalm-assert-if-true array<string,mixed> $array
+     * @psalm-pure
+     */
+    public static function isAssoc(array $array): bool
+    {
+        if ([] === $array) {
+            return true;
+        }
+
+        return [true] === array_unique(
+                array_map(
+                    fn($val): bool => is_string($val),
+                    array_keys($array)
+                )
+            );
+    }
+
+    /**
+     * Checks if the input are is a sequential list.
+     *
+     * @psalm-param array $array
+     *
+     * @psalm-assert-if-true list<TVal> $array
+     * @psalm-pure
+     */
+    public static function isList(array $array): bool
+    {
+        return $array === array_values($array);
+    }
+
+    /**
+     * Gets an item from an array using "." notation and returns the default value
+     * if the key does not exist.
+     *
+     * @param array|ArrayAccess $array
+     * @param int|string $key
+     * @param mixed|Closure():mixed $default
+     *
+     * @return mixed
+     */
+    public static function get($array, $key, $default = null)
+    {
+        self::assertAccessible($array, __METHOD__);
+        self::assertStringOrInt($key, __METHOD__);
+
+        if (self::keyExists($array, $key)) {
+            return $array[$key];
+        }
+
+        $key = (string)$key;
+
+        if (false === strpos($key, '.')) {
+            return $array[$key] ?? self::returnDefault($default);
+        }
+
+        foreach (explode('.', $key) as $segment) {
+            if (self::accessible($array) && self::keyExists($array, $segment)) {
+                /** @var mixed $array */
+                $array = $array[$segment];
+            } else {
+                return self::returnDefault($default);
+            }
+        }
 
         return $array;
     }
 
     /**
-     * Remove one or many array items from a given array using "dot" notation.
-     * Do not use this function if you $array is multidimensional and has keys
-     * that contain "." themselves.
+     * Set an array item to a given value using "dot" notation.
      *
-     * {@see https://github.com/laravel/framework/blob/v8.35.1/tests/Support/SupportArrTest.php#L877}.
+     * @param mixed $value
+     */
+    public static function set(array &$array, string $key, $value): void
+    {
+        $keys = explode('.', $key);
+
+        foreach ($keys as $i => $key) {
+            if (1 === count($keys)) {
+                break;
+            }
+
+            unset($keys[$i]);
+
+            // If the key doesn't exist at this depth, we will just create an empty array
+            // to hold the next value, allowing us to create the arrays to hold final
+            // values at the correct depth. Then we'll keep digging into the array.
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                $array[$key] = [];
+            }
+
+            $array = &$array[$key];
+        }
+
+        if ([] !== $keys) {
+            /** @psalm-suppress MixedAssignment */
+            $array[array_shift($keys)] = $value;
+        }
+    }
+
+    /**
+     * Check if an item or items exist in an array using "." notation.
      *
-     * @param array           $array Passed by reference
+     * @param array|ArrayAccess $array
+     * @param int|string $key
+     */
+    public static function has($array, $key): bool
+    {
+        self::assertAccessible($array, __METHOD__);
+        self::assertStringOrInt($key, __METHOD__);
+
+        if ([] === $array) {
+            return false;
+        }
+
+        $key = (string)$key;
+
+        if (self::keyExists($array, $key)) {
+            return true;
+        }
+
+        $sub_key_array = $array;
+        foreach (explode('.', $key) as $segment) {
+            if (self::accessible($sub_key_array) && self::keyExists($sub_key_array, $segment)) {
+                /** @var mixed $sub_key_array */
+                $sub_key_array = $sub_key_array[$segment];
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if all the keys exist in an array using "dot" notation.
+     *
+     * @param array|ArrayAccess $array
+     * @param string[] $keys
+     */
+    public static function hasAll($array, array $keys): bool
+    {
+        if ([] === $array) {
+            return false;
+        }
+        if ([] === $keys) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            if (!self::has($array, $key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if any of the keys exist in an array using "dot" notation.
+     *
+     * @param array|ArrayAccess $array
+     * @param string[] $keys
+     */
+    public static function hasAny($array, array $keys): bool
+    {
+        if ([] === $array) {
+            return false;
+        }
+        if ([] === $keys) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            if (self::has($array, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @psalm-assert-if-true array|ArrayAccess $value
+     */
+    public static function accessible($value): bool
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+
+    public static function mergeRecursive(array $array1, array $array2): array
+    {
+        $merged = $array1;
+
+        /**
+         * @var mixed $value
+         */
+        foreach ($array2 as $key => $value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = self::mergeRecursive($merged[$key], $value);
+            } else {
+                /** @psalm-suppress MixedAssignment */
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Determine if the given key exists in the provided array.
+     *
+     * @param array|ArrayAccess $array
+     * @param int|string $key
+     */
+    public static function keyExists($array, $key): bool
+    {
+        self::assertAccessible($array, __METHOD__);
+
+        if ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * Collapses all iterables into a single array.
+     *
+     * @param iterable<iterable|mixed> $array Non-iterable values will be skipped
+     *
+     * @return list<mixed>
+     */
+    public static function collapse(iterable $array): array
+    {
+        /**
+         * @var list<mixed>
+         */
+        $results = [];
+
+        foreach ($array as $values) {
+            if (!is_iterable($values)) {
+                continue;
+            }
+
+            /** @var mixed $value */
+            foreach ($values as $value) {
+                /** @psalm-suppress MixedAssignment */
+                $results[] = $value;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Flattens a multidimensional array. The resulting array contains only array values.
+     *
+     * @return list<mixed>
+     */
+    public static function flatten(iterable $array, int $depth = 50): array
+    {
+        $result = [];
+
+        /**
+         * @var mixed $item
+         */
+        foreach ($array as $item) {
+            /** @var mixed $item */
+            $item = is_iterable($item) ? self::arrayItems($item) : $item;
+
+            /** @var mixed $values */
+            $values = (1 === $depth)
+                ? $item
+                : (is_iterable($item) ? self::flatten($item, $depth - 1) : $item);
+
+            /** @var mixed $value */
+            foreach (self::toArray($values) as $value) {
+                /** @psalm-suppress MixedAssignment */
+                $result[] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns a modified array without the specified keys.
+     * Keys can contain "." to traverse a multidimensional arrays.
+     *
+     * @template TVal
+     *
+     * @param array<TVal> $array
+     * @param string|string[] $keys
+     *
+     * @return array<TVal>
+     */
+    public static function except(array $array, $keys): array
+    {
+        self::remove($array, $keys);
+
+        return $array;
+    }
+
+    /**
+     * Remove one or more array items from a given array using "dot" notation.
+     *
+     * @param array $array Passed by reference
      * @param string|string[] $keys
      */
-    public static function forget(array &$array, $keys): void
+    public static function remove(array &$array, $keys): void
     {
         $original = &$array;
-        $keys = (array) $keys;
-        self::checkAllStringKeys($keys, 'forget');
+        $keys = self::toArray($keys);
+        self::assertAllStrings($keys, __METHOD__);
 
         if ([] === $keys) {
             return;
@@ -168,9 +509,8 @@ final class Arr
 
         foreach ($keys as $key) {
             // if the exact key exists in the top-level, remove it
-            if (self::exists($array, $key)) {
+            if (self::keyExists($array, $key)) {
                 unset($array[$key]);
-
                 continue;
             }
 
@@ -196,246 +536,9 @@ final class Arr
     }
 
     /**
-     * Determine if the given key exists in the provided array.
-     *
-     * @param array|ArrayAccess $array
-     * @param int|string        $key
-     */
-    public static function exists($array, $key): bool
-    {
-        self::checkIsArray($array, 'exists');
-
-        if ($array instanceof ArrayAccess) {
-            return $array->offsetExists($key);
-        }
-
-        return array_key_exists($key, $array);
-    }
-
-    /**
-     * @param mixed $value
-     *
-     * @psalm-assert-if-true array $value
-     */
-    public static function accessible($value): bool
-    {
-        return is_array($value) || $value instanceof ArrayAccess;
-    }
-
-    /**
-     * Flattens a multi-dimensional array into a single level.
-     *
-     * @return list<mixed>
-     *
-     * @psalm-suppress MixedAssignment
-     */
-    public static function flatten(iterable $array, int $depth = 50): array
-    {
-        $result = [];
-
-        foreach ($array as $item) {
-            $item = is_iterable($item) ? self::arrayItems($item) : $item;
-
-            $values = (1 === $depth)
-                ? $item
-                : (is_iterable($item) ? self::flatten($item, $depth - 1) : $item);
-
-            foreach (self::toArray($values) as $value) {
-                $result[] = $value;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @template T
-     *
-     * @param T $value
-     * @psalm-return (T is array ? T : array{0: T})
-     */
-    public static function toArray($value): array
-    {
-        return is_array($value) ? $value : [$value];
-    }
-
-    /**
-     * Set an array item to a given value using "dot" notation.
-     *
-     * @param mixed $value
-     *
-     * @psalm-suppress MixedAssignment
-     */
-    public static function set(array &$array, string $key, $value): array
-    {
-        $keys = explode('.', $key);
-
-        foreach ($keys as $i => $key) {
-            if (1 === count($keys)) {
-                break;
-            }
-
-            unset($keys[$i]);
-
-            // If the key doesn't exist at this depth, we will just create an empty array
-            // to hold the next value, allowing us to create the arrays to hold final
-            // values at the correct depth. Then we'll keep digging into the array.
-            if (! isset($array[$key]) || ! is_array($array[$key])) {
-                $array[$key] = [];
-            }
-
-            $array = &$array[$key];
-        }
-
-        if ([] !== $keys) {
-            $array[array_shift($keys)] = $value;
-        }
-
-        return $array;
-    }
-
-    /**
-     * Determine if any of the keys exist in an array using "dot" notation.
-     *
-     * @param array|ArrayAccess              $array
-     * @param non-empty-array<string>|string $keys
-     */
-    public static function hasAny($array, $keys): bool
-    {
-        self::checkIsArray($array, 'hasAny');
-        $keys = self::toArray($keys);
-        self::checkAllStringKeys($keys, 'hasAny');
-
-        if ([] === $array) {
-            return false;
-        }
-
-        foreach ($keys as $key) {
-            if (self::has($array, $key)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if an item or items exist in an array using "dot" notation.
-     *
-     * @param array|ArrayAccess $array
-     * @param string|string[]   $keys
-     */
-    public static function has($array, $keys): bool
-    {
-        self::checkIsArray($array, 'has');
-        $keys = self::toArray($keys);
-        self::checkAllStringKeys($keys, 'has');
-        if ([] === $keys) {
-            return false;
-        }
-
-        if ([] === $array) {
-            return false;
-        }
-
-        foreach ($keys as $key) {
-            $sub_key_array = $array;
-
-            if (self::exists($array, $key)) {
-                continue;
-            }
-
-            foreach (explode('.', $key) as $segment) {
-                if (self::accessible($sub_key_array) && self::exists($sub_key_array, $segment)) {
-                    /** @var array|ArrayAccess $sub_key_array */
-                    $sub_key_array = $sub_key_array[$segment];
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Get a value from the array, and remove it. This function has the same
-     * limitation as Arr::forget(). Check the corresponding docblock in {@see
-     * Arr::forget}.
-     *
-     * @param mixed $default
-     *
-     * @return mixed
-     *
-     * @psalm-suppress MixedAssignment
-     */
-    public static function pull(array &$array, string $key, $default = null)
-    {
-        $value = self::get($array, $key, $default);
-
-        self::forget($array, $key);
-
-        return $value;
-    }
-
-    /**
-     * Get an item from an array using "dot" notation.
-     *
-     * @param array|ArrayAccess $array
-     * @param int|string        $key
-     * @param mixed             $default
-     *
-     * @return mixed
-     */
-    public static function get($array, $key, $default = null)
-    {
-        self::checkIsArray($array, 'get');
-        self::checkKeyStringInt($key, 'get');
-
-        if (self::exists($array, $key)) {
-            return $array[$key];
-        }
-
-        $key = (string) $key;
-
-        if (false === strpos($key, '.')) {
-            return $array[$key] ?? self::returnDefault($default);
-        }
-
-        foreach (explode('.', $key) as $segment) {
-            if (self::accessible($array) && self::exists($array, $segment)) {
-                /** @var array|ArrayAccess $array */
-                $array = $array[$segment];
-            } else {
-                return self::returnDefault($default);
-            }
-        }
-
-        return $array;
-    }
-
-    /**
-     * @psalm-suppress MixedAssignment
-     */
-    public static function mergeRecursive(array $array1, array $array2): array
-    {
-        $merged = $array1;
-
-        foreach ($array2 as $key => $value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = self::mergeRecursive($merged[$key], $value);
-            } else {
-                $merged[$key] = $value;
-            }
-        }
-
-        return $merged;
-    }
-
-    /**
      * @param array|ArrayAccess|mixed|object $target
-     * @param string|string[]                $key
-     * @param mixed                          $default
+     * @param string|string[] $key
+     * @param mixed $default
      *
      * @return array|mixed
      *
@@ -443,7 +546,8 @@ final class Arr
      */
     public static function dataGet($target, $key, $default = null)
     {
-        self::checkAllStringKeys(self::toArray($key), 'dataGet');
+        self::assertAccessible($target, __METHOD__);
+        self::assertAllStrings(self::toArray($key), __METHOD__);
 
         $keys = is_array($key) ? $key : explode('.', $key);
 
@@ -451,7 +555,7 @@ final class Arr
             unset($keys[$i]);
 
             if ('*' === $segment) {
-                if (! is_array($target)) {
+                if (!is_array($target)) {
                     return self::returnDefault($default);
                 }
 
@@ -464,7 +568,7 @@ final class Arr
                 return in_array('*', $keys, true) ? self::collapse($result) : $result;
             }
 
-            if (self::accessible($target) && self::exists($target, $segment)) {
+            if (self::accessible($target) && self::keyExists($target, $segment)) {
                 /** @var array|ArrayAccess $target */
                 $target = $target[$segment];
             } elseif (is_object($target) && isset($target->{$segment})) {
@@ -478,39 +582,17 @@ final class Arr
     }
 
     /**
-     * Collapses an array of iterables into a single array.
-     *
-     * @param iterable<iterable|mixed> $array Non-iterable values will be skipped
-     *
-     * @return list<mixed>
-     *
-     * @psalm-suppress MixedAssignment
+     * @psalm-pure
+     * @psalm-assert array<string,mixed> $keys
      */
-    public static function collapse(iterable $array): array
-    {
-        $results = [];
-
-        foreach ($array as $values) {
-            if (! is_iterable($values)) {
-                continue;
-            }
-
-            foreach ($values as $value) {
-                $results[] = $value;
-            }
-        }
-
-        return $results;
-    }
-
-    private static function checkAllStringKeys(array $keys, string $called_method): void
+    private static function assertAllStrings(array $keys, string $called_method): void
     {
         foreach ($keys as $key) {
-            if (! is_string($key)) {
+            if (!is_string($key)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         "\$keys has to be a string or an array of string when calling [%s].\nGot [%s]",
-                        self::class . '::' . $called_method . '()',
+                        $called_method,
                         gettype($key)
                     )
                 );
@@ -519,15 +601,17 @@ final class Arr
     }
 
     /**
-     * @param array|ArrayAccess $array
+     * @param mixed $array
+     *
+     * @psalm-assert array|ArrayAccess $array
      */
-    private static function checkIsArray($array, string $called_method): void
+    private static function assertAccessible($array, string $called_method): void
     {
-        if (! self::accessible($array)) {
+        if (!self::accessible($array)) {
             throw new InvalidArgumentException(
                 sprintf(
                     "\$array has to be an array or instance of ArrayAccess when calling [%s].\nGot [%s]",
-                    self::class . '::' . $called_method . '()',
+                    $called_method,
                     gettype($array)
                 )
             );
@@ -553,9 +637,11 @@ final class Arr
     }
 
     /**
-     * @param int|string $key
+     * @param mixed $key
+     *
+     * @psalm-assert string|int $key
      */
-    private static function checkKeyStringInt($key, string $called_method): void
+    private static function assertStringOrInt($key, string $called_method): void
     {
         if (is_string($key)) {
             return;
@@ -568,7 +654,7 @@ final class Arr
         throw new InvalidArgumentException(
             sprintf(
                 "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
-                self::class . '::' . $called_method . '()',
+                $called_method,
                 gettype($key)
             )
         );
@@ -590,4 +676,5 @@ final class Arr
 
         return $default;
     }
+
 }

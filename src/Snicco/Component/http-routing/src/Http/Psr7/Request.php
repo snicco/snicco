@@ -350,8 +350,8 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_GET). Supports 'dot' notation and
-     * accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_GET).
+     * Supports accessing values with 'dot' notation. {@see Arr::get()}
      *
      * @param mixed $default
      *
@@ -381,14 +381,14 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Gets a value from the parsed body ($_POST). Supports 'dot' notation and
-     * accessing nested values with * wildcards.
+     * Gets a value from the parsed body ($_POST).
+     * Supports accessing values with 'dot' notation. {@see Arr::get()}
      *
      * @param mixed $default
      *
-     * @return mixed
      * @throws RuntimeException if parsed body is not an array
      *
+     * @return mixed
      */
     public function post(?string $key = null, $default = null)
     {
@@ -442,13 +442,13 @@ final class Request implements ServerRequestInterface
         $results = [];
 
         $input = $this->inputSource();
+        $keys = Arr::toArray($keys);
 
         $placeholder = new stdClass();
-        $keys = Arr::toArray($keys);
 
         foreach ($keys as $key) {
             /** @var mixed $value */
-            $value = Arr::dataGet($input, $key, $placeholder);
+            $value = Arr::get($input, $key, $placeholder);
 
             if ($value !== $placeholder) {
                 Arr::set($results, $key, $value);
@@ -459,7 +459,7 @@ final class Request implements ServerRequestInterface
     }
 
     /**
-     * Determine if the request contains a non-empty value for an input item.
+     * Returns false if any of the keys are either missing or have the value null, '', []. True otherwise.
      *
      * @param string|string[] $keys
      */
@@ -485,37 +485,41 @@ final class Request implements ServerRequestInterface
 
         $results = $this->inputSource();
 
-        Arr::forget($results, $keys);
+        Arr::remove($results, $keys);
 
         return $results;
     }
 
+    public function has(string $key): bool
+    {
+        return Arr::has($this->inputSource(), $key);
+    }
+
     /**
-     * @param non-empty-array<string>|string $keys
+     * This method is the opposite of {@see Request::has()}
+     * It will return true if none of the keys are in the request and
+     * false if at least one key is present.
+     *
      */
-    public function hasAny($keys): bool
+    public function missing(string $key): bool
+    {
+        return false === $this->has($key);
+    }
+
+    /**
+     * @param string[] $keys
+     */
+    public function hasAny(array $keys): bool
     {
         return Arr::hasAny($this->inputSource(), $keys);
     }
 
     /**
-     * Will return falls if any of the provided keys is missing.
-     *
-     * @param string|string[] $keys
+     * @param string[] $keys
      */
-    public function missing($keys): bool
+    public function hasAll(array $keys): bool
     {
-        return !$this->has($keys);
-    }
-
-    /**
-     * @param string|string[] $keys
-     */
-    public function has($keys): bool
-    {
-        $input = $this->inputSource();
-
-        return Arr::has($input, $keys);
+        return Arr::hasAll($this->inputSource(), $keys);
     }
 
     public function getHeaderLine($name): string
