@@ -5,7 +5,7 @@ codecov:
   notify:
     # codecov.io should send its reports ASAP
     # https://docs.codecov.com/docs/codecovyml-reference#codecovnotifywait_for_ci
-    wait_for_ci: true
+    wait_for_ci: false
     after_n_builds: 1 # Only send notifications after 2 builds because we upload 2 times currently (1x PHPUnit / 1x Codeception)
 
 coverage:
