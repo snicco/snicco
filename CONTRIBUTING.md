@@ -71,10 +71,14 @@ Before opening an issue or a pull request, please use
 the [GitHub issue search](https://github.com/sniccowp/sniccowp/issues) to make sure the bug or feature request hasn't
 been already reported or fixed.
 
+**DO NOT USE THE ISSUE TRACKER TO REPORT SECURITY VULNERABILITIES**
+
+Consult our [security policy](SECURITY.md) instead.
+
 ### Bug report
 
-[A good bug report shouldn't leave others needing to chase you for more information](https://tomasvotruba.com/blog/2021/02/01/effective-debug-tricks-narrow-scoping/). Please try to be as detailed as
-possible in your report and fill the information requested in
+[A good bug report shouldn't leave others needing to chase you for more information](https://tomasvotruba.com/blog/2021/02/01/effective-debug-tricks-narrow-scoping/)
+. Please try to be as detailed as possible in your report and fill the information requested in
 the [bug report template](https://github.com/semantic-release/semantic-release/issues/new?template=01_bug_report.md).
 
 **! Not following the bug report template will lead to automatic closing of the issue by
