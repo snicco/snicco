@@ -1,34 +1,35 @@
 {
-  "name": "sniccowp/http-routing-testing",
-  "description": "Provides testing utilities for sniccowp/http-routing",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
-    }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "sniccowp/http-routing": "^1.0",
-    "phpunit/phpunit": "9.5.13",
-    "nyholm/psr7": "^1.0.0",
-    "pimple/pimple": "^3.5"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\HttpRouting\\Testing\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\HttpRouting\\Testing\\Tests\\": "tests"
-    }
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "sniccowp/http-routing-testing",
+    "description": "Provides testing utilities for sniccowp/http-routing",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "sniccowp/http-routing": "^1.0",
+        "phpunit/phpunit": "9.5.13",
+        "nyholm/psr7": "^1.0.0",
+        "pimple/pimple": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\HttpRouting\\Testing\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\HttpRouting\\Testing\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "LGPL-3.0-only"
 }

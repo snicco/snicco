@@ -75,5 +75,6 @@
         "sniccowp/encryption-bundle": "<1.0.0"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "license": "LGPL-3.0-only"
 }

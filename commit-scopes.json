@@ -36,7 +36,6 @@
     "testing-bundle",
     "content-negotiation-middleware",
     "default-headers-middleware",
-    "guests-only-middleware",
     "https-only-middleware",
     "method-override-middleware",
     "must-match-route-middleware",
@@ -48,10 +47,12 @@
     "trailing-slash-middleware",
     "wp-auth-only-middleware",
     "wp-capability-middleware",
+    "wp-guests-only-middleware",
     "wp-nonce-middleware",
     "better-wp-mail-testing",
     "event-dispatcher-testing",
     "http-routing-testing",
     "kernel-testing",
-    "session-testing"
+    "session-testing",
+    "signed-url-testing"
 ]
