@@ -1,7 +1,7 @@
 {
     "name": "sniccowp/psr7-error-handler",
     "description": "A powerful and customizable error handler for psr7 apps.",
-    "license": "MIT",
+    "license": "LGPL-3.0-only",
     "authors": [
         {
             "name": "Calvin Alkan",

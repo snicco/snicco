@@ -86,7 +86,7 @@ module.exports = {
                         emoji: '⚙️',
                     },
                     chore: {
-                        description: "Any Other changes that don't modify src or test files (example: changing .gitignore)",
+                        description: "Any other changes that don't modify src or test files (example: changing .gitignore)",
                         title: 'Chores',
                         emoji: '♻️',
                     },

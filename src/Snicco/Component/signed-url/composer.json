@@ -1,7 +1,7 @@
 {
     "name": "sniccowp/signed-url",
     "description": "A small, framework agnostic library to create and validate signed-urls.",
-    "license": "MIT",
+    "license": "LGPL-3.0-only",
     "authors": [
         {
             "name": "Calvin Alkan",
