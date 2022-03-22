@@ -29,9 +29,6 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\StrArr\Str;
 
-use function random_int;
-use function strlen;
-
 /**
  * @internal
  */
@@ -96,17 +93,6 @@ final class StrTest extends TestCase
 
         $this->assertTrue(Str::containsAny('düsseldorf', ['ü', 'ö']));
         $this->assertFalse(Str::containsAny('düsseldorf', ['ä', 'ö']));
-    }
-
-    /**
-     * @test
-     */
-    public function test_random(): void
-    {
-        $this->assertSame(32, strlen(Str::random()));
-        $randomInteger = random_int(1, 100);
-        $this->assertSame($randomInteger * 2, strlen(Str::random($randomInteger)));
-        $this->assertIsString(Str::random());
     }
 
     /**
