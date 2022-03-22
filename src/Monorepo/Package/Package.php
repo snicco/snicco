@@ -107,6 +107,9 @@ final class Package implements JsonSerializable
         return array_values(array_filter($all, fn (string $name): bool => Str::startsWith($name, $this->vendor_name)));
     }
 
+    /**
+     * @return array{name: string, vendor_name: string, full_name: string, composer_json_path: string, relative_path: string, absolute_path: string}
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

@@ -171,9 +171,6 @@ final class InteractsWithInputTest extends TestCase
 
         $name = $request->query('products.0.name');
         $this->assertSame('shoe', $name);
-
-        $names = $request->query('products.*.name');
-        $this->assertSame(['shoe', 'shirt'], $names);
     }
 
     /**
@@ -223,9 +220,6 @@ final class InteractsWithInputTest extends TestCase
 
         $name = $request->post('products.0.name');
         $this->assertSame('shoe', $name);
-
-        $names = $request->post('products.*.name');
-        $this->assertSame(['shoe', 'shirt'], $names);
     }
 
     /**
@@ -473,12 +467,38 @@ final class InteractsWithInputTest extends TestCase
 
         $this->assertTrue($request->has('products'));
         $this->assertTrue($request->has('products.0.name'));
-        $this->assertTrue($request->has(['products.0.name', 'products.0.price']));
-        $this->assertTrue($request->has(['products.0.name', 'products.0.price', 'dev']));
+        $this->assertTrue($request->has('products.0.price'));
+
         $this->assertTrue($request->has('null'));
         $this->assertTrue($request->has('empty_string'));
-        $this->assertFalse($request->has(['products.0.name', 'products.0.price', 'products.0.label']));
+
         $this->assertFalse($request->has('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_has_all(): void
+    {
+        $request = $this->request->withQueryParams([
+            'products' => [
+                [
+                    'name' => 'shoe',
+                    'price' => '10',
+                ],
+                [
+                    'name' => 'shirt',
+                    'price' => '25',
+                ],
+            ],
+            'dev' => 'calvin',
+            'null' => null,
+            'empty_string' => '',
+        ]);
+
+        $this->assertTrue($request->hasAll(['products.0.name', 'products.0.price']));
+        $this->assertTrue($request->hasAll(['products.0.name', 'products.0.price', 'dev']));
+        $this->assertFalse($request->hasAll(['products.0.name', 'products.0.price', 'products.0.label']));
     }
 
     /**
@@ -491,11 +511,11 @@ final class InteractsWithInputTest extends TestCase
             'age' => '',
             'city' => null,
         ]);
-        $this->assertTrue($request->hasAny('name'));
-        $this->assertTrue($request->hasAny('age'));
-        $this->assertTrue($request->hasAny('city'));
+        $this->assertTrue($request->hasAny(['name']));
+        $this->assertTrue($request->hasAny(['age']));
+        $this->assertTrue($request->hasAny(['city']));
         $this->assertTrue($request->hasAny(['name', 'email']));
-        $this->assertFalse($request->hasAny('foo'));
+        $this->assertFalse($request->hasAny(['foo']));
 
         $request = $this->request->withQueryParams([
             'name' => 'calvin',
@@ -510,9 +530,9 @@ final class InteractsWithInputTest extends TestCase
                 'baz' => '',
             ],
         ]);
-        $this->assertTrue($request->hasAny('foo.bar'));
-        $this->assertTrue($request->hasAny('foo.baz'));
-        $this->assertFalse($request->hasAny('foo.bax'));
+        $this->assertTrue($request->hasAny(['foo.bar']));
+        $this->assertTrue($request->hasAny(['foo.baz']));
+        $this->assertFalse($request->hasAny(['foo.bax']));
         $this->assertTrue($request->hasAny(['foo.bax', 'foo.baz']));
 
         $request = $this->request->withQueryParams([
@@ -521,9 +541,9 @@ final class InteractsWithInputTest extends TestCase
         ])->withParsedBody([
             'boom' => 'bam',
         ]);
-        $this->assertTrue($request->hasAny('foo'));
-        $this->assertTrue($request->hasAny('baz'));
-        $this->assertFalse($request->hasAny('boom'));
+        $this->assertTrue($request->hasAny(['foo']));
+        $this->assertTrue($request->hasAny(['baz']));
+        $this->assertFalse($request->hasAny(['boom']));
         $this->assertTrue($request->hasAny(['baz', 'bogus']));
     }
 
@@ -565,16 +585,8 @@ final class InteractsWithInputTest extends TestCase
         $this->assertFalse($request->missing('name'));
         $this->assertFalse($request->missing('age'));
         $this->assertFalse($request->missing('city'));
-        $this->assertTrue($request->missing(['name', 'email']));
         $this->assertTrue($request->missing('foo'));
-
-        $request = $this->request->withQueryParams([
-            'name' => 'calvin',
-            'email' => 'foo',
-        ]);
-        $this->assertFalse($request->missing(['name', 'email']));
-        $this->assertTrue($request->missing('surname'));
-        $this->assertTrue($request->missing(['surname', 'password']));
+        $this->assertTrue($request->missing('email'));
 
         $request = $this->request->withQueryParams([
             'foo' => [
@@ -587,7 +599,6 @@ final class InteractsWithInputTest extends TestCase
         $this->assertFalse($request->missing('foo.bar'));
         $this->assertFalse($request->missing('foo.baz'));
         $this->assertTrue($request->missing('foo.bax'));
-        $this->assertTrue($request->missing(['foo.bax', 'foo.baz']));
-        $this->assertTrue($request->missing(['boom']));
+        $this->assertTrue($request->missing('boom'));
     }
 }

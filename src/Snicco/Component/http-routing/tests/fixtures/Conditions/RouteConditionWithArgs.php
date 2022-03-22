@@ -24,6 +24,9 @@ final class RouteConditionWithArgs extends RouteCondition
         return $this->make_it_pass;
     }
 
+    /**
+     * @return array{condition_arg: string}
+     */
     public function getArguments(Request $request): array
     {
         return [
