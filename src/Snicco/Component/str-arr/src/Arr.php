@@ -44,9 +44,7 @@ use function array_shift;
 use function array_values;
 use function count;
 use function explode;
-use function gettype;
 use function is_array;
-use function is_int;
 use function is_iterable;
 use function is_string;
 use function sprintf;
@@ -68,14 +66,12 @@ final class Arr
      * @return array<string,TValue>
      *
      * @psalm-pure
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     public static function only(array $array, $keys): array
     {
         $keys = array_flip((array) $keys);
 
-        /**
-         * @psalm-var array<string,TValue> $intersection
-         */
         return array_intersect_key($array, $keys);
     }
 
@@ -218,9 +214,6 @@ final class Arr
      */
     public static function get($array, $key, $default = null)
     {
-        self::assertAccessible($array, __METHOD__);
-        self::assertStringOrInt($key, __METHOD__);
-
         if (self::keyExists($array, $key)) {
             return $array[$key];
         }
@@ -283,9 +276,6 @@ final class Arr
      */
     public static function has($array, $key): bool
     {
-        self::assertAccessible($array, __METHOD__);
-        self::assertStringOrInt($key, __METHOD__);
-
         if ([] === $array) {
             return false;
         }
@@ -396,8 +386,6 @@ final class Arr
      */
     public static function keyExists($array, $key): bool
     {
-        self::assertAccessible($array, __METHOD__);
-
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key);
         }
@@ -487,7 +475,6 @@ final class Arr
     {
         $original = &$array;
         $keys = self::toArray($keys);
-        self::assertAllStrings($keys, __METHOD__);
 
         if ([] === $keys) {
             return;
@@ -523,43 +510,6 @@ final class Arr
     }
 
     /**
-     * @psalm-pure
-     * @psalm-assert array<string,mixed> $keys
-     */
-    private static function assertAllStrings(array $keys, string $called_method): void
-    {
-        foreach ($keys as $key) {
-            if (! is_string($key)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        "\$keys has to be a string or an array of string when calling [%s].\nGot [%s]",
-                        $called_method,
-                        gettype($key)
-                    )
-                );
-            }
-        }
-    }
-
-    /**
-     * @param mixed $array
-     *
-     * @psalm-assert array|ArrayAccess $array
-     */
-    private static function assertAccessible($array, string $called_method): void
-    {
-        if (! self::accessible($array)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    "\$array has to be an array or instance of ArrayAccess when calling [%s].\nGot [%s]",
-                    $called_method,
-                    gettype($array)
-                )
-            );
-        }
-    }
-
-    /**
      * @return list<mixed>
      * @psalm-suppress MixedAssignment
      */
@@ -575,30 +525,6 @@ final class Arr
         }
 
         return $res;
-    }
-
-    /**
-     * @param mixed $key
-     *
-     * @psalm-assert string|int $key
-     */
-    private static function assertStringOrInt($key, string $called_method): void
-    {
-        if (is_string($key)) {
-            return;
-        }
-
-        if (is_int($key)) {
-            return;
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                "\$key has to be a string or an integer when calling [%s].\nGot [%s]",
-                $called_method,
-                gettype($key)
-            )
-        );
     }
 
     /**

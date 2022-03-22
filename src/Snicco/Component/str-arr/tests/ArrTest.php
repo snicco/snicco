@@ -904,6 +904,8 @@ final class ArrTest extends TestCase
         $this->assertFalse(Arr::hasAll([
             'foo' => 'bar',
         ], []));
+
+        $this->assertFalse(Arr::hasAll([], ['foo']));
     }
 
     /**
@@ -943,6 +945,9 @@ final class ArrTest extends TestCase
         $this->assertTrue(Arr::hasAny($array, ['foo.bax', 'foo.baz']));
 
         $this->assertFalse(Arr::hasAny([], ['foo', 'bar']));
+        $this->assertFalse(Arr::hasAny([
+            'foo' => 'bar',
+        ], []));
     }
 
     /**

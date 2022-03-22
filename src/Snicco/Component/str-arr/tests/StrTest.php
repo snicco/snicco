@@ -63,6 +63,7 @@ final class StrTest extends TestCase
         $this->assertFalse(Str::contains('taylor', ''));
         $this->assertFalse(Str::contains('', ''));
         $this->assertFalse(Str::contains('taylor', ''));
+        $this->assertFalse(Str::contains('', 'foo'));
 
         $this->assertTrue(Str::contains('düsseldorf', 'ü'));
         $this->assertFalse(Str::contains('düsseldorf', 'ö'));
