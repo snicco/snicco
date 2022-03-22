@@ -9,6 +9,9 @@ use Snicco\Component\StrArr\Arr;
 
 final class ActivityFactory extends Factory
 {
+    /**
+     * @return array{name: string}
+     */
     public function definition(): array
     {
         return [

@@ -83,7 +83,7 @@ final class ResponsePreparation
             return $response->withHeader('Cache-Control', 'no-cache, private');
         }
 
-        if (Str::contains($header, ['public', 'private'])) {
+        if (Str::containsAny($header, ['public', 'private'])) {
             return $response;
         }
 

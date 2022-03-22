@@ -9,6 +9,9 @@ use Snicco\Component\Eloquent\Tests\fixtures\Model\Country;
 
 final class CityFactory extends Factory
 {
+    /**
+     * @return array{name: string, country_id: Factory, population: int}
+     */
     public function definition(): array
     {
         return [

@@ -344,7 +344,7 @@ final class ReadWriteSession implements Session
     public function remove(string $key): void
     {
         $this->checkIfLocked();
-        Arr::forget($this->attributes, $key);
+        Arr::remove($this->attributes, $key);
     }
 
     public function replace(array $attributes): void
@@ -386,7 +386,7 @@ final class ReadWriteSession implements Session
     public function forget($keys): void
     {
         $this->checkIfLocked();
-        Arr::forget($this->attributes, $keys);
+        Arr::remove($this->attributes, $keys);
     }
 
     public function setUserId($user_id): void

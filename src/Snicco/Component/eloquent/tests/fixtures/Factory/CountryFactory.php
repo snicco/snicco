@@ -9,6 +9,9 @@ use Snicco\Component\StrArr\Arr;
 
 final class CountryFactory extends Factory
 {
+    /**
+     * @return array{name: string, continent: string}
+     */
     public function definition(): array
     {
         return [
