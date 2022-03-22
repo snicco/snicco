@@ -45,6 +45,8 @@ trait WPDBTestHelpers
 
     /**
      * NOTE: THIS DATABASE HAS TO EXIST ON THE LOCAL MACHINE.
+     *
+     * @return array{mysql2: array{driver: string, database: string, host: mixed, username: mixed, password: mixed, prefix: string}}
      */
     protected function secondDatabaseConfig(): array
     {
