@@ -60,6 +60,9 @@ final class NegotiateContent extends Middleware
         return $response;
     }
 
+    /**
+     * @return array{html: array{extension: string[], mime-type: string[], charset: true}, txt: array{extension: string[], mime-type: string[], charset: true}, json: array{extension: string[], mime-type: string[], charset: true}}
+     */
     private function defaultConfiguration(): array
     {
         return [
