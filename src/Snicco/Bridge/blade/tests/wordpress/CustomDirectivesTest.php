@@ -148,13 +148,9 @@ final class CustomDirectivesTest extends WPTestCase
 
     private function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace(
-            '#
+        $actual = preg_replace('#
 |
-|	|\\s{2,}#',
-            '',
-            $actual
-        );
+|	|\\s{2,}#', '', $actual);
 
         if (null === $actual) {
             throw new RuntimeException('preg_replcae failed in test case.');
@@ -181,13 +177,11 @@ final class CustomDirectivesTest extends WPTestCase
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();
 
-        $user = $factory->user->create_and_get(
-            array_merge($data, [
-                'role' => $role,
-            ])
-        );
+        $user = $factory->user->create_and_get(array_merge($data, [
+            'role' => $role,
+        ]));
 
-        if (!$user instanceof WP_User) {
+        if (! $user instanceof WP_User) {
             throw new InvalidArgumentException('Must be WP_USER');
         }
 

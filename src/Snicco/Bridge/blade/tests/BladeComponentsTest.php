@@ -107,7 +107,7 @@ final class BladeComponentsTest extends BladeTestCase
 
         $this->composers->addComposer(
             'alert-attributes-component',
-            fn(View $view): View => $view->with('message', 'bar')
+            fn (View $view): View => $view->with('message', 'bar')
         );
 
         $view = $this->view_engine->make('alert-attributes-component');

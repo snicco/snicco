@@ -11,7 +11,8 @@ final class ViewNotFound extends RuntimeException
 {
     public static function forView(string $view_name, ?Throwable $previous = null): ViewNotFound
     {
-        $code = ($previous === null) ? 0 : (int)$previous->getCode();
-        return new self("The view [$view_name] could not be found.", $code, $previous);
+        $code = (null === $previous) ? 0 : (int) $previous->getCode();
+
+        return new self(sprintf('The view [%s] could not be found.', $view_name), $code, $previous);
     }
 }

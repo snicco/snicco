@@ -30,7 +30,7 @@ final class ViewComposerCollection
     }
 
     /**
-     * @param string|string[] $views
+     * @param string|string[]                               $views
      * @param class-string<ViewComposer>|Closure(View):View $composer
      */
     public function addComposer($views, $composer): void

@@ -51,10 +51,10 @@ final class TemplateEngineMailRendererTest extends WPTestCase
         $mailer->send($email);
 
         $transport->assertSent(Email::class, function (Email $email): bool {
-            $this->assertStringContainsString('<h1>FOO</h1>', (string)$email->htmlBody());
-            $this->assertStringContainsString('extra-bar', (string)$email->htmlBody());
-            $this->assertStringContainsString('FOO', (string)$email->textBody());
-            $this->assertStringContainsString('extra-bar', (string)$email->textBody());
+            $this->assertStringContainsString('<h1>FOO</h1>', (string) $email->htmlBody());
+            $this->assertStringContainsString('extra-bar', (string) $email->htmlBody());
+            $this->assertStringContainsString('FOO', (string) $email->textBody());
+            $this->assertStringContainsString('extra-bar', (string) $email->textBody());
 
             return true;
         });

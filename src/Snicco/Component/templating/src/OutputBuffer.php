@@ -23,7 +23,7 @@ final class OutputBuffer
     public static function start(): void
     {
         $res = ob_start();
-        if (!$res) {
+        if (! $res) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Output buffering could not be started.');
             // @codeCoverageIgnoreEnd
@@ -51,7 +51,7 @@ final class OutputBuffer
     public static function remove(): void
     {
         $res = ob_end_clean();
-        if (!$res) {
+        if (! $res) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Buffered output could not be removed.');
             // @codeCoverageIgnoreEnd

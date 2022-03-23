@@ -16,7 +16,7 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
         } catch (Throwable $e) {
             throw new CantCreateViewComposer(
                 sprintf('The view composer class [%s] is not a newable.', $composer),
-                (int)$e->getCode(),
+                (int) $e->getCode(),
                 $e
             );
         }

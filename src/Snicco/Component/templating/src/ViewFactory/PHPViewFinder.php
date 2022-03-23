@@ -41,7 +41,6 @@ final class PHPViewFinder
         try {
             return FilePath::fromString($view_name);
         } catch (InvalidFile $e) {
-            //
         }
 
         $view_name = $this->normalizeViewName($view_name);
@@ -52,7 +51,6 @@ final class PHPViewFinder
             try {
                 return FilePath::fromString($path);
             } catch (InvalidFile $e) {
-                //
             }
         }
 
@@ -70,7 +68,7 @@ final class PHPViewFinder
             extract($context, EXTR_SKIP);
             unset($context);
             /** @psalm-suppress UnresolvableInclude */
-            require (string)$path;
+            require (string) $path;
         })();
     }
 
@@ -81,7 +79,7 @@ final class PHPViewFinder
      */
     private function normalizeDirectories(array $directories): array
     {
-        return array_map(fn(string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
+        return array_map(fn (string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     private function normalizeViewName(string $view_name): string

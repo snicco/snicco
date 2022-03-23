@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Component\Templating\Tests\ValueObject;
 
 use PHPUnit\Framework\TestCase;
@@ -12,9 +11,11 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 
 use function dirname;
 
+/**
+ * @internal
+ */
 final class ViewTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -24,12 +25,16 @@ final class ViewTest extends TestCase
             'foo',
             FilePath::fromString(dirname(__DIR__) . '/fixtures/views/foo.php'),
             PHPViewFactory::class,
-            ['foo' => 'bar']
+            [
+                'foo' => 'bar',
+            ]
         );
 
         $this->assertSame('foo', $view->name());
-        $this->assertSame(dirname(__DIR__) . '/fixtures/views/foo.php', (string)$view->path());
-        $this->assertSame(['foo' => 'bar'], $view->context());
+        $this->assertSame(dirname(__DIR__) . '/fixtures/views/foo.php', (string) $view->path());
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $view->context());
         $this->assertSame(PHPViewFactory::class, $view->viewFactoryClass());
     }
 
@@ -63,5 +68,4 @@ final class ViewTest extends TestCase
             'bar' => 'biz',
         ], $view->context());
     }
-
 }

@@ -10,14 +10,14 @@ use function array_replace;
 use function is_array;
 
 /**
- * A view is an immutable data transfer object that later be rendered to a string.
- * An instantiated View can ALWAYS be rendered by using {@see TemplateEngine::renderView()}
+ * A view is an immutable data transfer object that later be rendered to a
+ * string. An instantiated View can ALWAYS be rendered by using {@see
+ * TemplateEngine::renderView()}.
  *
  * @psalm-immutable
  */
 final class View
 {
-
     private string $name;
 
     private FilePath $file_path;
@@ -34,7 +34,7 @@ final class View
 
     /**
      * @param class-string<ViewFactory> $view_factory
-     * @param array<string,mixed> $context
+     * @param array<string,mixed>       $context
      */
     public function __construct(string $name, FilePath $file_path, string $view_factory, array $context = [])
     {
@@ -49,7 +49,7 @@ final class View
      * merged context.
      *
      * @param array<string, mixed>|string $key
-     * @param mixed $value
+     * @param mixed                       $value
      */
     public function with($key, $value = null): self
     {
