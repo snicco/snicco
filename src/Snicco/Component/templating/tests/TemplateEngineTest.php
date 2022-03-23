@@ -104,7 +104,7 @@ final class TemplateEngineTest extends TestCase
         }
 
         $view = $this->template_engine->make($path);
-        $this->assertSame($path, (string)$view->path());
+        $this->assertSame($path, (string) $view->path());
         $this->assertSame('foo', $this->template_engine->renderView($view));
     }
 
@@ -257,7 +257,7 @@ final class TemplateEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', fn(View $view): View => $view->with([
+        $this->composers->addComposer('context-priority', fn (View $view): View => $view->with([
             'test_context' => [
                 'foo' => [
                     'bar' => 'biz',
@@ -281,7 +281,7 @@ final class TemplateEngineTest extends TestCase
             ],
         ]);
 
-        $this->composers->addComposer('context-priority', fn(View $view): View => $view->with([
+        $this->composers->addComposer('context-priority', fn (View $view): View => $view->with([
             'test_context' => [
                 'foo' => [
                     'bar' => 'biz',
@@ -377,7 +377,7 @@ final class TemplateEngineTest extends TestCase
      */
     public function extended_parents_view_are_also_passed_through_view_composers(): void
     {
-        $this->composers->addComposer('post-layout', fn(View $view): View => $view->with('sidebar', 'hi'));
+        $this->composers->addComposer('post-layout', fn (View $view): View => $view->with('sidebar', 'hi'));
 
         $view = $this->template_engine->make('partials.post-title');
         $view = $view->with('post_title', 'Foobar');
@@ -476,7 +476,6 @@ final class TemplateEngineTest extends TestCase
         $this->expectException(LogicException::class);
         $this->template_engine->renderView($view);
     }
-
 }
 
 final class TestTwigViewFactory implements ViewFactory
@@ -495,7 +494,7 @@ final class TestTwigViewFactory implements ViewFactory
         if ('test.twig' !== $view->name()) {
             throw new ViewCantBeRendered('view name must be test.twig');
         }
-        return (string)file_get_contents(__DIR__ . '/fixtures/views/test.twig');
-    }
 
+        return (string) file_get_contents(__DIR__ . '/fixtures/views/test.twig');
+    }
 }

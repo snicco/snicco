@@ -59,5 +59,4 @@ final class BladeStandaloneTest extends BladeTestCase
 
         $this->assertSame('bar', $config['foo']);
     }
-
 }

@@ -11,23 +11,20 @@ use Snicco\Component\Templating\ValueObject\View;
 interface ViewFactory
 {
     /**
-     * This method must treat every "." in the view name as a directory separator, except the dots that
-     * belong to the file extension.
+     * This method must treat every "." in the view name as a directory
+     * separator, except the dots that belong to the file extension.
      *
-     * "user.account.php" => "/user/account.php"
-     * "custom.user.account.html.twig" => "/custom/user/account.html.twig"
+     * "user.account.php" => "/user/account.php" "custom.user.account.html.twig"
+     * => "/custom/user/account.html.twig"
      *
-     * @param string $view
      * @throws ViewNotFound
      */
     public function make(string $view): View;
 
     /**
-     * Returns the views evaluated content as a string
-     * without echoing.
+     * Returns the views evaluated content as a string without echoing.
      *
      * @throws ViewCantBeRendered
      */
     public function toString(View $view): string;
-
 }

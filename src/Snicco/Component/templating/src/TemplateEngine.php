@@ -37,7 +37,7 @@ final class TemplateEngine
     /**
      * Renders a view's content as a string.
      *
-     * @param string|string[] $view_name An absolute path or a view identifier where dots indicate directory traversal.
+     * @param string|string[]      $view_name an absolute path or a view identifier where dots indicate directory traversal
      * @param array<string, mixed> $context
      *
      * @throws ViewCantBeRendered
@@ -54,7 +54,7 @@ final class TemplateEngine
     public function renderView(View $view): string
     {
         $factory = $this->class_map[$view->viewFactoryClass()] ?? null;
-        if (null === $factory) {
+        if (! $factory instanceof ViewFactory) {
             throw new LogicException(
                 sprintf(
                     'No instance of [%s] is available. This can only happen if you manually created an invalid view.',
@@ -62,13 +62,14 @@ final class TemplateEngine
                 )
             );
         }
+
         return $factory->toString($view);
     }
 
     /**
-     * Creates an instance of View for the first existing $view_name
+     * Creates an instance of View for the first existing $view_name.
      *
-     * @param string|string[] $view_name An absolute path or a view identifier where dots indicate directory traversal.
+     * @param string|string[] $view_name an absolute path or a view identifier where dots indicate directory traversal
      *
      * @throws ViewNotFound when no view can be created with any view factory
      */
@@ -97,7 +98,7 @@ final class TemplateEngine
             sprintf(
                 "None of the used view factories can render the any of the views [%s].\nTried with:\n%s",
                 implode(',', $views),
-                implode("\n", array_map(fn(ViewFactory $v) => get_class($v), $this->class_map))
+                implode("\n", array_map(fn (ViewFactory $v) => get_class($v), $this->class_map))
             )
         );
     }

@@ -21,8 +21,8 @@ final class BladeViewComposer
 
     public function handleEvent(string $event_name, array $payload): void
     {
-        if (!isset($payload[0]) || !$payload[0] instanceof IllumianteView) {
-            throw new RuntimeException(sprintf('Expected payload[0] to be instance of [%s].', IllumianteView::class,));
+        if (! isset($payload[0]) || ! $payload[0] instanceof IllumianteView) {
+            throw new RuntimeException(sprintf('Expected payload[0] to be instance of [%s].', IllumianteView::class, ));
         }
 
         $illuminate_view = $payload[0];

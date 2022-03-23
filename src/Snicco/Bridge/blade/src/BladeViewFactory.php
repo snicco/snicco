@@ -36,7 +36,7 @@ final class BladeViewFactory implements ViewFactory
     {
         $this->view_factory = $view_factory;
         $this->view_directories_with_trailing_separator = array_map(
-            fn(string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR,
+            fn (string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR,
             $view_directories
         );
     }
@@ -51,8 +51,10 @@ final class BladeViewFactory implements ViewFactory
     public function make(string $view): View
     {
         $name = $this->normalizeName($view);
+
         try {
-            $path = $this->view_factory->getFinder()->find($name);
+            $path = $this->view_factory->getFinder()
+                ->find($name);
 
             return new View($view, FilePath::fromString($path), self::class);
         } catch (Exception $e) {
@@ -70,8 +72,10 @@ final class BladeViewFactory implements ViewFactory
     public function toString(View $view): string
     {
         $name = $this->normalizeName($view->name());
+
         try {
-            return $this->view_factory->make($name, $view->context())->render();
+            return $this->view_factory->make($name, $view->context())
+                ->render();
         } catch (Throwable $e) {
             throw ViewCantBeRendered::fromPrevious($view->name(), $e);
         }

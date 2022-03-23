@@ -40,7 +40,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo', fn(View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -60,7 +60,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('bar', fn(View $view): View => $view->with([
+        $collection->addComposer('bar', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -78,10 +78,10 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo', fn(View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
-        $collection->addComposer('foo', fn(View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'bar' => 'baz',
         ]));
 
@@ -100,7 +100,7 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $collection->addComposer(['foo', 'bar'], fn(View $view): View => $view->with([
+        $collection->addComposer(['foo', 'bar'], fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
@@ -146,7 +146,7 @@ final class ViewComposerCollectionTest extends TestCase
         $view = $this->aValidPHPView('foo');
         $view = $view->with('foo', 'bar');
 
-        $collection->addComposer('foo', fn(View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -167,7 +167,7 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo', fn(View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -185,7 +185,7 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $collection->addComposer('partials.post*', fn(View $view): View => $view->with([
+        $collection->addComposer('partials.post*', fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
@@ -203,13 +203,11 @@ final class ViewComposerCollectionTest extends TestCase
 
         $view = $this->aValidPHPView('partials.share-var');
         $view = $collection->compose($view);
-        $this->assertSame([
-        ], $view->context());
+        $this->assertSame([], $view->context());
 
         $view = $this->aValidPHPView('foo');
         $view = $collection->compose($view);
-        $this->assertSame([
-        ], $view->context());
+        $this->assertSame([], $view->context());
     }
 
     /**
@@ -218,7 +216,7 @@ final class ViewComposerCollectionTest extends TestCase
     public function global_context_can_be_a_closure(): void
     {
         $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
-        $global_context->add('foo', fn(): string => 'bar');
+        $global_context->add('foo', fn (): string => 'bar');
 
         $view = $this->aValidPHPView('foo');
 
@@ -236,6 +234,7 @@ final class ViewComposerCollectionTest extends TestCase
         $name = str_replace('.', '/', $name);
 
         $file = __DIR__ . '/fixtures/views/' . $name . '.php';
+
         return new View($view_name, FilePath::fromString($file), PHPViewFactory::class, $context);
     }
 

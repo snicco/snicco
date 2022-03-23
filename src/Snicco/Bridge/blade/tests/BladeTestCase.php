@@ -11,8 +11,8 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\TemplateEngine;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Symfony\Component\Finder\Finder;
 
 use function preg_replace;

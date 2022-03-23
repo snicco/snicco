@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-
 namespace Snicco\Bridge\Blade\Tests;
 
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
 
+/**
+ * @internal
+ */
 final class BladeViewFactoryTest extends BladeTestCase
 {
-
     /**
      * @test
      */
@@ -95,5 +96,4 @@ final class BladeViewFactoryTest extends BladeTestCase
 
         $this->assertViewContent('hello calvin', $html);
     }
-
 }

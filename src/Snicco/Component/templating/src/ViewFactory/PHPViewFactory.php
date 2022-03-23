@@ -21,7 +21,6 @@ use function str_replace;
 
 final class PHPViewFactory implements ViewFactory
 {
-
     /**
      * Name of view file header based on which to resolve parent views.
      *
@@ -73,12 +72,9 @@ final class PHPViewFactory implements ViewFactory
 
             $parent = $parent
                 ->with($view->context())
-                ->with(
-                    '__content',
-                    new ChildContent(function () use ($view): void {
-                        $this->requireView($view);
-                    })
-                );
+                ->with('__content', new ChildContent(function () use ($view): void {
+                    $this->requireView($view);
+                }));
 
             $this->renderView($parent);
 
@@ -109,7 +105,7 @@ final class PHPViewFactory implements ViewFactory
 
     private function parseParentName(View $view): ?string
     {
-        $path = (string)$view->path();
+        $path = (string) $view->path();
         $data = file_get_contents($path, false, null, 0, 100);
 
         if (false === $data) {
@@ -134,7 +130,7 @@ final class PHPViewFactory implements ViewFactory
             return null;
         }
 
-        if (!isset($matches[1])) {
+        if (! isset($matches[1])) {
             // @codeCoverageIgnoreStart
             return null;
             // @codeCoverageIgnoreEnd
@@ -150,5 +146,4 @@ final class PHPViewFactory implements ViewFactory
 
         return $match;
     }
-
 }

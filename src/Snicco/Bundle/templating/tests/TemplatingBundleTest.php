@@ -128,7 +128,7 @@ final class TemplatingBundleTest extends TestCase
             $kernel->container()
                 ->shared(
                     ViewComposerWithDependency::class,
-                    fn(): ViewComposerWithDependency => new ViewComposerWithDependency($std_class)
+                    fn (): ViewComposerWithDependency => new ViewComposerWithDependency($std_class)
                 );
         });
 

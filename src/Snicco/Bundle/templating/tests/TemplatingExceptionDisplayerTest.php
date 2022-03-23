@@ -11,8 +11,8 @@ use RuntimeException;
 use Snicco\Bundle\Templating\TemplatingExceptionDisplayer;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\TemplateEngine;
+use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
