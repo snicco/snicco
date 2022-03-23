@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\ViewComposer;
 
-use Snicco\Component\Templating\Exception\BadViewComposer;
+use Snicco\Component\Templating\Exception\CantCreateViewComposer;
 
 interface ViewComposerFactory
 {
@@ -13,7 +13,7 @@ interface ViewComposerFactory
      *
      * @param class-string<T> $composer
      *
-     * @throws BadViewComposer
+     * @throws CantCreateViewComposer
      *
      * @return T
      */

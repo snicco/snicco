@@ -12,7 +12,7 @@ use Snicco\Bundle\Templating\TemplatingExceptionDisplayer;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 
@@ -27,7 +27,7 @@ final class TemplatingExceptionDisplayerTest extends TestCase
     {
         parent::setUp();
         $this->displayer = new TemplatingExceptionDisplayer(
-            new ViewEngine(
+            new TemplateEngine(
                 new PHPViewFactory(
                     new PHPViewFinder([__DIR__ . '/fixtures/templates']),
                     new ViewComposerCollection()

@@ -7,7 +7,7 @@ namespace Snicco\Bundle\Templating;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
-use Snicco\Component\Templating\Exception\BadViewComposer;
+use Snicco\Component\Templating\Exception\CantCreateViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
 use Throwable;
@@ -29,7 +29,7 @@ final class PsrViewComposerFactory implements ViewComposerFactory
      *
      * @param class-string<T> $composer
      *
-     * @throws BadViewComposer
+     * @throws CantCreateViewComposer
      *
      * @return T
      */
@@ -37,12 +37,14 @@ final class PsrViewComposerFactory implements ViewComposerFactory
     {
         try {
             $instance = $this->container->get($composer);
-            if (! $instance instanceof $composer) {
-                throw new BadViewComposer(sprintf(
-                    'PSR container did not return instance [%s] but [%s]',
-                    ViewComposer::class,
-                    gettype($instance)
-                ));
+            if (!$instance instanceof $composer) {
+                throw new CantCreateViewComposer(
+                    sprintf(
+                        'PSR container did not return instance [%s] but [%s]',
+                        ViewComposer::class,
+                        gettype($instance)
+                    )
+                );
             }
 
             /**
@@ -57,7 +59,7 @@ final class PsrViewComposerFactory implements ViewComposerFactory
         } catch (Throwable $e) {
         }
 
-        throw new BadViewComposer(
+        throw new CantCreateViewComposer(
             "Composer [{$composer}] can't be created with the container and is not a newable class.\n{$e->getMessage()}"
         );
     }

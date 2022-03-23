@@ -5,34 +5,28 @@ declare(strict_types=1);
 namespace Snicco\Component\Templating\ViewComposer;
 
 use Closure;
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ValueObject\View;
 
 /**
- * @template T of View
+ * @internal
+ *
  * @psalm-internal Snicco\Component\Templating
  */
 final class ClosureViewComposer implements ViewComposer
 {
     /**
-     * @var Closure(T):T
+     * @var Closure(View):View
      */
     private Closure $composer;
 
     /**
-     * @param Closure(T):T $composer
+     * @param Closure(View):View $composer
      */
     public function __construct(Closure $composer)
     {
         $this->composer = $composer;
     }
 
-    /**
-     * Add context values to the passed view.
-     *
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
-     * @psalm-suppress InvalidArgument
-     */
     public function compose(View $view): View
     {
         return ($this->composer)($view);

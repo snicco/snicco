@@ -20,6 +20,6 @@ final class AlertAttributes extends BladeComponent
 
     public function render(): string
     {
-        return $this->view('components.alert-attributes');
+        return $this->componentName('components.alert-attributes');
     }
 }

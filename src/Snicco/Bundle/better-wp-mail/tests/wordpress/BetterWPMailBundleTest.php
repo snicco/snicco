@@ -8,7 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use LogicException;
 use Snicco\Bundle\BetterWPMail\BetterWPMailBundle;
 use Snicco\Bundle\BetterWPMail\Option\MailOption;
-use Snicco\Bundle\BetterWPMail\ViewEngineMailRenderer;
+use Snicco\Bundle\BetterWPMail\TemplateEngineMailRenderer;
 use Snicco\Bundle\Templating\TemplatingBundle;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPMail\Mailer;
@@ -110,7 +110,7 @@ final class BetterWPMailBundleTest extends WPTestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('mail', [
-                MailOption::RENDERER => [ViewEngineMailRenderer::class],
+                MailOption::RENDERER => [TemplateEngineMailRenderer::class],
             ]);
         });
 
@@ -137,7 +137,7 @@ final class BetterWPMailBundleTest extends WPTestCase
                 Environment::ALL => [BetterWPMailBundle::class, TemplatingBundle::class],
             ]);
             $config->set('mail', [
-                MailOption::RENDERER => [ViewEngineMailRenderer::class],
+                MailOption::RENDERER => [TemplateEngineMailRenderer::class],
             ]);
         });
 

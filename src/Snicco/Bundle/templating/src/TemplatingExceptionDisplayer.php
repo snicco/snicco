@@ -8,21 +8,21 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Templating\Exception\ViewNotFound;
-use Snicco\Component\Templating\View\View;
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
+use Snicco\Component\Templating\ValueObject\View;
 
 use function array_filter;
 
 final class TemplatingExceptionDisplayer implements ExceptionDisplayer
 {
-    private ViewEngine $engine;
+    private TemplateEngine $engine;
 
     /**
      * @var array<string,View>
      */
     private array $views = [];
 
-    public function __construct(ViewEngine $engine)
+    public function __construct(TemplateEngine $engine)
     {
         $this->engine = $engine;
     }
@@ -38,7 +38,7 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
             'status_code' => $exception_information->statusCode(),
         ]);
 
-        return $view->render();
+        return $this->engine->renderView($view);
     }
 
     public function supportedContentType(): string
@@ -70,8 +70,8 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
         $request = Request::fromPsr($information->serverRequest());
         $is_admin = $request->isToAdminArea();
 
-        if (! isset($this->views[$information->identifier()])) {
-            $status = (string) $information->statusCode();
+        if (!isset($this->views[$information->identifier()])) {
+            $status = (string)$information->statusCode();
             $possible_views = array_filter([
                 $is_admin ? sprintf('%s-admin', $status) : null,
                 $is_admin ? sprintf('errors.%s-admin', $status) : null,
