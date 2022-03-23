@@ -372,6 +372,25 @@ final class StrTest extends TestCase
     /**
      * @test
      */
+    public function replace_all(): void
+    {
+        $this->assertSame('fooqux fooqux', Str::replaceAll('foobar foobar', 'bar', 'qux'));
+        $this->assertSame('foo/qux? foo/qux?', Str::replaceAll('foo/bar? foo/bar?', 'bar?', 'qux?'));
+        $this->assertSame('foo foo', Str::replaceAll('foobar foobar', 'bar', ''));
+        $this->assertSame('foobar foobar', Str::replaceAll('foobar foobar', 'xxx', 'yyy'));
+        $this->assertSame('foobar foobar', Str::replaceAll('foobar foobar', '', 'foo'));
+
+        // Test for multibyte string support
+        $this->assertSame('Jxxxnkxxxping Malmxxx', Str::replaceAll('Jönköping Malmö', 'ö', 'xxx'));
+        $this->assertSame('Jönköping Malmö', Str::replaceAll('Jönköping Malmö', '', 'yyy'));
+
+        $this->assertSame('xxx_xxx_好xxx_', Str::replaceAll('你你好你', '你', 'xxx_'));
+        $this->assertSame('好好好好', Str::replaceAll('你你好好', '你', '好'));
+    }
+
+    /**
+     * @test
+     */
     public function test_preg_replace(): void
     {
         $str = '.....foo.....';
