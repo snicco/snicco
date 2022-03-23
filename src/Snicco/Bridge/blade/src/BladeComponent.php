@@ -9,12 +9,12 @@ use Illuminate\View\Component as IlluminateComponent;
 abstract class BladeComponent extends IlluminateComponent
 {
     /**
-     * This method must either return a view name or a view contents as a
+     * This method must either return a view name or a views contents as a
      * string.
      */
     abstract public function render(): string;
 
-    protected function view(string $view): string
+    protected function componentName(string $view): string
     {
         $view = str_replace('components.', '', $view);
 

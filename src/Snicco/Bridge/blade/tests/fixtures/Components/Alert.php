@@ -20,7 +20,7 @@ final class Alert extends BladeComponent
 
     public function render(): string
     {
-        return $this->view('components.alert');
+        return $this->componentName('components.alert');
     }
 
     public function isUppercaseFoo(string $foo): bool

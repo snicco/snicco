@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
 
 /**
- * @var ViewEngine $view
+ * @var TemplateEngine $view
  */
 echo 'foo:inline=>' . ($view->render('greeting', [
     'name' => $name ?? 'Calvin',

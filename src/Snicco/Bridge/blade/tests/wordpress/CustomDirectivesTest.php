@@ -13,11 +13,10 @@ use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\TemplateEngine;
+use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Snicco\Component\Templating\ViewEngine;
 use Symfony\Component\Finder\Finder;
-
 use WP_UnitTest_Factory;
 use WP_User;
 
@@ -39,7 +38,7 @@ final class CustomDirectivesTest extends WPTestCase
 
     private string $blade_views;
 
-    private ViewEngine $view_engine;
+    private TemplateEngine $view_engine;
 
     private ViewComposerCollection $composers;
 
@@ -69,7 +68,7 @@ final class CustomDirectivesTest extends WPTestCase
         $blade->boostrap();
         $this->blade = $blade;
 
-        $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
+        $this->view_engine = new TemplateEngine($blade->getBladeViewFactory());
 
         $this->clearCache();
     }
@@ -90,13 +89,13 @@ final class CustomDirectivesTest extends WPTestCase
         wp_set_current_user($this->createUserWithRoles('admin')->ID);
 
         $view = $this->view('auth');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('AUTHENTICATED', $content);
 
         wp_logout();
 
         $view = $this->view('auth');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('', $content);
     }
 
@@ -108,13 +107,13 @@ final class CustomDirectivesTest extends WPTestCase
         $this->blade->bindWordPressDirectives(new BetterWPAPI());
 
         $view = $this->view('guest');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('YOU ARE A GUEST', $content);
 
         wp_set_current_user($this->createUserWithRoles('admin')->ID);
 
         $view = $this->view('guest');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('', $content);
     }
 
@@ -129,35 +128,39 @@ final class CustomDirectivesTest extends WPTestCase
         wp_set_current_user($admin->ID);
 
         $view = $this->view('role');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('ADMIN', $content);
 
         $editor = $this->createUserWithRoles('editor');
         wp_set_current_user($editor->ID);
 
         $view = $this->view('role');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('EDITOR', $content);
 
         $author = $this->createUserWithRoles('author');
         wp_set_current_user($author->ID);
 
         $view = $this->view('role');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('', $content);
     }
 
     private function assertViewContent(string $expected, string $actual): void
     {
-        $actual = preg_replace('#
+        $actual = preg_replace(
+            '#
 |
-|	|\\s{2,}#', '', $actual);
+|	|\\s{2,}#',
+            '',
+            $actual
+        );
 
         if (null === $actual) {
             throw new RuntimeException('preg_replcae failed in test case.');
         }
 
-        PHPUnit::assertSame($expected, trim($actual), 'View not rendered correctly.');
+        PHPUnit::assertSame($expected, trim($actual), 'View not renderViewed correctly.');
     }
 
     private function view(string $view): View
@@ -178,11 +181,13 @@ final class CustomDirectivesTest extends WPTestCase
         /** @var WP_UnitTest_Factory $factory */
         $factory = $this->factory();
 
-        $user = $factory->user->create_and_get(array_merge($data, [
-            'role' => $role,
-        ]));
+        $user = $factory->user->create_and_get(
+            array_merge($data, [
+                'role' => $role,
+            ])
+        );
 
-        if (! $user instanceof WP_User) {
+        if (!$user instanceof WP_User) {
             throw new InvalidArgumentException('Must be WP_USER');
         }
 

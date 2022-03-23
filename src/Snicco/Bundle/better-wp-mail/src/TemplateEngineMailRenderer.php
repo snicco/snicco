@@ -8,21 +8,21 @@ use Snicco\Component\BetterWPMail\Exception\CouldNotRenderMailContent;
 use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
-use Snicco\Component\Templating\View\View;
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
+use Snicco\Component\Templating\ValueObject\View;
 
-final class ViewEngineMailRenderer implements MailRenderer
+final class TemplateEngineMailRenderer implements MailRenderer
 {
-    private ViewEngine $view_engine;
+    private TemplateEngine $template_engine;
 
     /**
      * @var array<string,View>
      */
     private array $views = [];
 
-    public function __construct(ViewEngine $view_engine)
+    public function __construct(TemplateEngine $view_engine)
     {
-        $this->view_engine = $view_engine;
+        $this->template_engine = $view_engine;
     }
 
     public function render(string $template_name, array $context = []): string
@@ -30,8 +30,7 @@ final class ViewEngineMailRenderer implements MailRenderer
         try {
             $view = $this->getView($template_name);
 
-            return $view->with($context)
-                ->render();
+            return $this->template_engine->renderView($view->with($context));
         } catch (ViewCantBeRendered $e) {
             throw new CouldNotRenderMailContent($e->getMessage(), 0, $e);
         }
@@ -57,7 +56,7 @@ final class ViewEngineMailRenderer implements MailRenderer
             return $this->views[$template_name];
         }
 
-        $view = $this->view_engine->make($template_name);
+        $view = $this->template_engine->make($template_name);
         $this->views[$template_name] = $view;
 
         return $view;

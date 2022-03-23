@@ -10,7 +10,7 @@ final class ToUppercaseComponent extends BladeComponent
 {
     public function render(): string
     {
-        return $this->view('uppercase');
+        return $this->componentName('uppercase');
     }
 
     public function toUpper(string $string): string

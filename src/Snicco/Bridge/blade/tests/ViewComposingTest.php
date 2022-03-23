@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade\Tests;
 
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ValueObject\View;
 
 use function trim;
 
@@ -35,7 +35,7 @@ final class ViewComposingTest extends BladeTestCase
         ]);
         $this->composers->addComposer(
             'components.view-composer-parent',
-            fn (View $view): View => $view->with([
+            fn(View $view): View => $view->with([
                 'name' => 'calvin',
             ])
         );
@@ -48,7 +48,7 @@ final class ViewComposingTest extends BladeTestCase
      */
     public function a_view_composer_can_be_added_to_a_view(): void
     {
-        $this->composers->addComposer('view-composer', fn (View $view): View => $view->with([
+        $this->composers->addComposer('view-composer', fn(View $view): View => $view->with([
             'name' => 'calvin',
         ]));
 
@@ -59,6 +59,6 @@ final class ViewComposingTest extends BladeTestCase
     {
         $view = $this->view_engine->make($view);
 
-        return $view->render();
+        return $this->view_engine->renderView($view);
     }
 }

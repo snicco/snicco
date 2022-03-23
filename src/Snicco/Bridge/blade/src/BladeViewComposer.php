@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade;
 
-use Illuminate\View\View;
+use Illuminate\View\View as IllumianteView;
 use RuntimeException;
+use Snicco\Component\Templating\ValueObject\FilePath;
+use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 final class BladeViewComposer
@@ -17,14 +19,26 @@ final class BladeViewComposer
         $this->composers = $composers;
     }
 
-    public function handleEvent(string $view_name, array $payload): void
+    public function handleEvent(string $event_name, array $payload): void
     {
-        if (! isset($payload[0]) || ! $payload[0] instanceof View) {
-            throw new RuntimeException(sprintf('Expected payload[0] to be instance of [%s].', View::class,));
+        if (!isset($payload[0]) || !$payload[0] instanceof IllumianteView) {
+            throw new RuntimeException(sprintf('Expected payload[0] to be instance of [%s].', IllumianteView::class,));
         }
 
-        $view = $payload[0];
-        $blade_view = $this->composers->compose(new BladeView($view));
-        $view->with($blade_view->context());
+        $illuminate_view = $payload[0];
+
+        /** @var array<string,mixed> $data */
+        $data = $illuminate_view->getData();
+
+        $snicco_view = new View(
+            $illuminate_view->name(),
+            FilePath::fromString($illuminate_view->getPath()),
+            BladeViewFactory::class,
+            $data
+        );
+
+        $snicco_view = $this->composers->compose($snicco_view);
+
+        $illuminate_view->with($snicco_view->context());
     }
 }

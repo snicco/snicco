@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\Templating\Tests\fixtures;
 
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;
 
