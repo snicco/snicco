@@ -4,8 +4,10 @@
 )](https://codecov.io/gh/sniccowp/sniccowp)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
+[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/BetterWPDB/index.html)
+![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-BetterWPDB is a small class with zero dependencies that uses the default mysql connection created by WordPress.
+**BetterWPDB** is a small class with zero dependencies that uses the default mysqli connection created by **WordPress**.
 
 ## Table of contents
 
@@ -19,24 +21,28 @@ BetterWPDB is a small class with zero dependencies that uses the default mysql c
 2. [Installing](#installing)
     1. [composer](#composer)
     2. [setup](#setup)
-3. [Running prepared queries](#running-prepared-queries)
-4. [Selects](#select)
-    1. [select](#select)
-    2. [selectAll](#selectAll)
-    3. [selectRow](#selectRow)
-    4. [selectValue](#selectvalue)
-    5. [selectLazy](#selectlazy)
-    6. [exists](#exists)
-5. [Inserts](#inserts)
-    1. [insert](#insert)
-    2. [bulkInsert](#bulkinsert)
-6. [Updates](#updates)
-    1. [update](#update)
-    2. [update by primary key](#updatebyprimary)
-7. [Deletes](#deletes)
-8. [Transactions](#transactions)
-9. [Logging](#logging)
-10. [Query Builder](#query-builder)
+3. [Usage](#usage)
+    1. [Running prepared queries](#running-prepared-queries)
+    2. [Selects](#select)
+        1. [select](#select)
+        2. [selectAll](#selectAll)
+        3. [selectRow](#selectRow)
+        4. [selectValue](#selectvalue)
+        5. [selectLazy](#selectlazy)
+        6. [exists](#exists)
+    3. [Inserts](#inserts)
+        1. [insert](#insert)
+        2. [bulkInsert](#bulkinsert)
+    4. [Updates](#updates)
+        1. [update](#update)
+        2. [update by primary key](#updatebyprimary)
+    5. [Deletes](#deletes)
+    6. [Transactions](#transactions)
+    7. [Logging](#logging)
+    8. [Query Builder](#query-builder)
+4. [Contributing](#contributing)
+5. [Issues and PR's](#reporting-issues-and-sending-pull-requests)
+6. [Security](#security)
 
 ## Why you should use this
 
@@ -64,14 +70,16 @@ in your database.
 
 ---
 
-Besides what `wpdb::prepare()` has you thinking, wpdb is **NOT** using prepared statements. Explaining the differences
-is beyond the scope of this README but as a recap:
+Besides, what [`wpdb::prepare()`](https://developer.wordpress.org/reference/classes/wpdb/prepare/) has you thinking,
+[`wpdb`](https://developer.wordpress.org/reference/classes/wpdb/) is **NOT** using prepared statements. Explaining the
+differences is beyond the scope of this README but as a recap:
 
 When using prepared statements, the sql query and the actual values are sent separately to your database. It's thus
 impossible to perform any SQL injection.
 
-`wpdb::prepare()` is a [string escaper](https://github.com/WordPress/WordPress/blob/master/wp-includes/wp-db.php#L1395).
-The name is misleading and its utility is suboptimal.
+[`wpdb::prepare()`](https://developer.wordpress.org/reference/classes/wpdb/prepare/) is
+a [string escaper](https://github.com/WordPress/WordPress/blob/master/wp-includes/wp-db.php#L1395). The name is
+misleading and its utility is suboptimal.
 
 You can read more about this topic and why it's so important to use real prepared statements here:
 
@@ -93,18 +101,18 @@ $wpdb->get_results(
 $better_wpdb->preparedQuery('select * from `wp_users` where `id` = ?' and `test_string` = ?, [1, 'foo']);
 ```
 
-### wpdb has horrible error handling
+### `wpdb` has horrible error handling
 
 ---
 
-The error handling in wpdb is pretty much non-existent. And if wpdb fails it does so gracefully. However, there is no
-way to recover from a database error as your application is in unknown state, so you want your database layer
-to [fail loud and hard.](https://phpdelusions.net/articles/error_reporting)
+The error handling in the `wpdb` class is pretty much non-existent. And in case `wpdb` fails, it does so gracefully.
+However, there is no way to recover from a database error as your application is in unknown state, so you want your
+database layer to [fail loud and hard.](https://phpdelusions.net/articles/error_reporting)
 
 1. **Lets compare error handling for totally malformed SQL.**
 
-   wpdb will return (bool) false for failed queries which causes you to type-check the result or every single sql query
-   only to (hopefully) throw an exception afterwards.
+   `wpdb` will return `(bool) false` for failed queries which causes you to type-check the result or every single sql
+   query only to (hopefully) throw an exception afterwards.
 
 ```php
 ❌ // This is what you typically see in WordPress code
@@ -131,7 +139,7 @@ var_dump($e->getMessage()) // You have an error in your SQL syntax; check the ma
 
 2. **Inserting data that is too big for the defined column.**
 
-   In our db definition we did set `test_string` to a varchar(10).
+   Remember, in our database table definition we did set test_string column to a `varchar(10)`.
 
 ```php
 ❌ 
@@ -167,8 +175,7 @@ var_dump($e->getMessage()) // Data too long for column 'test_string' at row 1
 
 3. **Inserting flat-out wrong data**
 
-   In our test table we did set `test_int` to an unsigned integer. Let's see what happens if we try to insert a negative
-   number.
+   We defined test_int as an `unsigned integer`. Let's see what happens if we try to insert a negative number.
 
 ```php
 ❌ 
@@ -201,28 +208,30 @@ var_dump($e->getMessage()) // Out of range value for column 'test_int' at row 1
 // This exception message is automatically logged.
 ```
 
-4. **wpdb can only print errors has html and can only log to the configured `error_log` destination**
+4. **`wpdb` can only print errors as html and can only log to the configured `error_log` destination**
 
-   If wpdb manages to catch a totally wrong db error (and you have "show_errors" turned on) wpdb will
+   If `wpdb` manages to catch a totally wrong db error (and you
+   have [show_errors](https://github.com/WordPress/wordpress-develop/blob/5.9/src/wp-includes/wp-db.php#L65) turned on)
+   wpdb will
    just [`echo` the output as html](https://github.com/WordPress/wordpress-develop/blob/5.9/src/wp-includes/wp-db.php#L1608) (
    very usefully during unit tests and rest api calls). Error logging
    is [hardcoded](https://github.com/WordPress/wordpress-develop/blob/5.9/src/wp-includes/wp-db.php#L1582), good luck
-   sending db errors to sentry, new relic or using any psr-logger.
+   sending db errors to **Sentry**, **New Relic** or using any PSR logger.
 
-### wpdb is "slow"
+### `wpdb` is "slow"
 
 --- 
 
 This ties in directly to the graceful error handling.
 
-❌ Before **every single** query wpdb will check the query against the table/column charset and collation. wpdb will also
-validate data for write operations against the data you provided by fetching the full table info. If a query is deemed
-not compatible `(bool) false`
+❌ Before **every single** query `wpdb` will check the query against the table/column charset and collation. `wpdb` will
+also validate data for write operations against the data you provided by fetching the full table info. If a query is
+deemed not compatible `(bool) false`
 is returned, and you will never now about it.
 
 ✅ Just set the charset and collation once for connection and let mysql handle what it can already handle.
 
-### wpdb is verbose, easy to misuse and hard to debug.
+### `wpdb` is verbose, easy to misuse and hard to debug.
 
 ---
 
@@ -251,7 +260,7 @@ and [read this article by PHP core contributor Anthony Ferrara](https://blog.irc
 > "The current system is insecure-by-design. That doesn’t mean it’s always hackable, but it means you have to actively work to make it not attackable.
 > It’s better to switch to a design that’s secure-by-default and make the insecure the exceptional case."
 
-### wpdb returns everything as strings
+### `wpdb` returns everything as strings
 
 ---
 
@@ -283,7 +292,7 @@ var_dump($row['test_bool']); // (int) 1
 
 ```
 
-### static analysers like psalm and phpstan have trouble understanding wpdb.
+### static analysers like Psalm and PHPStan have trouble understanding wpdb.
 
 ---
 
@@ -292,7 +301,7 @@ return signature of wpdb and better_wpdb:
 
 ```php
 ❌ // The abbreviated phpdoc of wpdb::get_row
-   // This method has 4 different return types?
+   // This method has 4 different return types? Also, what is return void?
 
 /**
 *
@@ -324,7 +333,8 @@ public function get_row($query = null, $output = OBJECT, $y = 0) {
 
 ## Installing
 
-You can install BetterWPDB via composer. The only requirement is `php: ^7.4|^8.0`. There are no further dependencies.
+You can install **BetterWPDB** via composer. The only requirement is `php: ^7.4|^8.0`. There are no further
+dependencies.
 
 ### composer
 
@@ -334,7 +344,7 @@ composer require sniccowp/betterwpdb
 
 ### setup
 
-BetterWPDB **DOES NOT** open a second connection to your database. All you have to do to start using it is the
+**BetterWPDB** **DOES NOT** open a second connection to your database. All you have to do to start using it is the
 following:
 
 ```php
@@ -358,10 +368,13 @@ $mysqli = /* ... */
 $better_wpdb = new BetterWPDB($mysqli);
 ```
 
-## Running prepared queries
+## Usage
+
+### Running prepared queries
 
 If you need full control of your sql query or have a complex use case you can directly use the low-level `preparedQuery`
-method. For most use cases there are more high level methods available.
+method. This method will return an instance of [`mysqli_stmt`](https://www.php.net/manual/de/class.mysqli-stmt.php). For
+most use cases there are more high level methods available.
 
 ```php
 
@@ -413,13 +426,14 @@ $better_wpdb->preparedQuery(
 
 If you follow these three simply rules you are 100% safe from any sql-injections.
 
-## Selects
-
-### select
+### Selects
 
 ---
 
-The most low-level select method. Returns an instance of `mysqli_result`
+#### select
+
+The most low-level select method. Returns an instance
+of [`mysqli_result`](https://www.php.net/manual/de/class.mysqli-result.php)
 
 ```php
 
@@ -433,9 +447,9 @@ while($row = $result->fetch_array()) {
 }
 ```
 
-### selectAll
-
 ---
+
+#### selectAll
 
 Returns an array or all matching records.
 
@@ -455,9 +469,9 @@ foreach ($rows as $row) {
 }
 ```
 
-### selectLazy
-
 ---
+
+#### selectLazy
 
 Occasionally you will need to query a lot of records from your database to process them in some form. A typical use-case
 would be exporting 100k orders into a CSV file. If you try to use `selectAll` for this you will be out of memory
@@ -473,7 +487,7 @@ $orders = $better_wpdb->selectAll('select * from orders where created_at <= ?', 
 
 ✅ // You load 1 row at a time. But only when you start looping over the result.
 
-/** @var Generator $orders */
+/** @var Generator<array> $orders */
 $orders = $better_wpdb->selectLazy('select * from orders where created_at <= ?', [$date]);
 
 // You have not made any db queries yet.
@@ -487,11 +501,12 @@ foreach ($orders as $order) {
 
 ```
 
-### selectRow
-
 ---
 
-Returns the first row that matches the provided query. Throws an exception if no row can be found.
+#### selectRow
+
+Returns the first row that matches the provided query. Throws an instance of `NoMatchingRowFound` if no row can be
+found.
 
 ```php
 try {
@@ -509,9 +524,9 @@ try {
 }
 ```
 
-### selectValue
-
 ---
+
+#### selectValue
 
 Selects a single value from or throws an exception if no rows are found.
 
@@ -526,9 +541,9 @@ try {
 }
 ```
 
-### exists
-
 ---
+
+#### exists
 
 You can use this method to check if a record exists in the database
 
@@ -545,11 +560,12 @@ $exists = $better_wpdb->exists('test_table', [
 
 ## Inserts
 
-### insert
-
 ---
 
-Inserts a single row into the database and returns an instance of `mysqli_stmt`
+#### insert
+
+Inserts a single row into the database and returns an instance
+of [`mysqli_stmt`](https://www.php.net/manual/de/class.mysqli-result.php)
 
 ```php
 /** @var mysqli_stmt $stmt */
@@ -565,9 +581,9 @@ var_dump($stmt->insert_id);  // (int) 10, assuming we had 9 previous records and
 
 ❌ Never allow user input as keys for the array.
 
-### bulkInsert
-
 ---
+
+#### bulkInsert
 
 A common use case is inserting multiple records at once and ensuring that either all records are inserted or none.
 
@@ -625,9 +641,9 @@ var_dump($importer_rows_count); // 100000
 
 ## Updates
 
-### updateByPrimary
-
 ---
+
+#### updateByPrimary
 
 Updates a record by its primary key. By default, it will be assumed that the primary key column name is `id`.
 
@@ -647,9 +663,9 @@ Updates a record by its primary key. By default, it will be assumed that the pri
 
 ❌ Never allow user input as keys for the array.
 
-### update
-
 ---
+
+#### update
 
 A generic update method. The second argument is an array of conditions, the third argument an array of changes.
 
@@ -665,11 +681,11 @@ A generic update method. The second argument is an array of conditions, the thir
 
 ❌ Never allow user input as keys for the changes
 
-## Deletes
-
-### delete
+### Deletes
 
 ---
+
+#### delete
 
 Deletes all records that match the provided conditions.
 
@@ -680,15 +696,17 @@ Deletes all records that match the provided conditions.
 
 ❌ Never allow user input as keys for the conditions
 
-## Transactions
+### Transactions
 
-Unfortunately, database transactions are used very rarely in WordPress plugins. A transaction ensures that either all or
-db queries inside the transaction succeed or all fail.
+---
 
-Typical code you find in many WordPress plugins:
+Unfortunately, database transactions are used very rarely in **WordPress** plugins. A transaction ensures that either
+all or db queries inside the transaction succeed or all fail.
+
+Typical code you find in many **WordPress** plugins:
 
 ```php
-❌ // This is awful. What happens if a customer and order is created but creating the payment fails?
+❌ // This is awful. What happens if a customer and an order is created but creating the payment fails?
 
  my_plugin_create_customer();
  my_plugin_create_create();
@@ -706,15 +724,17 @@ $better_wpdb->transactional(function () {
 
 ```
 
-## Logging
+### Logging
 
-You can a second argument to the constructor of BetterWPDB.
+---
+
+You can a second argument to the constructor of **BetterWPDB**.
 
 Implement the
 simple [QueryLogger](https://github.com/sniccowp/sniccowp/blob/master/src/Snicco/Component/better-wpdb/src/QueryLogger.php)
 interface and start logging your database queries to your favorite profiling service.
 
-The following is pseudocode to log to new relic:
+The following is pseudocode to log to **New Relic**:
 
 ````php
 <?php
@@ -742,9 +762,11 @@ $better_wpdb->insert('test_table' , ['test_string' => 'foo']);
 
 ````
 
-## Query Builder
+### Query Builder
 
-BetterWPDB is **not** a query builder and unless you query is dynamic you don't need one.
+---
+
+**BetterWPDB** is **not** a query builder and unless you query is dynamic you don't need one.
 
 Most of the time plain sql-queries are more readable and easier to debug.
 
@@ -774,7 +796,7 @@ $result = $better_wpdb->selectAll($query, ['foo', 'bar', 'baz']);
 ```
 
 If some of your queries are highly dynamic you can consider using [latitude](https://github.com/shadowhand/latitude)
-which is a full-blown query builder that works perfectly with BetterWPDB.
+which is a full-blown query builder that works perfectly with **BetterWPDB**.
 
 `composer require latitude/latitude`
 
@@ -798,3 +820,20 @@ $bindings = $query->params(); // [5]
 $results = $better_wpdb->selectRow($sql, $bindings);
 
 ```
+
+## Contributing
+
+This repository is a read-only split of the development repo of the [**Snicco**](https://github.com/sniccowp/sniccowp)
+project.
+
+[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+
+## Reporting issues and sending pull requests
+
+Please report issues in the
+[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+
+## Security
+
+If you discover a security vulnerability within **BetterWP**, please follow
+our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
