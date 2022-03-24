@@ -216,7 +216,7 @@ final class WPEventDispatcherTest extends WPTestCase
 
     private function getDispatcher(): WPEventDispatcher
     {
-        return new WPEventDispatcher(new BaseEventDispatcher());
+        return WPEventDispatcher::fromDefaults();
     }
 }
 
