@@ -126,8 +126,7 @@ class CSVImporterTest extends TestCase {
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco**](https://github.com/sniccowp/sniccowp)
-project.
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
 
 [This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
 
@@ -138,5 +137,5 @@ Please report issues in the
 
 ## Security
 
-If you discover a security vulnerability within **BetterWP**, please follow
+If you discover a security vulnerability within **BetterWPAPI**, please follow
 our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).

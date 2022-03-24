@@ -1,4 +1,4 @@
-# SniccoWP - Taking the pain out of enterprise WordPress development
+# Snicco - Taking the pain out of enterprise WordPress development
 
 [![codecov](https://codecov.io/gh/sniccowp/sniccowp/branch/master/graph/badge.svg?token=4W8R6FZ948)](https://codecov.io/gh/sniccowp/sniccowp)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
@@ -8,7 +8,7 @@
 
 In this
 development [monorepo](https://tomasvotruba.com/blog/2019/10/28/all-you-always-wanted-to-know-about-monorepo-but-were-afraid-to-ask/)
-you'll find many independent packages that will help you to develop testable, maintainable and PSR-compatible enterprise
+you'll find many independent packages that will help you to develop **testable**, **maintainable** and **PSR-compatible** enterprise
 **WordPress** projects faster than ever before.
 
 All packages in this repo are specifically designed to be usable in distributed **WordPress** code and
