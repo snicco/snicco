@@ -158,11 +158,11 @@ your development machine:
 After cloning the repository to your local machine you can run:
 
 ```shell
-./ bin/install.sh [-w $wp_version]
+./bin/install.sh [-w $wp_version]
 ```
-It will install all dependencies of SniccoWP (composer + npm) and install the requested 
-WordPress version (pre-configured with all required settings).
-That's it. You are all set.
+
+This script will install all dev dependencies (**composer** + **npm**).
+If you pass "-w" a preconfigured **WordPress** installation will also be installed. You only need this if you are working on a **WordPress** related component.
 
 ### Tests
 
