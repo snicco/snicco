@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Bundle\Templating\PsrViewComposerFactory;
 use Snicco\Bundle\Testing\Bundle\BundleTest;
+use Snicco\Component\Templating\Exception\CantCreateViewComposer;
 use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;
@@ -59,6 +60,22 @@ final class PsrViewComposerFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(TestComposerNotNewable::class);
         $factory->create(TestComposerNotNewable::class);
+    }
+
+    /**
+     * @test
+     */
+    public function that_an_exception_is_thrown_if_a_different_class_is_returned(): void
+    {
+        $bundle_test = new BundleTest(__DIR__ . '/fixtures');
+        $container = $bundle_test->newContainer();
+
+        $container->instance(TestComposerNewable::class, new TestComposerNotNewable(new stdClass()));
+
+        $factory = new PsrViewComposerFactory($container);
+
+        $this->expectException(CantCreateViewComposer::class);
+        $factory->create(TestComposerNewable::class);
     }
 }
 
