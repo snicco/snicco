@@ -26,8 +26,6 @@ use function array_filter;
 use function count;
 use function get_class;
 use function sprintf;
-use function strstr;
-use function strtok;
 use function strtr;
 
 final class Mailer
@@ -115,14 +113,15 @@ final class Mailer
         }
 
         $html_content = $mail->htmlBody();
-        $inline_attachments = array_filter($mail->attachments(),
-            fn(Attachment $attachment) => $attachment->isInline()
+        $inline_attachments = array_filter(
+            $mail->attachments(),
+            fn (Attachment $attachment): bool => $attachment->isInline()
         );
 
-        if(null !== $html_content && [] !== $inline_attachments) {
+        if (null !== $html_content && [] !== $inline_attachments) {
             $replace = [];
             foreach ($inline_attachments as $inline_attachment) {
-                $replace[ 'cid:'.$inline_attachment->name()] = 'cid:'.$inline_attachment->cid();
+                $replace['cid:' . $inline_attachment->name()] = 'cid:' . $inline_attachment->cid();
             }
 
             $replaced_content = strtr($html_content, $replace);

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use InvalidArgumentException;
-use LogicException;
 use WP_User;
 
 use function array_key_first;
 use function array_merge;
 use function is_array;
 use function is_string;
-use function sprintf;
 use function strip_tags;
 
 /**
@@ -23,7 +21,6 @@ use function strip_tags;
  */
 class Email
 {
-
     protected string $subject = '';
 
     protected ?string $html = null;
@@ -54,7 +51,7 @@ class Email
     protected array $attachments = [];
 
     /**
-     * @var null|1|2|3|4|5
+     * @var 1|2|3|4|5|null
      */
     protected ?int $priority = null;
 
@@ -273,7 +270,7 @@ class Email
     final public function addEmbed(string $path, string $name = null, string $content_type = null): Email
     {
         $new = clone $this;
-        $new->attachments[]= Attachment::fromPath($path, $name, $content_type, true);
+        $new->attachments[] = Attachment::fromPath($path, $name, $content_type, true);
 
         return $new;
     }
@@ -284,7 +281,7 @@ class Email
     final public function addBinaryEmbed($data, string $name, string $content_type = null): Email
     {
         $new = clone $this;
-        $new->attachments[]= Attachment::fromData($data, $name, $content_type, true);
+        $new->attachments[] = Attachment::fromData($data, $name, $content_type, true);
 
         return $new;
     }

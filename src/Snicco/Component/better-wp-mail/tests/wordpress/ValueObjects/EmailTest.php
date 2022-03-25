@@ -6,7 +6,6 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
-use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 
@@ -490,5 +489,4 @@ final class EmailTest extends WPTestCase
         $email = $email->withPriority(5);
         $email->withPriority(6);
     }
-
 }
