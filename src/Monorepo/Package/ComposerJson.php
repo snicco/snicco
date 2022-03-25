@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Monorepo\Package;
 
+use InvalidArgumentException;
 use JsonException;
 use RuntimeException;
 use Webmozart\Assert\Assert;
@@ -41,6 +42,9 @@ final class ComposerJson
      */
     private const DESCRIPTION = 'description';
 
+    /**
+     * @var array<string,mixed>
+     */
     private array $composer_json_contents;
 
     private string $file;
@@ -147,5 +151,26 @@ final class ComposerJson
     public function contents(): array
     {
         return $this->composer_json_contents;
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    public function autoloadPsr4(): array
+    {
+        if (! isset($this->composer_json_contents['autoload']) || ! isset($this->composer_json_contents['autoload']['psr-4'])) {
+            throw new InvalidArgumentException(
+                sprintf('Missing autoload declaration for package [%s}].', $this->name())
+            );
+        }
+
+        /** @psalm-suppress ImpureMethodCall */
+        $autoload_psr4 = $this->composer_json_contents['autoload']['psr-4'];
+        Assert::isArray($autoload_psr4);
+        Assert::allString($autoload_psr4);
+        Assert::allString(array_keys($autoload_psr4));
+
+        /** @psalm-var array<string,string> $autoload_psr4 */
+        return $autoload_psr4;
     }
 }

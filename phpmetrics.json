@@ -1,9 +1,9 @@
 {
     "includes": [
-        "src"
+        "src/Snicco"
     ],
     "exclude": [
-      "tests"
+        "tests"
     ],
     "report": {
         "html": "htmlout",
@@ -13,36 +13,12 @@
     },
     "groups": [
         {
-            "name": "Blade",
-            "match": "!Snicco\\\\Bridge\\\\Blade\\\\.*!"
+            "name": "BetterWPAPI",
+            "match": "!Snicco\\\\Component\\\\BetterWPAPI\\\\.*!"
         },
         {
-            "name": "IlluminateContainer",
-            "match": "!Snicco\\\\Bridge\\\\IlluminateContainer\\\\.*!"
-        },
-        {
-            "name": "Pimple",
-            "match": "!Snicco\\\\Bridge\\\\Pimple\\\\.*!"
-        },
-        {
-            "name": "SessionPsr16",
-            "match": "!Snicco\\\\Bridge\\\\SessionPsr16\\\\.*!"
-        },
-        {
-            "name": "SessionWP",
-            "match": "!Snicco\\\\Bridge\\\\SessionWP\\\\.*!"
-        },
-        {
-            "name": "SignedUrlMiddleware",
-            "match": "!Snicco\\\\Bridge\\\\SignedUrlMiddleware\\\\.*!"
-        },
-        {
-            "name": "SignedUrlPsr16",
-            "match": "!Snicco\\\\Bridge\\\\SignedUrlPsr16\\\\.*!"
-        },
-        {
-            "name": "SignedUrlWP",
-            "match": "!Snicco\\\\Bridge\\\\SignedUrlWP\\\\.*!"
+            "name": "BetterWPCache",
+            "match": "!Snicco\\\\Component\\\\BetterWPCache\\\\.*!"
         },
         {
             "name": "BetterWPDB",
@@ -57,10 +33,6 @@
             "match": "!Snicco\\\\Component\\\\BetterWPMail\\\\.*!"
         },
         {
-            "name": "Kernel",
-            "match": "!Snicco\\\\Component\\\\Kernel\\\\.*!"
-        },
-        {
             "name": "Eloquent",
             "match": "!Snicco\\\\Component\\\\Eloquent\\\\.*!"
         },
@@ -73,12 +45,12 @@
             "match": "!Snicco\\\\Component\\\\HttpRouting\\\\.*!"
         },
         {
-            "name": "Psr7ErrorHandler",
-            "match": "!Snicco\\\\Component\\\\Psr7ErrorHandler\\\\.*!"
+            "name": "Kernel",
+            "match": "!Snicco\\\\Component\\\\Kernel\\\\.*!"
         },
         {
-            "name": "BetterWPAPI",
-            "match": "!Snicco\\\\Component\\\\BetterWPAPI\\\\.*!"
+            "name": "Psr7ErrorHandler",
+            "match": "!Snicco\\\\Component\\\\Psr7ErrorHandler\\\\.*!"
         },
         {
             "name": "Session",
@@ -101,12 +73,84 @@
             "match": "!Snicco\\\\Component\\\\TestableClock\\\\.*!"
         },
         {
-            "name": "WPObjectCachePsr16",
-            "match": "!Snicco\\\\Component\\\\WPObjectCachePsr16\\\\.*!"
+            "name": "BladeBridge",
+            "match": "!Snicco\\\\Bridge\\\\Blade\\\\.*!"
+        },
+        {
+            "name": "IlluminateContainerBridge",
+            "match": "!Snicco\\\\Bridge\\\\IlluminateContainer\\\\.*!"
+        },
+        {
+            "name": "PimpleBridge",
+            "match": "!Snicco\\\\Bridge\\\\Pimple\\\\.*!"
+        },
+        {
+            "name": "SessionPsr16Bridge",
+            "match": "!Snicco\\\\Bridge\\\\SessionPsr16\\\\.*!"
+        },
+        {
+            "name": "SessionWPBridge",
+            "match": "!Snicco\\\\Bridge\\\\SessionWP\\\\.*!"
+        },
+        {
+            "name": "SignedUrlPsr15Bridge",
+            "match": "!Snicco\\\\Bridge\\\\SignedUrlPsr15\\\\.*!"
+        },
+        {
+            "name": "SignedUrlPsr16Bridge",
+            "match": "!Snicco\\\\Bridge\\\\SignedUrlPsr16\\\\.*!"
+        },
+        {
+            "name": "BetterWPCacheBundle",
+            "match": "!Snicco\\\\Bundle\\\\BetterWPCache\\\\.*!"
+        },
+        {
+            "name": "BetterWPDBBundle",
+            "match": "!Snicco\\\\Bundle\\\\BetterWPDB\\\\.*!"
+        },
+        {
+            "name": "BetterWPHooksBundle",
+            "match": "!Snicco\\\\Bundle\\\\BetterWPHooks\\\\.*!"
+        },
+        {
+            "name": "BetterWPMailBundle",
+            "match": "!Snicco\\\\Bundle\\\\BetterWPMail\\\\.*!"
+        },
+        {
+            "name": "BladeBundle",
+            "match": "!Snicco\\\\Bundle\\\\Blade\\\\.*!"
+        },
+        {
+            "name": "DebugBundle",
+            "match": "!Snicco\\\\Bundle\\\\Debug\\\\.*!"
+        },
+        {
+            "name": "EncryptionBundle",
+            "match": "!Snicco\\\\Bundle\\\\Encryption\\\\.*!"
+        },
+        {
+            "name": "HttpRoutingBundle",
+            "match": "!Snicco\\\\Bundle\\\\HttpRouting\\\\.*!"
+        },
+        {
+            "name": "SessionBundle",
+            "match": "!Snicco\\\\Bundle\\\\Session\\\\.*!"
+        },
+        {
+            "name": "TemplatingBundle",
+            "match": "!Snicco\\\\Bundle\\\\Templating\\\\.*!"
+        },
+        {
+            "name": "TestingBundle",
+            "match": "!Snicco\\\\Bundle\\\\Testing\\\\.*!"
         },
         {
             "name": "DefaultHeaders",
             "match": "!Snicco\\\\Middleware\\\\DefaultHeaders\\\\.*!"
+        },
+        {
+            "name": "GuestsOnly",
+            "match": "!Snicco\\\\Middleware\\\\GuestsOnly\\\\.*!"
         },
         {
             "name": "HttpsOnly",
@@ -157,8 +201,8 @@
             "match": "!Snicco\\\\Middleware\\\\WPCap\\\\.*!"
         },
         {
-            "name": "GuestsOnly",
-            "match": "!Snicco\\\\Middleware\\\\GuestsOnly\\\\.*!"
+            "name": "WPNonce",
+            "match": "!Snicco\\\\Middleware\\\\WPNonce\\\\.*!"
         }
     ]
 }
