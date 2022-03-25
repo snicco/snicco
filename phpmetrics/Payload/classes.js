@@ -39,6 +39,7 @@ var classes = [
         "parents": [
             "Snicco\\Middleware\\Payload\\Payload"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 31,
         "vocabulary": 17,
@@ -103,6 +104,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 6,
         "vocabulary": 4,
@@ -194,6 +196,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 49,
         "vocabulary": 18,

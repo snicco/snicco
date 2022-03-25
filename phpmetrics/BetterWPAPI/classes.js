@@ -126,6 +126,7 @@ var classes = [
             "WP_User"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 14,
         "length": 129,
         "vocabulary": 35,

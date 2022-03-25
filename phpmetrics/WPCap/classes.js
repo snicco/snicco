@@ -39,6 +39,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 32,
         "vocabulary": 12,

@@ -82,6 +82,7 @@ var classes = [
             "Psr\\Http\\Message\\UriInterface"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 84,
         "vocabulary": 20,
@@ -155,52 +156,51 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
             "Psr\\Http\\Message\\ResponseInterface",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
             "Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
-            "Snicco\\Component\\HttpRouting\\Testing\\MiddlewareTestResult",
             "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\HttpRouting\\Testing\\MiddlewareTestResult",
             "PHPUnit\\Framework\\Assert",
             "Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
-        "length": 23,
+        "length": 19,
         "vocabulary": 7,
-        "volume": 64.57,
-        "difficulty": 3.4,
-        "effort": 219.54,
-        "level": 0.29,
+        "volume": 53.34,
+        "difficulty": 3,
+        "effort": 160.02,
+        "level": 0.33,
         "bugs": 0.02,
-        "time": 12,
-        "intelligentContent": 18.99,
-        "number_operators": 6,
-        "number_operands": 17,
+        "time": 9,
+        "intelligentContent": 17.78,
+        "number_operators": 4,
+        "number_operands": 15,
         "number_operators_unique": 2,
         "number_operands_unique": 5,
         "cloc": 0,
-        "loc": 26,
-        "lloc": 26,
-        "mi": 56.19,
-        "mIwoC": 56.19,
+        "loc": 24,
+        "lloc": 24,
+        "mi": 57.53,
+        "mIwoC": 57.53,
         "commentWeight": 0,
         "kanDefect": 0.15,
         "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 1.75,
-        "relativeSystemComplexity": 2.75,
+        "relativeDataComplexity": 0.75,
+        "relativeSystemComplexity": 1.75,
         "totalStructuralComplexity": 4,
-        "totalDataComplexity": 7,
-        "totalSystemComplexity": 11,
+        "totalDataComplexity": 3,
+        "totalSystemComplexity": 7,
         "package": "Snicco\\Component\\HttpRouting\\Testing\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
-        "efferentCoupling": 6,
-        "instability": 0.67,
+        "afferentCoupling": 1,
+        "efferentCoupling": 4,
+        "instability": 0.8,
         "violations": {}
     },
     {
@@ -237,6 +237,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 60,
         "vocabulary": 17,
@@ -378,7 +379,7 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 20,
+        "wmc": 18,
         "ccn": 7,
         "ccnMethodMax": 5,
         "externals": [
@@ -421,6 +422,7 @@ var classes = [
         "parents": [
             "PHPUnit\\Framework\\TestCase"
         ],
+        "implements": [],
         "lcom": 3,
         "length": 97,
         "vocabulary": 16,
@@ -688,7 +690,7 @@ var classes = [
         "nbMethodsPublic": 27,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 39,
+        "wmc": 37,
         "ccn": 8,
         "ccnMethodMax": 3,
         "externals": [
@@ -742,6 +744,7 @@ var classes = [
             "PHPUnit\\Framework\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 289,
         "vocabulary": 65,
@@ -756,12 +759,12 @@ var classes = [
         "number_operands": 229,
         "number_operators_unique": 5,
         "number_operands_unique": 60,
-        "cloc": 6,
-        "loc": 202,
+        "cloc": 3,
+        "loc": 199,
         "lloc": 196,
-        "mi": 39.42,
+        "mi": 35.68,
         "mIwoC": 26.23,
-        "commentWeight": 13.19,
+        "commentWeight": 9.45,
         "kanDefect": 0.5,
         "relativeStructuralComplexity": 324,
         "relativeDataComplexity": 1.72,
@@ -820,7 +823,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 5,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -828,6 +831,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Arr"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 25,
         "vocabulary": 7,
@@ -897,6 +901,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Controller\\Controller"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 28,
         "vocabulary": 12,
@@ -961,6 +966,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Controller\\Controller"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 2,
         "vocabulary": 2,
@@ -1041,6 +1047,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Controller\\Controller"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 34,
         "vocabulary": 11,
@@ -1127,6 +1134,7 @@ var classes = [
             "ReflectionClass"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 55,
         "vocabulary": 15,
@@ -1226,7 +1234,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 2,
-        "wmc": 12,
+        "wmc": 10,
         "ccn": 5,
         "ccnMethodMax": 2,
         "externals": [
@@ -1247,6 +1255,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 71,
         "vocabulary": 21,
@@ -1327,6 +1336,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 36,
         "vocabulary": 13,
@@ -1391,6 +1401,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 4,
         "vocabulary": 3,
@@ -1472,6 +1483,7 @@ var classes = [
             "ReflectionMethod"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 67,
         "vocabulary": 21,
@@ -1546,6 +1558,9 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler"
+        ],
         "lcom": 1,
         "length": 22,
         "vocabulary": 9,
@@ -1683,6 +1698,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 137,
         "vocabulary": 24,
@@ -1777,7 +1793,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 11,
+        "wmc": 10,
         "ccn": 5,
         "ccnMethodMax": 2,
         "externals": [
@@ -1803,6 +1819,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 62,
         "vocabulary": 17,
@@ -1862,7 +1881,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 6,
         "ccn": 6,
         "ccnMethodMax": 6,
         "externals": [
@@ -1872,6 +1891,7 @@ var classes = [
             "middleware_class"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 34,
         "vocabulary": 11,
@@ -2059,6 +2079,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 407,
         "vocabulary": 71,
@@ -2135,6 +2156,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareBlueprint"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 19,
         "vocabulary": 6,
@@ -2194,7 +2216,7 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2207,6 +2229,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 19,
         "vocabulary": 8,
@@ -2287,7 +2310,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2306,6 +2329,10 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\RequestHandlerInterface",
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 26,
         "vocabulary": 7,
@@ -2392,6 +2419,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 71,
         "vocabulary": 16,
@@ -2538,6 +2566,9 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader\\RouteLoader"
+        ],
         "lcom": 1,
         "length": 244,
         "vocabulary": 54,
@@ -2615,6 +2646,9 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader\\RouteLoadingOptions"
+        ],
         "lcom": 2,
         "length": 63,
         "vocabulary": 19,
@@ -2748,6 +2782,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\BadRouteConfiguration"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 126,
         "vocabulary": 25,
@@ -2822,7 +2857,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -2834,6 +2869,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 39,
         "vocabulary": 15,
@@ -2914,7 +2950,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2923,6 +2959,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator"
+        ],
         "lcom": 1,
         "length": 40,
         "vocabulary": 11,
@@ -3088,6 +3127,9 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator"
+        ],
         "lcom": 1,
         "length": 433,
         "vocabulary": 77,
@@ -3170,6 +3212,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlEncoder"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlEncoder"
+        ],
         "lcom": 3,
         "length": 90,
         "vocabulary": 52,
@@ -3284,7 +3329,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 5,
         "nbMethodsSetters": 0,
-        "wmc": 23,
+        "wmc": 18,
         "ccn": 13,
         "ccnMethodMax": 8,
         "externals": [
@@ -3304,6 +3349,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlPath"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 146,
         "vocabulary": 33,
@@ -3380,6 +3426,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminMenu"
+        ],
         "lcom": 1,
         "length": 34,
         "vocabulary": 12,
@@ -3467,7 +3516,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 9,
+        "wmc": 8,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -3482,6 +3531,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminArea"
+        ],
         "lcom": 4,
         "length": 68,
         "vocabulary": 23,
@@ -3560,7 +3612,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -3570,6 +3622,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlPath"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 23,
         "vocabulary": 8,
@@ -3682,6 +3735,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\RoutingResult"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\UrlMatcher"
+        ],
         "lcom": 1,
         "length": 254,
         "vocabulary": 41,
@@ -3783,6 +3839,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 173,
         "vocabulary": 44,
@@ -3882,7 +3939,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 10,
+        "wmc": 8,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -3892,6 +3949,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 39,
         "vocabulary": 9,
@@ -3973,6 +4031,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\UrlMatcher"
+        ],
         "lcom": 1,
         "length": 33,
         "vocabulary": 9,
@@ -4044,6 +4105,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 16,
         "vocabulary": 8,
@@ -4132,6 +4194,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 4,
         "length": 18,
         "vocabulary": 7,
@@ -4237,6 +4300,7 @@ var classes = [
         "parents": [
             "LogicException"
         ],
+        "implements": [],
         "lcom": 6,
         "length": 32,
         "vocabulary": 14,
@@ -4309,6 +4373,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 13,
         "vocabulary": 9,
@@ -4373,6 +4438,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 10,
         "vocabulary": 7,
@@ -4434,6 +4500,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Cache\\RouteCache"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Cache\\RouteCache"
+        ],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -4517,6 +4586,9 @@ var classes = [
             "Webimpress\\SafeWriter\\FileWriter"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Cache\\RouteCache"
+        ],
         "lcom": 1,
         "length": 48,
         "vocabulary": 17,
@@ -4646,7 +4718,7 @@ var classes = [
         "nbMethodsPublic": 10,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 17,
+        "wmc": 16,
         "ccn": 6,
         "ccnMethodMax": 3,
         "externals": [
@@ -4668,6 +4740,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 102,
         "vocabulary": 11,
@@ -5014,7 +5087,7 @@ var classes = [
         "nbMethodsPublic": 25,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 78,
+        "wmc": 77,
         "ccn": 36,
         "ccnMethodMax": 9,
         "externals": [
@@ -5083,6 +5156,10 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\RouteGroup"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\WebRoutingConfigurator",
+            "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\AdminRoutingConfigurator"
+        ],
         "lcom": 1,
         "length": 613,
         "vocabulary": 99,
@@ -5179,6 +5256,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\RouteGroup"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 73,
         "vocabulary": 17,
@@ -5259,7 +5337,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 8,
+        "wmc": 7,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -5271,6 +5349,9 @@ var classes = [
             "ArrayIterator"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Routes"
+        ],
         "lcom": 1,
         "length": 29,
         "vocabulary": 8,
@@ -5392,14 +5473,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "defaults",
+                "name": "condition",
                 "role": null,
                 "public": true,
                 "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "condition",
+                "name": "defaults",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -5522,15 +5603,15 @@ var classes = [
         "nbMethodsPublic": 13,
         "nbMethodsGetter": 10,
         "nbMethodsSetters": 0,
-        "wmc": 55,
+        "wmc": 45,
         "ccn": 24,
         "ccnMethodMax": 8,
         "externals": [
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
-            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\ConditionBlueprint",
             "Webmozart\\Assert\\Assert",
+            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\StrArr\\Str",
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
@@ -5561,6 +5642,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 358,
         "vocabulary": 78,
@@ -5575,12 +5657,12 @@ var classes = [
         "number_operands": 292,
         "number_operators_unique": 5,
         "number_operands_unique": 73,
-        "cloc": 112,
-        "loc": 350,
+        "cloc": 114,
+        "loc": 352,
         "lloc": 238,
-        "mi": 59.88,
+        "mi": 60.05,
         "mIwoC": 21.46,
-        "commentWeight": 38.42,
+        "commentWeight": 38.59,
         "kanDefect": 2.46,
         "relativeStructuralComplexity": 121,
         "relativeDataComplexity": 2,
@@ -5685,6 +5767,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\RouteNotFound"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Routes"
+        ],
         "lcom": 1,
         "length": 93,
         "vocabulary": 13,
@@ -5751,7 +5836,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -5763,6 +5848,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteCondition"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 12,
         "vocabulary": 5,
@@ -5824,6 +5910,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 20,
         "vocabulary": 7,
@@ -5888,6 +5975,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteCondition"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -5953,6 +6041,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\NegatedRouteCondition"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory"
+        ],
         "lcom": 1,
         "length": 17,
         "vocabulary": 7,
@@ -6022,6 +6113,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 4,
         "vocabulary": 3,
@@ -6140,6 +6232,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 8,
         "length": 119,
         "vocabulary": 25,
@@ -6271,6 +6364,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 195,
         "vocabulary": 46,
@@ -6348,6 +6442,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Cookie"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 87,
         "vocabulary": 28,
@@ -6491,6 +6586,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 118,
         "vocabulary": 29,
@@ -6651,6 +6747,10 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Response\\RedirectResponse"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Message\\ResponseFactoryInterface",
+            "Psr\\Http\\Message\\StreamFactoryInterface"
+        ],
         "lcom": 1,
         "length": 127,
         "vocabulary": 34,
@@ -6998,7 +7098,7 @@ var classes = [
         "nbMethodsPublic": 39,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 60,
+        "wmc": 56,
         "ccn": 17,
         "ccnMethodMax": 3,
         "externals": [
@@ -7016,6 +7116,9 @@ var classes = [
             "Psr\\Http\\Message\\ResponseInterface"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Message\\ResponseInterface"
+        ],
         "lcom": 2,
         "length": 337,
         "vocabulary": 80,
@@ -7358,7 +7461,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "hasAny",
+                "name": "has",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -7372,7 +7475,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "has",
+                "name": "hasAny",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "hasAll",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -7645,13 +7755,13 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
-        "nbMethodsIncludingGettersSetters": 84,
-        "nbMethods": 84,
+        "nbMethodsIncludingGettersSetters": 85,
+        "nbMethods": 85,
         "nbMethodsPrivate": 5,
-        "nbMethodsPublic": 79,
+        "nbMethodsPublic": 80,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 121,
+        "wmc": 122,
         "ccn": 38,
         "ccnMethodMax": 5,
         "externals": [
@@ -7678,6 +7788,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Arr",
             "Snicco\\Component\\StrArr\\Arr",
             "Webmozart\\Assert\\Assert",
+            "Snicco\\Component\\StrArr\\Arr",
             "stdClass",
             "Snicco\\Component\\StrArr\\Arr",
             "Snicco\\Component\\StrArr\\Arr",
@@ -7714,33 +7825,36 @@ var classes = [
             "Snicco\\Component\\StrArr\\Arr"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Message\\ServerRequestInterface"
+        ],
         "lcom": 3,
-        "length": 609,
+        "length": 610,
         "vocabulary": 100,
-        "volume": 4046.11,
-        "difficulty": 23,
-        "effort": 93060.49,
+        "volume": 4052.75,
+        "difficulty": 23.06,
+        "effort": 93438.46,
         "level": 0.04,
         "bugs": 1.35,
-        "time": 5170,
-        "intelligentContent": 175.92,
+        "time": 5191,
+        "intelligentContent": 175.78,
         "number_operators": 195,
-        "number_operands": 414,
+        "number_operands": 415,
         "number_operators_unique": 10,
         "number_operands_unique": 90,
-        "cloc": 128,
-        "loc": 576,
-        "lloc": 449,
-        "mi": 45.13,
-        "mIwoC": 11.78,
-        "commentWeight": 33.35,
+        "cloc": 129,
+        "loc": 580,
+        "lloc": 452,
+        "mi": 45.07,
+        "mIwoC": 11.71,
+        "commentWeight": 33.37,
         "kanDefect": 3.35,
         "relativeStructuralComplexity": 3364,
-        "relativeDataComplexity": 1.72,
-        "relativeSystemComplexity": 3365.72,
-        "totalStructuralComplexity": 282576,
-        "totalDataComplexity": 144.75,
-        "totalSystemComplexity": 282720.75,
+        "relativeDataComplexity": 1.74,
+        "relativeSystemComplexity": 3365.74,
+        "totalStructuralComplexity": 285940,
+        "totalDataComplexity": 147.92,
+        "totalSystemComplexity": 286087.92,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
         "afferentCoupling": 47,
@@ -7780,7 +7894,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -7791,7 +7905,8 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
-        "lcom": 3,
+        "implements": [],
+        "lcom": 2,
         "length": 14,
         "vocabulary": 6,
         "volume": 36.19,
@@ -7850,7 +7965,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -7860,7 +7975,8 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
-        "lcom": 2,
+        "implements": [],
+        "lcom": 1,
         "length": 9,
         "vocabulary": 4,
         "volume": 18,
@@ -7938,7 +8054,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -7950,6 +8066,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 31,
         "vocabulary": 9,

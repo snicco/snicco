@@ -135,6 +135,9 @@ var classes = [
             "Closure"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Transport\\Transport"
+        ],
         "lcom": 1,
         "length": 332,
         "vocabulary": 71,
@@ -190,6 +193,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -306,6 +310,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Transport\\Transport"
+        ],
         "lcom": 1,
         "length": 223,
         "vocabulary": 58,
@@ -431,6 +438,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 166,
         "vocabulary": 30,
@@ -523,7 +531,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 21,
+        "wmc": 19,
         "ccn": 15,
         "ccnMethodMax": 11,
         "externals": [
@@ -534,6 +542,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 113,
         "vocabulary": 24,
@@ -914,7 +923,7 @@ var classes = [
         "nbMethodsPublic": 39,
         "nbMethodsGetter": 5,
         "nbMethodsSetters": 0,
-        "wmc": 71,
+        "wmc": 66,
         "ccn": 23,
         "ccnMethodMax": 6,
         "externals": [
@@ -966,6 +975,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 17,
         "length": 419,
         "vocabulary": 38,
@@ -1075,6 +1085,10 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
         ],
         "parents": [],
+        "implements": [
+            "Countable",
+            "IteratorAggregate"
+        ],
         "lcom": 2,
         "length": 42,
         "vocabulary": 9,
@@ -1139,7 +1153,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -1151,6 +1165,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 22,
         "vocabulary": 11,
@@ -1241,6 +1256,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 51,
         "vocabulary": 11,
@@ -1359,7 +1375,7 @@ var classes = [
         "nbMethodsPublic": 7,
         "nbMethodsGetter": 3,
         "nbMethodsSetters": 0,
-        "wmc": 26,
+        "wmc": 23,
         "ccn": 16,
         "ccnMethodMax": 5,
         "externals": [
@@ -1371,6 +1387,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 111,
         "vocabulary": 31,
@@ -1423,14 +1440,15 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 1,
+        "wmc": 0,
         "ccn": 1,
-        "ccnMethodMax": 1,
+        "ccnMethodMax": 0,
         "externals": [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
         ],
         "parents": [],
-        "lcom": 1,
+        "implements": [],
+        "lcom": 0,
         "length": 4,
         "vocabulary": 3,
         "volume": 6.34,
@@ -1500,6 +1518,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Event\\MailEvents"
+        ],
         "lcom": 2,
         "length": 2,
         "vocabulary": 2,
@@ -1564,7 +1585,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 3,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -1574,6 +1595,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 12,
         "vocabulary": 5,
@@ -1653,6 +1675,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Event\\MailEvents"
+        ],
         "lcom": 1,
         "length": 11,
         "vocabulary": 5,
@@ -1737,6 +1762,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 3,
         "length": 21,
         "vocabulary": 12,
@@ -1792,6 +1818,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -1858,7 +1885,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -1870,6 +1897,9 @@ var classes = [
         ],
         "parents": [
             "RuntimeException"
+        ],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmail"
         ],
         "lcom": 2,
         "length": 30,
@@ -1937,7 +1967,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 8,
+        "wmc": 7,
         "ccn": 6,
         "ccnMethodMax": 6,
         "externals": [
@@ -1946,6 +1976,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ],
         "lcom": 2,
         "length": 48,
         "vocabulary": 12,
@@ -2014,6 +2047,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ],
         "lcom": 2,
         "length": 22,
         "vocabulary": 12,

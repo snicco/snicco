@@ -115,7 +115,7 @@ var classes = [
         "nbMethodsPublic": 12,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 33,
+        "wmc": 32,
         "ccn": 19,
         "ccnMethodMax": 7,
         "externals": [
@@ -134,6 +134,9 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher"
+        ],
         "lcom": 1,
         "length": 185,
         "vocabulary": 30,
@@ -205,7 +208,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 4,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -213,6 +216,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\GenericEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\Event"
+        ],
         "lcom": 2,
         "length": 16,
         "vocabulary": 6,
@@ -272,6 +278,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 0,
         "vocabulary": 0,
@@ -335,6 +342,7 @@ var classes = [
         "parents": [
             "LogicException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 7,
         "vocabulary": 5,
@@ -407,6 +415,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 24,
         "vocabulary": 11,
@@ -499,6 +508,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 4,
         "length": 17,
         "vocabulary": 8,
@@ -651,6 +661,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher"
+        ],
         "lcom": 1,
         "length": 248,
         "vocabulary": 35,
@@ -715,6 +728,7 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 24,
         "vocabulary": 11,
@@ -774,6 +788,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 2,
         "vocabulary": 2,
@@ -833,7 +848,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -843,6 +858,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory"
+        ],
         "lcom": 1,
         "length": 21,
         "vocabulary": 11,
@@ -906,6 +924,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory"
+        ],
         "lcom": 1,
         "length": 9,
         "vocabulary": 5,

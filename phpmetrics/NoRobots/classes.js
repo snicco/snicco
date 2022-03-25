@@ -38,6 +38,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 35,
         "vocabulary": 10,

@@ -92,6 +92,9 @@ var classes = [
             "Psr\\Http\\Message\\ResponseInterface"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler"
+        ],
         "lcom": 1,
         "length": 138,
         "vocabulary": 29,
@@ -176,6 +179,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 4,
         "length": 14,
         "vocabulary": 7,
@@ -261,6 +267,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 4,
         "length": 39,
         "vocabulary": 18,
@@ -346,6 +355,7 @@ var classes = [
             "Throwable"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 64,
         "vocabulary": 20,
@@ -435,7 +445,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 7,
         "nbMethodsSetters": 0,
-        "wmc": 8,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -447,6 +457,7 @@ var classes = [
             "Psr\\Http\\Message\\ServerRequestInterface"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 42,
         "vocabulary": 10,
@@ -560,6 +571,9 @@ var classes = [
             "Throwable"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider"
+        ],
         "lcom": 2,
         "length": 147,
         "vocabulary": 37,
@@ -574,12 +588,12 @@ var classes = [
         "number_operands": 111,
         "number_operators_unique": 8,
         "number_operands_unique": 29,
-        "cloc": 22,
-        "loc": 93,
+        "cloc": 26,
+        "loc": 97,
         "lloc": 71,
-        "mi": 71.75,
+        "mi": 73.48,
         "mIwoC": 37.54,
-        "commentWeight": 34.21,
+        "commentWeight": 35.94,
         "kanDefect": 1.1,
         "relativeStructuralComplexity": 49,
         "relativeDataComplexity": 0.77,
@@ -624,6 +638,9 @@ var classes = [
             "Psr\\Http\\Message\\ServerRequestInterface"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler"
+        ],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -695,7 +712,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 4,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -706,6 +723,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 29,
         "vocabulary": 10,
@@ -768,6 +786,9 @@ var classes = [
             "Throwable"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Identifier\\ExceptionIdentifier"
+        ],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -827,7 +848,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -837,6 +858,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 17,
         "vocabulary": 7,
@@ -907,6 +931,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 34,
         "vocabulary": 14,
@@ -966,7 +993,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -975,6 +1002,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 13,
         "vocabulary": 9,
@@ -1038,6 +1068,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,

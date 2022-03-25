@@ -24,7 +24,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -34,6 +34,9 @@ var classes = [
             "Psr\\Http\\Server\\RequestHandlerInterface"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 23,
         "vocabulary": 10,

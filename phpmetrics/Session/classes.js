@@ -101,6 +101,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 270,
         "vocabulary": 43,
@@ -177,13 +178,6 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "multiple_session_ids_can_be_destroyed",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
                 "name": "garbage_collection_works_for_old_sessions",
                 "role": null,
                 "public": true,
@@ -226,15 +220,15 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
-        "nbMethodsIncludingGettersSetters": 12,
-        "nbMethods": 12,
+        "nbMethodsIncludingGettersSetters": 11,
+        "nbMethods": 11,
         "nbMethodsPrivate": 3,
-        "nbMethodsPublic": 9,
+        "nbMethodsPublic": 8,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 17,
-        "ccn": 6,
-        "ccnMethodMax": 3,
+        "wmc": 14,
+        "ccn": 4,
+        "ccnMethodMax": 2,
         "externals": [
             "Snicco\\Component\\TestableClock\\TestClock",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
@@ -259,13 +253,6 @@ var classes = [
             "PHPUnit\\Framework\\Assert",
             "Snicco\\Component\\TestableClock\\TestClock",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
             "PHPUnit\\Framework\\Assert",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
             "PHPUnit\\Framework\\Assert",
@@ -283,33 +270,34 @@ var classes = [
             "Snicco\\Component\\TestableClock\\Clock"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
-        "length": 206,
-        "vocabulary": 31,
-        "volume": 1020.56,
-        "difficulty": 17.21,
-        "effort": 17565.48,
+        "length": 177,
+        "vocabulary": 28,
+        "volume": 850.9,
+        "difficulty": 16.63,
+        "effort": 14150.87,
         "level": 0.06,
-        "bugs": 0.34,
-        "time": 976,
-        "intelligentContent": 59.3,
-        "number_operators": 27,
-        "number_operands": 179,
+        "bugs": 0.28,
+        "time": 786,
+        "intelligentContent": 51.17,
+        "number_operators": 24,
+        "number_operands": 153,
         "number_operators_unique": 5,
-        "number_operands_unique": 26,
-        "cloc": 39,
-        "loc": 153,
-        "lloc": 114,
-        "mi": 68.5,
-        "mIwoC": 33.26,
-        "commentWeight": 35.24,
+        "number_operands_unique": 23,
+        "cloc": 35,
+        "loc": 130,
+        "lloc": 95,
+        "mi": 71.81,
+        "mIwoC": 35.8,
+        "commentWeight": 36,
         "kanDefect": 0.15,
         "relativeStructuralComplexity": 289,
         "relativeDataComplexity": 0.07,
         "relativeSystemComplexity": 289.07,
-        "totalStructuralComplexity": 3468,
-        "totalDataComplexity": 0.83,
-        "totalSystemComplexity": 3468.83,
+        "totalStructuralComplexity": 3179,
+        "totalDataComplexity": 0.78,
+        "totalSystemComplexity": 3179.78,
         "package": "Snicco\\Component\\Session\\Testing\\",
         "pageRank": 0,
         "afferentCoupling": 0,
@@ -403,7 +391,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 9,
         "nbMethodsSetters": 0,
-        "wmc": 27,
+        "wmc": 18,
         "ccn": 15,
         "ccnMethodMax": 15,
         "externals": [
@@ -420,6 +408,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SessionLottery"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 161,
         "vocabulary": 42,
@@ -526,7 +515,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 13,
+        "wmc": 11,
         "ccn": 5,
         "ccnMethodMax": 3,
         "externals": [
@@ -541,6 +530,7 @@ var classes = [
             "ParagonIE\\ConstantTime\\Base64UrlSafe"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 64,
         "vocabulary": 22,
@@ -622,7 +612,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 9,
+        "wmc": 5,
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
@@ -630,6 +620,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 41,
         "vocabulary": 13,
@@ -794,7 +785,7 @@ var classes = [
         "nbMethodsPublic": 16,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 17,
+        "wmc": 16,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -806,6 +797,9 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SessionId"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\ImmutableSession"
+        ],
         "lcom": 2,
         "length": 59,
         "vocabulary": 7,
@@ -875,6 +869,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 19,
         "vocabulary": 12,
@@ -948,7 +943,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -956,6 +951,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\CookiePool"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 15,
         "vocabulary": 7,
@@ -984,7 +980,7 @@ var classes = [
         "totalDataComplexity": 15,
         "totalSystemComplexity": 15,
         "package": "Snicco\\Component\\Session\\ValueObject\\",
-        "pageRank": 0.63,
+        "pageRank": 0.62,
         "afferentCoupling": 7,
         "efferentCoupling": 2,
         "instability": 0.22,
@@ -1057,11 +1053,12 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 8,
         "nbMethodsSetters": 0,
-        "wmc": 11,
+        "wmc": 3,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 58,
         "vocabulary": 17,
@@ -1114,14 +1111,15 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 1,
+        "wmc": 0,
         "ccn": 1,
-        "ccnMethodMax": 1,
+        "ccnMethodMax": 0,
         "externals": [
             "Snicco\\Component\\Session\\ImmutableSession"
         ],
         "parents": [],
-        "lcom": 1,
+        "implements": [],
+        "lcom": 0,
         "length": 4,
         "vocabulary": 3,
         "volume": 6.34,
@@ -1470,7 +1468,7 @@ var classes = [
         "nbMethodsPublic": 34,
         "nbMethodsGetter": 3,
         "nbMethodsSetters": 0,
-        "wmc": 75,
+        "wmc": 72,
         "ccn": 32,
         "ccnMethodMax": 4,
         "externals": [
@@ -1509,6 +1507,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Session"
+        ],
         "lcom": 2,
         "length": 404,
         "vocabulary": 58,
@@ -1592,7 +1593,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "destroyAll",
+                "name": "destroyAllForAllUsers",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -1643,25 +1644,28 @@ var classes = [
             "BadMethodCallException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver"
+        ],
         "lcom": 1,
         "length": 82,
-        "vocabulary": 18,
-        "volume": 341.93,
-        "difficulty": 9,
-        "effort": 3077.4,
-        "level": 0.11,
+        "vocabulary": 17,
+        "volume": 335.17,
+        "difficulty": 9.69,
+        "effort": 3248.59,
+        "level": 0.1,
         "bugs": 0.11,
-        "time": 171,
-        "intelligentContent": 37.99,
+        "time": 180,
+        "intelligentContent": 34.58,
         "number_operators": 19,
         "number_operands": 63,
         "number_operators_unique": 4,
-        "number_operands_unique": 14,
+        "number_operands_unique": 13,
         "cloc": 0,
         "loc": 62,
         "lloc": 62,
-        "mi": 42.49,
-        "mIwoC": 42.49,
+        "mi": 42.55,
+        "mIwoC": 42.55,
         "commentWeight": 0,
         "kanDefect": 0.43,
         "relativeStructuralComplexity": 256,
@@ -1726,7 +1730,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "destroyAll",
+                "name": "destroyAllForAllUsers",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -1772,42 +1776,45 @@ var classes = [
         "nbMethodsPublic": 10,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 27,
-        "ccn": 16,
+        "wmc": 24,
+        "ccn": 14,
         "ccnMethodMax": 4,
         "externals": [
             "Snicco\\Component\\Session\\Driver\\UserSessionsDriver",
             "Snicco\\Component\\TestableClock\\Clock",
             "Snicco\\Component\\TestableClock\\SystemClock",
-            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
+            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver"
+        ],
         "lcom": 1,
-        "length": 132,
-        "vocabulary": 28,
-        "volume": 634.57,
-        "difficulty": 20.8,
-        "effort": 13199.07,
-        "level": 0.05,
-        "bugs": 0.21,
-        "time": 733,
-        "intelligentContent": 30.51,
-        "number_operators": 28,
-        "number_operands": 104,
+        "length": 126,
+        "vocabulary": 25,
+        "volume": 585.13,
+        "difficulty": 23.29,
+        "effort": 13629.99,
+        "level": 0.04,
+        "bugs": 0.2,
+        "time": 757,
+        "intelligentContent": 25.12,
+        "number_operators": 27,
+        "number_operands": 99,
         "number_operators_unique": 8,
-        "number_operands_unique": 20,
+        "number_operands_unique": 17,
         "cloc": 3,
-        "loc": 95,
-        "lloc": 92,
-        "mi": 48.98,
-        "mIwoC": 35.39,
-        "commentWeight": 13.59,
-        "kanDefect": 1.93,
+        "loc": 91,
+        "lloc": 88,
+        "mi": 50.2,
+        "mIwoC": 36.32,
+        "commentWeight": 13.88,
+        "kanDefect": 1.63,
         "relativeStructuralComplexity": 100,
         "relativeDataComplexity": 0.47,
         "relativeSystemComplexity": 100.47,
@@ -1851,6 +1858,7 @@ var classes = [
         "parents": [
             "LogicException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -1886,7 +1894,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception\\BadSessionID",
+        "name": "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
         "interface": false,
         "abstract": false,
         "final": true,
@@ -1910,11 +1918,12 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [
             "InvalidArgumentException",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID"
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector"
         ],
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 6,
         "vocabulary": 4,
@@ -1980,6 +1989,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 13,
         "vocabulary": 8,
@@ -2015,71 +2025,6 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "forSessionIDs",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 1,
-        "nbMethods": 1,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 1,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 2,
-        "ccn": 2,
-        "ccnMethodMax": 2,
-        "externals": [
-            "RuntimeException",
-            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
-            "Throwable"
-        ],
-        "parents": [
-            "RuntimeException"
-        ],
-        "lcom": 1,
-        "length": 14,
-        "vocabulary": 9,
-        "volume": 44.38,
-        "difficulty": 1.71,
-        "effort": 76.08,
-        "level": 0.58,
-        "bugs": 0.01,
-        "time": 4,
-        "intelligentContent": 25.89,
-        "number_operators": 2,
-        "number_operands": 12,
-        "number_operators_unique": 2,
-        "number_operands_unique": 7,
-        "cloc": 3,
-        "loc": 11,
-        "lloc": 8,
-        "mi": 104.68,
-        "mIwoC": 68.5,
-        "commentWeight": 36.18,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 2,
-        "relativeSystemComplexity": 3,
-        "totalStructuralComplexity": 1,
-        "totalDataComplexity": 2,
-        "totalSystemComplexity": 3,
-        "package": "Snicco\\Component\\Session\\Exception\\",
-        "pageRank": 0,
-        "afferentCoupling": 4,
-        "efferentCoupling": 4,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Component\\Session\\Exception\\CouldNotWriteSessionContent",
         "interface": false,
         "abstract": false,
@@ -2110,6 +2055,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 9,
         "vocabulary": 6,
@@ -2142,6 +2088,72 @@ var classes = [
         "afferentCoupling": 3,
         "efferentCoupling": 4,
         "instability": 0.57,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "forSelector",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 1,
+        "nbMethods": 1,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 1,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 2,
+        "ccn": 2,
+        "ccnMethodMax": 2,
+        "externals": [
+            "RuntimeException",
+            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
+            "Throwable"
+        ],
+        "parents": [
+            "RuntimeException"
+        ],
+        "implements": [],
+        "lcom": 1,
+        "length": 13,
+        "vocabulary": 8,
+        "volume": 39,
+        "difficulty": 1.83,
+        "effort": 71.5,
+        "level": 0.55,
+        "bugs": 0.01,
+        "time": 4,
+        "intelligentContent": 21.27,
+        "number_operators": 2,
+        "number_operands": 11,
+        "number_operators_unique": 2,
+        "number_operands_unique": 6,
+        "cloc": 0,
+        "loc": 8,
+        "lloc": 8,
+        "mi": 68.89,
+        "mIwoC": 68.89,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 1,
+        "relativeDataComplexity": 2,
+        "relativeSystemComplexity": 3,
+        "totalStructuralComplexity": 1,
+        "totalDataComplexity": 2,
+        "totalSystemComplexity": 3,
+        "package": "Snicco\\Component\\Session\\Exception\\",
+        "pageRank": 0,
+        "afferentCoupling": 4,
+        "efferentCoupling": 4,
+        "instability": 0.5,
         "violations": {}
     },
     {
@@ -2264,6 +2276,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\SessionManager\\SessionManager"
+        ],
         "lcom": 1,
         "length": 162,
         "vocabulary": 36,
@@ -2344,7 +2359,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2357,6 +2372,9 @@ var classes = [
             "Snicco\\Component\\Session\\ImmutableSession"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\SessionManager\\SessionManager"
+        ],
         "lcom": 1,
         "length": 21,
         "vocabulary": 7,
@@ -2427,6 +2445,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Serializer\\Serializer"
+        ],
         "lcom": 2,
         "length": 21,
         "vocabulary": 12,
@@ -2496,6 +2517,9 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Serializer\\Serializer"
+        ],
         "lcom": 2,
         "length": 17,
         "vocabulary": 10,
@@ -2557,6 +2581,9 @@ var classes = [
             "Snicco\\Component\\Session\\EventDispatcher\\SessionEventDispatcher"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\EventDispatcher\\SessionEventDispatcher"
+        ],
         "lcom": 1,
         "length": 1,
         "vocabulary": 1,

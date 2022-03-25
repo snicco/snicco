@@ -24,7 +24,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -33,6 +33,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 15,
         "vocabulary": 8,
@@ -107,6 +108,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 21,
         "vocabulary": 8,
@@ -301,6 +303,9 @@ var classes = [
             "Illuminate\\Database\\QueryException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface"
+        ],
         "lcom": 1,
         "length": 293,
         "vocabulary": 39,
@@ -356,6 +361,7 @@ var classes = [
         "parents": [
             "Illuminate\\Database\\Eloquent\\Model"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -515,6 +521,7 @@ var classes = [
         "parents": [
             "Illuminate\\Database\\MySqlConnection"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 180,
         "vocabulary": 29,
@@ -600,7 +607,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 9,
+        "wmc": 7,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -611,6 +618,9 @@ var classes = [
             "Illuminate\\Database\\ConnectionInterface"
         ],
         "parents": [],
+        "implements": [
+            "Illuminate\\Database\\ConnectionResolverInterface"
+        ],
         "lcom": 1,
         "length": 49,
         "vocabulary": 11,
@@ -674,6 +684,7 @@ var classes = [
             "factory"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 17,
         "vocabulary": 7,
@@ -811,6 +822,7 @@ var classes = [
             "Illuminate\\Database\\ConnectionResolverInterface"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 117,
         "vocabulary": 29,
@@ -932,6 +944,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 7,
         "length": 20,
         "vocabulary": 7,

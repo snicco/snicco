@@ -52,6 +52,9 @@ var classes = [
             "DateTimeZone"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\TestableClock\\Clock"
+        ],
         "lcom": 2,
         "length": 11,
         "vocabulary": 6,
@@ -132,7 +135,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -144,6 +147,9 @@ var classes = [
             "DateTimeImmutable"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\TestableClock\\Clock"
+        ],
         "lcom": 1,
         "length": 28,
         "vocabulary": 8,

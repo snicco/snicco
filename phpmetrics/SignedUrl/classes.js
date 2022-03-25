@@ -76,6 +76,7 @@ var classes = [
             "Snicco\\Component\\TestableClock\\Clock"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 123,
         "vocabulary": 32,
@@ -145,6 +146,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 21,
         "vocabulary": 11,
@@ -258,6 +260,7 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlUsageExceeded"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 154,
         "vocabulary": 47,
@@ -336,7 +339,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 4,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -353,6 +356,7 @@ var classes = [
             "ParagonIE\\ConstantTime\\Hex"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 56,
         "vocabulary": 21,
@@ -487,6 +491,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 226,
         "vocabulary": 48,
@@ -542,6 +547,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -597,6 +603,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -652,6 +659,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -707,6 +715,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -772,6 +781,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 7,
@@ -827,6 +837,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -928,6 +939,9 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\SignedUrl"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
         "lcom": 1,
         "length": 101,
         "vocabulary": 24,
@@ -1008,7 +1022,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 10,
+        "wmc": 9,
         "ccn": 6,
         "ccnMethodMax": 3,
         "externals": [
@@ -1018,6 +1032,9 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
         "lcom": 1,
         "length": 51,
         "vocabulary": 17,
@@ -1080,6 +1097,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 7,
@@ -1171,7 +1189,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 6,
         "nbMethodsSetters": 0,
-        "wmc": 8,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -1184,6 +1202,7 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\SignedUrl"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 51,
         "vocabulary": 11,

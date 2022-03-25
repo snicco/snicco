@@ -58,6 +58,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\GenericEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher"
+        ],
         "lcom": 1,
         "length": 47,
         "vocabulary": 12,
@@ -122,6 +125,9 @@ var classes = [
             "Snicco\\Component\\BetterWPHooks\\Exception\\CantCreateMappedEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPHooks\\EventFactory\\MappedHookFactory"
+        ],
         "lcom": 1,
         "length": 10,
         "vocabulary": 5,
@@ -187,6 +193,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 22,
         "vocabulary": 11,
@@ -320,6 +327,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 226,
         "vocabulary": 42,
@@ -391,6 +399,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 27,
         "vocabulary": 13,

@@ -82,6 +82,7 @@ var classes = [
             "Psr\\Http\\Message\\UriInterface"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 84,
         "vocabulary": 20,
@@ -155,52 +156,51 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
             "Psr\\Http\\Message\\ResponseInterface",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
             "Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
-            "Snicco\\Component\\HttpRouting\\Testing\\MiddlewareTestResult",
             "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\HttpRouting\\Testing\\MiddlewareTestResult",
             "PHPUnit\\Framework\\Assert",
             "Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
-        "length": 23,
+        "length": 19,
         "vocabulary": 7,
-        "volume": 64.57,
-        "difficulty": 3.4,
-        "effort": 219.54,
-        "level": 0.29,
+        "volume": 53.34,
+        "difficulty": 3,
+        "effort": 160.02,
+        "level": 0.33,
         "bugs": 0.02,
-        "time": 12,
-        "intelligentContent": 18.99,
-        "number_operators": 6,
-        "number_operands": 17,
+        "time": 9,
+        "intelligentContent": 17.78,
+        "number_operators": 4,
+        "number_operands": 15,
         "number_operators_unique": 2,
         "number_operands_unique": 5,
         "cloc": 0,
-        "loc": 26,
-        "lloc": 26,
-        "mi": 56.19,
-        "mIwoC": 56.19,
+        "loc": 24,
+        "lloc": 24,
+        "mi": 57.53,
+        "mIwoC": 57.53,
         "commentWeight": 0,
         "kanDefect": 0.15,
         "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 1.75,
-        "relativeSystemComplexity": 2.75,
+        "relativeDataComplexity": 0.75,
+        "relativeSystemComplexity": 1.75,
         "totalStructuralComplexity": 4,
-        "totalDataComplexity": 7,
-        "totalSystemComplexity": 11,
+        "totalDataComplexity": 3,
+        "totalSystemComplexity": 7,
         "package": "Snicco\\Component\\HttpRouting\\Testing\\",
         "pageRank": 0,
-        "afferentCoupling": 3,
-        "efferentCoupling": 6,
-        "instability": 0.67,
+        "afferentCoupling": 1,
+        "efferentCoupling": 4,
+        "instability": 0.8,
         "violations": {}
     },
     {
@@ -237,6 +237,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 60,
         "vocabulary": 17,
@@ -378,7 +379,7 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 20,
+        "wmc": 18,
         "ccn": 7,
         "ccnMethodMax": 5,
         "externals": [
@@ -421,6 +422,7 @@ var classes = [
         "parents": [
             "PHPUnit\\Framework\\TestCase"
         ],
+        "implements": [],
         "lcom": 3,
         "length": 97,
         "vocabulary": 16,
@@ -688,7 +690,7 @@ var classes = [
         "nbMethodsPublic": 27,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 39,
+        "wmc": 37,
         "ccn": 8,
         "ccnMethodMax": 3,
         "externals": [
@@ -742,6 +744,7 @@ var classes = [
             "PHPUnit\\Framework\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 289,
         "vocabulary": 65,
@@ -756,12 +759,12 @@ var classes = [
         "number_operands": 229,
         "number_operators_unique": 5,
         "number_operands_unique": 60,
-        "cloc": 6,
-        "loc": 202,
+        "cloc": 3,
+        "loc": 199,
         "lloc": 196,
-        "mi": 39.42,
+        "mi": 35.68,
         "mIwoC": 26.23,
-        "commentWeight": 13.19,
+        "commentWeight": 9.45,
         "kanDefect": 0.5,
         "relativeStructuralComplexity": 324,
         "relativeDataComplexity": 1.72,
@@ -774,6 +777,1246 @@ var classes = [
         "afferentCoupling": 4,
         "efferentCoupling": 6,
         "instability": 0.6,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl\\Testing\\SignedUrlStorageTests",
+        "interface": false,
+        "abstract": true,
+        "final": false,
+        "methods": [
+            {
+                "name": "garbage_collection_works",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "the_url_is_removed_from_storage_after_the_last_max_usages",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "decrementing_a_missing_signature_throws_an_exception",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createSignedUrl",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "advanceTime",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createStorage",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 6,
+        "nbMethods": 6,
+        "nbMethodsPrivate": 3,
+        "nbMethodsPublic": 3,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 10,
+        "ccn": 5,
+        "ccnMethodMax": 3,
+        "externals": [
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\SignedUrl\\SignedUrl",
+            "Snicco\\Component\\SignedUrl\\SignedUrl",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "Snicco\\Component\\TestableClock\\Clock"
+        ],
+        "parents": [],
+        "implements": [],
+        "lcom": 1,
+        "length": 123,
+        "vocabulary": 32,
+        "volume": 615,
+        "difficulty": 9.81,
+        "effort": 6036.11,
+        "level": 0.1,
+        "bugs": 0.21,
+        "time": 335,
+        "intelligentContent": 62.66,
+        "number_operators": 17,
+        "number_operands": 106,
+        "number_operators_unique": 5,
+        "number_operands_unique": 27,
+        "cloc": 19,
+        "loc": 86,
+        "lloc": 67,
+        "mi": 73.24,
+        "mIwoC": 39.97,
+        "commentWeight": 33.28,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 121,
+        "relativeDataComplexity": 0.18,
+        "relativeSystemComplexity": 121.18,
+        "totalStructuralComplexity": 726,
+        "totalDataComplexity": 1.08,
+        "totalSystemComplexity": 727.08,
+        "package": "Snicco\\Component\\SignedUrl\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 5,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": "setter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "listen",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "dispatch",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "remove",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "subscribe",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "fake",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "fakeAll",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "fakeExcept",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertNotingDispatched",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertDispatched",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertNotDispatched",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertDispatchedTimes",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "resetDispatchedEvents",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "shouldFakeEvent",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getDispatched",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 15,
+        "nbMethods": 14,
+        "nbMethodsPrivate": 2,
+        "nbMethodsPublic": 12,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 1,
+        "wmc": 32,
+        "ccn": 19,
+        "ccnMethodMax": 7,
+        "externals": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "Snicco\\Component\\EventDispatcher\\GenericEvent",
+            "InvalidArgumentException",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Closure",
+            "LogicException"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher"
+        ],
+        "lcom": 1,
+        "length": 185,
+        "vocabulary": 30,
+        "volume": 907.77,
+        "difficulty": 17.25,
+        "effort": 15659.11,
+        "level": 0.06,
+        "bugs": 0.3,
+        "time": 870,
+        "intelligentContent": 52.62,
+        "number_operators": 47,
+        "number_operands": 138,
+        "number_operators_unique": 6,
+        "number_operands_unique": 24,
+        "cloc": 31,
+        "loc": 157,
+        "lloc": 126,
+        "mi": 62.68,
+        "mIwoC": 30.92,
+        "commentWeight": 31.76,
+        "kanDefect": 1.22,
+        "relativeStructuralComplexity": 196,
+        "relativeDataComplexity": 0.55,
+        "relativeSystemComplexity": 196.55,
+        "totalStructuralComplexity": 2940,
+        "totalDataComplexity": 8.2,
+        "totalSystemComplexity": 2948.2,
+        "package": "Snicco\\Component\\EventDispatcher\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 2,
+        "efferentCoupling": 7,
+        "instability": 0.78,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "send",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "interceptWordPressEmails",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "reset",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertNotSent",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertSentTimes",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertSentTo",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertSent",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "assertNotSentTo",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "recordMail",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "recordWPMail",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "sentEmailsThatMatchCondition",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "wasSent",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 13,
+        "nbMethods": 13,
+        "nbMethodsPrivate": 4,
+        "nbMethodsPublic": 9,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 39,
+        "ccn": 27,
+        "ccnMethodMax": 14,
+        "externals": [
+            "Snicco\\Component\\BetterWPMail\\Transport\\Transport",
+            "Snicco\\Component\\BetterWPMail\\WPMailAPI",
+            "Snicco\\Component\\BetterWPMail\\WPMailAPI",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
+            "RuntimeException",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "RuntimeException",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+            "Snicco\\Component\\BetterWPMail\\Testing\\WPMail",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList",
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
+            "Closure"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Transport\\Transport"
+        ],
+        "lcom": 1,
+        "length": 332,
+        "vocabulary": 71,
+        "volume": 2041.72,
+        "difficulty": 18.51,
+        "effort": 37788.21,
+        "level": 0.05,
+        "bugs": 0.68,
+        "time": 2099,
+        "intelligentContent": 110.31,
+        "number_operators": 77,
+        "number_operands": 255,
+        "number_operators_unique": 9,
+        "number_operands_unique": 62,
+        "cloc": 29,
+        "loc": 175,
+        "lloc": 146,
+        "mi": 55.46,
+        "mIwoC": 25.98,
+        "commentWeight": 29.48,
+        "kanDefect": 1.98,
+        "relativeStructuralComplexity": 484,
+        "relativeDataComplexity": 0.23,
+        "relativeSystemComplexity": 484.23,
+        "totalStructuralComplexity": 6292,
+        "totalDataComplexity": 3.04,
+        "totalSystemComplexity": 6295.04,
+        "package": "Snicco\\Component\\BetterWPMail\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 2,
+        "efferentCoupling": 10,
+        "instability": 0.83,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Testing\\WPMail",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [],
+        "nbMethodsIncludingGettersSetters": 0,
+        "nbMethods": 0,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 0,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 0,
+        "ccn": 1,
+        "ccnMethodMax": 0,
+        "externals": [
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
+        ],
+        "parents": [
+            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
+        ],
+        "implements": [],
+        "lcom": 0,
+        "length": 0,
+        "vocabulary": 0,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0,
+        "level": 0,
+        "bugs": 0,
+        "time": 0,
+        "intelligentContent": 0,
+        "number_operators": 0,
+        "number_operands": 0,
+        "number_operators_unique": 0,
+        "number_operands_unique": 0,
+        "cloc": 0,
+        "loc": 4,
+        "lloc": 4,
+        "mi": 171,
+        "mIwoC": 171,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 0,
+        "relativeSystemComplexity": 0,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 0,
+        "totalSystemComplexity": 0,
+        "package": "Snicco\\Component\\BetterWPMail\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 1,
+        "instability": 0.5,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Testing\\UserSessionDriverTests",
+        "interface": false,
+        "abstract": true,
+        "final": false,
+        "methods": [
+            {
+                "name": "all_sessions_for_all_users_can_be_destroyed",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "all_sessions_for_a_specific_user_can_be_destroyed",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "all_sessions_for_a_user_can_be_retrieved",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "all_sessions_for_a_user_expect_one_can_be_destroyed",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createUserSessionDriver",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createSessions",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 6,
+        "nbMethods": 6,
+        "nbMethodsPrivate": 2,
+        "nbMethodsPublic": 4,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 19,
+        "ccn": 14,
+        "ccnMethodMax": 5,
+        "externals": [
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver",
+            "InvalidArgumentException",
+            "Snicco\\Component\\Session\\Serializer\\JsonSerializer",
+            "Snicco\\Component\\Session\\ReadWriteSession",
+            "InvalidArgumentException",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
+        ],
+        "parents": [],
+        "implements": [],
+        "lcom": 1,
+        "length": 270,
+        "vocabulary": 43,
+        "volume": 1465.09,
+        "difficulty": 26.63,
+        "effort": 39013.29,
+        "level": 0.04,
+        "bugs": 0.49,
+        "time": 2167,
+        "intelligentContent": 55.02,
+        "number_operators": 37,
+        "number_operands": 233,
+        "number_operators_unique": 8,
+        "number_operands_unique": 35,
+        "cloc": 30,
+        "loc": 153,
+        "lloc": 123,
+        "mi": 62.03,
+        "mIwoC": 30.36,
+        "commentWeight": 31.67,
+        "kanDefect": 1.51,
+        "relativeStructuralComplexity": 324,
+        "relativeDataComplexity": 0.08,
+        "relativeSystemComplexity": 324.08,
+        "totalStructuralComplexity": 1944,
+        "totalDataComplexity": 0.47,
+        "totalSystemComplexity": 1944.47,
+        "package": "Snicco\\Component\\Session\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 6,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Testing\\SessionDriverTests",
+        "interface": false,
+        "abstract": true,
+        "final": false,
+        "methods": [
+            {
+                "name": "read_from_session_throws_exception_for_bad_id",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "last_activity_is_stored_correctly",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "data_can_be_read_from_the_driver",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "data_can_be_written_to_an_existing_session",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "a_session_can_be_destroyed",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "garbage_collection_works_for_old_sessions",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "touching_the_session_activity_works",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_touch_throws_exception_for_bad_id",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "travelIntoFuture",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "idleTimeout",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createDriver",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 11,
+        "nbMethods": 11,
+        "nbMethodsPrivate": 3,
+        "nbMethodsPublic": 8,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 14,
+        "ccn": 4,
+        "ccnMethodMax": 2,
+        "externals": [
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "DateTimeImmutable",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "Snicco\\Component\\TestableClock\\TestClock",
+            "Snicco\\Component\\Session\\Driver\\SessionDriver",
+            "Snicco\\Component\\TestableClock\\Clock"
+        ],
+        "parents": [],
+        "implements": [],
+        "lcom": 1,
+        "length": 177,
+        "vocabulary": 28,
+        "volume": 850.9,
+        "difficulty": 16.63,
+        "effort": 14150.87,
+        "level": 0.06,
+        "bugs": 0.28,
+        "time": 786,
+        "intelligentContent": 51.17,
+        "number_operators": 24,
+        "number_operands": 153,
+        "number_operators_unique": 5,
+        "number_operands_unique": 23,
+        "cloc": 35,
+        "loc": 130,
+        "lloc": 95,
+        "mi": 71.81,
+        "mIwoC": 35.8,
+        "commentWeight": 36,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 289,
+        "relativeDataComplexity": 0.07,
+        "relativeSystemComplexity": 289.07,
+        "totalStructuralComplexity": 3179,
+        "totalDataComplexity": 0.78,
+        "totalSystemComplexity": 3179.78,
+        "package": "Snicco\\Component\\Session\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 6,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\Testing\\DIContainerContractTests",
+        "interface": false,
+        "abstract": true,
+        "final": false,
+        "methods": [
+            {
+                "name": "createContainer",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_factory_returns_different_objects",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_singleton_returns_the_same_object",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_instance_returns_the_same_object",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "services_can_be_redefined",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_overwritten_frozen_services_throws_exception",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_lock_throws_exception_for_singleton",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_lock_throws_exception_for_factory",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_lock_throws_exception_for_instance",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_lock_throws_exception_for_array_set",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_lock_throws_exception_for_array_unset",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_make_returns_the_correct_class_instance",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_make_throws_exception_if_class_different_class_is_returned",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_offsetGet",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_offsetSet",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_offsetUnset",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_offsetExists",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_has",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "test_with_callables",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getBar",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getFoo",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 21,
+        "nbMethods": 21,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 21,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 24,
+        "ccn": 4,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Snicco\\Component\\Kernel\\DIContainer",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "Snicco\\Component\\Kernel\\Testing\\Baz",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Baz",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "stdClass",
+            "stdClass",
+            "stdClass",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "PHPUnit\\Framework\\Assert",
+            "stdClass",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "stdClass",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "stdClass",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "PHPUnit\\Framework\\Assert",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "Snicco\\Component\\Kernel\\Testing\\Bar",
+            "Snicco\\Component\\Kernel\\Testing\\Foo",
+            "Snicco\\Component\\Kernel\\Testing\\Foo"
+        ],
+        "parents": [],
+        "implements": [],
+        "lcom": 3,
+        "length": 249,
+        "vocabulary": 23,
+        "volume": 1126.37,
+        "difficulty": 14.25,
+        "effort": 16050.73,
+        "level": 0.07,
+        "bugs": 0.38,
+        "time": 892,
+        "intelligentContent": 79.04,
+        "number_operators": 59,
+        "number_operands": 190,
+        "number_operators_unique": 3,
+        "number_operands_unique": 20,
+        "cloc": 61,
+        "loc": 259,
+        "lloc": 198,
+        "mi": 62.14,
+        "mIwoC": 27.99,
+        "commentWeight": 34.15,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 121,
+        "relativeDataComplexity": 0.17,
+        "relativeSystemComplexity": 121.17,
+        "totalStructuralComplexity": 2541,
+        "totalDataComplexity": 3.5,
+        "totalSystemComplexity": 2544.5,
+        "package": "Snicco\\Component\\Kernel\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 6,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\Testing\\Foo",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [],
+        "nbMethodsIncludingGettersSetters": 0,
+        "nbMethods": 0,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 0,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 0,
+        "ccn": 1,
+        "ccnMethodMax": 0,
+        "externals": [],
+        "parents": [],
+        "implements": [],
+        "lcom": 0,
+        "length": 1,
+        "vocabulary": 1,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0,
+        "level": 2,
+        "bugs": 0,
+        "time": 0,
+        "intelligentContent": 0,
+        "number_operators": 0,
+        "number_operands": 1,
+        "number_operators_unique": 0,
+        "number_operands_unique": 1,
+        "cloc": 0,
+        "loc": 5,
+        "lloc": 5,
+        "mi": 171,
+        "mIwoC": 171,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 0,
+        "relativeSystemComplexity": 0,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 0,
+        "totalSystemComplexity": 0,
+        "package": "Snicco\\Component\\Kernel\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 0,
+        "instability": 0,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\Testing\\Bar",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [],
+        "nbMethodsIncludingGettersSetters": 0,
+        "nbMethods": 0,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 0,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 0,
+        "ccn": 1,
+        "ccnMethodMax": 0,
+        "externals": [],
+        "parents": [],
+        "implements": [],
+        "lcom": 0,
+        "length": 1,
+        "vocabulary": 1,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0,
+        "level": 2,
+        "bugs": 0,
+        "time": 0,
+        "intelligentContent": 0,
+        "number_operators": 0,
+        "number_operands": 1,
+        "number_operators_unique": 0,
+        "number_operands_unique": 1,
+        "cloc": 0,
+        "loc": 5,
+        "lloc": 5,
+        "mi": 171,
+        "mIwoC": 171,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 0,
+        "relativeSystemComplexity": 0,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 0,
+        "totalSystemComplexity": 0,
+        "package": "Snicco\\Component\\Kernel\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 0,
+        "instability": 0,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\Testing\\Baz",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [],
+        "nbMethodsIncludingGettersSetters": 0,
+        "nbMethods": 0,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 0,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 0,
+        "ccn": 1,
+        "ccnMethodMax": 0,
+        "externals": [],
+        "parents": [],
+        "implements": [],
+        "lcom": 0,
+        "length": 0,
+        "vocabulary": 0,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0,
+        "level": 0,
+        "bugs": 0,
+        "time": 0,
+        "intelligentContent": 0,
+        "number_operators": 0,
+        "number_operands": 0,
+        "number_operators_unique": 0,
+        "number_operands_unique": 0,
+        "cloc": 0,
+        "loc": 4,
+        "lloc": 4,
+        "mi": 171,
+        "mIwoC": 171,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 0,
+        "relativeSystemComplexity": 0,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 0,
+        "totalSystemComplexity": 0,
+        "package": "Snicco\\Component\\Kernel\\Testing\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 0,
+        "instability": 0,
         "violations": {}
     },
     {
@@ -820,7 +2063,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 5,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -828,6 +2071,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Arr"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 25,
         "vocabulary": 7,
@@ -897,6 +2141,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Controller\\Controller"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 28,
         "vocabulary": 12,
@@ -961,6 +2206,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Controller\\Controller"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 2,
         "vocabulary": 2,
@@ -1041,6 +2287,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Controller\\Controller"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 34,
         "vocabulary": 11,
@@ -1127,6 +2374,7 @@ var classes = [
             "ReflectionClass"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 55,
         "vocabulary": 15,
@@ -1226,7 +2474,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 2,
-        "wmc": 12,
+        "wmc": 10,
         "ccn": 5,
         "ccnMethodMax": 2,
         "externals": [
@@ -1247,6 +2495,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 71,
         "vocabulary": 21,
@@ -1327,6 +2576,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 36,
         "vocabulary": 13,
@@ -1391,6 +2641,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 4,
         "vocabulary": 3,
@@ -1472,6 +2723,7 @@ var classes = [
             "ReflectionMethod"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 67,
         "vocabulary": 21,
@@ -1546,6 +2798,9 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler"
+        ],
         "lcom": 1,
         "length": 22,
         "vocabulary": 9,
@@ -1683,6 +2938,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 137,
         "vocabulary": 24,
@@ -1777,7 +3033,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 11,
+        "wmc": 10,
         "ccn": 5,
         "ccnMethodMax": 2,
         "externals": [
@@ -1803,6 +3059,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 62,
         "vocabulary": 17,
@@ -1862,7 +3121,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 6,
         "ccn": 6,
         "ccnMethodMax": 6,
         "externals": [
@@ -1872,6 +3131,7 @@ var classes = [
             "middleware_class"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 34,
         "vocabulary": 11,
@@ -2059,6 +3319,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 407,
         "vocabulary": 71,
@@ -2135,6 +3396,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareBlueprint"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 19,
         "vocabulary": 6,
@@ -2194,7 +3456,7 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2207,6 +3469,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 19,
         "vocabulary": 8,
@@ -2287,7 +3550,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2306,6 +3569,10 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\RequestHandlerInterface",
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 26,
         "vocabulary": 7,
@@ -2392,6 +3659,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 71,
         "vocabulary": 16,
@@ -2538,6 +3806,9 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader\\RouteLoader"
+        ],
         "lcom": 1,
         "length": 244,
         "vocabulary": 54,
@@ -2615,6 +3886,9 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader\\RouteLoadingOptions"
+        ],
         "lcom": 2,
         "length": 63,
         "vocabulary": 19,
@@ -2748,6 +4022,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\BadRouteConfiguration"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 126,
         "vocabulary": 25,
@@ -2822,7 +4097,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -2834,6 +4109,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 39,
         "vocabulary": 15,
@@ -2914,7 +4190,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -2923,6 +4199,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator"
+        ],
         "lcom": 1,
         "length": 40,
         "vocabulary": 11,
@@ -3088,6 +4367,9 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator"
+        ],
         "lcom": 1,
         "length": 433,
         "vocabulary": 77,
@@ -3170,6 +4452,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlEncoder"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlEncoder"
+        ],
         "lcom": 3,
         "length": 90,
         "vocabulary": 52,
@@ -3284,7 +4569,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 5,
         "nbMethodsSetters": 0,
-        "wmc": 23,
+        "wmc": 18,
         "ccn": 13,
         "ccnMethodMax": 8,
         "externals": [
@@ -3304,6 +4589,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlPath"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 146,
         "vocabulary": 33,
@@ -3380,6 +4666,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminMenu"
+        ],
         "lcom": 1,
         "length": 34,
         "vocabulary": 12,
@@ -3467,7 +4756,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 9,
+        "wmc": 8,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -3482,6 +4771,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminArea"
+        ],
         "lcom": 4,
         "length": 68,
         "vocabulary": 23,
@@ -3560,7 +4852,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -3570,6 +4862,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlPath"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 23,
         "vocabulary": 8,
@@ -3682,6 +4975,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\RoutingResult"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\UrlMatcher"
+        ],
         "lcom": 1,
         "length": 254,
         "vocabulary": 41,
@@ -3783,6 +5079,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 173,
         "vocabulary": 44,
@@ -3882,7 +5179,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 10,
+        "wmc": 8,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -3892,6 +5189,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 39,
         "vocabulary": 9,
@@ -3973,6 +5271,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher\\UrlMatcher"
+        ],
         "lcom": 1,
         "length": 33,
         "vocabulary": 9,
@@ -4044,6 +5345,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 16,
         "vocabulary": 8,
@@ -4132,6 +5434,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 4,
         "length": 18,
         "vocabulary": 7,
@@ -4237,6 +5540,7 @@ var classes = [
         "parents": [
             "LogicException"
         ],
+        "implements": [],
         "lcom": 6,
         "length": 32,
         "vocabulary": 14,
@@ -4309,6 +5613,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 13,
         "vocabulary": 9,
@@ -4373,6 +5678,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 10,
         "vocabulary": 7,
@@ -4434,6 +5740,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Cache\\RouteCache"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Cache\\RouteCache"
+        ],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -4517,6 +5826,9 @@ var classes = [
             "Webimpress\\SafeWriter\\FileWriter"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Cache\\RouteCache"
+        ],
         "lcom": 1,
         "length": 48,
         "vocabulary": 17,
@@ -4646,7 +5958,7 @@ var classes = [
         "nbMethodsPublic": 10,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 17,
+        "wmc": 16,
         "ccn": 6,
         "ccnMethodMax": 3,
         "externals": [
@@ -4668,6 +5980,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 102,
         "vocabulary": 11,
@@ -5014,7 +6327,7 @@ var classes = [
         "nbMethodsPublic": 25,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 78,
+        "wmc": 77,
         "ccn": 36,
         "ccnMethodMax": 9,
         "externals": [
@@ -5083,6 +6396,10 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\RouteGroup"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\WebRoutingConfigurator",
+            "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\AdminRoutingConfigurator"
+        ],
         "lcom": 1,
         "length": 613,
         "vocabulary": 99,
@@ -5179,6 +6496,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator\\RouteGroup"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 73,
         "vocabulary": 17,
@@ -5259,7 +6577,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 8,
+        "wmc": 7,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -5271,6 +6589,9 @@ var classes = [
             "ArrayIterator"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Routes"
+        ],
         "lcom": 1,
         "length": 29,
         "vocabulary": 8,
@@ -5392,14 +6713,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "defaults",
+                "name": "condition",
                 "role": null,
                 "public": true,
                 "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "condition",
+                "name": "defaults",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -5522,15 +6843,15 @@ var classes = [
         "nbMethodsPublic": 13,
         "nbMethodsGetter": 10,
         "nbMethodsSetters": 0,
-        "wmc": 55,
+        "wmc": 45,
         "ccn": 24,
         "ccnMethodMax": 8,
         "externals": [
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
-            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\ConditionBlueprint",
             "Webmozart\\Assert\\Assert",
+            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
             "Snicco\\Component\\StrArr\\Str",
             "Snicco\\Component\\HttpRouting\\Routing\\Route\\Route",
@@ -5561,6 +6882,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 358,
         "vocabulary": 78,
@@ -5575,12 +6897,12 @@ var classes = [
         "number_operands": 292,
         "number_operators_unique": 5,
         "number_operands_unique": 73,
-        "cloc": 112,
-        "loc": 350,
+        "cloc": 114,
+        "loc": 352,
         "lloc": 238,
-        "mi": 59.88,
+        "mi": 60.05,
         "mIwoC": 21.46,
-        "commentWeight": 38.42,
+        "commentWeight": 38.59,
         "kanDefect": 2.46,
         "relativeStructuralComplexity": 121,
         "relativeDataComplexity": 2,
@@ -5685,6 +7007,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Exception\\RouteNotFound"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Route\\Routes"
+        ],
         "lcom": 1,
         "length": 93,
         "vocabulary": 13,
@@ -5751,7 +7076,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -5763,6 +7088,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteCondition"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 12,
         "vocabulary": 5,
@@ -5824,6 +7150,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 20,
         "vocabulary": 7,
@@ -5888,6 +7215,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteCondition"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -5953,6 +7281,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Routing\\Condition\\NegatedRouteCondition"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Condition\\RouteConditionFactory"
+        ],
         "lcom": 1,
         "length": 17,
         "vocabulary": 7,
@@ -6022,6 +7353,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 4,
         "vocabulary": 3,
@@ -6140,6 +7472,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 8,
         "length": 119,
         "vocabulary": 25,
@@ -6271,6 +7604,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 195,
         "vocabulary": 46,
@@ -6348,6 +7682,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Cookie"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 87,
         "vocabulary": 28,
@@ -6491,6 +7826,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 118,
         "vocabulary": 29,
@@ -6651,6 +7987,10 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Response\\RedirectResponse"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Message\\ResponseFactoryInterface",
+            "Psr\\Http\\Message\\StreamFactoryInterface"
+        ],
         "lcom": 1,
         "length": 127,
         "vocabulary": 34,
@@ -6998,7 +8338,7 @@ var classes = [
         "nbMethodsPublic": 39,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 60,
+        "wmc": 56,
         "ccn": 17,
         "ccnMethodMax": 3,
         "externals": [
@@ -7016,6 +8356,9 @@ var classes = [
             "Psr\\Http\\Message\\ResponseInterface"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Message\\ResponseInterface"
+        ],
         "lcom": 2,
         "length": 337,
         "vocabulary": 80,
@@ -7358,7 +8701,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "hasAny",
+                "name": "has",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -7372,7 +8715,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "has",
+                "name": "hasAny",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "hasAll",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -7645,13 +8995,13 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
-        "nbMethodsIncludingGettersSetters": 84,
-        "nbMethods": 84,
+        "nbMethodsIncludingGettersSetters": 85,
+        "nbMethods": 85,
         "nbMethodsPrivate": 5,
-        "nbMethodsPublic": 79,
+        "nbMethodsPublic": 80,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 121,
+        "wmc": 122,
         "ccn": 38,
         "ccnMethodMax": 5,
         "externals": [
@@ -7678,6 +9028,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Arr",
             "Snicco\\Component\\StrArr\\Arr",
             "Webmozart\\Assert\\Assert",
+            "Snicco\\Component\\StrArr\\Arr",
             "stdClass",
             "Snicco\\Component\\StrArr\\Arr",
             "Snicco\\Component\\StrArr\\Arr",
@@ -7714,33 +9065,36 @@ var classes = [
             "Snicco\\Component\\StrArr\\Arr"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Message\\ServerRequestInterface"
+        ],
         "lcom": 3,
-        "length": 609,
+        "length": 610,
         "vocabulary": 100,
-        "volume": 4046.11,
-        "difficulty": 23,
-        "effort": 93060.49,
+        "volume": 4052.75,
+        "difficulty": 23.06,
+        "effort": 93438.46,
         "level": 0.04,
         "bugs": 1.35,
-        "time": 5170,
-        "intelligentContent": 175.92,
+        "time": 5191,
+        "intelligentContent": 175.78,
         "number_operators": 195,
-        "number_operands": 414,
+        "number_operands": 415,
         "number_operators_unique": 10,
         "number_operands_unique": 90,
-        "cloc": 128,
-        "loc": 576,
-        "lloc": 449,
-        "mi": 45.13,
-        "mIwoC": 11.78,
-        "commentWeight": 33.35,
+        "cloc": 129,
+        "loc": 580,
+        "lloc": 452,
+        "mi": 45.07,
+        "mIwoC": 11.71,
+        "commentWeight": 33.37,
         "kanDefect": 3.35,
         "relativeStructuralComplexity": 3364,
-        "relativeDataComplexity": 1.72,
-        "relativeSystemComplexity": 3365.72,
-        "totalStructuralComplexity": 282576,
-        "totalDataComplexity": 144.75,
-        "totalSystemComplexity": 282720.75,
+        "relativeDataComplexity": 1.74,
+        "relativeSystemComplexity": 3365.74,
+        "totalStructuralComplexity": 285940,
+        "totalDataComplexity": 147.92,
+        "totalSystemComplexity": 286087.92,
         "package": "Snicco\\Component\\HttpRouting\\Http\\Psr7\\",
         "pageRank": 0.01,
         "afferentCoupling": 47,
@@ -7780,7 +9134,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -7791,7 +9145,8 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
-        "lcom": 3,
+        "implements": [],
+        "lcom": 2,
         "length": 14,
         "vocabulary": 6,
         "volume": 36.19,
@@ -7850,7 +9205,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -7860,7 +9215,8 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
-        "lcom": 2,
+        "implements": [],
+        "lcom": 1,
         "length": 9,
         "vocabulary": 4,
         "volume": 18,
@@ -7938,7 +9294,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -7950,6 +9306,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 31,
         "vocabulary": 9,
@@ -8037,6 +9394,9 @@ var classes = [
             "DateTimeZone"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\TestableClock\\Clock"
+        ],
         "lcom": 2,
         "length": 11,
         "vocabulary": 6,
@@ -8117,7 +9477,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -8129,6 +9489,9 @@ var classes = [
             "DateTimeImmutable"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\TestableClock\\Clock"
+        ],
         "lcom": 1,
         "length": 28,
         "vocabulary": 8,
@@ -8161,117 +9524,6 @@ var classes = [
         "afferentCoupling": 2,
         "efferentCoupling": 3,
         "instability": 0.6,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\SignedUrl\\Testing\\SignedUrlStorageTests",
-        "interface": false,
-        "abstract": true,
-        "final": false,
-        "methods": [
-            {
-                "name": "garbage_collection_works",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "the_url_is_removed_from_storage_after_the_last_max_usages",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "decrementing_a_missing_signature_throws_an_exception",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createSignedUrl",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "advanceTime",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createStorage",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 6,
-        "nbMethods": 6,
-        "nbMethodsPrivate": 3,
-        "nbMethodsPublic": 3,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 10,
-        "ccn": 5,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\SignedUrl\\SignedUrl",
-            "Snicco\\Component\\SignedUrl\\SignedUrl",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "Snicco\\Component\\TestableClock\\Clock"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 123,
-        "vocabulary": 32,
-        "volume": 615,
-        "difficulty": 9.81,
-        "effort": 6036.11,
-        "level": 0.1,
-        "bugs": 0.21,
-        "time": 335,
-        "intelligentContent": 62.66,
-        "number_operators": 17,
-        "number_operands": 106,
-        "number_operators_unique": 5,
-        "number_operands_unique": 27,
-        "cloc": 19,
-        "loc": 86,
-        "lloc": 67,
-        "mi": 73.24,
-        "mIwoC": 39.97,
-        "commentWeight": 33.28,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 121,
-        "relativeDataComplexity": 0.18,
-        "relativeSystemComplexity": 121.18,
-        "totalStructuralComplexity": 726,
-        "totalDataComplexity": 1.08,
-        "totalSystemComplexity": 727.08,
-        "package": "Snicco\\Component\\SignedUrl\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 5,
-        "instability": 1,
         "violations": {}
     },
     {
@@ -8309,6 +9561,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 21,
         "vocabulary": 11,
@@ -8422,6 +9675,7 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlUsageExceeded"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 154,
         "vocabulary": 47,
@@ -8500,7 +9754,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 4,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -8517,6 +9771,7 @@ var classes = [
             "ParagonIE\\ConstantTime\\Hex"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 56,
         "vocabulary": 21,
@@ -8651,6 +9906,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 226,
         "vocabulary": 48,
@@ -8706,6 +9962,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -8761,6 +10018,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -8816,6 +10074,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -8871,6 +10130,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -8936,6 +10196,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 7,
@@ -8991,6 +10252,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -9092,6 +10354,9 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\SignedUrl"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
         "lcom": 1,
         "length": 101,
         "vocabulary": 24,
@@ -9172,7 +10437,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 10,
+        "wmc": 9,
         "ccn": 6,
         "ccnMethodMax": 3,
         "externals": [
@@ -9182,6 +10447,9 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
         "lcom": 1,
         "length": 51,
         "vocabulary": 17,
@@ -9244,6 +10512,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 7,
@@ -9335,7 +10604,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 6,
         "nbMethodsSetters": 0,
-        "wmc": 8,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -9348,6 +10617,7 @@ var classes = [
             "Snicco\\Component\\SignedUrl\\SignedUrl"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 51,
         "vocabulary": 11,
@@ -9439,6 +10709,7 @@ var classes = [
             "Snicco\\Component\\Templating\\ViewComposer\\ClosureViewComposer"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 90,
         "vocabulary": 19,
@@ -9498,7 +10769,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -9508,6 +10779,9 @@ var classes = [
             "Snicco\\Component\\Templating\\View\\View"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposer"
+        ],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -9572,6 +10846,9 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\BadViewComposer"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory"
+        ],
         "lcom": 1,
         "length": 10,
         "vocabulary": 6,
@@ -9649,6 +10926,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 18,
         "vocabulary": 9,
@@ -9722,7 +11000,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 6,
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
@@ -9732,6 +11010,7 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\ViewNotFound"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 35,
         "vocabulary": 15,
@@ -9787,6 +11066,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -9842,6 +11122,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -9907,6 +11188,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 7,
@@ -9942,7 +11224,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@0000000037a292a8000000007b7fcd58",
+        "name": "anonymous@0000000071d53e840000000076799a54",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -9987,7 +11269,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -9998,6 +11280,9 @@ var classes = [
             "BadMethodCallException"
         ],
         "parents": [],
+        "implements": [
+            "ArrayAccess"
+        ],
         "lcom": 3,
         "length": 19,
         "vocabulary": 9,
@@ -10078,6 +11363,7 @@ var classes = [
             ""
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 40,
         "vocabulary": 11,
@@ -10137,7 +11423,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -10146,6 +11432,7 @@ var classes = [
             "Snicco\\Component\\Templating\\OutputBuffer"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 6,
         "vocabulary": 4,
@@ -10256,6 +11543,9 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewFactory\\ViewFactory"
+        ],
         "lcom": 1,
         "length": 64,
         "vocabulary": 16,
@@ -10345,6 +11635,7 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\ViewNotFound"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 66,
         "vocabulary": 18,
@@ -10447,7 +11738,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 16,
+        "wmc": 12,
         "ccn": 8,
         "ccnMethodMax": 6,
         "externals": [
@@ -10459,6 +11750,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\View\\View"
+        ],
         "lcom": 1,
         "length": 101,
         "vocabulary": 27,
@@ -10586,6 +11880,9 @@ var classes = [
             "Psr\\Http\\Message\\ResponseInterface"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler"
+        ],
         "lcom": 1,
         "length": 138,
         "vocabulary": 29,
@@ -10670,6 +11967,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 4,
         "length": 14,
         "vocabulary": 7,
@@ -10755,6 +12055,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 4,
         "length": 39,
         "vocabulary": 18,
@@ -10840,6 +12143,7 @@ var classes = [
             "Throwable"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 64,
         "vocabulary": 20,
@@ -10929,7 +12233,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 7,
         "nbMethodsSetters": 0,
-        "wmc": 8,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -10941,6 +12245,7 @@ var classes = [
             "Psr\\Http\\Message\\ServerRequestInterface"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 42,
         "vocabulary": 10,
@@ -11054,6 +12359,9 @@ var classes = [
             "Throwable"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider"
+        ],
         "lcom": 2,
         "length": 147,
         "vocabulary": 37,
@@ -11068,12 +12376,12 @@ var classes = [
         "number_operands": 111,
         "number_operators_unique": 8,
         "number_operands_unique": 29,
-        "cloc": 22,
-        "loc": 93,
+        "cloc": 26,
+        "loc": 97,
         "lloc": 71,
-        "mi": 71.75,
+        "mi": 73.48,
         "mIwoC": 37.54,
-        "commentWeight": 34.21,
+        "commentWeight": 35.94,
         "kanDefect": 1.1,
         "relativeStructuralComplexity": 49,
         "relativeDataComplexity": 0.77,
@@ -11118,6 +12426,9 @@ var classes = [
             "Psr\\Http\\Message\\ServerRequestInterface"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler"
+        ],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -11189,7 +12500,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 4,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -11200,6 +12511,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 29,
         "vocabulary": 10,
@@ -11262,6 +12574,9 @@ var classes = [
             "Throwable"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Identifier\\ExceptionIdentifier"
+        ],
         "lcom": 1,
         "length": 3,
         "vocabulary": 2,
@@ -11321,7 +12636,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -11331,6 +12646,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 17,
         "vocabulary": 7,
@@ -11401,6 +12719,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 34,
         "vocabulary": 14,
@@ -11460,7 +12781,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -11469,6 +12790,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 13,
         "vocabulary": 9,
@@ -11532,6 +12856,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter"
+        ],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -11594,6 +12921,7 @@ var classes = [
             "ReflectionProperty"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 16,
         "vocabulary": 6,
@@ -11665,6 +12993,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 50,
         "vocabulary": 23,
@@ -11720,6 +13049,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -11755,7 +13085,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@0000000037a28b39000000007b7fcd58",
+        "name": "anonymous@0000000071d522c00000000076799a54",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -11782,6 +13112,9 @@ var classes = [
             "Snicco\\Component\\BetterWPDB\\QueryInfo"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPDB\\QueryLogger"
+        ],
         "lcom": 1,
         "length": 1,
         "vocabulary": 1,
@@ -12059,6 +13392,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 658,
         "vocabulary": 105,
@@ -12125,6 +13459,7 @@ var classes = [
         "ccnMethodMax": 4,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 64,
         "vocabulary": 17,
@@ -12166,13 +13501,6 @@ var classes = [
         "final": true,
         "methods": [
             {
-                "name": "containsAll",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
                 "name": "contains",
                 "role": null,
                 "public": true,
@@ -12180,14 +13508,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "containsAny",
+                "name": "containsAll",
                 "role": null,
                 "public": true,
                 "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "random",
+                "name": "containsAny",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -12243,6 +13571,13 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
+                "name": "betweenFirst",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
                 "name": "beforeLast",
                 "role": null,
                 "public": true,
@@ -12258,13 +13593,6 @@ var classes = [
             },
             {
                 "name": "afterFirst",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "betweenFirst",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -12299,14 +13627,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
-        "nbMethodsIncludingGettersSetters": 19,
-        "nbMethods": 19,
+        "nbMethodsIncludingGettersSetters": 18,
+        "nbMethods": 18,
         "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 19,
+        "nbMethodsPublic": 18,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 52,
-        "ccn": 34,
+        "wmc": 50,
+        "ccn": 33,
         "ccnMethodMax": 7,
         "externals": [
             "RuntimeException",
@@ -12314,38 +13642,39 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
-        "lcom": 19,
-        "length": 332,
-        "vocabulary": 60,
-        "volume": 1961.09,
-        "difficulty": 17.08,
-        "effort": 33489.34,
+        "implements": [],
+        "lcom": 18,
+        "length": 329,
+        "vocabulary": 58,
+        "volume": 1927.28,
+        "difficulty": 17.44,
+        "effort": 33611.69,
         "level": 0.06,
-        "bugs": 0.65,
-        "time": 1861,
-        "intelligentContent": 114.84,
-        "number_operators": 110,
-        "number_operands": 222,
+        "bugs": 0.64,
+        "time": 1867,
+        "intelligentContent": 110.51,
+        "number_operators": 111,
+        "number_operands": 218,
         "number_operators_unique": 8,
-        "number_operands_unique": 52,
-        "cloc": 81,
-        "loc": 254,
-        "lloc": 174,
-        "mi": 61.87,
-        "mIwoC": 23.5,
-        "commentWeight": 38.37,
-        "kanDefect": 2.67,
+        "number_operands_unique": 50,
+        "cloc": 92,
+        "loc": 269,
+        "lloc": 178,
+        "mi": 62.82,
+        "mIwoC": 23.47,
+        "commentWeight": 39.35,
+        "kanDefect": 2.44,
         "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 19.58,
-        "relativeSystemComplexity": 20.58,
-        "totalStructuralComplexity": 19,
-        "totalDataComplexity": 372,
-        "totalSystemComplexity": 391,
+        "relativeDataComplexity": 19.61,
+        "relativeSystemComplexity": 20.61,
+        "totalStructuralComplexity": 18,
+        "totalDataComplexity": 353,
+        "totalSystemComplexity": 371,
         "package": "Snicco\\Component\\StrArr\\",
         "pageRank": 0.01,
-        "afferentCoupling": 23,
+        "afferentCoupling": 20,
         "efferentCoupling": 1,
-        "instability": 0.04,
+        "instability": 0.05,
         "violations": {}
     },
     {
@@ -12376,41 +13705,6 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "except",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "forget",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "exists",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "accessible",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "flatten",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
                 "name": "toArray",
                 "role": null,
                 "public": true,
@@ -12418,28 +13712,14 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "set",
+                "name": "isAssoc",
                 "role": null,
                 "public": true,
                 "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "hasAny",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "has",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "pull",
+                "name": "isList",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -12453,6 +13733,41 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
+                "name": "set",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "has",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "hasAll",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "hasAny",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "accessible",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
                 "name": "mergeRecursive",
                 "role": null,
                 "public": true,
@@ -12460,7 +13775,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "dataGet",
+                "name": "keyExists",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -12474,28 +13789,28 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "checkAllStringKeys",
+                "name": "flatten",
                 "role": null,
-                "public": false,
-                "private": true,
+                "public": true,
+                "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "checkIsArray",
+                "name": "except",
                 "role": null,
-                "public": false,
-                "private": true,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "remove",
+                "role": null,
+                "public": true,
+                "private": false,
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
                 "name": "arrayItems",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "checkKeyStringInt",
                 "role": null,
                 "public": false,
                 "private": true,
@@ -12509,52 +13824,50 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             }
         ],
-        "nbMethodsIncludingGettersSetters": 22,
-        "nbMethods": 22,
-        "nbMethodsPrivate": 5,
-        "nbMethodsPublic": 17,
+        "nbMethodsIncludingGettersSetters": 20,
+        "nbMethods": 20,
+        "nbMethodsPrivate": 2,
+        "nbMethodsPublic": 18,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 92,
-        "ccn": 71,
-        "ccnMethodMax": 11,
+        "wmc": 78,
+        "ccn": 59,
+        "ccnMethodMax": 8,
         "externals": [
             "Closure",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
             "InvalidArgumentException",
             "InvalidArgumentException",
             "InvalidArgumentException"
         ],
         "parents": [],
-        "lcom": 22,
-        "length": 494,
-        "vocabulary": 59,
-        "volume": 2906.03,
-        "difficulty": 49.74,
-        "effort": 144543.19,
+        "implements": [],
+        "lcom": 20,
+        "length": 393,
+        "vocabulary": 45,
+        "volume": 2158.3,
+        "difficulty": 48.73,
+        "effort": 105167.99,
         "level": 0.02,
-        "bugs": 0.97,
-        "time": 8030,
-        "intelligentContent": 58.43,
-        "number_operators": 142,
-        "number_operands": 352,
-        "number_operators_unique": 13,
-        "number_operands_unique": 46,
-        "cloc": 157,
-        "loc": 441,
-        "lloc": 284,
-        "mi": 52.6,
-        "mIwoC": 12.68,
-        "commentWeight": 39.91,
-        "kanDefect": 6.9,
+        "bugs": 0.72,
+        "time": 5843,
+        "intelligentContent": 44.29,
+        "number_operators": 125,
+        "number_operands": 268,
+        "number_operators_unique": 12,
+        "number_operands_unique": 33,
+        "cloc": 179,
+        "loc": 419,
+        "lloc": 240,
+        "mi": 59.21,
+        "mIwoC": 16.8,
+        "commentWeight": 42.41,
+        "kanDefect": 5.93,
         "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 13.33,
-        "relativeSystemComplexity": 17.33,
-        "totalStructuralComplexity": 88,
-        "totalDataComplexity": 293.33,
-        "totalSystemComplexity": 381.33,
+        "relativeDataComplexity": 13.27,
+        "relativeSystemComplexity": 17.27,
+        "totalStructuralComplexity": 80,
+        "totalDataComplexity": 265.33,
+        "totalSystemComplexity": 345.33,
         "package": "Snicco\\Component\\StrArr\\",
         "pageRank": 0.01,
         "afferentCoupling": 10,
@@ -12621,6 +13934,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\GenericEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher"
+        ],
         "lcom": 1,
         "length": 47,
         "vocabulary": 12,
@@ -12685,6 +14001,9 @@ var classes = [
             "Snicco\\Component\\BetterWPHooks\\Exception\\CantCreateMappedEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPHooks\\EventFactory\\MappedHookFactory"
+        ],
         "lcom": 1,
         "length": 10,
         "vocabulary": 5,
@@ -12750,6 +14069,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 22,
         "vocabulary": 11,
@@ -12883,6 +14203,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 226,
         "vocabulary": 42,
@@ -12954,6 +14275,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 27,
         "vocabulary": 13,
@@ -12986,175 +14308,6 @@ var classes = [
         "afferentCoupling": 3,
         "efferentCoupling": 2,
         "instability": 0.4,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": "setter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "listen",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "dispatch",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "remove",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "subscribe",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "fake",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "fakeAll",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "fakeExcept",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertNotingDispatched",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertDispatched",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertNotDispatched",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertDispatchedTimes",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "resetDispatchedEvents",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "shouldFakeEvent",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getDispatched",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 15,
-        "nbMethods": 14,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 12,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 1,
-        "wmc": 33,
-        "ccn": 19,
-        "ccnMethodMax": 7,
-        "externals": [
-            "Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "Snicco\\Component\\EventDispatcher\\GenericEvent",
-            "InvalidArgumentException",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Closure",
-            "LogicException"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 185,
-        "vocabulary": 30,
-        "volume": 907.77,
-        "difficulty": 17.25,
-        "effort": 15659.11,
-        "level": 0.06,
-        "bugs": 0.3,
-        "time": 870,
-        "intelligentContent": 52.62,
-        "number_operators": 47,
-        "number_operands": 138,
-        "number_operators_unique": 6,
-        "number_operands_unique": 24,
-        "cloc": 31,
-        "loc": 157,
-        "lloc": 126,
-        "mi": 62.68,
-        "mIwoC": 30.92,
-        "commentWeight": 31.76,
-        "kanDefect": 1.22,
-        "relativeStructuralComplexity": 196,
-        "relativeDataComplexity": 0.55,
-        "relativeSystemComplexity": 196.55,
-        "totalStructuralComplexity": 2940,
-        "totalDataComplexity": 8.2,
-        "totalSystemComplexity": 2948.2,
-        "package": "Snicco\\Component\\EventDispatcher\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 2,
-        "efferentCoupling": 7,
-        "instability": 0.78,
         "violations": {}
     },
     {
@@ -13194,7 +14347,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 4,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -13202,6 +14355,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\GenericEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\Event"
+        ],
         "lcom": 2,
         "length": 16,
         "vocabulary": 6,
@@ -13261,6 +14417,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 0,
         "vocabulary": 0,
@@ -13324,6 +14481,7 @@ var classes = [
         "parents": [
             "LogicException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 7,
         "vocabulary": 5,
@@ -13396,6 +14554,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 24,
         "vocabulary": 11,
@@ -13488,6 +14647,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 4,
         "length": 17,
         "vocabulary": 8,
@@ -13640,6 +14800,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\EventDispatcher"
+        ],
         "lcom": 1,
         "length": 248,
         "vocabulary": 35,
@@ -13704,6 +14867,7 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 24,
         "vocabulary": 11,
@@ -13763,6 +14927,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 2,
         "vocabulary": 2,
@@ -13822,7 +14987,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -13832,6 +14997,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory"
+        ],
         "lcom": 1,
         "length": 21,
         "vocabulary": 11,
@@ -13895,6 +15063,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory"
+        ],
         "lcom": 1,
         "length": 9,
         "vocabulary": 5,
@@ -13954,7 +15125,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -13963,6 +15134,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 15,
         "vocabulary": 8,
@@ -14037,6 +15209,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 21,
         "vocabulary": 8,
@@ -14231,6 +15404,9 @@ var classes = [
             "Illuminate\\Database\\QueryException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface"
+        ],
         "lcom": 1,
         "length": 293,
         "vocabulary": 39,
@@ -14286,6 +15462,7 @@ var classes = [
         "parents": [
             "Illuminate\\Database\\Eloquent\\Model"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -14445,6 +15622,7 @@ var classes = [
         "parents": [
             "Illuminate\\Database\\MySqlConnection"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 180,
         "vocabulary": 29,
@@ -14530,7 +15708,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 9,
+        "wmc": 7,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -14541,6 +15719,9 @@ var classes = [
             "Illuminate\\Database\\ConnectionInterface"
         ],
         "parents": [],
+        "implements": [
+            "Illuminate\\Database\\ConnectionResolverInterface"
+        ],
         "lcom": 1,
         "length": 49,
         "vocabulary": 11,
@@ -14604,6 +15785,7 @@ var classes = [
             "factory"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 17,
         "vocabulary": 7,
@@ -14741,6 +15923,7 @@ var classes = [
             "Illuminate\\Database\\ConnectionResolverInterface"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 117,
         "vocabulary": 29,
@@ -14862,6 +16045,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 7,
         "length": 20,
         "vocabulary": 7,
@@ -14894,231 +16078,6 @@ var classes = [
         "afferentCoupling": 2,
         "efferentCoupling": 3,
         "instability": 0.6,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "send",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "interceptWordPressEmails",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "reset",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertNotSent",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertSentTimes",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertSentTo",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertSent",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "assertNotSentTo",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "recordMail",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "recordWPMail",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "sentEmailsThatMatchCondition",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "wasSent",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 13,
-        "nbMethods": 13,
-        "nbMethodsPrivate": 4,
-        "nbMethodsPublic": 9,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 39,
-        "ccn": 27,
-        "ccnMethodMax": 14,
-        "externals": [
-            "Snicco\\Component\\BetterWPMail\\Transport\\Transport",
-            "Snicco\\Component\\BetterWPMail\\WPMailAPI",
-            "Snicco\\Component\\BetterWPMail\\WPMailAPI",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
-            "RuntimeException",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "RuntimeException",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-            "Snicco\\Component\\BetterWPMail\\Testing\\WPMail",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList",
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
-            "Closure"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 332,
-        "vocabulary": 71,
-        "volume": 2041.72,
-        "difficulty": 18.51,
-        "effort": 37788.21,
-        "level": 0.05,
-        "bugs": 0.68,
-        "time": 2099,
-        "intelligentContent": 110.31,
-        "number_operators": 77,
-        "number_operands": 255,
-        "number_operators_unique": 9,
-        "number_operands_unique": 62,
-        "cloc": 29,
-        "loc": 175,
-        "lloc": 146,
-        "mi": 55.46,
-        "mIwoC": 25.98,
-        "commentWeight": 29.48,
-        "kanDefect": 1.98,
-        "relativeStructuralComplexity": 484,
-        "relativeDataComplexity": 0.23,
-        "relativeSystemComplexity": 484.23,
-        "totalStructuralComplexity": 6292,
-        "totalDataComplexity": 3.04,
-        "totalSystemComplexity": 6295.04,
-        "package": "Snicco\\Component\\BetterWPMail\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 2,
-        "efferentCoupling": 10,
-        "instability": 0.83,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Testing\\WPMail",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [],
-        "nbMethodsIncludingGettersSetters": 0,
-        "nbMethods": 0,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 0,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 0,
-        "ccn": 1,
-        "ccnMethodMax": 0,
-        "externals": [
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
-        ],
-        "parents": [
-            "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
-        ],
-        "lcom": 0,
-        "length": 0,
-        "vocabulary": 0,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0,
-        "level": 0,
-        "bugs": 0,
-        "time": 0,
-        "intelligentContent": 0,
-        "number_operators": 0,
-        "number_operands": 0,
-        "number_operators_unique": 0,
-        "number_operands_unique": 0,
-        "cloc": 0,
-        "loc": 4,
-        "lloc": 4,
-        "mi": 171,
-        "mIwoC": 171,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 0,
-        "relativeSystemComplexity": 0,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 0,
-        "totalSystemComplexity": 0,
-        "package": "Snicco\\Component\\BetterWPMail\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 1,
-        "instability": 0.5,
         "violations": {}
     },
     {
@@ -15203,6 +16162,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Transport\\Transport"
+        ],
         "lcom": 1,
         "length": 223,
         "vocabulary": 58,
@@ -15328,6 +16290,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 166,
         "vocabulary": 30,
@@ -15420,7 +16383,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 21,
+        "wmc": 19,
         "ccn": 15,
         "ccnMethodMax": 11,
         "externals": [
@@ -15431,6 +16394,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 113,
         "vocabulary": 24,
@@ -15811,7 +16775,7 @@ var classes = [
         "nbMethodsPublic": 39,
         "nbMethodsGetter": 5,
         "nbMethodsSetters": 0,
-        "wmc": 71,
+        "wmc": 66,
         "ccn": 23,
         "ccnMethodMax": 6,
         "externals": [
@@ -15863,6 +16827,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 17,
         "length": 419,
         "vocabulary": 38,
@@ -15972,6 +16937,10 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
         ],
         "parents": [],
+        "implements": [
+            "Countable",
+            "IteratorAggregate"
+        ],
         "lcom": 2,
         "length": 42,
         "vocabulary": 9,
@@ -16036,7 +17005,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -16048,6 +17017,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 22,
         "vocabulary": 11,
@@ -16138,6 +17108,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 51,
         "vocabulary": 11,
@@ -16256,7 +17227,7 @@ var classes = [
         "nbMethodsPublic": 7,
         "nbMethodsGetter": 3,
         "nbMethodsSetters": 0,
-        "wmc": 26,
+        "wmc": 23,
         "ccn": 16,
         "ccnMethodMax": 5,
         "externals": [
@@ -16268,6 +17239,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 111,
         "vocabulary": 31,
@@ -16320,14 +17292,15 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 1,
+        "wmc": 0,
         "ccn": 1,
-        "ccnMethodMax": 1,
+        "ccnMethodMax": 0,
         "externals": [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
         ],
         "parents": [],
-        "lcom": 1,
+        "implements": [],
+        "lcom": 0,
         "length": 4,
         "vocabulary": 3,
         "volume": 6.34,
@@ -16397,6 +17370,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Event\\MailEvents"
+        ],
         "lcom": 2,
         "length": 2,
         "vocabulary": 2,
@@ -16461,7 +17437,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 3,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -16471,6 +17447,7 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 12,
         "vocabulary": 5,
@@ -16550,6 +17527,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Event\\MailEvents"
+        ],
         "lcom": 1,
         "length": 11,
         "vocabulary": 5,
@@ -16634,6 +17614,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 3,
         "length": 21,
         "vocabulary": 12,
@@ -16689,6 +17670,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -16755,7 +17737,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -16767,6 +17749,9 @@ var classes = [
         ],
         "parents": [
             "RuntimeException"
+        ],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmail"
         ],
         "lcom": 2,
         "length": 30,
@@ -16834,7 +17819,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 8,
+        "wmc": 7,
         "ccn": 6,
         "ccnMethodMax": 6,
         "externals": [
@@ -16843,6 +17828,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ],
         "lcom": 2,
         "length": 48,
         "vocabulary": 12,
@@ -16911,6 +17899,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ],
         "lcom": 2,
         "length": 22,
         "vocabulary": 12,
@@ -17013,7 +18004,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 14,
+        "wmc": 10,
         "ccn": 6,
         "ccnMethodMax": 4,
         "externals": [
@@ -17024,6 +18015,9 @@ var classes = [
             "Snicco\\Component\\BetterWPCache\\WPCacheItem"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Cache\\CacheItemInterface"
+        ],
         "lcom": 2,
         "length": 69,
         "vocabulary": 14,
@@ -17105,6 +18099,7 @@ var classes = [
             "Cache\\Taggable\\TaggablePSR6PoolAdapter"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 9,
         "vocabulary": 3,
@@ -17301,6 +18296,9 @@ var classes = [
             "Snicco\\Component\\BetterWPCache\\WPCacheItem"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Cache\\CacheItemPoolInterface"
+        ],
         "lcom": 1,
         "length": 255,
         "vocabulary": 33,
@@ -17356,6 +18354,9 @@ var classes = [
         ],
         "parents": [
             "InvalidArgumentException"
+        ],
+        "implements": [
+            "Psr\\Cache\\InvalidArgumentException"
         ],
         "lcom": 0,
         "length": 0,
@@ -17428,6 +18429,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 29,
         "vocabulary": 12,
@@ -17460,324 +18462,6 @@ var classes = [
         "afferentCoupling": 1,
         "efferentCoupling": 2,
         "instability": 0.67,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\Session\\Testing\\UserSessionDriverTests",
-        "interface": false,
-        "abstract": true,
-        "final": false,
-        "methods": [
-            {
-                "name": "all_sessions_for_all_users_can_be_destroyed",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "all_sessions_for_a_specific_user_can_be_destroyed",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "all_sessions_for_a_user_can_be_retrieved",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "all_sessions_for_a_user_expect_one_can_be_destroyed",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createUserSessionDriver",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createSessions",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 6,
-        "nbMethods": 6,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 4,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 19,
-        "ccn": 14,
-        "ccnMethodMax": 5,
-        "externals": [
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver",
-            "InvalidArgumentException",
-            "Snicco\\Component\\Session\\Serializer\\JsonSerializer",
-            "Snicco\\Component\\Session\\ReadWriteSession",
-            "InvalidArgumentException",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 270,
-        "vocabulary": 43,
-        "volume": 1465.09,
-        "difficulty": 26.63,
-        "effort": 39013.29,
-        "level": 0.04,
-        "bugs": 0.49,
-        "time": 2167,
-        "intelligentContent": 55.02,
-        "number_operators": 37,
-        "number_operands": 233,
-        "number_operators_unique": 8,
-        "number_operands_unique": 35,
-        "cloc": 30,
-        "loc": 153,
-        "lloc": 123,
-        "mi": 62.03,
-        "mIwoC": 30.36,
-        "commentWeight": 31.67,
-        "kanDefect": 1.51,
-        "relativeStructuralComplexity": 324,
-        "relativeDataComplexity": 0.08,
-        "relativeSystemComplexity": 324.08,
-        "totalStructuralComplexity": 1944,
-        "totalDataComplexity": 0.47,
-        "totalSystemComplexity": 1944.47,
-        "package": "Snicco\\Component\\Session\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 6,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\Session\\Testing\\SessionDriverTests",
-        "interface": false,
-        "abstract": true,
-        "final": false,
-        "methods": [
-            {
-                "name": "read_from_session_throws_exception_for_bad_id",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "last_activity_is_stored_correctly",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "data_can_be_read_from_the_driver",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "data_can_be_written_to_an_existing_session",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "a_session_can_be_destroyed",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "multiple_session_ids_can_be_destroyed",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "garbage_collection_works_for_old_sessions",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "touching_the_session_activity_works",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_touch_throws_exception_for_bad_id",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "travelIntoFuture",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "idleTimeout",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createDriver",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 12,
-        "nbMethods": 12,
-        "nbMethodsPrivate": 3,
-        "nbMethodsPublic": 9,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 17,
-        "ccn": 6,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "DateTimeImmutable",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\TestableClock\\TestClock",
-            "Snicco\\Component\\Session\\Driver\\SessionDriver",
-            "Snicco\\Component\\TestableClock\\Clock"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 206,
-        "vocabulary": 31,
-        "volume": 1020.56,
-        "difficulty": 17.21,
-        "effort": 17565.48,
-        "level": 0.06,
-        "bugs": 0.34,
-        "time": 976,
-        "intelligentContent": 59.3,
-        "number_operators": 27,
-        "number_operands": 179,
-        "number_operators_unique": 5,
-        "number_operands_unique": 26,
-        "cloc": 39,
-        "loc": 153,
-        "lloc": 114,
-        "mi": 68.5,
-        "mIwoC": 33.26,
-        "commentWeight": 35.24,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 289,
-        "relativeDataComplexity": 0.07,
-        "relativeSystemComplexity": 289.07,
-        "totalStructuralComplexity": 3468,
-        "totalDataComplexity": 0.83,
-        "totalSystemComplexity": 3468.83,
-        "package": "Snicco\\Component\\Session\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 6,
-        "instability": 1,
         "violations": {}
     },
     {
@@ -17866,7 +18550,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 9,
         "nbMethodsSetters": 0,
-        "wmc": 27,
+        "wmc": 18,
         "ccn": 15,
         "ccnMethodMax": 15,
         "externals": [
@@ -17883,6 +18567,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SessionLottery"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 161,
         "vocabulary": 42,
@@ -17989,7 +18674,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 13,
+        "wmc": 11,
         "ccn": 5,
         "ccnMethodMax": 3,
         "externals": [
@@ -18004,6 +18689,7 @@ var classes = [
             "ParagonIE\\ConstantTime\\Base64UrlSafe"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 64,
         "vocabulary": 22,
@@ -18085,7 +18771,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 9,
+        "wmc": 5,
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
@@ -18093,6 +18779,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 41,
         "vocabulary": 13,
@@ -18257,7 +18944,7 @@ var classes = [
         "nbMethodsPublic": 16,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 17,
+        "wmc": 16,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -18269,6 +18956,9 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SessionId"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\ImmutableSession"
+        ],
         "lcom": 2,
         "length": 59,
         "vocabulary": 7,
@@ -18338,6 +19028,7 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 19,
         "vocabulary": 12,
@@ -18411,7 +19102,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -18419,6 +19110,7 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\CookiePool"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 15,
         "vocabulary": 7,
@@ -18447,7 +19139,7 @@ var classes = [
         "totalDataComplexity": 15,
         "totalSystemComplexity": 15,
         "package": "Snicco\\Component\\Session\\ValueObject\\",
-        "pageRank": 0.63,
+        "pageRank": 0.62,
         "afferentCoupling": 7,
         "efferentCoupling": 2,
         "instability": 0.22,
@@ -18520,11 +19212,12 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 8,
         "nbMethodsSetters": 0,
-        "wmc": 11,
+        "wmc": 3,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 58,
         "vocabulary": 17,
@@ -18577,14 +19270,15 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 1,
+        "wmc": 0,
         "ccn": 1,
-        "ccnMethodMax": 1,
+        "ccnMethodMax": 0,
         "externals": [
             "Snicco\\Component\\Session\\ImmutableSession"
         ],
         "parents": [],
-        "lcom": 1,
+        "implements": [],
+        "lcom": 0,
         "length": 4,
         "vocabulary": 3,
         "volume": 6.34,
@@ -18933,7 +19627,7 @@ var classes = [
         "nbMethodsPublic": 34,
         "nbMethodsGetter": 3,
         "nbMethodsSetters": 0,
-        "wmc": 75,
+        "wmc": 72,
         "ccn": 32,
         "ccnMethodMax": 4,
         "externals": [
@@ -18972,6 +19666,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Session"
+        ],
         "lcom": 2,
         "length": 404,
         "vocabulary": 58,
@@ -19055,7 +19752,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "destroyAll",
+                "name": "destroyAllForAllUsers",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -19106,25 +19803,28 @@ var classes = [
             "BadMethodCallException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver"
+        ],
         "lcom": 1,
         "length": 82,
-        "vocabulary": 18,
-        "volume": 341.93,
-        "difficulty": 9,
-        "effort": 3077.4,
-        "level": 0.11,
+        "vocabulary": 17,
+        "volume": 335.17,
+        "difficulty": 9.69,
+        "effort": 3248.59,
+        "level": 0.1,
         "bugs": 0.11,
-        "time": 171,
-        "intelligentContent": 37.99,
+        "time": 180,
+        "intelligentContent": 34.58,
         "number_operators": 19,
         "number_operands": 63,
         "number_operators_unique": 4,
-        "number_operands_unique": 14,
+        "number_operands_unique": 13,
         "cloc": 0,
         "loc": 62,
         "lloc": 62,
-        "mi": 42.49,
-        "mIwoC": 42.49,
+        "mi": 42.55,
+        "mIwoC": 42.55,
         "commentWeight": 0,
         "kanDefect": 0.43,
         "relativeStructuralComplexity": 256,
@@ -19189,7 +19889,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "destroyAll",
+                "name": "destroyAllForAllUsers",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -19235,42 +19935,45 @@ var classes = [
         "nbMethodsPublic": 10,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 27,
-        "ccn": 16,
+        "wmc": 24,
+        "ccn": 14,
         "ccnMethodMax": 4,
         "externals": [
             "Snicco\\Component\\Session\\Driver\\UserSessionsDriver",
             "Snicco\\Component\\TestableClock\\Clock",
             "Snicco\\Component\\TestableClock\\SystemClock",
-            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
+            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver"
+        ],
         "lcom": 1,
-        "length": 132,
-        "vocabulary": 28,
-        "volume": 634.57,
-        "difficulty": 20.8,
-        "effort": 13199.07,
-        "level": 0.05,
-        "bugs": 0.21,
-        "time": 733,
-        "intelligentContent": 30.51,
-        "number_operators": 28,
-        "number_operands": 104,
+        "length": 126,
+        "vocabulary": 25,
+        "volume": 585.13,
+        "difficulty": 23.29,
+        "effort": 13629.99,
+        "level": 0.04,
+        "bugs": 0.2,
+        "time": 757,
+        "intelligentContent": 25.12,
+        "number_operators": 27,
+        "number_operands": 99,
         "number_operators_unique": 8,
-        "number_operands_unique": 20,
+        "number_operands_unique": 17,
         "cloc": 3,
-        "loc": 95,
-        "lloc": 92,
-        "mi": 48.98,
-        "mIwoC": 35.39,
-        "commentWeight": 13.59,
-        "kanDefect": 1.93,
+        "loc": 91,
+        "lloc": 88,
+        "mi": 50.2,
+        "mIwoC": 36.32,
+        "commentWeight": 13.88,
+        "kanDefect": 1.63,
         "relativeStructuralComplexity": 100,
         "relativeDataComplexity": 0.47,
         "relativeSystemComplexity": 100.47,
@@ -19314,6 +20017,7 @@ var classes = [
         "parents": [
             "LogicException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -19349,7 +20053,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception\\BadSessionID",
+        "name": "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
         "interface": false,
         "abstract": false,
         "final": true,
@@ -19373,11 +20077,12 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [
             "InvalidArgumentException",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID"
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector"
         ],
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 6,
         "vocabulary": 4,
@@ -19443,6 +20148,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 13,
         "vocabulary": 8,
@@ -19478,71 +20184,6 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "forSessionIDs",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 1,
-        "nbMethods": 1,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 1,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 2,
-        "ccn": 2,
-        "ccnMethodMax": 2,
-        "externals": [
-            "RuntimeException",
-            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
-            "Throwable"
-        ],
-        "parents": [
-            "RuntimeException"
-        ],
-        "lcom": 1,
-        "length": 14,
-        "vocabulary": 9,
-        "volume": 44.38,
-        "difficulty": 1.71,
-        "effort": 76.08,
-        "level": 0.58,
-        "bugs": 0.01,
-        "time": 4,
-        "intelligentContent": 25.89,
-        "number_operators": 2,
-        "number_operands": 12,
-        "number_operators_unique": 2,
-        "number_operands_unique": 7,
-        "cloc": 3,
-        "loc": 11,
-        "lloc": 8,
-        "mi": 104.68,
-        "mIwoC": 68.5,
-        "commentWeight": 36.18,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 2,
-        "relativeSystemComplexity": 3,
-        "totalStructuralComplexity": 1,
-        "totalDataComplexity": 2,
-        "totalSystemComplexity": 3,
-        "package": "Snicco\\Component\\Session\\Exception\\",
-        "pageRank": 0,
-        "afferentCoupling": 4,
-        "efferentCoupling": 4,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Component\\Session\\Exception\\CouldNotWriteSessionContent",
         "interface": false,
         "abstract": false,
@@ -19573,6 +20214,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 9,
         "vocabulary": 6,
@@ -19605,6 +20247,72 @@ var classes = [
         "afferentCoupling": 3,
         "efferentCoupling": 4,
         "instability": 0.57,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "forSelector",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 1,
+        "nbMethods": 1,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 1,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 2,
+        "ccn": 2,
+        "ccnMethodMax": 2,
+        "externals": [
+            "RuntimeException",
+            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
+            "Throwable"
+        ],
+        "parents": [
+            "RuntimeException"
+        ],
+        "implements": [],
+        "lcom": 1,
+        "length": 13,
+        "vocabulary": 8,
+        "volume": 39,
+        "difficulty": 1.83,
+        "effort": 71.5,
+        "level": 0.55,
+        "bugs": 0.01,
+        "time": 4,
+        "intelligentContent": 21.27,
+        "number_operators": 2,
+        "number_operands": 11,
+        "number_operators_unique": 2,
+        "number_operands_unique": 6,
+        "cloc": 0,
+        "loc": 8,
+        "lloc": 8,
+        "mi": 68.89,
+        "mIwoC": 68.89,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 1,
+        "relativeDataComplexity": 2,
+        "relativeSystemComplexity": 3,
+        "totalStructuralComplexity": 1,
+        "totalDataComplexity": 2,
+        "totalSystemComplexity": 3,
+        "package": "Snicco\\Component\\Session\\Exception\\",
+        "pageRank": 0,
+        "afferentCoupling": 4,
+        "efferentCoupling": 4,
+        "instability": 0.5,
         "violations": {}
     },
     {
@@ -19727,6 +20435,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\SessionManager\\SessionManager"
+        ],
         "lcom": 1,
         "length": 162,
         "vocabulary": 36,
@@ -19807,7 +20518,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -19820,6 +20531,9 @@ var classes = [
             "Snicco\\Component\\Session\\ImmutableSession"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\SessionManager\\SessionManager"
+        ],
         "lcom": 1,
         "length": 21,
         "vocabulary": 7,
@@ -19890,6 +20604,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Serializer\\Serializer"
+        ],
         "lcom": 2,
         "length": 21,
         "vocabulary": 12,
@@ -19959,6 +20676,9 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Serializer\\Serializer"
+        ],
         "lcom": 2,
         "length": 17,
         "vocabulary": 10,
@@ -20020,6 +20740,9 @@ var classes = [
             "Snicco\\Component\\Session\\EventDispatcher\\SessionEventDispatcher"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\EventDispatcher\\SessionEventDispatcher"
+        ],
         "lcom": 1,
         "length": 1,
         "vocabulary": 1,
@@ -20181,6 +20904,7 @@ var classes = [
             "WP_User"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 14,
         "length": 129,
         "vocabulary": 35,
@@ -20213,423 +20937,6 @@ var classes = [
         "afferentCoupling": 11,
         "efferentCoupling": 2,
         "instability": 0.15,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\Testing\\DIContainerContractTest",
-        "interface": false,
-        "abstract": true,
-        "final": false,
-        "methods": [
-            {
-                "name": "createContainer",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_factory_returns_different_objects",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_singleton_returns_the_same_object",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_instance_returns_the_same_object",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "services_can_be_redefined",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_overwritten_frozen_services_throws_exception",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_lock_throws_exception_for_singleton",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_lock_throws_exception_for_factory",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_lock_throws_exception_for_instance",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_lock_throws_exception_for_array_set",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_lock_throws_exception_for_array_unset",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_make_returns_the_correct_class_instance",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_make_throws_exception_if_class_different_class_is_returned",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_offsetGet",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_offsetSet",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_offsetUnset",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_offsetExists",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_has",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "test_with_callables",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getBar",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getFoo",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 21,
-        "nbMethods": 21,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 21,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 24,
-        "ccn": 4,
-        "ccnMethodMax": 4,
-        "externals": [
-            "Snicco\\Component\\Kernel\\DIContainer",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "Snicco\\Component\\Kernel\\Testing\\Baz",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Baz",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "stdClass",
-            "stdClass",
-            "stdClass",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "PHPUnit\\Framework\\Assert",
-            "stdClass",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "stdClass",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "stdClass",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "PHPUnit\\Framework\\Assert",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "Snicco\\Component\\Kernel\\Testing\\Bar",
-            "Snicco\\Component\\Kernel\\Testing\\Foo",
-            "Snicco\\Component\\Kernel\\Testing\\Foo"
-        ],
-        "parents": [],
-        "lcom": 3,
-        "length": 249,
-        "vocabulary": 23,
-        "volume": 1126.37,
-        "difficulty": 14.25,
-        "effort": 16050.73,
-        "level": 0.07,
-        "bugs": 0.38,
-        "time": 892,
-        "intelligentContent": 79.04,
-        "number_operators": 59,
-        "number_operands": 190,
-        "number_operators_unique": 3,
-        "number_operands_unique": 20,
-        "cloc": 61,
-        "loc": 260,
-        "lloc": 199,
-        "mi": 62.04,
-        "mIwoC": 27.95,
-        "commentWeight": 34.1,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 121,
-        "relativeDataComplexity": 0.17,
-        "relativeSystemComplexity": 121.17,
-        "totalStructuralComplexity": 2541,
-        "totalDataComplexity": 3.5,
-        "totalSystemComplexity": 2544.5,
-        "package": "Snicco\\Component\\Kernel\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 6,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\Testing\\Foo",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [],
-        "nbMethodsIncludingGettersSetters": 0,
-        "nbMethods": 0,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 0,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 0,
-        "ccn": 1,
-        "ccnMethodMax": 0,
-        "externals": [],
-        "parents": [],
-        "lcom": 0,
-        "length": 1,
-        "vocabulary": 1,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0,
-        "level": 2,
-        "bugs": 0,
-        "time": 0,
-        "intelligentContent": 0,
-        "number_operators": 0,
-        "number_operands": 1,
-        "number_operators_unique": 0,
-        "number_operands_unique": 1,
-        "cloc": 0,
-        "loc": 5,
-        "lloc": 5,
-        "mi": 171,
-        "mIwoC": 171,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 0,
-        "relativeSystemComplexity": 0,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 0,
-        "totalSystemComplexity": 0,
-        "package": "Snicco\\Component\\Kernel\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 0,
-        "instability": 0,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\Testing\\Bar",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [],
-        "nbMethodsIncludingGettersSetters": 0,
-        "nbMethods": 0,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 0,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 0,
-        "ccn": 1,
-        "ccnMethodMax": 0,
-        "externals": [],
-        "parents": [],
-        "lcom": 0,
-        "length": 1,
-        "vocabulary": 1,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0,
-        "level": 2,
-        "bugs": 0,
-        "time": 0,
-        "intelligentContent": 0,
-        "number_operators": 0,
-        "number_operands": 1,
-        "number_operators_unique": 0,
-        "number_operands_unique": 1,
-        "cloc": 0,
-        "loc": 5,
-        "lloc": 5,
-        "mi": 171,
-        "mIwoC": 171,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 0,
-        "relativeSystemComplexity": 0,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 0,
-        "totalSystemComplexity": 0,
-        "package": "Snicco\\Component\\Kernel\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 0,
-        "instability": 0,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\Testing\\Baz",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [],
-        "nbMethodsIncludingGettersSetters": 0,
-        "nbMethods": 0,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 0,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 0,
-        "ccn": 1,
-        "ccnMethodMax": 0,
-        "externals": [],
-        "parents": [],
-        "lcom": 0,
-        "length": 0,
-        "vocabulary": 0,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0,
-        "level": 0,
-        "bugs": 0,
-        "time": 0,
-        "intelligentContent": 0,
-        "number_operators": 0,
-        "number_operands": 0,
-        "number_operators_unique": 0,
-        "number_operands_unique": 0,
-        "cloc": 0,
-        "loc": 4,
-        "lloc": 4,
-        "mi": 171,
-        "mIwoC": 171,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 0,
-        "relativeSystemComplexity": 0,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 0,
-        "totalSystemComplexity": 0,
-        "package": "Snicco\\Component\\Kernel\\Testing\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 0,
-        "instability": 0,
         "violations": {}
     },
     {
@@ -20739,7 +21046,7 @@ var classes = [
         "nbMethodsPublic": 10,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 18,
+        "wmc": 16,
         "ccn": 5,
         "ccnMethodMax": 4,
         "externals": [
@@ -20752,6 +21059,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\ValueObject\\Environment"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 7,
         "length": 65,
         "vocabulary": 21,
@@ -20833,7 +21141,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 6,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -20846,6 +21154,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\ValueObject\\Directories"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 72,
         "vocabulary": 18,
@@ -21025,7 +21334,7 @@ var classes = [
         "nbMethodsPublic": 6,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 48,
+        "wmc": 44,
         "ccn": 29,
         "ccnMethodMax": 7,
         "externals": [
@@ -21058,6 +21367,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\Configuration\\NullCache"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 222,
         "vocabulary": 36,
@@ -21166,6 +21476,10 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [
+            "ArrayAccess",
+            "Psr\\Container\\ContainerInterface"
+        ],
         "lcom": 4,
         "length": 36,
         "vocabulary": 10,
@@ -21239,6 +21553,9 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [
+            "Psr\\Container\\ContainerExceptionInterface"
+        ],
         "lcom": 2,
         "length": 8,
         "vocabulary": 5,
@@ -21304,6 +21621,9 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [
+            "Psr\\Container\\ContainerExceptionInterface"
+        ],
         "lcom": 1,
         "length": 4,
         "vocabulary": 3,
@@ -21359,6 +21679,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -21420,6 +21741,9 @@ var classes = [
             "Snicco\\Component\\Kernel\\Configuration\\ConfigCache"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Configuration\\ConfigCache"
+        ],
         "lcom": 1,
         "length": 4,
         "vocabulary": 3,
@@ -21521,6 +21845,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 75,
         "vocabulary": 15,
@@ -21597,6 +21922,9 @@ var classes = [
             "Webimpress\\SafeWriter\\FileWriter"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Configuration\\ConfigCache"
+        ],
         "lcom": 1,
         "length": 35,
         "vocabulary": 14,
@@ -21666,6 +21994,7 @@ var classes = [
             "FilesystemIterator"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 46,
         "vocabulary": 18,
@@ -21795,7 +22124,7 @@ var classes = [
         "nbMethodsPublic": 9,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 32,
+        "wmc": 31,
         "ccn": 21,
         "ccnMethodMax": 6,
         "externals": [
@@ -21819,6 +22148,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Kernel\\Configuration\\Config"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 194,
         "vocabulary": 32,
@@ -21890,7 +22220,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -21902,6 +22232,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Kernel\\Configuration\\Config"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 19,
         "vocabulary": 8,
@@ -22040,6 +22371,7 @@ var classes = [
         "parents": [
             "Symfony\\Component\\BrowserKit\\AbstractBrowser"
         ],
+        "implements": [],
         "lcom": 4,
         "length": 123,
         "vocabulary": 28,
@@ -22075,7 +22407,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@0000000037a280b3000000007b7fcd58",
+        "name": "anonymous@0000000071d526010000000076799a54",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -22106,6 +22438,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 5,
         "vocabulary": 3,
@@ -22333,6 +22666,7 @@ var classes = [
         "parents": [
             "Codeception\\TestCase\\WPTestCase"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 174,
         "vocabulary": 31,
@@ -22476,7 +22810,7 @@ var classes = [
         "nbMethodsPublic": 13,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 16,
+        "wmc": 15,
         "ccn": 3,
         "ccnMethodMax": 2,
         "externals": [
@@ -22524,6 +22858,7 @@ var classes = [
             "PHPUnit\\Framework\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 147,
         "vocabulary": 20,
@@ -22608,6 +22943,7 @@ var classes = [
             "PHPUnit\\Framework\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 29,
         "vocabulary": 9,
@@ -22734,6 +23070,7 @@ var classes = [
             "PHPUnit\\Framework\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 56,
         "vocabulary": 15,
@@ -22837,6 +23174,7 @@ var classes = [
             "PHPUnit\\Framework\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 35,
         "vocabulary": 14,
@@ -22931,7 +23269,7 @@ var classes = [
         "nbMethodsPublic": 6,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 34,
+        "wmc": 33,
         "ccn": 28,
         "ccnMethodMax": 14,
         "externals": [
@@ -22956,6 +23294,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 4,
         "length": 191,
         "vocabulary": 41,
@@ -23015,7 +23354,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -23025,6 +23364,9 @@ var classes = [
             "Snicco\\Component\\EventDispatcher\\GenericEvent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\ResponseEmitter"
+        ],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -23090,6 +23432,9 @@ var classes = [
             "Laminas\\HttpHandlerRunner\\Emitter\\SapiStreamEmitter"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\ResponseEmitter"
+        ],
         "lcom": 1,
         "length": 13,
         "vocabulary": 7,
@@ -23163,7 +23508,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 12,
+        "wmc": 11,
         "ccn": 9,
         "ccnMethodMax": 8,
         "externals": [
@@ -23173,6 +23518,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 69,
         "vocabulary": 22,
@@ -23284,6 +23630,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 94,
         "vocabulary": 21,
@@ -23377,6 +23724,7 @@ var classes = [
         "parents": [
             "Psr\\Log\\AbstractLogger"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 195,
         "vocabulary": 48,
@@ -23436,6 +23784,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 10,
@@ -23495,6 +23844,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 14,
         "vocabulary": 13,
@@ -23554,6 +23904,7 @@ var classes = [
         "ccnMethodMax": 1,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 10,
         "vocabulary": 9,
@@ -23666,6 +24017,7 @@ var classes = [
             "Snicco\\Component\\StrArr\\Str"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 167,
         "vocabulary": 32,
@@ -23741,6 +24093,7 @@ var classes = [
             "Snicco\\Bundle\\HttpRouting\\Event\\HandledRequest"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 35,
         "vocabulary": 10,
@@ -23802,6 +24155,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 8,
         "vocabulary": 4,
@@ -23853,6 +24207,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -23914,6 +24269,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 8,
         "vocabulary": 4,
@@ -23976,6 +24332,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 12,
         "vocabulary": 5,
@@ -24382,6 +24739,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 642,
         "vocabulary": 97,
@@ -24447,6 +24807,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareResolver"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 32,
         "vocabulary": 14,
@@ -24516,6 +24877,9 @@ var classes = [
             "Snicco\\Component\\Kernel\\ValueObject\\Environment"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\EventDispatcher\\Unremovable"
+        ],
         "lcom": 1,
         "length": 11,
         "vocabulary": 5,
@@ -24583,6 +24947,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 28,
         "vocabulary": 11,
@@ -24642,7 +25007,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -24654,6 +25019,9 @@ var classes = [
             "ErrorException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 37,
         "vocabulary": 18,
@@ -24729,6 +25097,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 13,
         "vocabulary": 7,
@@ -24793,6 +25162,7 @@ var classes = [
         "parents": [
             "Whoops\\Handler\\PrettyPageHandler"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 29,
         "vocabulary": 11,
@@ -24844,6 +25214,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 3,
         "vocabulary": 3,
@@ -24924,7 +25295,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -24934,6 +25305,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 4,
         "length": 13,
         "vocabulary": 6,
@@ -25014,7 +25388,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -25024,6 +25398,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 4,
         "length": 13,
         "vocabulary": 6,
@@ -25150,6 +25527,9 @@ var classes = [
             "RecursiveDirectoryIterator"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 126,
         "vocabulary": 29,
@@ -25310,6 +25690,9 @@ var classes = [
             "Snicco\\Component\\Templating\\GlobalViewContext"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 135,
         "vocabulary": 33,
@@ -25361,6 +25744,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 3,
         "vocabulary": 3,
@@ -25427,7 +25811,7 @@ var classes = [
         "nbMethodsPublic": 0,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -25441,6 +25825,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 25,
         "vocabulary": 9,
@@ -25528,7 +25913,7 @@ var classes = [
         "nbMethodsPublic": 4,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 11,
+        "wmc": 10,
         "ccn": 6,
         "ccnMethodMax": 5,
         "externals": [
@@ -25541,6 +25926,9 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
         "lcom": 3,
         "length": 70,
         "vocabulary": 25,
@@ -25600,7 +25988,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 4,
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
@@ -25612,6 +26000,9 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\BadViewComposer"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory"
+        ],
         "lcom": 1,
         "length": 27,
         "vocabulary": 13,
@@ -25707,6 +26098,9 @@ var classes = [
             "Snicco\\Component\\Kernel\\Kernel"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 11,
         "vocabulary": 6,
@@ -25789,9 +26183,9 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 8,
-        "ccn": 4,
-        "ccnMethodMax": 4,
+        "wmc": 10,
+        "ccn": 6,
+        "ccnMethodMax": 6,
         "externals": [
             "Snicco\\Component\\Kernel\\Bundle",
             "Snicco\\Component\\Kernel\\ValueObject\\Environment",
@@ -25804,40 +26198,44 @@ var classes = [
             "Snicco\\Component\\BetterWPHooks\\WPEventDispatcher",
             "Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
             "Snicco\\Component\\BetterWPHooks\\EventMapping\\EventMapper",
+            "LogicException",
             "Snicco\\Component\\Kernel\\Kernel"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
-        "length": 41,
-        "vocabulary": 12,
-        "volume": 146.98,
-        "difficulty": 7.5,
-        "effort": 1102.38,
+        "length": 52,
+        "vocabulary": 13,
+        "volume": 192.42,
+        "difficulty": 7.78,
+        "effort": 1496.62,
         "level": 0.13,
-        "bugs": 0.05,
-        "time": 61,
-        "intelligentContent": 19.6,
-        "number_operators": 11,
-        "number_operands": 30,
+        "bugs": 0.06,
+        "time": 83,
+        "intelligentContent": 24.74,
+        "number_operators": 17,
+        "number_operands": 35,
         "number_operators_unique": 4,
-        "number_operands_unique": 8,
+        "number_operands_unique": 9,
         "cloc": 3,
-        "loc": 40,
-        "lloc": 37,
-        "mi": 70.66,
-        "mIwoC": 50.08,
-        "commentWeight": 20.58,
-        "kanDefect": 0.29,
+        "loc": 50,
+        "lloc": 47,
+        "mi": 65.25,
+        "mIwoC": 46.72,
+        "commentWeight": 18.52,
+        "kanDefect": 0.43,
         "relativeStructuralComplexity": 25,
-        "relativeDataComplexity": 0.67,
-        "relativeSystemComplexity": 25.67,
+        "relativeDataComplexity": 1.17,
+        "relativeSystemComplexity": 26.17,
         "totalStructuralComplexity": 125,
-        "totalDataComplexity": 3.33,
-        "totalSystemComplexity": 128.33,
+        "totalDataComplexity": 5.83,
+        "totalSystemComplexity": 130.83,
         "package": "Snicco\\Bundle\\BetterWPHooks\\",
         "pageRank": 0,
         "afferentCoupling": 0,
-        "efferentCoupling": 10,
+        "efferentCoupling": 11,
         "instability": 1,
         "violations": {}
     },
@@ -25903,6 +26301,9 @@ var classes = [
             "Snicco\\Component\\Kernel\\Kernel"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 41,
         "vocabulary": 17,
@@ -25976,7 +26377,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 6,
         "ccn": 4,
         "ccnMethodMax": 2,
         "externals": [
@@ -25986,6 +26387,9 @@ var classes = [
             "Snicco\\Component\\Templating\\View\\View"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ],
         "lcom": 1,
         "length": 43,
         "vocabulary": 12,
@@ -26103,8 +26507,8 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 0,
-        "wmc": 19,
-        "ccn": 10,
+        "wmc": 20,
+        "ccn": 11,
         "ccnMethodMax": 4,
         "externals": [
             "Snicco\\Component\\Kernel\\Bundle",
@@ -26132,25 +26536,28 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
-        "length": 154,
-        "vocabulary": 35,
-        "volume": 789.91,
-        "difficulty": 10.97,
-        "effort": 8661.77,
-        "level": 0.09,
-        "bugs": 0.26,
-        "time": 481,
-        "intelligentContent": 72.04,
-        "number_operators": 48,
+        "length": 155,
+        "vocabulary": 36,
+        "volume": 801.34,
+        "difficulty": 12.79,
+        "effort": 10251.6,
+        "level": 0.08,
+        "bugs": 0.27,
+        "time": 570,
+        "intelligentContent": 62.64,
+        "number_operators": 49,
         "number_operands": 106,
-        "number_operators_unique": 6,
+        "number_operators_unique": 7,
         "number_operands_unique": 29,
         "cloc": 7,
         "loc": 104,
         "lloc": 97,
-        "mi": 54.59,
-        "mIwoC": 35.03,
+        "mi": 54.41,
+        "mIwoC": 34.85,
         "commentWeight": 19.56,
         "kanDefect": 0.64,
         "relativeStructuralComplexity": 441,
@@ -26183,6 +26590,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 7,
         "vocabulary": 7,
@@ -26264,6 +26672,9 @@ var classes = [
             "Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Event\\MailEvents"
+        ],
         "lcom": 1,
         "length": 19,
         "vocabulary": 6,
@@ -26370,6 +26781,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 62,
         "vocabulary": 19,
@@ -26421,6 +26835,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 1,
         "vocabulary": 1,
@@ -26612,6 +27027,9 @@ var classes = [
             "Snicco\\Bundle\\Session\\Middleware\\StatefulRequest"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 249,
         "vocabulary": 42,
@@ -26663,6 +27081,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 6,
         "vocabulary": 6,
@@ -26754,6 +27173,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 62,
         "vocabulary": 17,
@@ -26837,6 +27257,9 @@ var classes = [
             "WP_User"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
+        ],
         "lcom": 4,
         "length": 12,
         "vocabulary": 5,
@@ -26910,14 +27333,17 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
             "Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
         ],
         "parents": [],
-        "lcom": 4,
+        "implements": [
+            "Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
+        ],
+        "lcom": 3,
         "length": 8,
         "vocabulary": 4,
         "volume": 16,
@@ -26985,6 +27411,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 26,
         "vocabulary": 10,
@@ -27141,6 +27568,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 212,
         "vocabulary": 39,
@@ -27205,6 +27633,9 @@ var classes = [
             "Psr\\Http\\Server\\RequestHandlerInterface"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 10,
         "vocabulary": 7,
@@ -27272,6 +27703,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 24,
         "vocabulary": 10,
@@ -27337,6 +27769,9 @@ var classes = [
             "LogicException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -27403,7 +27838,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 3,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -27411,6 +27846,9 @@ var classes = [
             "Snicco\\Bundle\\Encryption\\DefuseEncryptor"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\SessionEncryptor"
+        ],
         "lcom": 1,
         "length": 12,
         "vocabulary": 5,
@@ -27462,6 +27900,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 1,
         "vocabulary": 1,
@@ -27578,6 +28017,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
         "lcom": 5,
         "length": 59,
         "vocabulary": 22,
@@ -27651,7 +28093,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -27661,6 +28103,7 @@ var classes = [
             "Defuse\\Crypto\\Key"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 17,
         "vocabulary": 8,
@@ -27693,6 +28136,158 @@ var classes = [
         "afferentCoupling": 2,
         "efferentCoupling": 2,
         "instability": 0.5,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlPsr15\\CollectGarbage",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "process",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 2,
+        "nbMethods": 2,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 2,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 3,
+        "ccn": 2,
+        "ccnMethodMax": 2,
+        "externals": [
+            "Psr\\Http\\Server\\MiddlewareInterface",
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "Psr\\Log\\LoggerInterface",
+            "Psr\\Http\\Message\\ResponseInterface",
+            "Psr\\Http\\Message\\ServerRequestInterface",
+            "Psr\\Http\\Server\\RequestHandlerInterface",
+            "Snicco\\Component\\SignedUrl\\GarbageCollector"
+        ],
+        "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
+        "lcom": 1,
+        "length": 25,
+        "vocabulary": 11,
+        "volume": 86.49,
+        "difficulty": 3.75,
+        "effort": 324.32,
+        "level": 0.27,
+        "bugs": 0.03,
+        "time": 18,
+        "intelligentContent": 23.06,
+        "number_operators": 5,
+        "number_operands": 20,
+        "number_operators_unique": 3,
+        "number_operands_unique": 8,
+        "cloc": 0,
+        "loc": 22,
+        "lloc": 22,
+        "mi": 56.88,
+        "mIwoC": 56.88,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 16,
+        "relativeDataComplexity": 0.7,
+        "relativeSystemComplexity": 16.7,
+        "totalStructuralComplexity": 32,
+        "totalDataComplexity": 1.4,
+        "totalSystemComplexity": 33.4,
+        "package": "Snicco\\Bridge\\SignedUrlPsr15\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 7,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlPsr15\\ValidateSignature",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "process",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 2,
+        "nbMethods": 2,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 2,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 5,
+        "ccn": 4,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Psr\\Http\\Server\\MiddlewareInterface",
+            "Snicco\\Component\\SignedUrl\\SignedUrlValidator",
+            "Psr\\Http\\Message\\ResponseInterface",
+            "Psr\\Http\\Message\\ServerRequestInterface",
+            "Psr\\Http\\Server\\RequestHandlerInterface"
+        ],
+        "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
+        "lcom": 1,
+        "length": 37,
+        "vocabulary": 16,
+        "volume": 148,
+        "difficulty": 4.83,
+        "effort": 715.33,
+        "level": 0.21,
+        "bugs": 0.05,
+        "time": 40,
+        "intelligentContent": 30.62,
+        "number_operators": 8,
+        "number_operands": 29,
+        "number_operators_unique": 4,
+        "number_operands_unique": 12,
+        "cloc": 6,
+        "loc": 28,
+        "lloc": 22,
+        "mi": 87.84,
+        "mIwoC": 54.98,
+        "commentWeight": 32.86,
+        "kanDefect": 0.22,
+        "relativeStructuralComplexity": 16,
+        "relativeDataComplexity": 0.9,
+        "relativeSystemComplexity": 16.9,
+        "totalStructuralComplexity": 32,
+        "totalDataComplexity": 1.8,
+        "totalSystemComplexity": 33.8,
+        "package": "Snicco\\Bridge\\SignedUrlPsr15\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 5,
+        "instability": 1,
         "violations": {}
     },
     {
@@ -27744,7 +28339,7 @@ var classes = [
                 "_type": "Hal\\Metric\\FunctionMetric"
             },
             {
-                "name": "destroyAll",
+                "name": "destroyAllForAllUsers",
                 "role": null,
                 "public": true,
                 "private": false,
@@ -27808,33 +28403,36 @@ var classes = [
             "Snicco\\Component\\TestableClock\\Clock",
             "Snicco\\Component\\TestableClock\\SystemClock",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\UserSessionsDriver"
+        ],
         "lcom": 1,
-        "length": 172,
-        "vocabulary": 46,
-        "volume": 950.05,
-        "difficulty": 10.88,
-        "effort": 10331.82,
-        "level": 0.09,
-        "bugs": 0.32,
-        "time": 574,
-        "intelligentContent": 87.36,
-        "number_operators": 27,
-        "number_operands": 145,
+        "length": 162,
+        "vocabulary": 40,
+        "volume": 862.15,
+        "difficulty": 12.09,
+        "effort": 10421.9,
+        "level": 0.08,
+        "bugs": 0.29,
+        "time": 579,
+        "intelligentContent": 71.32,
+        "number_operators": 25,
+        "number_operands": 137,
         "number_operators_unique": 6,
-        "number_operands_unique": 40,
+        "number_operands_unique": 34,
         "cloc": 25,
-        "loc": 110,
-        "lloc": 85,
-        "mi": 69.65,
-        "mIwoC": 35.99,
-        "commentWeight": 33.66,
+        "loc": 108,
+        "lloc": 83,
+        "mi": 70.42,
+        "mIwoC": 36.51,
+        "commentWeight": 33.91,
         "kanDefect": 0.52,
         "relativeStructuralComplexity": 256,
         "relativeDataComplexity": 0.43,
@@ -27902,7 +28500,7 @@ var classes = [
         "nbMethodsPublic": 5,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 6,
+        "wmc": 5,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -27912,25 +28510,28 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\SessionDriver"
+        ],
         "lcom": 2,
         "length": 22,
-        "vocabulary": 9,
-        "volume": 69.74,
-        "difficulty": 2.86,
-        "effort": 199.25,
-        "level": 0.35,
+        "vocabulary": 8,
+        "volume": 66,
+        "difficulty": 3.33,
+        "effort": 220,
+        "level": 0.3,
         "bugs": 0.02,
-        "time": 11,
-        "intelligentContent": 24.41,
+        "time": 12,
+        "intelligentContent": 19.8,
         "number_operators": 2,
         "number_operands": 20,
         "number_operators_unique": 2,
-        "number_operands_unique": 7,
+        "number_operands_unique": 6,
         "cloc": 0,
         "loc": 28,
         "lloc": 28,
-        "mi": 55.39,
-        "mIwoC": 55.39,
+        "mi": 55.56,
+        "mIwoC": 55.56,
         "commentWeight": 0,
         "kanDefect": 0.15,
         "relativeStructuralComplexity": 16,
@@ -28024,10 +28625,10 @@ var classes = [
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
             "Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
-            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySessions",
+            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
+            "Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
             "Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent",
-            "Snicco\\Component\\Session\\Exception\\BadSessionID",
+            "Snicco\\Component\\Session\\Exception\\UnknownSessionSelector",
             "Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent",
             "InvalidArgumentException",
             "InvalidArgumentException",
@@ -28037,26 +28638,29 @@ var classes = [
             "Snicco\\Component\\Session\\Exception\\CouldNotWriteSessionContent"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Session\\Driver\\SessionDriver"
+        ],
         "lcom": 2,
         "length": 155,
-        "vocabulary": 30,
-        "volume": 760.57,
-        "difficulty": 22.73,
-        "effort": 17285.64,
+        "vocabulary": 29,
+        "volume": 752.99,
+        "difficulty": 23.81,
+        "effort": 17928.26,
         "level": 0.04,
         "bugs": 0.25,
-        "time": 960,
-        "intelligentContent": 33.46,
+        "time": 996,
+        "intelligentContent": 31.63,
         "number_operators": 30,
         "number_operands": 125,
         "number_operators_unique": 8,
-        "number_operands_unique": 22,
-        "cloc": 12,
-        "loc": 91,
+        "number_operands_unique": 21,
+        "cloc": 9,
+        "loc": 88,
         "lloc": 79,
-        "mi": 62.68,
-        "mIwoC": 36.01,
-        "commentWeight": 26.67,
+        "mi": 59.81,
+        "mIwoC": 36.04,
+        "commentWeight": 23.77,
         "kanDefect": 0.71,
         "relativeStructuralComplexity": 196,
         "relativeDataComplexity": 0.26,
@@ -28176,6 +28780,7 @@ var classes = [
             "Snicco\\Bridge\\Blade\\BladeViewFactory"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 108,
         "vocabulary": 33,
@@ -28246,6 +28851,7 @@ var classes = [
         "parents": [
             "Illuminate\\View\\Component"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 9,
         "vocabulary": 6,
@@ -28686,6 +29292,9 @@ var classes = [
             "BadMethodCallException"
         ],
         "parents": [],
+        "implements": [
+            "Illuminate\\Contracts\\Foundation\\Application"
+        ],
         "lcom": 48,
         "length": 107,
         "vocabulary": 69,
@@ -28776,7 +29385,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 3,
         "nbMethodsSetters": 0,
-        "wmc": 10,
+        "wmc": 7,
         "ccn": 4,
         "ccnMethodMax": 3,
         "externals": [
@@ -28788,6 +29397,9 @@ var classes = [
             "Illuminate\\View\\View"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\View\\View"
+        ],
         "lcom": 2,
         "length": 60,
         "vocabulary": 15,
@@ -28847,7 +29459,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -28856,6 +29468,7 @@ var classes = [
             "Snicco\\Bridge\\Blade\\BladeView"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 23,
         "vocabulary": 11,
@@ -28945,6 +29558,9 @@ var classes = [
             "Illuminate\\Support\\Str"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewFactory\\ViewFactory"
+        ],
         "lcom": 1,
         "length": 48,
         "vocabulary": 16,
@@ -29039,7 +29655,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 19,
+        "wmc": 18,
         "ccn": 13,
         "ccnMethodMax": 9,
         "externals": [
@@ -29054,6 +29670,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
         "lcom": 2,
         "length": 145,
         "vocabulary": 35,
@@ -29180,6 +29799,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Kernel\\DIContainer"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 56,
         "vocabulary": 11,
@@ -29208,152 +29828,6 @@ var classes = [
         "totalDataComplexity": 4.58,
         "totalSystemComplexity": 1093.58,
         "package": "Snicco\\Bridge\\IlluminateContainer\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 5,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Bridge\\SignedUrlMiddleware\\CollectGarbage",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "process",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 2,
-        "nbMethods": 2,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 3,
-        "ccn": 2,
-        "ccnMethodMax": 2,
-        "externals": [
-            "Psr\\Http\\Server\\MiddlewareInterface",
-            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "Psr\\Log\\LoggerInterface",
-            "Psr\\Http\\Message\\ResponseInterface",
-            "Psr\\Http\\Message\\ServerRequestInterface",
-            "Psr\\Http\\Server\\RequestHandlerInterface",
-            "Snicco\\Component\\SignedUrl\\GarbageCollector"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 25,
-        "vocabulary": 11,
-        "volume": 86.49,
-        "difficulty": 3.75,
-        "effort": 324.32,
-        "level": 0.27,
-        "bugs": 0.03,
-        "time": 18,
-        "intelligentContent": 23.06,
-        "number_operators": 5,
-        "number_operands": 20,
-        "number_operators_unique": 3,
-        "number_operands_unique": 8,
-        "cloc": 0,
-        "loc": 22,
-        "lloc": 22,
-        "mi": 56.88,
-        "mIwoC": 56.88,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 16,
-        "relativeDataComplexity": 0.7,
-        "relativeSystemComplexity": 16.7,
-        "totalStructuralComplexity": 32,
-        "totalDataComplexity": 1.4,
-        "totalSystemComplexity": 33.4,
-        "package": "Snicco\\Bridge\\SignedUrlMiddleware\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 7,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Bridge\\SignedUrlMiddleware\\ValidateSignature",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "process",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 2,
-        "nbMethods": 2,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 5,
-        "ccn": 4,
-        "ccnMethodMax": 4,
-        "externals": [
-            "Psr\\Http\\Server\\MiddlewareInterface",
-            "Snicco\\Component\\SignedUrl\\SignedUrlValidator",
-            "Psr\\Http\\Message\\ResponseInterface",
-            "Psr\\Http\\Message\\ServerRequestInterface",
-            "Psr\\Http\\Server\\RequestHandlerInterface"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 37,
-        "vocabulary": 16,
-        "volume": 148,
-        "difficulty": 4.83,
-        "effort": 715.33,
-        "level": 0.21,
-        "bugs": 0.05,
-        "time": 40,
-        "intelligentContent": 30.62,
-        "number_operators": 8,
-        "number_operands": 29,
-        "number_operators_unique": 4,
-        "number_operands_unique": 12,
-        "cloc": 6,
-        "loc": 28,
-        "lloc": 22,
-        "mi": 87.84,
-        "mIwoC": 54.98,
-        "commentWeight": 32.86,
-        "kanDefect": 0.22,
-        "relativeStructuralComplexity": 16,
-        "relativeDataComplexity": 0.9,
-        "relativeSystemComplexity": 16.9,
-        "totalStructuralComplexity": 32,
-        "totalDataComplexity": 1.8,
-        "totalSystemComplexity": 33.8,
-        "package": "Snicco\\Bridge\\SignedUrlMiddleware\\",
         "pageRank": 0,
         "afferentCoupling": 0,
         "efferentCoupling": 5,
@@ -29447,6 +29921,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Kernel\\DIContainer"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 53,
         "vocabulary": 12,
@@ -29520,6 +29995,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 35,
         "vocabulary": 10,
@@ -29640,6 +30116,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 126,
         "vocabulary": 31,
@@ -29714,6 +30191,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 32,
         "vocabulary": 12,
@@ -29798,6 +30278,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 46,
         "vocabulary": 18,
@@ -29882,6 +30363,7 @@ var classes = [
             "Snicco\\Middleware\\WPNonce\\VerifyWPNonce"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 52,
         "vocabulary": 19,
@@ -29956,6 +30438,7 @@ var classes = [
         "parents": [
             "Snicco\\Middleware\\Payload\\Payload"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 31,
         "vocabulary": 17,
@@ -30020,6 +30503,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 6,
         "vocabulary": 4,
@@ -30111,6 +30595,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 49,
         "vocabulary": 18,
@@ -30170,7 +30655,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 4,
+        "wmc": 3,
         "ccn": 3,
         "ccnMethodMax": 3,
         "externals": [
@@ -30180,6 +30665,9 @@ var classes = [
             "Psr\\Http\\Server\\RequestHandlerInterface"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 23,
         "vocabulary": 10,
@@ -30256,6 +30744,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 14,
         "vocabulary": 9,
@@ -30350,6 +30839,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 70,
         "vocabulary": 26,
@@ -30364,12 +30854,12 @@ var classes = [
         "number_operands": 59,
         "number_operators_unique": 4,
         "number_operands_unique": 22,
-        "cloc": 15,
-        "loc": 49,
+        "cloc": 18,
+        "loc": 52,
         "lloc": 34,
-        "mi": 86.23,
+        "mi": 87.95,
         "mIwoC": 48.43,
-        "commentWeight": 37.8,
+        "commentWeight": 39.52,
         "kanDefect": 0.22,
         "relativeStructuralComplexity": 81,
         "relativeDataComplexity": 0.48,
@@ -30431,6 +30921,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 87,
         "vocabulary": 27,
@@ -30496,6 +30987,9 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\HttpException"
         ],
         "parents": [],
+        "implements": [
+            "Psr\\Http\\Server\\MiddlewareInterface"
+        ],
         "lcom": 1,
         "length": 13,
         "vocabulary": 8,
@@ -30569,6 +31063,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 50,
         "vocabulary": 16,
@@ -30644,6 +31139,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 27,
         "vocabulary": 11,
@@ -30717,6 +31213,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 27,
         "vocabulary": 11,
@@ -30792,6 +31289,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 39,
         "vocabulary": 15,
@@ -30867,6 +31365,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 40,
         "vocabulary": 14,
@@ -30899,1007 +31398,6 @@ var classes = [
         "afferentCoupling": 0,
         "efferentCoupling": 5,
         "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Input",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": "setter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "parse",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "mainArg",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 3,
-        "nbMethods": 2,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 1,
-        "wmc": 5,
-        "ccn": 3,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Snicco\\Component\\StrArr\\Str",
-            "Snicco\\Component\\StrArr\\Str",
-            "InvalidArgumentException",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 40,
-        "vocabulary": 17,
-        "volume": 163.5,
-        "difficulty": 4.92,
-        "effort": 804.92,
-        "level": 0.2,
-        "bugs": 0.05,
-        "time": 45,
-        "intelligentContent": 33.21,
-        "number_operators": 8,
-        "number_operands": 32,
-        "number_operators_unique": 4,
-        "number_operands_unique": 13,
-        "cloc": 3,
-        "loc": 32,
-        "lloc": 29,
-        "mi": 75.03,
-        "mIwoC": 52.2,
-        "commentWeight": 22.84,
-        "kanDefect": 0.45,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 0.89,
-        "relativeSystemComplexity": 4.89,
-        "totalStructuralComplexity": 12,
-        "totalDataComplexity": 2.67,
-        "totalSystemComplexity": 14.67,
-        "package": "Snicco\\Monorepo\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 3,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\SniccoWPPackageProvider",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "create",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 1,
-        "nbMethods": 1,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 1,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 1,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "Snicco\\Monorepo\\Package\\PackageProvider",
-            "Snicco\\Monorepo\\Package\\PackageProvider"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 18,
-        "vocabulary": 10,
-        "volume": 59.79,
-        "difficulty": 2.57,
-        "effort": 153.76,
-        "level": 0.39,
-        "bugs": 0.02,
-        "time": 9,
-        "intelligentContent": 23.25,
-        "number_operators": 6,
-        "number_operands": 12,
-        "number_operators_unique": 3,
-        "number_operands_unique": 7,
-        "cloc": 0,
-        "loc": 9,
-        "lloc": 9,
-        "mi": 66.61,
-        "mIwoC": 66.61,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 1,
-        "relativeSystemComplexity": 1,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 1,
-        "totalSystemComplexity": 1,
-        "package": "Snicco\\Monorepo\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 1,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Packagist\\CreatePackage",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "__invoke",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "packageUrlJson",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "packageUrlHtml",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "isPackagistRepo",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "creatPackagistPackage",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 6,
-        "nbMethods": 6,
-        "nbMethodsPrivate": 4,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 10,
-        "ccn": 5,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "GuzzleHttp\\Client",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\Packagist\\AlreadyAtPackagist",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\Package\\Package",
-            "RuntimeException"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 87,
-        "vocabulary": 35,
-        "volume": 446.25,
-        "difficulty": 8.5,
-        "effort": 3793.1,
-        "level": 0.12,
-        "bugs": 0.15,
-        "time": 211,
-        "intelligentContent": 52.5,
-        "number_operators": 19,
-        "number_operands": 68,
-        "number_operators_unique": 7,
-        "number_operands_unique": 28,
-        "cloc": 0,
-        "loc": 50,
-        "lloc": 50,
-        "mi": 43.71,
-        "mIwoC": 43.71,
-        "commentWeight": 0,
-        "kanDefect": 0.36,
-        "relativeStructuralComplexity": 81,
-        "relativeDataComplexity": 0.72,
-        "relativeSystemComplexity": 81.72,
-        "totalStructuralComplexity": 486,
-        "totalDataComplexity": 4.3,
-        "totalSystemComplexity": 490.3,
-        "package": "Snicco\\Monorepo\\Packagist\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 5,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Packagist\\AlreadyAtPackagist",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 1,
-        "nbMethods": 1,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 1,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 1,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "InvalidArgumentException"
-        ],
-        "parents": [
-            "InvalidArgumentException"
-        ],
-        "lcom": 1,
-        "length": 9,
-        "vocabulary": 6,
-        "volume": 23.26,
-        "difficulty": 0.8,
-        "effort": 18.61,
-        "level": 1.25,
-        "bugs": 0.01,
-        "time": 1,
-        "intelligentContent": 29.08,
-        "number_operators": 1,
-        "number_operands": 8,
-        "number_operators_unique": 1,
-        "number_operands_unique": 5,
-        "cloc": 0,
-        "loc": 9,
-        "lloc": 9,
-        "mi": 69.48,
-        "mIwoC": 69.48,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 1,
-        "relativeSystemComplexity": 2,
-        "totalStructuralComplexity": 1,
-        "totalDataComplexity": 1,
-        "totalSystemComplexity": 2,
-        "package": "Snicco\\Monorepo\\Packagist\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 1,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\GitHub\\CreateRepository",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "__invoke",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "findGitHubRepo",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createRepository",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 4,
-        "nbMethods": 4,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 7,
-        "ccn": 4,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Webmozart\\Assert\\Assert",
-            "Github\\Client",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\GitHub\\AlreadyARepository",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 61,
-        "vocabulary": 18,
-        "volume": 254.37,
-        "difficulty": 9.04,
-        "effort": 2299.07,
-        "level": 0.11,
-        "bugs": 0.08,
-        "time": 128,
-        "intelligentContent": 28.14,
-        "number_operators": 14,
-        "number_operands": 47,
-        "number_operators_unique": 5,
-        "number_operands_unique": 13,
-        "cloc": 6,
-        "loc": 47,
-        "lloc": 41,
-        "mi": 73.72,
-        "mIwoC": 47.44,
-        "commentWeight": 26.28,
-        "kanDefect": 0.29,
-        "relativeStructuralComplexity": 64,
-        "relativeDataComplexity": 0.56,
-        "relativeSystemComplexity": 64.56,
-        "totalStructuralComplexity": 256,
-        "totalDataComplexity": 2.22,
-        "totalSystemComplexity": 258.22,
-        "package": "Snicco\\Monorepo\\GitHub\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 4,
-        "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\GitHub\\AlreadyARepository",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 1,
-        "nbMethods": 1,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 1,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 1,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "InvalidArgumentException"
-        ],
-        "parents": [
-            "InvalidArgumentException"
-        ],
-        "lcom": 1,
-        "length": 9,
-        "vocabulary": 6,
-        "volume": 23.26,
-        "difficulty": 0.8,
-        "effort": 18.61,
-        "level": 1.25,
-        "bugs": 0.01,
-        "time": 1,
-        "intelligentContent": 29.08,
-        "number_operators": 1,
-        "number_operands": 8,
-        "number_operators_unique": 1,
-        "number_operands_unique": 5,
-        "cloc": 0,
-        "loc": 9,
-        "lloc": 9,
-        "mi": 69.48,
-        "mIwoC": 69.48,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 1,
-        "relativeDataComplexity": 1,
-        "relativeSystemComplexity": 2,
-        "totalStructuralComplexity": 1,
-        "totalDataComplexity": 1,
-        "totalSystemComplexity": 2,
-        "package": "Snicco\\Monorepo\\GitHub\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 1,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Package\\PackageProvider",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getAll",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getAffected",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "get",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "packagePaths",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "makeAbsolute",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 6,
-        "nbMethods": 6,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 4,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 11,
-        "ccn": 6,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\ComposerJson",
-            "Snicco\\Component\\StrArr\\Str",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Component\\StrArr\\Str",
-            "Snicco\\Monorepo\\Package\\GetDependentPackages",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Snicco\\Monorepo\\Package\\ComposerJson",
-            "Snicco\\Component\\StrArr\\Str",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Symfony\\Component\\Finder\\Finder",
-            "Webmozart\\Assert\\Assert",
-            "Symfony\\Component\\Finder\\Finder",
-            "InvalidArgumentException"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 106,
-        "vocabulary": 24,
-        "volume": 486.01,
-        "difficulty": 7.5,
-        "effort": 3645.05,
-        "level": 0.13,
-        "bugs": 0.16,
-        "time": 203,
-        "intelligentContent": 64.8,
-        "number_operators": 31,
-        "number_operands": 75,
-        "number_operators_unique": 4,
-        "number_operands_unique": 20,
-        "cloc": 18,
-        "loc": 82,
-        "lloc": 64,
-        "mi": 74.17,
-        "mIwoC": 40.98,
-        "commentWeight": 33.19,
-        "kanDefect": 0.82,
-        "relativeStructuralComplexity": 169,
-        "relativeDataComplexity": 0.64,
-        "relativeSystemComplexity": 169.64,
-        "totalStructuralComplexity": 1014,
-        "totalDataComplexity": 3.86,
-        "totalSystemComplexity": 1017.86,
-        "package": "Snicco\\Monorepo\\Package\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 8,
-        "instability": 0.89,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Package\\ComposerJson",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "for",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "require",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "requireDev",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "allRequired",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "name",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "realPath",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "description",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 8,
-        "nbMethods": 7,
-        "nbMethodsPrivate": 1,
-        "nbMethodsPublic": 6,
-        "nbMethodsGetter": 1,
-        "nbMethodsSetters": 0,
-        "wmc": 12,
-        "ccn": 5,
-        "ccnMethodMax": 2,
-        "externals": [
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "RuntimeException",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert"
-        ],
-        "parents": [],
-        "lcom": 2,
-        "length": 69,
-        "vocabulary": 20,
-        "volume": 298.21,
-        "difficulty": 8.33,
-        "effort": 2485.11,
-        "level": 0.12,
-        "bugs": 0.1,
-        "time": 138,
-        "intelligentContent": 35.79,
-        "number_operators": 19,
-        "number_operands": 50,
-        "number_operators_unique": 5,
-        "number_operands_unique": 15,
-        "cloc": 39,
-        "loc": 100,
-        "lloc": 61,
-        "mi": 84.23,
-        "mIwoC": 43.06,
-        "commentWeight": 41.17,
-        "kanDefect": 0.22,
-        "relativeStructuralComplexity": 9,
-        "relativeDataComplexity": 1.84,
-        "relativeSystemComplexity": 10.84,
-        "totalStructuralComplexity": 72,
-        "totalDataComplexity": 14.75,
-        "totalSystemComplexity": 86.75,
-        "package": "Snicco\\Monorepo\\Package\\",
-        "pageRank": 0,
-        "afferentCoupling": 2,
-        "efferentCoupling": 2,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Package\\GetDependentPackages",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__invoke",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "resolveDependents",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "composerJsonNames",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 3,
-        "nbMethods": 3,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 1,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 6,
-        "ccn": 4,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "InvalidArgumentException",
-            "Snicco\\Monorepo\\Package\\PackageCollection"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 64,
-        "vocabulary": 17,
-        "volume": 261.6,
-        "difficulty": 12.27,
-        "effort": 3210.52,
-        "level": 0.08,
-        "bugs": 0.09,
-        "time": 178,
-        "intelligentContent": 21.32,
-        "number_operators": 19,
-        "number_operands": 45,
-        "number_operators_unique": 6,
-        "number_operands_unique": 11,
-        "cloc": 8,
-        "loc": 44,
-        "lloc": 36,
-        "mi": 79.26,
-        "mIwoC": 48.58,
-        "commentWeight": 30.68,
-        "kanDefect": 0.52,
-        "relativeStructuralComplexity": 25,
-        "relativeDataComplexity": 1.11,
-        "relativeSystemComplexity": 26.11,
-        "totalStructuralComplexity": 75,
-        "totalDataComplexity": 3.33,
-        "totalSystemComplexity": 78.33,
-        "package": "Snicco\\Monorepo\\Package\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 2,
-        "instability": 0.67,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Package\\PackageCollection",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "filter",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "toArray",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "merge",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "contains",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "count",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "jsonSerialize",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getIterator",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "get",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 9,
-        "nbMethods": 9,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 9,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 11,
-        "ccn": 3,
-        "ccnMethodMax": 3,
-        "externals": [
-            "Countable",
-            "JsonSerializable",
-            "IteratorAggregate",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "Snicco\\Monorepo\\Package\\PackageCollection",
-            "ArrayIterator",
-            "ArrayIterator",
-            "Snicco\\Monorepo\\Package\\Package",
-            "Webmozart\\Assert\\Assert"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 49,
-        "vocabulary": 14,
-        "volume": 186.56,
-        "difficulty": 5.05,
-        "effort": 941.28,
-        "level": 0.2,
-        "bugs": 0.06,
-        "time": 52,
-        "intelligentContent": 36.98,
-        "number_operators": 12,
-        "number_operands": 37,
-        "number_operators_unique": 3,
-        "number_operands_unique": 11,
-        "cloc": 22,
-        "loc": 72,
-        "lloc": 50,
-        "mi": 84.41,
-        "mIwoC": 46.63,
-        "commentWeight": 37.77,
-        "kanDefect": 0.45,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 2.85,
-        "relativeSystemComplexity": 6.85,
-        "totalStructuralComplexity": 36,
-        "totalDataComplexity": 25.67,
-        "totalSystemComplexity": 61.67,
-        "package": "Snicco\\Monorepo\\Package\\",
-        "pageRank": 0,
-        "afferentCoupling": 4,
-        "efferentCoupling": 8,
-        "instability": 0.67,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Monorepo\\Package\\Package",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "firstPartyDependencies",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "jsonSerialize",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "toArray",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "parsePackageName",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 5,
-        "nbMethods": 5,
-        "nbMethodsPrivate": 1,
-        "nbMethodsPublic": 4,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 5,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "JsonSerializable",
-            "Snicco\\Monorepo\\Package\\ComposerJson",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Snicco\\Component\\StrArr\\Str",
-            "Snicco\\Monorepo\\Package\\ComposerJson",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert",
-            "Webmozart\\Assert\\Assert"
-        ],
-        "parents": [],
-        "lcom": 1,
-        "length": 78,
-        "vocabulary": 18,
-        "volume": 325.25,
-        "difficulty": 3.94,
-        "effort": 1280.69,
-        "level": 0.25,
-        "bugs": 0.11,
-        "time": 71,
-        "intelligentContent": 82.6,
-        "number_operators": 15,
-        "number_operands": 63,
-        "number_operators_unique": 2,
-        "number_operands_unique": 16,
-        "cloc": 54,
-        "loc": 106,
-        "lloc": 52,
-        "mi": 89.53,
-        "mIwoC": 44.84,
-        "commentWeight": 44.69,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 64,
-        "relativeDataComplexity": 0.53,
-        "relativeSystemComplexity": 64.53,
-        "totalStructuralComplexity": 320,
-        "totalDataComplexity": 2.67,
-        "totalSystemComplexity": 322.67,
-        "package": "Snicco\\Monorepo\\Package\\",
-        "pageRank": 0,
-        "afferentCoupling": 4,
-        "efferentCoupling": 4,
-        "instability": 0.5,
         "violations": {}
     }
 ]

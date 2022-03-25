@@ -1,6 +1,6 @@
 var classes = [
     {
-        "name": "Snicco\\Component\\Kernel\\Testing\\DIContainerContractTest",
+        "name": "Snicco\\Component\\Kernel\\Testing\\DIContainerContractTests",
         "interface": false,
         "abstract": true,
         "final": false,
@@ -229,6 +229,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\Testing\\Foo"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 249,
         "vocabulary": 23,
@@ -244,11 +245,11 @@ var classes = [
         "number_operators_unique": 3,
         "number_operands_unique": 20,
         "cloc": 61,
-        "loc": 260,
-        "lloc": 199,
-        "mi": 62.04,
-        "mIwoC": 27.95,
-        "commentWeight": 34.1,
+        "loc": 259,
+        "lloc": 198,
+        "mi": 62.14,
+        "mIwoC": 27.99,
+        "commentWeight": 34.15,
         "kanDefect": 0.15,
         "relativeStructuralComplexity": 121,
         "relativeDataComplexity": 0.17,
@@ -280,6 +281,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 1,
         "vocabulary": 1,
@@ -331,6 +333,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 1,
         "vocabulary": 1,
@@ -382,6 +385,7 @@ var classes = [
         "ccnMethodMax": 0,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -523,7 +527,7 @@ var classes = [
         "nbMethodsPublic": 10,
         "nbMethodsGetter": 2,
         "nbMethodsSetters": 0,
-        "wmc": 18,
+        "wmc": 16,
         "ccn": 5,
         "ccnMethodMax": 4,
         "externals": [
@@ -536,6 +540,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\ValueObject\\Environment"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 7,
         "length": 65,
         "vocabulary": 21,
@@ -617,7 +622,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 6,
+        "wmc": 2,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -630,6 +635,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\ValueObject\\Directories"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 72,
         "vocabulary": 18,
@@ -809,7 +815,7 @@ var classes = [
         "nbMethodsPublic": 6,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 48,
+        "wmc": 44,
         "ccn": 29,
         "ccnMethodMax": 7,
         "externals": [
@@ -842,6 +848,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\Configuration\\NullCache"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 222,
         "vocabulary": 36,
@@ -950,6 +957,10 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [
+            "ArrayAccess",
+            "Psr\\Container\\ContainerInterface"
+        ],
         "lcom": 4,
         "length": 36,
         "vocabulary": 10,
@@ -1023,6 +1034,9 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [
+            "Psr\\Container\\ContainerExceptionInterface"
+        ],
         "lcom": 2,
         "length": 8,
         "vocabulary": 5,
@@ -1088,6 +1102,9 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [
+            "Psr\\Container\\ContainerExceptionInterface"
+        ],
         "lcom": 1,
         "length": 4,
         "vocabulary": 3,
@@ -1143,6 +1160,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -1204,6 +1222,9 @@ var classes = [
             "Snicco\\Component\\Kernel\\Configuration\\ConfigCache"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Configuration\\ConfigCache"
+        ],
         "lcom": 1,
         "length": 4,
         "vocabulary": 3,
@@ -1305,6 +1326,7 @@ var classes = [
             "Webmozart\\Assert\\Assert"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 75,
         "vocabulary": 15,
@@ -1381,6 +1403,9 @@ var classes = [
             "Webimpress\\SafeWriter\\FileWriter"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Configuration\\ConfigCache"
+        ],
         "lcom": 1,
         "length": 35,
         "vocabulary": 14,
@@ -1450,6 +1475,7 @@ var classes = [
             "FilesystemIterator"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 46,
         "vocabulary": 18,
@@ -1579,7 +1605,7 @@ var classes = [
         "nbMethodsPublic": 9,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 0,
-        "wmc": 32,
+        "wmc": 31,
         "ccn": 21,
         "ccnMethodMax": 6,
         "externals": [
@@ -1603,6 +1629,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Kernel\\Configuration\\Config"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 194,
         "vocabulary": 32,
@@ -1674,7 +1701,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 1,
         "nbMethodsSetters": 1,
-        "wmc": 5,
+        "wmc": 3,
         "ccn": 2,
         "ccnMethodMax": 2,
         "externals": [
@@ -1686,6 +1713,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\Kernel\\Configuration\\Config"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 19,
         "vocabulary": 8,

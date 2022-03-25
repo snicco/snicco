@@ -56,6 +56,7 @@ var classes = [
             "Snicco\\Component\\Templating\\ViewComposer\\ClosureViewComposer"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 90,
         "vocabulary": 19,
@@ -115,7 +116,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -125,6 +126,9 @@ var classes = [
             "Snicco\\Component\\Templating\\View\\View"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposer"
+        ],
         "lcom": 1,
         "length": 8,
         "vocabulary": 5,
@@ -189,6 +193,9 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\BadViewComposer"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory"
+        ],
         "lcom": 1,
         "length": 10,
         "vocabulary": 6,
@@ -266,6 +273,7 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 3,
         "length": 18,
         "vocabulary": 9,
@@ -339,7 +347,7 @@ var classes = [
         "nbMethodsPublic": 2,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 7,
+        "wmc": 6,
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
@@ -349,6 +357,7 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\ViewNotFound"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 35,
         "vocabulary": 15,
@@ -404,6 +413,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -459,6 +469,7 @@ var classes = [
         "parents": [
             "InvalidArgumentException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -524,6 +535,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 1,
         "length": 11,
         "vocabulary": 7,
@@ -604,6 +616,7 @@ var classes = [
             ""
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 40,
         "vocabulary": 11,
@@ -663,7 +676,7 @@ var classes = [
         "nbMethodsPublic": 1,
         "nbMethodsGetter": 0,
         "nbMethodsSetters": 1,
-        "wmc": 2,
+        "wmc": 1,
         "ccn": 1,
         "ccnMethodMax": 1,
         "externals": [
@@ -672,6 +685,7 @@ var classes = [
             "Snicco\\Component\\Templating\\OutputBuffer"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 6,
         "vocabulary": 4,
@@ -782,6 +796,9 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\ViewFactory\\ViewFactory"
+        ],
         "lcom": 1,
         "length": 64,
         "vocabulary": 16,
@@ -871,6 +888,7 @@ var classes = [
             "Snicco\\Component\\Templating\\Exception\\ViewNotFound"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 66,
         "vocabulary": 18,
@@ -973,7 +991,7 @@ var classes = [
         "nbMethodsPublic": 3,
         "nbMethodsGetter": 4,
         "nbMethodsSetters": 0,
-        "wmc": 16,
+        "wmc": 12,
         "ccn": 8,
         "ccnMethodMax": 6,
         "externals": [
@@ -985,6 +1003,9 @@ var classes = [
             "RuntimeException"
         ],
         "parents": [],
+        "implements": [
+            "Snicco\\Component\\Templating\\View\\View"
+        ],
         "lcom": 1,
         "length": 101,
         "vocabulary": 27,

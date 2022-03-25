@@ -27,6 +27,7 @@ var classes = [
             "ReflectionProperty"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 16,
         "vocabulary": 6,
@@ -98,6 +99,7 @@ var classes = [
         "parents": [
             "RuntimeException"
         ],
+        "implements": [],
         "lcom": 2,
         "length": 50,
         "vocabulary": 23,
@@ -153,6 +155,7 @@ var classes = [
         "parents": [
             "Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
         ],
+        "implements": [],
         "lcom": 0,
         "length": 0,
         "vocabulary": 0,
@@ -430,6 +433,7 @@ var classes = [
             "InvalidArgumentException"
         ],
         "parents": [],
+        "implements": [],
         "lcom": 2,
         "length": 658,
         "vocabulary": 105,
@@ -496,6 +500,7 @@ var classes = [
         "ccnMethodMax": 4,
         "externals": [],
         "parents": [],
+        "implements": [],
         "lcom": 1,
         "length": 64,
         "vocabulary": 17,
