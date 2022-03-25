@@ -69,7 +69,7 @@ jobs:
           npx semantic-release
         shell: bash
 
-      - name: 'Reenable admin enforcment'
+      - name: 'Re-enable admin enforcement'
         uses: actions/github-script@v6
         if: always()
         with:
