@@ -153,13 +153,15 @@ your development machine:
   awesome tooling that will make your live much easier while developing.
 - Optional: [Mysql + WordPress](https://developer.wordpress.org/cli/commands/core/install/), only if you are making a
   pull request for one of the **WordPress** components.
+- Optional: [Redis](https://redis.io/docs/getting-started/)
 
 After cloning the repository to your local machine you can run:
 
 ```shell
-sh bin/install.sh
+./ bin/install.sh [-w $wp_version]
 ```
-
+It will install all dependencies of SniccoWP (composer + npm) and install the requested 
+WordPress version (pre-configured with all required settings).
 That's it. You are all set.
 
 ### Tests
