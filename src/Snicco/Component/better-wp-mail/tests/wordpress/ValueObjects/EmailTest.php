@@ -491,16 +491,4 @@ final class EmailTest extends WPTestCase
         $email->withPriority(6);
     }
 
-    /**
-     * @test
-     */
-    public function test_exception_if_settings_images_context(): void
-    {
-        $email = new Email();
-
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('[images] is a reserved context key');
-
-        $email->addContext('images', 'foo');
-    }
 }
