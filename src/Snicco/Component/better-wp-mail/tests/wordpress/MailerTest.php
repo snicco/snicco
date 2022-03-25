@@ -849,6 +849,52 @@ final class MailerTest extends WPTestCase
     /**
      * @test
      */
+    public function that_the_cid_is_replaced_in_the_template(): void
+    {
+        $mailer = new Mailer();
+
+        $email =
+            (new TestMail())->withTextBody('öö')
+                ->addEmbed($this->fixtures_dir . '/php-elephant.jpg', 'php-elephant-inline')
+                ->withHtmlTemplate($this->fixtures_dir . '/inline-attachment.php')
+                ->withTo('c@web.de');
+
+        $first_attachment = $email->attachments()[0];
+
+        $mailer->send($email);
+
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
+        $this->assertStringContainsString('Content-Type: multipart/related', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+
+        // us-ascii set by phpmailer because we have no 8-bit chars.
+        $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $body);
+
+        $this->assertStringContainsString('öö', $body);
+
+        // The CID is random we can't know.
+        $this->assertStringContainsString(
+            '<h1>Hi</h1><p>Here is your image</p><img src="cid:' . $first_attachment->cid() . '"',
+            $body
+        );
+
+        $this->assertStringContainsString('Content-Type: application/octet-stream;', $body);
+        $this->assertStringContainsString('name=php-elephant-inline', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: inline;', $body);
+        $this->assertStringContainsString('filename=php-elephant-inline', $body);
+        $expected_cid = $email->attachments()[0]
+            ->cid();
+        $this->assertStringContainsString(sprintf('Content-ID: <%s>', $expected_cid), $body);
+    }
+
+    /**
+     * @test
+     */
     public function test_exception_if_mail_has_no_to_cc_and_bcc_headers(): void
     {
         $mailer = new Mailer();
