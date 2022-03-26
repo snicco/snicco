@@ -6,10 +6,10 @@ namespace Snicco\Component\Templating\ViewFactory;
 
 use RuntimeException;
 use Snicco\Component\StrArr\Str;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\OutputBuffer;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Throwable;
 
 use function file_get_contents;
@@ -30,11 +30,14 @@ final class PHPViewFactory implements ViewFactory
 
     private PHPViewFinder $finder;
 
-    private ViewComposerCollection $composer_collection;
+    private ViewContextResolver $composer_collection;
 
-    public function __construct(PHPViewFinder $finder, ViewComposerCollection $composers)
+    /**
+     * @param list<string> $view_directories
+     */
+    public function __construct(ViewContextResolver $composers, array $view_directories)
     {
-        $this->finder = $finder;
+        $this->finder = new PHPViewFinder($view_directories);
         $this->composer_collection = $composers;
     }
 

@@ -8,16 +8,15 @@ use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Snicco\Component\Templating\Context\GlobalViewContext;
+use Snicco\Component\Templating\Context\NewableInstanceViewComposerFactory;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\Exception\ViewNotFound;
-use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\TemplateEngine;
 use Snicco\Component\Templating\ValueObject\FilePath;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\NewableInstanceViewComposerFactory;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
-use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function file_get_contents;
@@ -37,7 +36,7 @@ final class TemplateEngineTest extends TestCase
 
     private GlobalViewContext $global_view_context;
 
-    private ViewComposerCollection $composers;
+    private ViewContextResolver $composers;
 
     private PHPViewFactory $php_view_factory;
 
@@ -50,12 +49,12 @@ final class TemplateEngineTest extends TestCase
         $this->view_dir = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'views';
 
         $this->global_view_context = new GlobalViewContext();
-        $this->composers = new ViewComposerCollection(
-            new NewableInstanceViewComposerFactory(),
-            $this->global_view_context
+        $this->composers = new ViewContextResolver(
+            $this->global_view_context,
+            new NewableInstanceViewComposerFactory()
         );
 
-        $factory = new PHPViewFactory(new PHPViewFinder([$this->view_dir]), $this->composers);
+        $factory = new PHPViewFactory($this->composers, [$this->view_dir]);
 
         $this->php_view_factory = $factory;
 
@@ -361,11 +360,9 @@ final class TemplateEngineTest extends TestCase
     {
         $engine = new TemplateEngine(
             new PHPViewFactory(
-                new PHPViewFinder(
-                    [__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view2', $this->view_dir]
-                ),
-                $this->composers
-            )
+                $this->composers,
+                [__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view2', $this->view_dir]
+            ),
         );
 
         $view = $engine->make('foo');

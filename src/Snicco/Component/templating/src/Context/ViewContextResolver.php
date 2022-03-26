@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Templating\ViewComposer;
+namespace Snicco\Component\Templating\Context;
 
 use Closure;
 use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
-use Snicco\Component\Templating\GlobalViewContext;
 use Snicco\Component\Templating\ValueObject\View;
 
-final class ViewComposerCollection
+final class ViewContextResolver
 {
     private ViewComposerFactory $composer_factory;
 
@@ -22,11 +21,11 @@ final class ViewComposerCollection
     private array $composers = [];
 
     public function __construct(
-        ?ViewComposerFactory $composer_factory = null,
-        ?GlobalViewContext $global_view_context = null
+        GlobalViewContext $global_view_context,
+        ?ViewComposerFactory $composer_factory = null
     ) {
+        $this->global_view_context = $global_view_context;
         $this->composer_factory = $composer_factory ?: new NewableInstanceViewComposerFactory();
-        $this->global_view_context = $global_view_context ?: new GlobalViewContext();
     }
 
     /**
@@ -44,8 +43,12 @@ final class ViewComposerCollection
     }
 
     /**
-     * Composes the context the passed view in the following order. => global
-     * context => view composer context => local context.
+     * @internal
+     *
+     * Composes the context the passed view in the following order.
+     * => global context => view composer context => local context.
+     *
+     * @psalm-internal Snicco
      */
     public function compose(View $view): View
     {

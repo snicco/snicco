@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Templating;
+namespace Snicco\Component\Templating\Context;
 
 use ArrayAccess;
 use BadMethodCallException;
