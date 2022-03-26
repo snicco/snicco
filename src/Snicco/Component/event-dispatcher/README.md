@@ -17,9 +17,9 @@ composer require snicco/event-dispatcher
 
 ## Documentation
 
-The **EventDispatcher component** is a completely standalone package with zero external dependencies.
+The **EventDispatcher** component is a completely standalone package with zero external dependencies.
 
-The documentation can be found in the README of the [BetterWPHooks](https://github.com/sniccowp/better-wp-hooks) a small adapter around this package.
+The documentation can be found in the README of the [BetterWPHooks](https://github.com/sniccowp/better-wp-hooks), which is a small adapter around this package.
 
 If you want to use this package in a non **WordPress** project simply skip the **WordPress** specific parts
 of the [documentation](https://github.com/sniccowp/better-wp-hooks).
