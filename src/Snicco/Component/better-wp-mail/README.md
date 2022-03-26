@@ -11,8 +11,8 @@ the [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/) fu
 
 **BetterWPMail** is not an SMTP-plugin!
 
-It has (optional) support for many mail-transports, but will default to using a `WPMailTransport` so that it's usable in
-distributed **WordPress** code.
+It has (optional) support for many mail transports, but will default to using
+a [`WPMailTransport`](src/Transport/WPMailTransport.php), so that it's usable in distributed **WordPress** code.
 
 ## Table of contents
 
@@ -20,19 +20,19 @@ distributed **WordPress** code.
 2. [Installation](#installation)
 3. [Creating a mailer](#creating-a-mailer)
 4. [Creating and sending emails](#creating-and-sending-emails)
-   1. [Immutability](#immutability)
-   2. [Sending an email](#sending-an-email)
-   3. [Adding addresses](#adding-addresses)
-   4. [Setting mail content](#setting-mail-content)
-   5. [Adding context to templates](#adding-context-to-templates)
-   6. [Adding attachments](#adding-attachments)
-   7. [Embedding images](#embedding-images)
-   8. [Adding custom headers](#adding-custom-headers)
-   9. [Configuring emails globally](#configuring-emails-globally)
-   10. [Extending the email class](#extending-the-email-class)
-   11. [Using mail events](#using-mail-events)
-   12. [Writing emails in markdown / Using a custom renderer](#writing-emails-in-markdown--using-a-custom-mailrenderer)
-   13. [Handling exceptions](#handling-exceptions)
+    1. [Immutability](#immutability)
+    2. [Sending an email](#sending-an-email)
+    3. [Adding addresses](#adding-addresses)
+    4. [Setting mail content](#setting-mail-content)
+    5. [Adding context to templates](#adding-context-to-templates)
+    6. [Adding attachments](#adding-attachments)
+    7. [Embedding images](#embedding-images)
+    8. [Adding custom headers](#adding-custom-headers)
+    9. [Configuring emails globally](#configuring-emails-globally)
+    10. [Extending the email class](#extending-the-email-class)
+    11. [Using mail events](#using-mail-events)
+    12. [Writing emails in markdown / Using a custom renderer](#writing-emails-in-markdown--using-a-custom-mailrenderer)
+    13. [Handling exceptions](#handling-exceptions)
 5. [Testing](#testing)
 6. [Contributing](#contributing)
 7. [Issues and PR's](#reporting-issues-and-sending-pull-requests)
@@ -40,13 +40,14 @@ distributed **WordPress** code.
 
 ## Motivation
 
-To list all problems of the `wp_mail` function would take a long time. The most problematic ones are:
+To list all problems of the [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/) function would
+take a long time. The most problematic ones are:
 
 - ❌ No support for a plain-text version when sending a html body.
 - ❌ No support for inline-attachments.
 - ❌ No support for complex multi-part emails.
-- ❌ Can't choose a custom filename for attachments.
-- ❌ Can't send attachments that you already have in memory (like a generated PDF). You always have to write to a tmp
+- ❌ You can't choose a custom filename for attachments.
+- ❌ You can't send attachments that you already have in memory (like a generated PDF). You always have to write to a tmp
   file first.
 - ❌ Zero error-handling.
 - ❌ No support for templated emails.
@@ -55,7 +56,7 @@ To list all problems of the `wp_mail` function would take a long time. The most 
 
 Many plugins employ massive hacks to circumvent these issues:
 
-Typical **WordPress** plugin code:
+This is what you probably find in most **WordPress** plugin code:
 
 ```php
 
@@ -78,20 +79,21 @@ function add_plain_text(\PHPMailer\PHPMailer\PHPMailer $mailer) {
 
 **Why is this so bad?**
 
-Besides, that fact that you are running a ton of unneeded code for every email you sent, what happens if `wp_mail`
-throws an exception it recovered somewhere else?
+Besides the fact that you are running a lot of unneeded hooks for every email you sent, what happens if `wp_mail`
+throws an exception that is recovered somewhere else?
 
-You now have 10 callbacks added to every email that you send with `wp_mail` in generell. Not only `my_plugin_send_mail`.
-Depending on what kind of filters you added, there is a great potential for bugs that are impossible to debug.
+You now have ten leftover hook callbacks that modify every outgoing email during the same **PHP** process. Depending on
+the kind of filters you added, there is now great potential for bugs that are almost impossible to debug.
 
 A real example of this can be seen here in
 the [WooCommerce](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/includes/emails/class-wc-email.php#L647)
 code base.
-(Not bashing WooCommerce here, there is no alternative way with the way `wp_mail` currently works.)
+(Not bashing WooCommerce here, there is currently no alternative with the way `wp_mail` works.)
 
-Now, under the hood **WordPress** uses the bundled [PHPMailer](https://github.com/PHPMailer/PHPMailer) which is a
-reputable and rock-solid library.
-[PHPMailer](https://github.com/PHPMailer/PHPMailer) has native support for most of the problems listed above, `wp_mail`
+Under the hood **WordPress** uses the bundled [PHPMailer](https://github.com/PHPMailer/PHPMailer) which is a reputable
+and rock-solid library.
+[PHPMailer](https://github.com/PHPMailer/PHPMailer) has native support for most of the problems listed above,
+[`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/)
 just doesn't use them.
 
 Here is where **BetterWPMail** comes into play.
@@ -104,7 +106,8 @@ composer require snicco/better-wp-mail
 
 ## Creating a `Mailer`
 
-Instead of using `wp_mail` directly, you'll use the `Mailer` class which is able to send `Email` objects.
+Instead of using [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/) directly, you'll use
+the [`Mailer`](src/Mailer.php) class which is able to send [`Email`](src/ValueObject/Email.php) objects.
 
 Quickstart:
 
@@ -125,27 +128,33 @@ The full signature of `Mailer::__construct` is
     )
 ```
 
-- `Transport` is an interface and will default to the `WPMailTransport` where all emails will eventually send
-  using `wp_mail`.
+- [`Transport`](src/Transport/Transport.php) is an interface and will default to
+  the [`WPMailTransport`](src/Transport/WPMailTransport.php) where all emails will eventually send
+  using [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/).
 
   If you are using **BetterWPMail** in a controlled environment, you can provide your own implementation of
-  the `Transport` interface.
+  the [`Transport`](src/Transport/Transport.php) interface. If you are distributing code you should always use the
+  default transport since you can't control the SMTP-Plugin that your users will have installed.
 
   In the future we will create a [`symfony/mailer`](https://symfony.com/doc/current/mailer.html) transport which will
   allow you to send emails with any of dozens of providers that Symfony`s mailer integrates with.
 
-- The `MailRender` interface is responsible for converting mail templates to html/plain-text content. By default,
-  a `FileSystemRenderer` will be used, which searches for a file matching the template name.
-- The `MailEvents` interface is responsible for firing events right before and right after an email was sent. By
-  default, an instance of `NullEvents` will be used which will not emit any events.
-- `MailDefaults` is responsible for providing fallback configuration for settings sender name, reply-to address etc.
+- The [`MailRenderer`](src/Renderer/MailRenderer.php) interface is responsible for converting mail templates to
+  html/plain-text content. By default, a [`FileSystemRenderer`](src/Renderer/FilesystemRenderer.php) will be used, which
+  searches for a file matching the template name.
+- The [`MailEvents`](src/Event/MailEvents.php) interface is responsible for firing events right before and right after
+  an email was sent. By default, an instance of [`NullEvents`](src/Event/NullEvents.php) will be used which will not
+  emit any events.
+- [`MailDefaults`](src/ValueObject/MailDefaults.php) is responsible for providing fallback configuration for settings
+  sender name, reply-to address etc.
 
 ## Creating and sending emails
 
 ### Immutability
 
-The `Email` class is an **immutable** value object. You can not change an email once its created. All public methods on
-the `Email` class return a **new, modified version** of the object.
+The [`Email`](src/ValueObject/Email.php) class is an **immutable** value object. You can not change an email once its
+created. All public methods on the [`Email`](src/ValueObject/Email.php) class return a **new, modified version** of the
+object.
 
 Immutability is not common in the PHP community, but it's actually simple to understand:
 
@@ -163,8 +172,8 @@ $email = $email->addTo('calvin@snicco.io');
 
 The basic convention in **BetterWPMail** is:
 
-- methods starting with **add** will merge attributes and return a **new** object.
-- methods starting with **with** will replace attributes and return a **new** object.
+- methods starting with `add` will merge attributes and return a **new** object.
+- methods starting with `with` will replace attributes and return a **new** object.
 
 ```php
 use Snicco\Component\BetterWPMail\ValueObject\Email;
@@ -187,7 +196,7 @@ $email = $email->withTo('jondoe@snicco.io');
 
 Emails are sent using the [`Mailer`](#creating-a-mailer) class.
 
-At the minimum, an email needs one recipient and a body (html/text/attachments):
+At minimum, an email needs a recipient and a body (html/text/attachments):
 
 ```php
 use Snicco\Component\BetterWPMail\ValueObject\Email;
@@ -201,7 +210,7 @@ $mailer->send($email);
 ### Adding addresses
 
 All the methods that require email addresses (from(), to(), etc.) accept `strings`, `arrays`, a `WP_User` instance or
-a `MailBox` instance
+a [`MailBox`](src/ValueObject/Mailbox.php) instance
 
 ```php
 use Snicco\Component\BetterWPMail\ValueObject\Email;
@@ -236,10 +245,10 @@ $email = $email
 
 ### Setting mail content
 
-You have two options for settings the content of an email:
+You have two options for setting the content of an email:
 
-1. By setting it explicitly as a string
-2. By setting a template on the email object which will be rendered before sending.
+1. By setting it explicitly as a string.
+2. By setting a template on the email object which will be rendered to html/plain-text before sending.
 
 ```php
 use Snicco\Component\BetterWPMail\ValueObject\Email;
@@ -268,7 +277,7 @@ Assuming that we want to send a welcome email to multiple users with the followi
 <?php
 // path/to/email-templates/welcome.php
 ?>
-<h1>Hi <?= esc_html($first_name) ?>,
+<h1>Hi <?= esc_html($first_name) ?></h1>,
 
 <p>Thanks for signing up to <?= esc_html($site_name) ?></p>
 ```
@@ -300,24 +309,22 @@ $mailer->send($email2);
 This will result in the following two emails being sent:
 
 ```html
+<h1>Hi Calvin</h1>,
 
-<h1>Hi Calvin,
-
-    <p>Thanks for signing up to snicco.io</p>
+<p>Thanks for signing up to snicco.io</p>
 ```
 
 ```html
+<h1>Hi Marlon</h1>,
 
-<h1>Hi Marlon,
-
-    <p>Thanks for signing up to snicco.io</p>
+<p>Thanks for signing up to snicco.io</p>
 ```
 
 --- 
 
 ### Adding attachments
 
-Attachments can be added to an instance of `Email` in two ways:
+Attachments can be added to an instance of [`Email`](src/ValueObject/Email.php) in two ways:
 
 1. Attaching a local path on the filesystem.
 
@@ -333,7 +340,7 @@ Attachments can be added to an instance of `Email` in two ways:
       // optionally with a custom display name
       ->addAttachment('/path/to/documents/privacy.pdf', 'Privacy Policy')
       
-      // optionally with a custom content-type, will default to application/octet-stream.
+      // optionally with an explicit content-type,
       ->addAttachment('/path/to/documents/contract.doc', 'Contract', 'application/msword');
   
   ```
@@ -353,6 +360,17 @@ Attachments can be added to an instance of `Email` in two ways:
   
   ```
 
+**BetterWPMail** depends on it's [`Transport` interface](src/Transport/Transport.php) to perform the actual sending
+of emails. For that reason, no mime-type detection is performed if you don't pass an explicit content-type for an
+attachment. This is delegated to the concrete transport implementation. 
+
+The [`WPMailTransport`](src/Transport/WPMailTransport.php) will delegate this task to `wp_mail`/`PHPMailer`.
+The behaviour of `PHPMailer` is the following:
+
+1. If you pass an explicit mime-type, use that.
+2. Try to guess the mime-type from the filename.
+3. If 2. is not possible default to `application/octet-stream` which is defined as "arbitrary binary data".
+
 ---
 
 ### Embedding Images
@@ -366,7 +384,7 @@ In your email content you can then reference the embedded image with the syntax:
 <?php
 // path/to/email-templates/welcome-with-image.php
 ?>
-<h1>Hi <?= esc_html($first_name) ?>,
+<h1>Hi <?= esc_html($first_name) ?></h1>,
 
 <img src="cid:logo">
 ```
@@ -407,11 +425,12 @@ In your email content you can then reference the embedded image with the syntax:
 
 ### Configuring emails globally
 
-The default configuration for all your emails is determined by the `MailDefaults` class that you pass into the
-`Mailer` class.
+The default configuration for all your emails is determined by the [`MailDefaults`](src/ValueObject/MailDefaults.php)
+class that you pass into the
+[`Mailer`](src/Mailer.php) class.
 
-If you don't explicitly pass an instance of `MailDefaults` when creating your `Mailer`, they will be created based on
-the global **WordPress** settings.
+If you don't explicitly pass an instance of [`MailDefaults`](src/ValueObject/MailDefaults.php)
+when [creating your `Mailer`](#creating-a-mailer), they will be created based on the global **WordPress** settings.
 
 Remember: You can always overwrite these settings on a per-email basis.
 
@@ -440,8 +459,8 @@ $mailer = new Mailer(null, null, null, $mail_defaults);
 
 ### Extending the `Email` class
 
-If you are sending the same email in multiple places, you might want to extend the `Email` class to preconfigure shared
-settings in one place.
+If you are sending the same email in multiple places, you might want to extend the [`Email`](src/ValueObject/Email.php)
+class to preconfigure shared settings in one place.
 
 Creating your custom emails classes has a lot of synergy with [mail events](#using-mail-events).
 
@@ -459,14 +478,14 @@ class WelcomeEmail extends Email {
     
     protected string $text = 'We would like to welcome you to snicco.io';
     
+    protected ?string $html_template = '/path/to/templates/welcome.php';
+    
     public function __construct(WP_User $user) {
     
         // configure dynamic properties in the constructor.
         $this->subject = sprintf('Welcome to snicco.io %s', $user->display_name);
         
         $this->to[] = Mailbox::create($user);
-        
-        $this->html_template = '/path/to/templates/welcome.php';
         
         $this->context['first_name'] = $user->first_name;
         
@@ -485,23 +504,24 @@ $mailer->send(new WelcomeEmail($user));
 
 When you call `Mailer::send` two types of events are fired.
 
-Right before passing the `Email` instance to the [`Transport`](#creating-a-mailer) interface the `SendingEmail` event is
-fired. This event contains the current `Email` as a public property which gives you an opportunity to change its
-settings before sending.
+Right before passing the [`Email`](src/ValueObject/Email.php) instance to
+the [configured `Transport`](#creating-a-mailer) the [`SendingEmail`](src/Event/SendingEmail.php) event is fired. This
+event contains the current [`Email`](src/ValueObject/Email.php) as a public property which gives you an opportunity to
+change its settings before sending.
 
-Right after an email is sent the `EmailWasSent` event is fired. This event is mainly useful for logging purposes.
+Right after an email is sent the [`EmailWasSent`](src/Event/EmailWasSent.php) event is fired. This event is mainly
+useful for logging purposes.
 
-To use mail events you have to pass in an instance of `MailEvents`
+To use mail events you have to pass an instance of [`MailEvents`](src/Event/MailEvents.php)
 when [creating your mailer instance](#creating-a-mailer).
 
-By default, **BetterWPMail** comes with an implementation of this interface that uses the 
+By default, **BetterWPMail** comes with an [implementation](src/Event/MailEventsUsingWPHooks.php) of this interface that uses the
 [**WordPress** hook system](https://developer.wordpress.org/plugins/hooks/).
 
 ```php
 use Snicco\Component\BetterWPMail\Event\MailEventsUsingWPHooks;
 use Snicco\Component\BetterWPMail\Event\SendingEmail;
 use Snicco\Component\BetterWPMail\Mailer;
-use Snicco\Component\BetterWPMail\Tests\fixtures\Email\WelcomeEmail;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
 
 $mailer = new Mailer(
@@ -542,13 +562,15 @@ add_filter(MyPluginWelcomeMail::class, function (SendingEmail $event) {
 If you pass no arguments when [creating your mailer instance](#creating-a-mailer) the default renderer will be used
 which is a combination of:
 
-- The `AggregateRenderer` (which delegates the rendering to between multiple `MailRenderer` instances)
-- The `FilesystemRenderer` (which looks for a file that matches the template name set on the  `Email`)
+- The [`AggregateRenderer`](src/Renderer/AggregateRenderer.php) (which delegates the rendering to between
+  multiple [`MailRenderer`](src/Renderer/MailRenderer.php) instances)
+- The [`FilesystemRenderer`](src/Renderer/FilesystemRenderer.php) (which looks for a file that matches the template name
+  set on the [`Email`](src/ValueObject/Email.php#L28))
 
 Let's now create a custom setup:
 
 - We want to render markdown emails and
-- Use the `FilesystemRenderer` as a fallback.
+- Use the [`FilesystemRenderer`](src/Renderer/FilesystemRenderer.php) as a fallback.
 
 First we need a way to convert markdown to HTML.
 
@@ -591,7 +613,7 @@ class MarkdownEmailRenderer implements MailRenderer {
 
 ```
 
-Now that we are ready to render markdown emails we can create our `Mailer` like this:
+Now that we are ready to render markdown emails we can create our [`Mailer`](src/Mailer.php) like this:
 
 ```php
 use Snicco\Component\BetterWPMail\Mailer;
@@ -623,10 +645,12 @@ $mailer->send($email_markdown);
 
 ### Handling exceptions
 
-In contrast to `wp_mail`, calling `Mailer::send()` will throw a `CantSendEmail` exception on failure.
+In contrast to [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/), calling `Mailer::send()` will
+throw a [`CantSendEmail`](src/Exception/CantSendEmail.php) exception on failure.
 
 ```php
-use Snicco\Component\BetterWPMail\Exception\CantSendEmail;use Snicco\Component\BetterWPMail\ValueObject\Email;
+use Snicco\Component\BetterWPMail\Exception\CantSendEmail;
+use Snicco\Component\BetterWPMail\ValueObject\Email;
 
 $email = (new Email())->addTo('calvin@snicco.io')
                       ->withHtmlBody('<h1>BetterWPMail has awesome error handling</h1>');
@@ -641,7 +665,8 @@ try {
 }
 ```
 
-This has numerous advantages over the native way of interacting with `wp_mail`:
+This has numerous advantages over the native way of interacting
+with [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/):
 
 ```php
 
@@ -663,8 +688,8 @@ if($success === false) {
 
 ## Testing
 
-**BetterWPMail** comes with a dedicated testing package that provides a `FakeTransport` class that you should
-use during testing.
+**BetterWPMail** comes with a dedicated testing package that provides a `FakeTransport` class that you should use during
+testing.
 
 First, install the package as a composer `dev-dependency`:
 
@@ -672,8 +697,8 @@ First, install the package as a composer `dev-dependency`:
 composer install --dev snicco/better-wp-mail-testing
 ```
 
-How you wire the `FakeTransport` into your `Mailer` instance during testing greatly depends on how your overall
-codebase is set up. You probably want to do this inside your dependency-injection container.
+How you wire the `FakeTransport` into your [`Mailer`](src/Mailer.php) instance during testing greatly depends on how
+your overall codebase is set up. You probably want to do this inside your dependency-injection container.
 
 The `FakeTranport` has the following **phpunit** assertion methods:
 
@@ -729,8 +754,9 @@ $transport->assertSent(Email::class, function (Email $email) {
 
 **Intercepting WordPress emails**
 
-In addition to faking emails send by your own code that uses the `Mailer` class, the `FakeTransport` also lets
-you fake all other emails that are sent directly by using `wp_mail`.
+In addition to faking emails send by your own code that uses the [Mailer](src/Mailer.php) class, the `FakeTransport`
+also lets you fake all other emails that are sent directly by
+using [`wp_mail`](https://developer.wordpress.org/reference/functions/wp_mail/).
 
 ```php
 use Snicco\Component\BetterWPMail\Testing\FakeTransport;
@@ -766,7 +792,7 @@ $transport->assertSent(WPMail::class, function (WPMail $mail) {
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the
+This repository is a **read-only** split of the development repo of the
 [**Snicco** project](https://github.com/sniccowp/sniccowp).
 
 [This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
@@ -778,5 +804,5 @@ Please report issues in the
 
 ## Security
 
-If you discover a security vulnerability within **BetterWPHooks**, please follow
+If you discover a security vulnerability within **BetterWPMail**, please follow
 our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
