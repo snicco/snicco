@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade\Tests;
 
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ValueObject\View;
 
 use function trim;
 
@@ -59,6 +59,6 @@ final class ViewComposingTest extends BladeTestCase
     {
         $view = $this->view_engine->make($view);
 
-        return $view->render();
+        return $this->view_engine->renderView($view);
     }
 }

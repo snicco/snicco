@@ -24,7 +24,7 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
 
 use function array_map;
 use function array_replace;
@@ -131,15 +131,15 @@ final class BetterWPMailBundle implements Bundle
     private function bindViewEngineRenderer(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ViewEngineMailRenderer::class, function () use ($kernel): ViewEngineMailRenderer {
+            ->shared(TemplateEngineMailRenderer::class, function () use ($kernel): TemplateEngineMailRenderer {
                 try {
                     $engine = $kernel->container()
-                        ->make(ViewEngine::class);
+                        ->make(TemplateEngine::class);
                 } catch (NotFoundExceptionInterface $e) {
                     throw new LogicException(
                         sprintf(
                             "The ViewEngine is not bound in the container. Make sure that you are using the templating-bundle or that you bind an instance of [%s].\n%s",
-                            ViewEngine::class,
+                            TemplateEngine::class,
                             $e->getMessage()
                         ),
                         0,
@@ -147,7 +147,7 @@ final class BetterWPMailBundle implements Bundle
                     );
                 }
 
-                return new ViewEngineMailRenderer($engine);
+                return new TemplateEngineMailRenderer($engine);
             });
     }
 

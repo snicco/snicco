@@ -19,10 +19,10 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\TemplateEngine;
+use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use stdClass;
 
@@ -60,7 +60,7 @@ final class TemplatingBundleTest extends TestCase
 
         $kernel->boot();
 
-        $this->assertCanBeResolved(ViewEngine::class, $kernel);
+        $this->assertCanBeResolved(TemplateEngine::class, $kernel);
     }
 
     /**
@@ -78,7 +78,7 @@ final class TemplatingBundleTest extends TestCase
             ->get(GlobalViewContext::class);
         $this->assertTrue(isset($context->get()['view']));
         $this->assertFalse(isset($context->get()['url']));
-        $this->assertInstanceOf(ViewEngine::class, $context->get()['view']);
+        $this->assertInstanceOf(TemplateEngine::class, $context->get()['view']);
     }
 
     /**
@@ -143,11 +143,11 @@ final class TemplatingBundleTest extends TestCase
         $composers->addComposer('*', ViewComposerWithDependency::class);
 
         /**
-         * @var ViewEngine $engine
+         * @var TemplateEngine $engine
          * @psalm-suppress UnnecessaryVarAnnotation
          */
         $engine = $kernel->container()
-            ->make(ViewEngine::class);
+            ->make(TemplateEngine::class);
 
         /**
          * @var GlobalViewContext $global_context
@@ -188,11 +188,11 @@ final class TemplatingBundleTest extends TestCase
         $kernel->boot();
 
         /**
-         * @var ViewEngine $engine
+         * @var TemplateEngine $engine
          * @psalm-suppress UnnecessaryVarAnnotation
          */
         $engine = $kernel->container()
-            ->make(ViewEngine::class);
+            ->make(TemplateEngine::class);
 
         $foo_view_string = $engine->render('foo');
 

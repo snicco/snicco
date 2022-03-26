@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\ViewComposer;
 
-use Snicco\Component\Templating\Exception\BadViewComposer;
+use Snicco\Component\Templating\Exception\CantCreateViewComposer;
 use Throwable;
 
 final class NewableInstanceViewComposerFactory implements ViewComposerFactory
@@ -14,7 +14,7 @@ final class NewableInstanceViewComposerFactory implements ViewComposerFactory
         try {
             return new $composer();
         } catch (Throwable $e) {
-            throw new BadViewComposer(
+            throw new CantCreateViewComposer(
                 sprintf('The view composer class [%s] is not a newable.', $composer),
                 (int) $e->getCode(),
                 $e

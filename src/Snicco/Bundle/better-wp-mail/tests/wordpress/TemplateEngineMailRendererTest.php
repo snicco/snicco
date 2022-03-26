@@ -7,7 +7,7 @@ namespace Snicco\Bundle\BetterWPMailDB\Tests\wordpress;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Bundle\BetterWPMail\BetterWPMailBundle;
 use Snicco\Bundle\BetterWPMail\Option\MailOption;
-use Snicco\Bundle\BetterWPMail\ViewEngineMailRenderer;
+use Snicco\Bundle\BetterWPMail\TemplateEngineMailRenderer;
 use Snicco\Bundle\Templating\Option\TemplatingOption;
 use Snicco\Bundle\Templating\TemplatingBundle;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
@@ -19,14 +19,14 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
 
 use function dirname;
 
 /**
  * @internal
  */
-final class ViewEngineMailRendererTest extends WPTestCase
+final class TemplateEngineMailRendererTest extends WPTestCase
 {
     use BundleTestHelpers;
 
@@ -124,7 +124,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
         $kernel = $this->getKernel();
         $kernel->boot();
 
-        $renderer = new ViewEngineMailRenderer($kernel->container()->make(ViewEngine::class));
+        $renderer = new TemplateEngineMailRenderer($kernel->container()->make(TemplateEngine::class));
 
         $this->assertTrue($renderer->supports('html-template'));
         $this->assertTrue($renderer->supports('html-template'));
@@ -144,7 +144,7 @@ final class ViewEngineMailRendererTest extends WPTestCase
                 Environment::ALL => [BetterWPMailBundle::class, TemplatingBundle::class],
             ]);
             $config->set('mail', [
-                MailOption::RENDERER => [ViewEngineMailRenderer::class],
+                MailOption::RENDERER => [TemplateEngineMailRenderer::class],
             ]);
             $config->set('templating', [
                 TemplatingOption::DIRECTORIES => [$this->fixturesDir() . '/templates'],

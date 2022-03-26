@@ -11,7 +11,7 @@ use Snicco\Bridge\Blade\Tests\fixtures\Components\Dependency;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\HelloWorld;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\InlineComponent;
 use Snicco\Bridge\Blade\Tests\fixtures\Components\ToUppercaseComponent;
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ValueObject\View;
 
 /**
  * @internal
@@ -24,7 +24,7 @@ final class BladeComponentsTest extends BladeTestCase
     public function basic_anonymous_components_work(): void
     {
         $view = $this->view_engine->make('anonymous-component');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('Hello World', $content);
     }
 
@@ -34,7 +34,7 @@ final class BladeComponentsTest extends BladeTestCase
     public function props_work_on_anonymous_components(): void
     {
         $view = $this->view_engine->make('anonymous-component-props');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('ID:props-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
     }
 
@@ -46,7 +46,7 @@ final class BladeComponentsTest extends BladeTestCase
         Blade::component(HelloWorld::class, 'hello-world');
 
         $view = $this->view_engine->make('class-component');
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('Hello World Class BladeComponent', $content);
     }
 
@@ -60,13 +60,13 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('alert-component');
         $view = $view->with('message', 'foo');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('TYPE:error,MESSAGE:foo', $content);
 
         $view = $this->view_engine->make('alert-component');
         $view = $view->with('message', 'FOO');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('TYPE:error,MESSAGE:COMPONENT METHOD CALLED', $content);
     }
 
@@ -80,7 +80,7 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('with-dependency-component');
         $view = $view->with('message', 'bar');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('MESSAGE:foobar', $content);
     }
 
@@ -94,7 +94,7 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('alert-attributes-component');
         $view = $view->with('message', 'foo');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('ID:alert-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
     }
 
@@ -113,7 +113,7 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('alert-attributes-component');
         $view = $view->with('message', 'foo');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('ID:alert-component,CLASS:mt-4,MESSAGE:foo,TYPE:error', $content);
     }
 
@@ -127,7 +127,7 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('uppercase-component');
         $view = $view->with('content', 'foobar');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('TITLE:CALVIN,CONTENT:FOOBAR', $content);
 
         // with scope
@@ -136,7 +136,7 @@ final class BladeComponentsTest extends BladeTestCase
             'content' => 'foobar',
             'scoped' => 'wordpress',
         ]);
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('TITLE:CALVIN,CONTENT:FOOBAR,SCOPED:WORDPRESS', $content);
     }
 
@@ -150,7 +150,7 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('inline-component');
         $view = $view->with('content', 'foobar');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('Content:FOOBAR,SLOT:CALVIN', $content);
     }
 
@@ -162,13 +162,13 @@ final class BladeComponentsTest extends BladeTestCase
         $view = $this->view_engine->make('dynamic-component');
         $view = $view->with('componentName', 'hello');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('Hello World', $content);
 
         $view = $this->view_engine->make('dynamic-component');
         $view = $view->with('componentName', 'hello-calvin');
 
-        $content = $view->render();
+        $content = $this->view_engine->renderView($view);
         $this->assertViewContent('Hello Calvin', $content);
     }
 }

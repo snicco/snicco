@@ -345,6 +345,14 @@ final class Str
     }
 
     /**
+     * @psalm-pure
+     */
+    public static function replaceAll(string $subject, string $substring, string $replace): string
+    {
+        return str_replace($substring, $replace, $subject);
+    }
+
+    /**
      * @param string $subject regex delimiters will not be added
      *
      * @psalm-pure

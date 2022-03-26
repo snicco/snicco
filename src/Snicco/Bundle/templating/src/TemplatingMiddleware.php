@@ -10,17 +10,17 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
-use Snicco\Component\Templating\ViewEngine;
+use Snicco\Component\Templating\TemplateEngine;
 
 final class TemplatingMiddleware extends Middleware
 {
     /**
-     * @var callable():ViewEngine
+     * @var callable():TemplateEngine
      */
     private $view_engine;
 
     /**
-     * @param callable():ViewEngine $view_engine
+     * @param callable():TemplateEngine $view_engine
      */
     public function __construct(callable $view_engine)
     {
@@ -43,7 +43,7 @@ final class TemplatingMiddleware extends Middleware
         return (new Response($response))->withBody($this->responseFactory()->createStream($body));
     }
 
-    private function getViewEngine(): ViewEngine
+    private function getViewEngine(): TemplateEngine
     {
         return ($this->view_engine)();
     }

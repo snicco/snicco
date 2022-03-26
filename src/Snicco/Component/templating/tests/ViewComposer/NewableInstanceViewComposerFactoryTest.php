@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Component\Templating\Tests\ViewComposer;
 
 use PHPUnit\Framework\TestCase;
-use Snicco\Component\Templating\Exception\BadViewComposer;
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\Exception\CantCreateViewComposer;
+use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\NewableInstanceViewComposerFactory;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;
@@ -25,7 +25,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
     {
         $factory = new NewableInstanceViewComposerFactory();
 
-        $this->expectException(BadViewComposer::class);
+        $this->expectException(CantCreateViewComposer::class);
 
         $factory->create(ComplexComposer::class);
         $this->expectExceptionMessage(
@@ -42,7 +42,7 @@ final class NewableInstanceViewComposerFactoryTest extends TestCase
     {
         $factory = new NewableInstanceViewComposerFactory();
 
-        $this->expectException(BadViewComposer::class);
+        $this->expectException(CantCreateViewComposer::class);
         $this->expectExceptionMessage('The view composer class [ComplexComposer] is not a newable.');
 
         $factory->create('ComplexComposer');
