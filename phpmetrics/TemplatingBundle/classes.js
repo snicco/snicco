@@ -112,7 +112,6 @@ var classes = [
             "Snicco\\Component\\Kernel\\Kernel",
             "Snicco\\Component\\Templating\\TemplateEngine",
             "Snicco\\Component\\Kernel\\Kernel",
-            "Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
             "Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
             "Snicco\\Component\\Kernel\\Kernel",
             "Snicco\\Bundle\\Templating\\TemplatingMiddleware",
@@ -120,9 +119,9 @@ var classes = [
             "Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
             "Snicco\\Component\\Kernel\\Kernel",
             "Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
-            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
+            "Snicco\\Component\\Templating\\Context\\ViewContextResolver",
             "Snicco\\Component\\Kernel\\Kernel",
-            "Snicco\\Component\\Templating\\GlobalViewContext"
+            "Snicco\\Component\\Templating\\Context\\GlobalViewContext"
         ],
         "parents": [],
         "implements": [
@@ -158,7 +157,7 @@ var classes = [
         "package": "Snicco\\Bundle\\Templating\\",
         "pageRank": 0,
         "afferentCoupling": 0,
-        "efferentCoupling": 14,
+        "efferentCoupling": 13,
         "instability": 1,
         "violations": {}
     },
@@ -427,16 +426,16 @@ var classes = [
         "ccn": 4,
         "ccnMethodMax": 4,
         "externals": [
-            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
+            "Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
             "Psr\\Container\\ContainerInterface",
-            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
+            "Snicco\\Component\\Templating\\Context\\ViewComposer",
             "Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
             "ReflectionClass",
             "Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer"
         ],
         "parents": [],
         "implements": [
-            "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory"
+            "Snicco\\Component\\Templating\\Context\\ViewComposerFactory"
         ],
         "lcom": 1,
         "length": 27,

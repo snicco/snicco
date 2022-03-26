@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 15:37:51        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -400,13 +400,12 @@
             "\\InvalidArgumentException",
             "\\RuntimeException",
             "\\Snicco\\Component\\Templating\\TemplateEngine",
-            "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
             "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
             "\\Snicco\\Bundle\\Templating\\TemplatingMiddleware",
             "\\Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
             "\\Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
-            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
-            "\\Snicco\\Component\\Templating\\GlobalViewContext"
+            "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+            "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext"
         ]
     },
     {
@@ -445,11 +444,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
         "size": 3000,
         "relations": []
@@ -481,20 +475,20 @@
         "name": "\\Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
+            "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
             "\\Psr\\Container\\ContainerInterface",
-            "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
+            "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
             "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
             "\\ReflectionClass"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerCollection",
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\GlobalViewContext",
+        "name": "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext",
         "size": 3000,
         "relations": []
     },
@@ -544,7 +538,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
         "size": 3000,
         "relations": []
     },
@@ -554,7 +548,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
         "size": 3000,
         "relations": []
     },
