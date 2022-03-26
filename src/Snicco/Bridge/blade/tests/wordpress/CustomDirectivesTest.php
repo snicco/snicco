@@ -12,10 +12,10 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
-use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Templating\Context\GlobalViewContext;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\TemplateEngine;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Symfony\Component\Finder\Finder;
 use WP_UnitTest_Factory;
 use WP_User;
@@ -40,7 +40,7 @@ final class CustomDirectivesTest extends WPTestCase
 
     private TemplateEngine $view_engine;
 
-    private ViewComposerCollection $composers;
+    private ViewContextResolver $composers;
 
     private BladeStandalone $blade;
 
@@ -63,7 +63,7 @@ final class CustomDirectivesTest extends WPTestCase
         $this->blade_cache = dirname(__DIR__) . '/fixtures/cache';
         $this->blade_views = dirname(__DIR__) . '/fixtures/views';
 
-        $this->composers = new ViewComposerCollection(null, $global_view_context = new GlobalViewContext());
+        $this->composers = new ViewContextResolver($global_view_context = new GlobalViewContext(), null);
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
         $this->blade = $blade;

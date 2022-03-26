@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Templating\Tests;
+namespace Snicco\Component\Templating\Tests\Context;
 
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\StrArr\Str;
-use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Templating\Context\GlobalViewContext;
+use Snicco\Component\Templating\Context\NewableInstanceViewComposerFactory;
+use Snicco\Component\Templating\Context\ViewComposer;
+use Snicco\Component\Templating\Context\ViewComposerFactory;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\ValueObject\FilePath;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\NewableInstanceViewComposerFactory;
-use Snicco\Component\Templating\ViewComposer\ViewComposer;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 
-use function str_replace;
+use function dirname;
 
 /**
  * @internal
@@ -233,28 +233,18 @@ final class ViewComposerCollectionTest extends TestCase
         $name = Str::beforeFirst($view_name, '.php');
         $name = str_replace('.', '/', $name);
 
-        $file = __DIR__ . '/fixtures/views/' . $name . '.php';
+        $file = dirname(__DIR__) . '/fixtures/views/' . $name . '.php';
 
         return new View($view_name, FilePath::fromString($file), PHPViewFactory::class, $context);
     }
 
-    private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewComposerCollection
+    private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewContextResolver
     {
-        return new ViewComposerCollection($this->factory, $global_view_context);
+        return new ViewContextResolver($global_view_context ?: new GlobalViewContext(), $this->factory);
     }
 }
 
 final class TestComposer implements ViewComposer
-{
-    public function compose(View $view): View
-    {
-        return $view->with([
-            'foo' => 'baz',
-        ]);
-    }
-}
-
-final class ComposerWithoutInterface
 {
     public function compose(View $view): View
     {

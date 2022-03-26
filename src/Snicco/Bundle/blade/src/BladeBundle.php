@@ -12,7 +12,7 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 
 use function is_dir;
 
@@ -41,7 +41,7 @@ final class BladeBundle implements Bundle
         $container = $kernel->container();
         $container->shared(BladeViewFactory::class, function () use ($kernel): BladeViewFactory {
             $composers = $kernel->container()
-                ->make(ViewComposerCollection::class);
+                ->make(ViewContextResolver::class);
 
             $dir = $kernel->directories()
                 ->cacheDir() . '/blade';

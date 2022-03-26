@@ -12,12 +12,11 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Templating\Context\GlobalViewContext;
+use Snicco\Component\Templating\Context\ViewComposer;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\TemplateEngine;
-use Snicco\Component\Templating\ViewComposer\ViewComposer;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
-use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function array_map;
@@ -121,12 +120,10 @@ final class TemplatingBundle implements Bundle
     {
         $kernel->container()
             ->shared(PHPViewFactory::class, fn (): PHPViewFactory => new PHPViewFactory(
-                new PHPViewFinder(
-                    $kernel->config()
-                        ->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)
-                ),
                 $kernel->container()
-                    ->make(ViewComposerCollection::class),
+                    ->make(ViewContextResolver::class),
+                $kernel->config()
+                    ->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)
             ));
     }
 
@@ -154,11 +151,11 @@ final class TemplatingBundle implements Bundle
     private function bindViewComposerCollection(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(ViewComposerCollection::class, function () use ($kernel): ViewComposerCollection {
-                $composer_collection = new ViewComposerCollection(
-                    new PsrViewComposerFactory($kernel->container()),
+            ->shared(ViewContextResolver::class, function () use ($kernel): ViewContextResolver {
+                $composer_collection = new ViewContextResolver(
                     $kernel->container()
-                        ->make(GlobalViewContext::class)
+                        ->make(GlobalViewContext::class),
+                    new PsrViewComposerFactory($kernel->container())
                 );
 
                 $composers = $kernel->config()

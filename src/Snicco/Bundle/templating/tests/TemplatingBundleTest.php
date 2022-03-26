@@ -18,11 +18,11 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
-use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Templating\Context\GlobalViewContext;
+use Snicco\Component\Templating\Context\ViewComposer;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\TemplateEngine;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\ViewComposer;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use stdClass;
 
@@ -109,7 +109,7 @@ final class TemplatingBundleTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
-        $this->assertCanBeResolved(ViewComposerCollection::class, $kernel);
+        $this->assertCanBeResolved(ViewContextResolver::class, $kernel);
     }
 
     /**
@@ -135,11 +135,11 @@ final class TemplatingBundleTest extends TestCase
         $kernel->boot();
 
         /**
-         * @var ViewComposerCollection $composers
+         * @var ViewContextResolver $composers
          * @psalm-suppress UnnecessaryVarAnnotation
          */
         $composers = $kernel->container()
-            ->make(ViewComposerCollection::class);
+            ->make(ViewContextResolver::class);
         $composers->addComposer('*', ViewComposerWithDependency::class);
 
         /**

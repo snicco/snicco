@@ -7,9 +7,9 @@ namespace Snicco\Bundle\Templating;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
+use Snicco\Component\Templating\Context\ViewComposer;
+use Snicco\Component\Templating\Context\ViewComposerFactory;
 use Snicco\Component\Templating\Exception\CantCreateViewComposer;
-use Snicco\Component\Templating\ViewComposer\ViewComposer;
-use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
 use Throwable;
 
 use function gettype;

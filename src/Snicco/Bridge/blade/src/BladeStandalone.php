@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Fluent;
 use Illuminate\View\ViewServiceProvider;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 
 use function in_array;
 use function is_array;
@@ -41,11 +41,11 @@ final class BladeStandalone
     public function __construct(
         string $view_cache_directory,
         array $view_directories,
-        ViewComposerCollection $composers
+        ViewContextResolver $context_resolver
     ) {
         $this->view_cache_directory = $view_cache_directory;
         $this->view_directories = $view_directories;
-        $this->blade_view_composer = new BladeViewComposer($composers);
+        $this->blade_view_composer = new BladeViewComposer($context_resolver);
         $this->illuminate_container = Container::getInstance();
         if (! Facade::getFacadeApplication() instanceof IlluminateContainer) {
             /** @psalm-suppress InvalidArgument */
