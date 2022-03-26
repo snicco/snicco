@@ -6,15 +6,15 @@ namespace Snicco\Bridge\Blade;
 
 use Illuminate\View\View as IllumianteView;
 use RuntimeException;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\ValueObject\FilePath;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 
 final class BladeViewComposer
 {
-    private ViewComposerCollection $composers;
+    private ViewContextResolver $composers;
 
-    public function __construct(ViewComposerCollection $composers)
+    public function __construct(ViewContextResolver $composers)
     {
         $this->composers = $composers;
     }
