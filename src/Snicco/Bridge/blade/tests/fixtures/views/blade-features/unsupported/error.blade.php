@@ -1,0 +1,3 @@
+@error('foo')
+Unsupported
+@enderror

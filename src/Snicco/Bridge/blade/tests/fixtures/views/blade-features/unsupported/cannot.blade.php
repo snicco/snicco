@@ -1,0 +1,3 @@
+@cannot('foo')
+    Unsupported
+@endcan
