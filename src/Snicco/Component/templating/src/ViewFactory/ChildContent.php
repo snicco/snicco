@@ -19,11 +19,16 @@ final class ChildContent
         $this->content = $content;
     }
 
-    public function __toString()
+    public function __invoke(): string
     {
         OutputBuffer::start();
         ($this->content)();
 
         return OutputBuffer::get();
+    }
+
+    public function __toString(): string
+    {
+        return $this->__invoke();
     }
 }

@@ -11,6 +11,8 @@ use function ob_get_clean;
 use function ob_start;
 
 /**
+ * @internal
+ *
  * @psalm-internal Snicco\Component\Templating
  */
 final class OutputBuffer

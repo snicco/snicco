@@ -10,6 +10,6 @@ final class HelloWorld extends BladeComponent
 {
     public function render(): string
     {
-        return $this->view('components.hello-world');
+        return $this->componentName('components.hello-world');
     }
 }

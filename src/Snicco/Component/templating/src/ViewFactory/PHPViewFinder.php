@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\ViewFactory;
 
+use Snicco\Component\StrArr\Str;
+use Snicco\Component\Templating\Exception\InvalidFile;
 use Snicco\Component\Templating\Exception\ViewNotFound;
+use Snicco\Component\Templating\ValueObject\FilePath;
 
 use function array_map;
 use function rtrim;
@@ -16,36 +19,38 @@ final class PHPViewFinder
     /**
      * @var list<string>
      */
-    private array $directories = [];
+    private array $directories;
 
     /**
      * @param list<string> $directories
      */
     public function __construct(array $directories = [])
     {
-        $this->directories = $this->normalize($directories);
+        $this->directories = $this->normalizeDirectories($directories);
     }
 
     /**
+     * @internal
+     *
      * @throws ViewNotFound
      *
      * @psalm-internal Snicco\Component\Templating
      */
-    public function filePath(string $view_name): string
+    public function filePath(string $view_name): FilePath
     {
-        if (is_file($view_name)) {
-            return $view_name;
+        try {
+            return FilePath::fromString($view_name);
+        } catch (InvalidFile $e) {
         }
 
         $view_name = $this->normalizeViewName($view_name);
 
         foreach ($this->directories as $directory) {
-            $path = rtrim($directory, '/') . '/' . $view_name . '.php';
+            $path = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $view_name . '.php';
 
-            $exists = is_file($path);
-
-            if ($exists) {
-                return $path;
+            try {
+                return FilePath::fromString($path);
+            } catch (InvalidFile $e) {
             }
         }
 
@@ -53,15 +58,17 @@ final class PHPViewFinder
     }
 
     /**
+     * @internal
+     *
      * @psalm-internal Snicco\Component\Templating
      */
-    public function includeFile(string $path, array $context): void
+    public function includeFile(FilePath $path, array $context): void
     {
         (static function () use ($path, $context): void {
             extract($context, EXTR_SKIP);
             unset($context);
             /** @psalm-suppress UnresolvableInclude */
-            require $path;
+            require (string) $path;
         })();
     }
 
@@ -70,18 +77,16 @@ final class PHPViewFinder
      *
      * @return list<string>
      */
-    private function normalize(array $directories): array
+    private function normalizeDirectories(array $directories): array
     {
         return array_map(fn (string $dir): string => rtrim($dir, DIRECTORY_SEPARATOR), $directories);
     }
 
     private function normalizeViewName(string $view_name): string
     {
-        $name = strstr($view_name, '.php', true);
-        $name = (false === $name) ? $view_name : $name;
+        $view_name = Str::beforeFirst($view_name, '.php');
+        $view_name = trim($view_name, DIRECTORY_SEPARATOR);
 
-        $name = trim($name, '/');
-
-        return str_replace('.', '/', $name);
+        return Str::replaceAll($view_name, '.', DIRECTORY_SEPARATOR);
     }
 }

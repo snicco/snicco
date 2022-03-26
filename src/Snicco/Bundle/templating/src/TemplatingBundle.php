@@ -13,9 +13,9 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Templating\TemplateEngine;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Snicco\Component\Templating\ViewEngine;
 use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\PHPViewFinder;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
@@ -104,7 +104,7 @@ final class TemplatingBundle implements Bundle
     {
         $container = $kernel->container();
         $config = $kernel->config();
-        $container->shared(ViewEngine::class, function () use ($container, $config): ViewEngine {
+        $container->shared(TemplateEngine::class, function () use ($container, $config): TemplateEngine {
             /** @var class-string<ViewFactory>[] $class_names */
             $class_names = $config->getListOfStrings('templating.' . TemplatingOption::VIEW_FACTORIES);
 
@@ -113,7 +113,7 @@ final class TemplatingBundle implements Bundle
                 $class_names
             );
 
-            return new ViewEngine(...$factories);
+            return new TemplateEngine(...$factories);
         });
     }
 
@@ -134,8 +134,8 @@ final class TemplatingBundle implements Bundle
     {
         $kernel->container()
             ->shared(TemplatingMiddleware::class, fn (): TemplatingMiddleware => new TemplatingMiddleware(
-                fn (): ViewEngine => $kernel->container()
-                    ->make(ViewEngine::class)
+                fn (): TemplateEngine => $kernel->container()
+                    ->make(TemplateEngine::class)
             ));
     }
 
@@ -146,7 +146,7 @@ final class TemplatingBundle implements Bundle
                 TemplatingExceptionDisplayer::class,
                 fn (): TemplatingExceptionDisplayer => new TemplatingExceptionDisplayer(
                     $kernel->container()
-                        ->make(ViewEngine::class)
+                        ->make(TemplateEngine::class)
                 )
             );
     }
@@ -181,7 +181,7 @@ final class TemplatingBundle implements Bundle
             ->shared(GlobalViewContext::class, function () use ($kernel): GlobalViewContext {
                 $context = new GlobalViewContext();
                 // This needs to be a closure.
-                $context->add('view', fn (): ViewEngine => $kernel->container()->make(ViewEngine::class));
+                $context->add('view', fn (): TemplateEngine => $kernel->container()->make(TemplateEngine::class));
 
                 if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
                     $context->add('url', fn (): UrlGenerator => $kernel->container()->make(UrlGenerator::class));

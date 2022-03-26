@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Component\Templating\ViewComposer;
 
 use Closure;
-use InvalidArgumentException;
+use Snicco\Component\StrArr\Arr;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\View\View;
-
-use function in_array;
-use function is_array;
-use function is_string;
+use Snicco\Component\Templating\ValueObject\View;
 
 final class ViewComposerCollection
 {
@@ -21,7 +17,7 @@ final class ViewComposerCollection
     private GlobalViewContext $global_view_context;
 
     /**
-     * @var array<array{views: list<string>, handler: class-string<ViewComposer>|Closure(View):View}>
+     * @var array<array{views: array<string>, handler: class-string<ViewComposer>|Closure(View):View}>
      */
     private array $composers = [];
 
@@ -34,36 +30,12 @@ final class ViewComposerCollection
     }
 
     /**
-     * @param list<string>|string                           $views
+     * @param string|string[]                               $views
      * @param class-string<ViewComposer>|Closure(View):View $composer
      */
     public function addComposer($views, $composer): void
     {
-        $views = is_array($views) ? $views : [$views];
-
-        if ($composer instanceof Closure) {
-            $this->composers[] = [
-                'views' => $views,
-                'handler' => $composer,
-            ];
-
-            return;
-        }
-
-        /** @psalm-suppress DocblockTypeContradiction */
-        if (! is_string($composer)) {
-            throw new InvalidArgumentException('A view composer has to be a closure or a class name.');
-        }
-
-        if (! class_exists($composer)) {
-            throw new InvalidArgumentException(sprintf('[%s] is not a valid class.', $composer));
-        }
-
-        if (! in_array(ViewComposer::class, (array) class_implements($composer), true)) {
-            throw new InvalidArgumentException(
-                sprintf('Class [%s] does not implement [%s]', $composer, ViewComposer::class)
-            );
-        }
+        $views = Arr::toArray($views);
 
         $this->composers[] = [
             'views' => $views,
@@ -74,12 +46,6 @@ final class ViewComposerCollection
     /**
      * Composes the context the passed view in the following order. => global
      * context => view composer context => local context.
-     *
-     * @template T of View
-     *
-     * @param T $view
-     *
-     * @return T
      */
     public function compose(View $view): View
     {

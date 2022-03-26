@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\Tests;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\Tests\fixtures\TestDoubles\TestView;
-use Snicco\Component\Templating\View\View;
+use Snicco\Component\Templating\ValueObject\FilePath;
+use Snicco\Component\Templating\ValueObject\View;
 use Snicco\Component\Templating\ViewComposer\NewableInstanceViewComposerFactory;
 use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
 use Snicco\Component\Templating\ViewComposer\ViewComposerFactory;
+use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
+
+use function str_replace;
 
 /**
  * @internal
@@ -35,9 +38,9 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -55,9 +58,9 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('bar_view', fn (View $view): View => $view->with([
+        $collection->addComposer('bar', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -73,13 +76,12 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
-
-        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'bar' => 'baz',
         ]));
 
@@ -98,18 +100,18 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $collection->addComposer(['view_one', 'view_two'], fn (View $view): View => $view->with([
+        $collection->addComposer(['foo', 'bar'], fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
-        $view1 = new TestView('view_one');
+        $view1 = $this->aValidPHPView('foo');
 
         $view1 = $collection->compose($view1);
         $this->assertSame([
             'foo' => 'bar',
         ], $view1->context());
 
-        $view2 = new TestView('view_two');
+        $view2 = $this->aValidPHPView('bar');
         $view2 = $collection->compose($view2);
         $this->assertSame([
             'foo' => 'bar',
@@ -119,82 +121,19 @@ final class ViewComposerCollectionTest extends TestCase
     /**
      * @test
      */
-    public function the_view_does_not_need_to_be_type_hinted(): void
-    {
-        $collection = $this->newViewComposerCollection();
-
-        $view = new TestView('foo_view');
-
-        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
-            'foo' => 'baz',
-        ]));
-
-        $view = $collection->compose($view);
-
-        $this->assertSame([
-            'foo' => 'baz',
-        ], $view->context());
-    }
-
-    /**
-     * @test
-     * @psalm-suppress InvalidScalarArgument
-     */
-    public function test_exception_for_adding_a_bad_view_composer(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $collection = $this->newViewComposerCollection();
-
-        $collection->addComposer('foo_view', 1);
-    }
-
-    /**
-     * @test
-     */
     public function a_view_composer_can_be_a_class(): void
     {
         $collection = $this->newViewComposerCollection();
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo_view', TestComposer::class);
+        $collection->addComposer('foo', TestComposer::class);
 
         $view = $collection->compose($view);
 
         $this->assertSame([
             'foo' => 'baz',
         ], $view->context());
-    }
-
-    /**
-     * @test
-     * @psalm-suppress ArgumentTypeCoercion
-     */
-    public function test_exception_for_bad_composer_class(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('[BadComposer] is not a valid class.');
-
-        $collection = $this->newViewComposerCollection();
-
-        $collection->addComposer('foo_view', 'BadComposer');
-    }
-
-    /**
-     * @test
-     * @psalm-suppress InvalidArgument
-     */
-    public function test_exception_for_composer_without_interface(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf('Class [%s] does not implement [%s]', ComposerWithoutInterface::class, ViewComposer::class)
-        );
-
-        $collection = $this->newViewComposerCollection();
-
-        $collection->addComposer('foo_view', ComposerWithoutInterface::class);
     }
 
     /**
@@ -204,10 +143,10 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
         $view = $view->with('foo', 'bar');
 
-        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -226,9 +165,9 @@ final class ViewComposerCollectionTest extends TestCase
         $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
         $global_context->add('foo', 'bar');
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
 
-        $collection->addComposer('foo_view', fn (View $view): View => $view->with([
+        $collection->addComposer('foo', fn (View $view): View => $view->with([
             'foo' => 'baz',
         ]));
 
@@ -246,29 +185,27 @@ final class ViewComposerCollectionTest extends TestCase
     {
         $collection = $this->newViewComposerCollection();
 
-        $collection->addComposer('foo*', fn (View $view): View => $view->with([
+        $collection->addComposer('partials.post*', fn (View $view): View => $view->with([
             'foo' => 'bar',
         ]));
 
-        $view = new TestView('foo');
+        $view = $this->aValidPHPView('partials.post-body');
         $view = $collection->compose($view);
         $this->assertSame([
             'foo' => 'bar',
         ], $view->context());
 
-        $view = new TestView('foobar');
+        $view = $this->aValidPHPView('partials.post-title');
         $view = $collection->compose($view);
         $this->assertSame([
             'foo' => 'bar',
         ], $view->context());
 
-        $view = new TestView('foobiz');
+        $view = $this->aValidPHPView('partials.share-var');
         $view = $collection->compose($view);
-        $this->assertSame([
-            'foo' => 'bar',
-        ], $view->context());
+        $this->assertSame([], $view->context());
 
-        $view = new TestView('bar');
+        $view = $this->aValidPHPView('foo');
         $view = $collection->compose($view);
         $this->assertSame([], $view->context());
     }
@@ -281,13 +218,24 @@ final class ViewComposerCollectionTest extends TestCase
         $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
         $global_context->add('foo', fn (): string => 'bar');
 
-        $view = new TestView('foo_view');
+        $view = $this->aValidPHPView('foo');
 
         $view = $collection->compose($view);
 
         $this->assertSame([
             'foo' => 'bar',
         ], $view->context());
+    }
+
+    private function aValidPHPView(string $view_name): View
+    {
+        $context = [];
+        $name = Str::beforeFirst($view_name, '.php');
+        $name = str_replace('.', '/', $name);
+
+        $file = __DIR__ . '/fixtures/views/' . $name . '.php';
+
+        return new View($view_name, FilePath::fromString($file), PHPViewFactory::class, $context);
     }
 
     private function newViewComposerCollection(GlobalViewContext $global_view_context = null): ViewComposerCollection

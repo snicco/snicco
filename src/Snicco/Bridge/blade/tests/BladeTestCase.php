@@ -11,8 +11,8 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Component\Templating\TemplateEngine;
 use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Snicco\Component\Templating\ViewEngine;
 use Symfony\Component\Finder\Finder;
 
 use function preg_replace;
@@ -25,7 +25,7 @@ abstract class BladeTestCase extends TestCase
 
     protected string $blade_views;
 
-    protected ViewEngine $view_engine;
+    protected TemplateEngine $view_engine;
 
     protected ViewComposerCollection $composers;
 
@@ -57,7 +57,7 @@ abstract class BladeTestCase extends TestCase
         $blade->boostrap();
         $this->blade = $blade;
 
-        $this->view_engine = new ViewEngine($blade->getBladeViewFactory());
+        $this->view_engine = new TemplateEngine($blade->getBladeViewFactory());
         $this->global_view_context = $global_view_context;
         $this->clearCache();
     }
