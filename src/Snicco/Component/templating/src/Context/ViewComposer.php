@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Templating\ViewComposer;
+namespace Snicco\Component\Templating\Context;
 
 use Snicco\Component\Templating\ValueObject\View;
 

@@ -11,8 +11,8 @@ use Illuminate\Support\Fluent;
 use RuntimeException;
 use Snicco\Bridge\Blade\BladeStandalone;
 use Snicco\Bridge\Blade\DummyApplication;
-use Snicco\Component\Templating\GlobalViewContext;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
+use Snicco\Component\Templating\Context\GlobalViewContext;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 
 /**
  * @internal
@@ -53,7 +53,7 @@ final class BladeStandaloneTest extends BladeTestCase
         $config['foo'] = 'bar';
         Container::getInstance()['config'] = $config;
 
-        $this->composers = new ViewComposerCollection(null, new GlobalViewContext());
+        $this->composers = new ViewContextResolver(new GlobalViewContext(), null);
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
         $blade->boostrap();
 

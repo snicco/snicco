@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bridge\Blade\Tests\wordpress;
+namespace Snicco\Bundle\Blade\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Container\Container;
@@ -10,13 +10,15 @@ use Illuminate\Support\Facades\Facade;
 use InvalidArgumentException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
-use Snicco\Bridge\Blade\BladeStandalone;
-use Snicco\Component\BetterWPAPI\BetterWPAPI;
-use Snicco\Component\Templating\GlobalViewContext;
+use Snicco\Bridge\Blade\BladeViewFactory;
+use Snicco\Bundle\Templating\Option\TemplatingOption;
+use Snicco\Bundle\Testing\Bundle\BundleTest;
+use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
+use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Templating\TemplateEngine;
-use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-use Symfony\Component\Finder\Finder;
+
 use WP_UnitTest_Factory;
 use WP_User;
 
@@ -25,24 +27,17 @@ use function class_exists;
 use function dirname;
 use function preg_replace;
 use function trim;
-use function unlink;
 use function wp_logout;
 use function wp_set_current_user;
 
 /**
  * @internal
  */
-final class CustomDirectivesTest extends WPTestCase
+final class BladeDirectivesTest extends WPTestCase
 {
-    private string $blade_cache;
+    use BundleTestHelpers;
 
-    private string $blade_views;
-
-    private TemplateEngine $view_engine;
-
-    private ViewComposerCollection $composers;
-
-    private BladeStandalone $blade;
+    private Kernel $kernel;
 
     /**
      * @psalm-suppress NullArgument
@@ -60,22 +55,26 @@ final class CustomDirectivesTest extends WPTestCase
             Container::setInstance();
         }
 
-        $this->blade_cache = dirname(__DIR__) . '/fixtures/cache';
-        $this->blade_views = dirname(__DIR__) . '/fixtures/views';
+        $this->bundle_test = new BundleTest($this->fixturesDir());
 
-        $this->composers = new ViewComposerCollection(null, $global_view_context = new GlobalViewContext());
-        $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
-        $blade->boostrap();
-        $this->blade = $blade;
+        $this->kernel = new Kernel(
+            $this->newContainer(),
+            Environment::testing(),
+            $this->bundle_test->setUpDirectories()
+        );
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('templating', [
+                TemplatingOption::DIRECTORIES => [$this->fixturesDir() . '/templates'],
+                TemplatingOption::VIEW_FACTORIES => [BladeViewFactory::class],
+            ]);
+        });
 
-        $this->view_engine = new TemplateEngine($blade->getBladeViewFactory());
-
-        $this->clearCache();
+        $this->kernel->boot();
     }
 
     protected function tearDown(): void
     {
-        $this->clearCache();
+        $this->bundle_test->tearDownDirectories();
         parent::tearDown();
     }
 
@@ -84,18 +83,18 @@ final class CustomDirectivesTest extends WPTestCase
      */
     public function custom_auth_user_directive_works(): void
     {
-        $this->blade->bindWordPressDirectives(new BetterWPAPI());
+        /** @var TemplateEngine $template_engine */
+        $template_engine = $this->kernel->container()
+            ->get(TemplateEngine::class);
 
         wp_set_current_user($this->createUserWithRoles('admin')->ID);
 
-        $view = $this->view('auth');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('auth');
         $this->assertViewContent('AUTHENTICATED', $content);
 
         wp_logout();
 
-        $view = $this->view('auth');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('auth');
         $this->assertViewContent('', $content);
     }
 
@@ -104,16 +103,16 @@ final class CustomDirectivesTest extends WPTestCase
      */
     public function custom_guest_user_directive_works(): void
     {
-        $this->blade->bindWordPressDirectives(new BetterWPAPI());
+        /** @var TemplateEngine $template_engine */
+        $template_engine = $this->kernel->container()
+            ->get(TemplateEngine::class);
 
-        $view = $this->view('guest');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('guest');
         $this->assertViewContent('YOU ARE A GUEST', $content);
 
         wp_set_current_user($this->createUserWithRoles('admin')->ID);
 
-        $view = $this->view('guest');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('guest');
         $this->assertViewContent('', $content);
     }
 
@@ -122,28 +121,32 @@ final class CustomDirectivesTest extends WPTestCase
      */
     public function custom_wp_role_directives_work(): void
     {
-        $this->blade->bindWordPressDirectives(new BetterWPAPI());
+        /** @var TemplateEngine $template_engine */
+        $template_engine = $this->kernel->container()
+            ->get(TemplateEngine::class);
 
         $admin = $this->createUserWithRoles('administrator');
         wp_set_current_user($admin->ID);
 
-        $view = $this->view('role');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('role');
         $this->assertViewContent('ADMIN', $content);
 
         $editor = $this->createUserWithRoles('editor');
         wp_set_current_user($editor->ID);
 
-        $view = $this->view('role');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('role');
         $this->assertViewContent('EDITOR', $content);
 
         $author = $this->createUserWithRoles('author');
         wp_set_current_user($author->ID);
 
-        $view = $this->view('role');
-        $content = $this->view_engine->renderView($view);
+        $content = $template_engine->render('role');
         $this->assertViewContent('', $content);
+    }
+
+    protected function fixturesDir(): string
+    {
+        return dirname(__DIR__) . '/fixtures';
     }
 
     private function assertViewContent(string $expected, string $actual): void
@@ -157,19 +160,6 @@ final class CustomDirectivesTest extends WPTestCase
         }
 
         PHPUnit::assertSame($expected, trim($actual), 'View not renderViewed correctly.');
-    }
-
-    private function view(string $view): View
-    {
-        return $this->view_engine->make('blade-features.' . $view);
-    }
-
-    private function clearCache(): void
-    {
-        $files = Finder::create()->in([$this->blade_cache])->ignoreDotFiles(true);
-        foreach ($files as $file) {
-            unlink($file->getRealPath());
-        }
     }
 
     private function createUserWithRoles(string $role, array $data = []): WP_User

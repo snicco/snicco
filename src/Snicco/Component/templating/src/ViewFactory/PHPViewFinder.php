@@ -14,6 +14,11 @@ use function rtrim;
 
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @internal
+ *
+ * @psalm-internal Snicco\Component\Templating
+ */
 final class PHPViewFinder
 {
     /**
@@ -30,11 +35,7 @@ final class PHPViewFinder
     }
 
     /**
-     * @internal
-     *
      * @throws ViewNotFound
-     *
-     * @psalm-internal Snicco\Component\Templating
      */
     public function filePath(string $view_name): FilePath
     {
@@ -57,11 +58,6 @@ final class PHPViewFinder
         throw new ViewNotFound(sprintf('No file can be found for view name [%s].', $view_name));
     }
 
-    /**
-     * @internal
-     *
-     * @psalm-internal Snicco\Component\Templating
-     */
     public function includeFile(FilePath $path, array $context): void
     {
         (static function () use ($path, $context): void {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Bridge\Blade;
 
 use ArrayAccess;
-use BadMethodCallException;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Illuminate\Contracts\Foundation\Application;
@@ -16,14 +15,33 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Fluent;
 use Illuminate\View\ViewServiceProvider;
-use Snicco\Component\BetterWPAPI\BetterWPAPI;
-use Snicco\Component\Templating\ViewComposer\ViewComposerCollection;
-
-use function in_array;
-use function is_array;
+use Snicco\Bridge\Blade\Exception\UnsupportedDirective;
+use Snicco\Component\Templating\Context\ViewContextResolver;
 
 final class BladeStandalone
 {
+    /**
+     * @var array these directives require the full laravel framework and can not be used
+     */
+    private const UNSUPPORTED_DIRECTIVES = [
+        'auth',
+        'guest',
+        'method',
+        'csrf',
+        'service',
+        'env',
+        'production',
+        'can',
+        'cannot',
+        'canany',
+        'dd',
+        'dump',
+        'lang',
+        'choice',
+        'error',
+        'inject',
+    ];
+
     private string $view_cache_directory;
 
     /**
@@ -41,11 +59,11 @@ final class BladeStandalone
     public function __construct(
         string $view_cache_directory,
         array $view_directories,
-        ViewComposerCollection $composers
+        ViewContextResolver $context_resolver
     ) {
         $this->view_cache_directory = $view_cache_directory;
         $this->view_directories = $view_directories;
-        $this->blade_view_composer = new BladeViewComposer($composers);
+        $this->blade_view_composer = new BladeViewComposer($context_resolver);
         $this->illuminate_container = Container::getInstance();
         if (! Facade::getFacadeApplication() instanceof IlluminateContainer) {
             /** @psalm-suppress InvalidArgument */
@@ -69,29 +87,6 @@ final class BladeStandalone
         $this->listenToEvents();
         $this->disableUnsupportedDirectives();
         $this->bindFrameworkDependencies();
-    }
-
-    /**
-     * @api
-     */
-    public function bindWordPressDirectives(BetterWPAPI $wp = null): void
-    {
-        $wp = $wp ?: new BetterWPAPI();
-
-        Blade::if('auth', fn (): bool => $wp->isUserLoggedIn());
-
-        Blade::if('guest', fn (): bool => ! $wp->isUserLoggedIn());
-
-        Blade::if('role', function (string $expression) use ($wp): bool {
-            if ('admin' === $expression) {
-                $expression = 'administrator';
-            }
-
-            $user = $wp->currentUser();
-
-            return ! empty($user->roles) && is_array($user->roles)
-                && in_array($expression, $user->roles, true);
-        });
     }
 
     private function bindDependencies(): void
@@ -144,21 +139,11 @@ final class BladeStandalone
 
     private function disableUnsupportedDirectives(): void
     {
-        Blade::directive('service', function (): void {
-            throw new BadMethodCallException('The service directive is not supported. Dont use it. Its evil.');
-        });
-
-        Blade::directive('csrf', function (): void {
-            throw new BadMethodCallException(
-                'The csrf directive is not supported as it requires the entire laravel framework.'
-            );
-        });
-
-        Blade::directive('method', function (): void {
-            throw new BadMethodCallException(
-                'The method directive is not supported because form-method spoofing is not supported in WordPress.'
-            );
-        });
+        foreach (self::UNSUPPORTED_DIRECTIVES as $directive) {
+            Blade::directive($directive, function () use ($directive): void {
+                throw new UnsupportedDirective($directive);
+            });
+        }
     }
 
     /**

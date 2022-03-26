@@ -1,0 +1,3 @@
+@canany(['foo'])
+    Unsupported
+@endcan

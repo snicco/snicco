@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Component\Templating\Tests\ViewComposer;
+namespace Snicco\Component\Templating\Tests\Context;
 
 use PHPUnit\Framework\TestCase;
+use Snicco\Component\Templating\Context\NewableInstanceViewComposerFactory;
+use Snicco\Component\Templating\Context\ViewComposer;
 use Snicco\Component\Templating\Exception\CantCreateViewComposer;
 use Snicco\Component\Templating\ValueObject\View;
-use Snicco\Component\Templating\ViewComposer\NewableInstanceViewComposerFactory;
-use Snicco\Component\Templating\ViewComposer\ViewComposer;
 use stdClass;
-
-use function sprintf;
 
 /**
  * @internal

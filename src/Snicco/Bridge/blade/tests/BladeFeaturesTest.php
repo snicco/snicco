@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Bridge\Blade\Tests;
 
-use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\ValueObject\View;
 use stdClass;
 
@@ -237,63 +236,6 @@ final class BladeFeaturesTest extends BladeTestCase
         $view = $this->view('raw-php');
         $content = $this->view_engine->renderView($view);
         $this->assertViewContent('10', $content);
-    }
-
-    /**
-     * @test
-     */
-    public function service_injection_is_forbidden(): void
-    {
-        $view = $this->view('service-injection');
-
-        try {
-            $this->view_engine->renderView($view);
-            $this->fail('@service was allowed.');
-        } catch (ViewCantBeRendered $e) {
-            $this->assertStringStartsWith(
-                'The service directive is not supported. Dont use it. Its evil.',
-                (null !== $e->getPrevious()) ? $e->getPrevious()
-                    ->getMessage() : $e->getMessage()
-            );
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function csrf_directive_throws_expection(): void
-    {
-        $view = $this->view('csrf');
-
-        try {
-            $this->view_engine->renderView($view);
-            $this->fail('@csrf was allowed.');
-        } catch (ViewCantBeRendered $e) {
-            $this->assertStringStartsWith(
-                'The csrf directive is not supported as it requires the entire laravel framework.',
-                (null !== $e->getPrevious()) ? $e->getPrevious()
-                    ->getMessage() : $e->getMessage()
-            );
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function the_method_directive_throws(): void
-    {
-        $view = $this->view('method');
-
-        try {
-            $this->view_engine->renderView($view);
-            $this->fail('@method was allowed.');
-        } catch (ViewCantBeRendered $e) {
-            $this->assertStringStartsWith(
-                'The method directive is not supported because form-method spoofing is not supported in WordPress.',
-                (null !== $e->getPrevious()) ? $e->getPrevious()
-                    ->getMessage() : $e->getMessage()
-            );
-        }
     }
 
     /**
