@@ -110,7 +110,7 @@ var classes = [
             "Snicco\\Component\\Kernel\\Kernel",
             "RuntimeException",
             "Snicco\\Component\\Kernel\\Kernel",
-            "Snicco\\Component\\Templating\\ViewEngine",
+            "Snicco\\Component\\Templating\\TemplateEngine",
             "Snicco\\Component\\Kernel\\Kernel",
             "Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
             "Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
@@ -255,7 +255,7 @@ var classes = [
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
             "Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
-            "Snicco\\Component\\Templating\\ViewEngine"
+            "Snicco\\Component\\Templating\\TemplateEngine"
         ],
         "parents": [
             "Snicco\\Component\\HttpRouting\\Middleware\\Middleware"
@@ -353,10 +353,10 @@ var classes = [
         "ccnMethodMax": 5,
         "externals": [
             "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "Snicco\\Component\\Templating\\ViewEngine",
+            "Snicco\\Component\\Templating\\TemplateEngine",
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "Snicco\\Component\\Templating\\View\\View",
+            "Snicco\\Component\\Templating\\ValueObject\\View",
             "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
         ],
@@ -365,24 +365,24 @@ var classes = [
             "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
         ],
         "lcom": 3,
-        "length": 70,
+        "length": 71,
         "vocabulary": 25,
-        "volume": 325.07,
-        "difficulty": 5.14,
-        "effort": 1671.79,
+        "volume": 329.71,
+        "difficulty": 5.24,
+        "effort": 1727.07,
         "level": 0.19,
         "bugs": 0.11,
-        "time": 93,
-        "intelligentContent": 63.21,
+        "time": 96,
+        "intelligentContent": 62.95,
         "number_operators": 16,
-        "number_operands": 54,
+        "number_operands": 55,
         "number_operators_unique": 4,
         "number_operands_unique": 21,
         "cloc": 6,
         "loc": 50,
         "lloc": 44,
-        "mi": 71.32,
-        "mIwoC": 45.75,
+        "mi": 71.27,
+        "mIwoC": 45.71,
         "commentWeight": 25.56,
         "kanDefect": 0.22,
         "relativeStructuralComplexity": 121,
@@ -430,9 +430,9 @@ var classes = [
             "Snicco\\Component\\Templating\\ViewComposer\\ViewComposerFactory",
             "Psr\\Container\\ContainerInterface",
             "Snicco\\Component\\Templating\\ViewComposer\\ViewComposer",
-            "Snicco\\Component\\Templating\\Exception\\BadViewComposer",
+            "Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
             "ReflectionClass",
-            "Snicco\\Component\\Templating\\Exception\\BadViewComposer"
+            "Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer"
         ],
         "parents": [],
         "implements": [
