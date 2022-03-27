@@ -1,6 +1,6 @@
 {
     "name": "sniccowp/session",
-    "description": "A custom session implementation that is save to use in distributed WordPress code.",
+    "description": "A standalone session implementation for environments where $_SESSION cant be used.",
     "authors": [
         {
             "name": "Calvin Alkan",
