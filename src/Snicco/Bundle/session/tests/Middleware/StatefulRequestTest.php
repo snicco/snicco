@@ -15,7 +15,7 @@ use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
-use Snicco\Component\Session\SessionManager\FactorySessionManager;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\ValueObject\SessionConfig;
@@ -122,7 +122,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
      */
     public function a_session_is_started_from_an_existing_cookie(): void
     {
-        $manager = new FactorySessionManager(
+        $manager = new SessionManger(
             SessionConfig::fromDefaults('test_cookie'),
             $this->session_driver,
             new JsonSerializer()
@@ -343,7 +343,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
      */
     public function a_user_id_is_not_set_if_the_session_already_has_a_user_id(): void
     {
-        $manager = new FactorySessionManager(
+        $manager = new SessionManger(
             SessionConfig::fromDefaults('test_cookie'),
             $this->session_driver,
             new JsonSerializer()
@@ -386,7 +386,7 @@ final class StatefulRequestTest extends MiddlewareTestCase
     {
         $config = array_merge($this->default_config, ['path', $cookie_path]);
 
-        $manager = new FactorySessionManager(
+        $manager = new SessionManger(
             new SessionConfig($config),
             $this->session_driver,
             new JsonSerializer(),

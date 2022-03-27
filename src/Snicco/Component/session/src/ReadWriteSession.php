@@ -12,7 +12,7 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
 use Snicco\Component\Session\Serializer\Serializer;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\Session\ValueObject\SessionId;
@@ -54,7 +54,7 @@ final class ReadWriteSession implements Session
     private array $stored_events = [];
 
     /**
-     * @interal Sessions MUST only be started from a {@see SessionManager}
+     * @interal Sessions MUST only be started from a {@see SessionManagerInterface}
      *
      * @param mixed[] $data
      */

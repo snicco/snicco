@@ -13,7 +13,7 @@ use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 use Snicco\Component\Session\Exception\UnknownSessionSelector;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
-use Snicco\Component\Session\SessionManager\FactorySessionManager;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\Tests\fixtures\TestEventDispatcher;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
@@ -30,7 +30,7 @@ use function time;
 /**
  * @internal
  */
-final class FactorySessionManagerTest extends TestCase
+final class SessionManagerTest extends TestCase
 {
     /**
      * @var positive-int
@@ -564,7 +564,7 @@ final class FactorySessionManagerTest extends TestCase
         ?TestClock $clock = null,
         array $config = null,
         SessionEventDispatcher $event_dispatcher = null
-    ): FactorySessionManager {
+    ): SessionManger {
         $default = [
             'path' => '/',
             'cookie_name' => $this->cookie_name,
@@ -582,7 +582,7 @@ final class FactorySessionManagerTest extends TestCase
             $default = array_merge($default, $config);
         }
 
-        return new FactorySessionManager(
+        return new SessionManger(
             new SessionConfig($default),
             $this->driver,
             new JsonSerializer(),

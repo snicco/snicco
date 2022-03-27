@@ -14,7 +14,7 @@ use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\Session;
-use Snicco\Component\Session\SessionManager\FactorySessionManager;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
@@ -30,7 +30,7 @@ final class SaveResponseAttributesTest extends MiddlewareTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $session_manager = new FactorySessionManager(
+        $session_manager = new SessionManger(
             SessionConfig::mergeDefaults('test_cookie', [
                 'garbage_collection_percentage' => 0,
             ]),
