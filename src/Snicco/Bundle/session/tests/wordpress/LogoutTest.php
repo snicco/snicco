@@ -21,7 +21,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\MutableSession;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\ValueObject\CookiePool;
 
 use function array_key_first;
@@ -77,9 +77,9 @@ final class LogoutTest extends WPTestCase
      */
     public function a_valid_session_is_invalidated_on_wp_logout(): void
     {
-        /** @var SessionManager $m */
+        /** @var SessionManagerInterface $m */
         $m = $this->kernel->container()
-            ->get(SessionManager::class);
+            ->get(SessionManagerInterface::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 
@@ -108,9 +108,9 @@ final class LogoutTest extends WPTestCase
      */
     public function calling_wp_logout_during_the_routing_flow_works(): void
     {
-        /** @var SessionManager $m */
+        /** @var SessionManagerInterface $m */
         $m = $this->kernel->container()
-            ->get(SessionManager::class);
+            ->get(SessionManagerInterface::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 
@@ -155,9 +155,9 @@ final class LogoutTest extends WPTestCase
      */
     public function manually_invalidating_a_session_works_in_the_routing_flow(): void
     {
-        /** @var SessionManager $m */
+        /** @var SessionManagerInterface $m */
         $m = $this->kernel->container()
-            ->get(SessionManager::class);
+            ->get(SessionManagerInterface::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 

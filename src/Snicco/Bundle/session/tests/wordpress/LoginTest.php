@@ -21,7 +21,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Session\Driver\InMemoryDriver;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\MutableSession;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use WP_User;
 
@@ -77,9 +77,9 @@ final class LoginTest extends WPTestCase
      */
     public function a_valid_session_is_rotated_on_wp_login(): void
     {
-        /** @var SessionManager $m */
+        /** @var SessionManagerInterface $m */
         $m = $this->kernel->container()
-            ->get(SessionManager::class);
+            ->get(SessionManagerInterface::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 
@@ -125,9 +125,9 @@ final class LoginTest extends WPTestCase
      */
     public function a_user_can_be_logged_in_during_the_routing_flow(): void
     {
-        /** @var SessionManager $m */
+        /** @var SessionManagerInterface $m */
         $m = $this->kernel->container()
-            ->get(SessionManager::class);
+            ->get(SessionManagerInterface::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 
@@ -182,9 +182,9 @@ final class LoginTest extends WPTestCase
      */
     public function no_exception_is_thrown_if_a_user_gets_logged_in_and_the_session_is_manually_rotated(): void
     {
-        /** @var SessionManager $m */
+        /** @var SessionManagerInterface $m */
         $m = $this->kernel->container()
-            ->get(SessionManager::class);
+            ->get(SessionManagerInterface::class);
         $session = $m->start(CookiePool::fromSuperGlobals());
         $session->put('foo', 'bar');
 

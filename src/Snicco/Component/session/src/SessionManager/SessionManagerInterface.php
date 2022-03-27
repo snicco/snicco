@@ -12,7 +12,7 @@ use Snicco\Component\Session\Session;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionCookie;
 
-interface SessionManager
+interface SessionManagerInterface
 {
     /**
      * @throws CouldNotReadSessionContent

@@ -27,7 +27,7 @@ use function hash_equals;
  * This session manager will always return a new session object when start is
  * being called.
  */
-final class FactorySessionManager implements SessionManager
+final class SessionManger implements SessionManagerInterface
 {
     private SessionConfig $config;
 
