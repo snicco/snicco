@@ -302,7 +302,6 @@ final class Str
         return mb_substr($subject, $start, $length, 'UTF-8');
     }
 
-
     /**
      * @param string $pattern For convenience foo/* will be transformed to foo.*
      *

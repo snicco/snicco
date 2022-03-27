@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\ValueObject;
 
-use Snicco\Component\Session\SessionManager\SessionManagerInterface;
-
 use function time;
 
 final class SessionCookie

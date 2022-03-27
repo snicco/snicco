@@ -37,7 +37,7 @@ final class SignedUrlValidator
     }
 
     /**
-     * @param string $request_target $_SERVER['REQUEST_URI].?$_SERVER['QUERY_STRING']
+     * @param string $request_target  $_SERVER['REQUEST_URI].?$_SERVER['QUERY_STRING']
      * @param string $request_context any additional request context to check against
      *
      * @throws InvalidSignature

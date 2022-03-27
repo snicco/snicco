@@ -20,7 +20,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function file_get_contents;
-use function get_class;
 use function ob_get_clean;
 use function ob_start;
 use function realpath;
