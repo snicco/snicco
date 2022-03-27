@@ -53,7 +53,7 @@ we chose to stick to the way [Symfony](https://symfony.com/blog/new-in-symfony-5
 ## Installation
 
 ```sh
-composer require sniccowp/signed-url
+composer require snicco/signed-url
 ```
 
 ## Usage
