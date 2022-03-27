@@ -31,7 +31,7 @@ composer require snicco/psr7-error-handler
 ## Collaborators for the HTTP error handler
 
 On a high level, the [`HttpErrorHandler` interface](src/HttpErrorHandler.php) is responsible for transforming instances
-of `Throwable` into instances of `ResponseInterface`.
+of `Throwable` into instances of `Psr\Http\Message\ResponseInterface`.
 
 This package provides a [`TestErrorHandler`](src/TestErrorHandler.php), which just re-throws exceptions and
 a [`ProductionErrorHandler`](src/ProductionErrorHandler.php), which is the main focus of this documentation.
@@ -44,10 +44,10 @@ To instantiate the [`ProductionErrorHandler`](src/ProductionErrorHandler.php), *
 
 The [`RequestAwareLogger`](src/Log/RequestAwareLogger.php) is a simple wrapper class around a **PSR-3 logger**.
 
-It allows you to add [log context](https://www.php-fig.org/psr/psr-3/#13-context) to each log-entry depending on the
-caught exception, the current request etc.
+It allows you to add [log context](https://www.php-fig.org/psr/psr-3/#13-context) to each log entry depending on the
+caught exception, the current request, etc.
 
-The last argument passed to `RequestAwareLogger::__construct` is variadic and accepts instances
+The last argument passed to `RequestAwareLogger::__construct()` is variadic and accepts instances
 of [`RequestLogContext`](src/Log/RequestLogContext.php).
 
 This is how you use it:
@@ -65,8 +65,11 @@ $monolog = new Monolog\Logger();
 $request_aware_logger = new RequestAwareLogger($monolog);
 
 // With custom exception levels.
+// By default, any status code > 500 will be LogLevel::CRITICAL
+// Anything below will be LogLevel::ERROR
 $request_aware_logger = new RequestAwareLogger($monolog, [
-    Throwable::class => LogLevel::ALERT    
+    Throwable::class => LogLevel::ALERT,
+    MyCustomException::class => LogLevel::WARNING  
 ])
 
 // With custom log context:
@@ -94,13 +97,13 @@ instances of `Throwable` to an instance of [`ExceptionInformation`](src/Informat
 
 [`ExceptionInformation`](src/Information/ExceptionInformation.php) is a **value object** that consist of:
 
-- a unique identifier for the exception that will be passed as log context and can be displayed to the user.
+- a unique identifier for the exception that will be passed as [log context](https://www.php-fig.org/psr/psr-3/#13-context) and can be displayed to users.
 - an HTTP status code that should be used when displaying the exception.
 - a safe title for displaying the exception (safe meaning "does not contain sensitive information").
 - a safe message for displaying the exception (safe meaning "does not contain sensitive information").
 - the original `Throwable`
 - a transformed `Throwable`
-- the original instance of `ServerRequestInterface`
+- the original instance of `Psr\Http\Message\ServerRequestInterface`
 
 This package comes with
 a [`InformationProviderWithTransformation`](src/Information/InformationProviderWithTransformation.php) implementation of
@@ -194,7 +197,7 @@ This package comes with two default displayers that will be used as a fallback:
 - [`FallbackJsonDisplayer`](src/Displayer/FallbackJsonDisplayer.php), for requests where the `Accept` header
   is `application/json`.
 
-The best displayer for the exception/request is determined by
+The best displayer for the combination of exception/request is determined by
 using [`DisplayerFilters`](src/DisplayerFilter/DisplayerFilter.php).
 
 Out of the box this package comes with the following filters:
@@ -289,7 +292,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface {
 
 This package comes with a [`UserFacing`](src/UserFacing.php) interface, which your custom exceptions can implement.
 
-If an exception is thrown, that implements [`UserFacing`](src/UserFacing.php), the return values of
+If an exception that implements [`UserFacing`](src/UserFacing.php) is thrown, the return values of
 `UserFacing::safeTitle()` and `UserFacing::safeMessage()` will be used to create
 the [`ExceptionInformation`](src/Information/ExceptionInformation.php), instead of the default HTTP error messages that
 might not make sense to your users.
