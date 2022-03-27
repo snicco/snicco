@@ -25,6 +25,7 @@
     11. [Saving a session](#saving-a-session)
     12. [Setting the session cookie](#setting-the-session-cookie)
     13. [Managing sessions based on user id](#managing-session-based-on-user-id)
+    14. [Garbage collection](#garbage-collection)
 4. [Contributing](#contributing)
 5. [Issues and PR's](#reporting-issues-and-sending-pull-requests)
 6. [Security](#security)
@@ -43,7 +44,7 @@ Features:
 - Non-blocking.
 - Tracks if sessions are dirty and only updates if needed (without affected timeouts).
 - Only accepts server-side generated session IDs.
-- Supports many storage backends. All in their separate composer packages.
+- Supports many storage backends, all in their separate composer packages.
 - Uses
   [paragonie's split token approach](https://paragonie.com/blog/2017/02/split-tokens-token-based-authentication-protocols-without-side-channels)
   to protect against [timing based side-channel attacks](https://blog.ircmaxell.com/2014/11/its-all-about-time.html).
@@ -54,12 +55,13 @@ Features:
 - Choose between `json_encoding` your session data or `serializing` it. Or provide your own normalizer.
 - Supports encrypting and decrypting session data (through an interface, don't panic).
 - Advanced session management based on user ids.
+- Support for flash messages and old input.
 - 100% test coverage and 100% **psalm** type-coverage.
 
 ## Installation
 
 ```sh
-composer require sniccowp/session
+composer require snicco/session
 ```
 
 ## Usage
@@ -126,7 +128,7 @@ Currently, the following drivers are available:
     using the **WordPress** database.
 - `WP_Object_Cache` you can use [`snicco/session-wp-bridge`](https://github.com/sniccowp/session-wp-bridge) to store sessions
   using the **WordPress** object cache.
-- `Custom`, if none of these drivers works for you (and there is no **PSR-16** adapter) you can use [`snicco/session-testing`](https://github.com/sniccowp/session-testing)
+- `Custom`, if none of these drivers work for you (and there is no **PSR-16** adapter) you can use [`snicco/session-testing`](https://github.com/sniccowp/session-testing)
     to test a custom implementation of yours against the interface.
 ---
 
@@ -153,13 +155,13 @@ The [`SessionManager`](src/SessionManager/SessionManager.php) uses an instance
 of [`CookiePool`](src/ValueObject/CookiePool.php)
 to start a session.
 
-You can instantiate this object either from the `$_COOKIE` or any plain `array`.
+You can instantiate this object either from the `$_COOKIE` superglobal or any plain `array`.
 
 Calling `SessionManger::start()` will handle:
 
-1. Rejecting the session id and generating a new, empty session if the provided id can't be found in the driver.
+1. Rejecting the session id and generating a new, empty session, if the provided id can't be found in the driver (or is absent).
 2. Rotating the session id based on your configuration.
-3. Rotate and clear the session if the session is idle based on your configuration.
+3. Rotating and clearing the session if the session is idle based on your configuration.
 
 ```php
 use Snicco\Component\Session\SessionManager\SessionManger;
@@ -196,7 +198,7 @@ The [`Session`](src/Session.php) interface is only needed to persist the session
 
 ### The immutable session
 
-The [`ImmutableSession`](src/ImmutableSession.php) only has methods that return data. There is no way to modify the
+The [`ImmutableSession`](src/ImmutableSession.php) only has methods that **return** data. There is no way to modify the
 session.
 
 ```php
@@ -267,6 +269,8 @@ function modifySession(MutableSession $session) {
     
     // Store the current user after authentication.
     $session->setUserId('user-1');
+    // can be int|string
+    $session->setUserId(1);
     
     // Rotates the session id and flushes all data.
     $session->invalidate();
@@ -522,6 +526,17 @@ $in_memory_driver->destroyAllForUserIdExcept($session_selector, 12);
 
 // Returns an array of SerializedSessions for user 12.
 $in_memory_driver->getAllForUserId(12);
+```
+
+---
+
+### Garbage collection
+
+You should call `SessionManager::gc()` on every request where you use sessions.
+
+```php
+// That's it, this will remove all idle sessions with the percentage that you configured.
+$session_manager->gc();
 ```
 
 ## Contributing
