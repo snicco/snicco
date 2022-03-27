@@ -164,9 +164,13 @@ final class Str
     /**
      * @psalm-pure
      */
-    public static function doesNotEndWith(string $subject, string $substring): bool
+    public static function startsWith(string $subject, string $substring): bool
     {
-        return ! self::endsWith($subject, $substring);
+        if ('' === $substring) {
+            return false;
+        }
+
+        return 0 === strncmp($subject, $substring, strlen($substring));
     }
 
     /**
@@ -179,6 +183,22 @@ final class Str
         }
 
         return substr($subject, -strlen($substring)) === $substring;
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function doesNotEndWith(string $subject, string $substring): bool
+    {
+        return ! self::endsWith($subject, $substring);
+    }
+
+    /**
+     * @psalm-pure
+     */
+    public static function afterFirst(string $subject, string $search): string
+    {
+        return '' === $search ? $subject : array_reverse(explode($search, $subject, 2))[0];
     }
 
     /**
@@ -207,15 +227,21 @@ final class Str
     }
 
     /**
+     * Usage: Str::betweenFirst('xayyy', 'x', 'y') => 'a'.
+     *
      * @psalm-pure
      */
-    public static function startsWith(string $subject, string $substring): bool
+    public static function betweenFirst(string $subject, string $from, string $to): string
     {
-        if ('' === $substring) {
-            return false;
+        if ('' === $from) {
+            return $subject;
         }
 
-        return 0 === strncmp($subject, $substring, strlen($substring));
+        if ('' === $to) {
+            return $subject;
+        }
+
+        return self::beforeFirst(self::afterFirst($subject, $from), $to);
     }
 
     /**
@@ -237,21 +263,17 @@ final class Str
     }
 
     /**
-     * Usage: Str::betweenFirst('xayyy', 'x', 'y') => 'a'.
-     *
      * @psalm-pure
      */
-    public static function betweenFirst(string $subject, string $from, string $to): string
+    public static function beforeFirst(string $subject, string $search): string
     {
-        if ('' === $from) {
+        if ('' === $search) {
             return $subject;
         }
 
-        if ('' === $to) {
-            return $subject;
-        }
+        $result = strstr($subject, $search, true);
 
-        return self::beforeFirst(self::afterFirst($subject, $from), $to);
+        return false === $result ? $subject : $result;
     }
 
     /**
@@ -280,27 +302,6 @@ final class Str
         return mb_substr($subject, $start, $length, 'UTF-8');
     }
 
-    /**
-     * @psalm-pure
-     */
-    public static function afterFirst(string $subject, string $search): string
-    {
-        return '' === $search ? $subject : array_reverse(explode($search, $subject, 2))[0];
-    }
-
-    /**
-     * @psalm-pure
-     */
-    public static function beforeFirst(string $subject, string $search): string
-    {
-        if ('' === $search) {
-            return $subject;
-        }
-
-        $result = strstr($subject, $search, true);
-
-        return false === $result ? $subject : $result;
-    }
 
     /**
      * @param string $pattern For convenience foo/* will be transformed to foo.*
