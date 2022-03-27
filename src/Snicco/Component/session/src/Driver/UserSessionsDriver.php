@@ -31,7 +31,7 @@ interface UserSessionsDriver extends SessionDriver
     /**
      * @param int|string $user_id
      *
-     * @return iterable<string,SerializedSession> The key is the selector of the session.
+     * @return iterable<string,SerializedSession> the key is the selector of the session
      */
     public function getAllForUserId($user_id): iterable;
 }

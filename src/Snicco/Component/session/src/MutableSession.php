@@ -59,7 +59,7 @@ interface MutableSession
      * @param mixed $value
      *
      * @throws SessionIsLocked
-     * @throws LogicException If $value of key is not an array.
+     * @throws LogicException  if $value of key is not an array
      */
     public function push(string $key, $value): void;
 

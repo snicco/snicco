@@ -32,8 +32,8 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\Serializer\PHPSerializer;
 use Snicco\Component\Session\Serializer\Serializer;
-use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\SessionManager\SessionManagerInterface;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use stdClass;
 
 use function dirname;

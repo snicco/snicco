@@ -14,8 +14,8 @@ use function random_int;
 final class GarbageCollector
 {
     /**
-     * @throws UnavailableStorage
      * @throws Exception
+     * @throws UnavailableStorage
      */
     public static function clean(SignedUrlStorage $storage, int $percentage): void
     {
