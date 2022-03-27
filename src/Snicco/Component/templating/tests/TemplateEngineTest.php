@@ -110,19 +110,6 @@ final class TemplateEngineTest extends TestCase
     /**
      * @test
      */
-    public function that_a_view_has_access_to_the_template_engine(): void
-    {
-        $this->global_view_context->add('view', $this->template_engine);
-        $view = $this->template_engine->make('has-engine.php');
-        $this->assertSame(
-            'View has engine: ' . get_class($this->template_engine),
-            $this->template_engine->renderView($view)
-        );
-    }
-
-    /**
-     * @test
-     */
     public function a_nested_view_can_be_rendered_with_dot_notation(): void
     {
         $view = $this->template_engine->make('components.input');
