@@ -101,7 +101,7 @@ final class DebugBundleTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [DebugBundle::class]);
+            $config->set('kernel.bundles', [DebugBundle::class]);
         });
 
         $kernel->boot();

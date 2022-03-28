@@ -88,7 +88,7 @@ final class TemplatingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->appendToList('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
+            $config->appendToList('kernel.bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
         $kernel->boot();
 
@@ -206,7 +206,7 @@ final class TemplatingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [
                     HttpRoutingBundle::class,
                     BetterWPHooksBundle::class,
@@ -241,7 +241,7 @@ final class TemplatingBundleTest extends TestCase
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [
                     HttpRoutingBundle::class,
                     BetterWPHooksBundle::class,

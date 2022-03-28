@@ -239,7 +239,7 @@ final class WebTestCaseTest extends WebTestCase
     {
         $kernel = $this->getKernel();
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->appendToList('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
+            $config->appendToList('kernel.bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
         $id = $this->withDataInSession([
@@ -268,7 +268,7 @@ final class WebTestCaseTest extends WebTestCase
     {
         $kernel = $this->getKernel();
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->appendToList('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
+            $config->appendToList('kernel.bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
 
         $id = $this->withDataInSession([
