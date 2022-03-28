@@ -20,7 +20,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function array_map;
-use function array_replace;
 use function copy;
 use function dirname;
 use function is_file;
@@ -40,8 +39,7 @@ final class TemplatingBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        $defaults = require dirname(__DIR__) . '/config/templating.php';
-        $config->set('templating', array_replace($defaults, $config->getArray('templating', [])));
+        $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/templating.php');
 
         foreach ($config->getListOfStrings('templating.directories') as $directory) {
             if (! is_readable($directory)) {

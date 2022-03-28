@@ -30,17 +30,4 @@ final class HttpErrorHandlingOption
      * @var string
      */
     public const LOG_PREFIX = 'error_log_name';
-
-    /**
-     * @var string
-     */
-    public const KEY = 'http_error_handling';
-
-    /**
-     * @interal
-     */
-    public static function key(string $constant): string
-    {
-        return 'http_error_handling.' . $constant;
-    }
 }
