@@ -385,11 +385,7 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_for_invalid_class_in_log_levels(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            '[stdClass] is not a valid exception class-string for ' . HttpErrorHandlingOption::key(
-                HttpErrorHandlingOption::LOG_LEVELS
-            )
-        );
+        $this->expectExceptionMessage('[stdClass] is not a valid exception class-string for ');
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 

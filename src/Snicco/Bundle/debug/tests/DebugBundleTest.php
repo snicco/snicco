@@ -84,7 +84,7 @@ final class DebugBundleTest extends TestCase
         $kernel->boot();
 
         $displayers = $kernel->config()
-            ->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS));
+            ->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS);
 
         $this->assertSame([
             WhoopsHtmlDisplayer::class,

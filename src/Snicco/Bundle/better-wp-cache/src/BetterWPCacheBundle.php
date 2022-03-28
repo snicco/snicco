@@ -16,7 +16,6 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
-use function array_replace;
 use function copy;
 use function dirname;
 use function is_file;
@@ -35,9 +34,7 @@ final class BetterWPCacheBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        $defaults = require dirname(__DIR__) . '/config/better-wp-cache.php';
-        $config->set('better-wp-cache', array_replace($defaults, $config->getArray('better-wp-cache', [])));
-
+        $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/better-wp-cache.php');
         $this->copyConfiguration($kernel);
     }
 

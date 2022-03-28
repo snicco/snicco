@@ -84,7 +84,7 @@ final class WritableConfigTest extends TestCase
         ];
         $config = WritableConfig::fromArray($config);
 
-        $config->mergeMissingDefaults(
+        $config->mergeDefaults(
             'routing',
             [
                 'definitions' => ['routes3', 'routes4'],
@@ -121,7 +121,7 @@ final class WritableConfigTest extends TestCase
         $config = WritableConfig::fromArray($config);
 
         $this->expectException(InvalidArgumentException::class);
-        $config->mergeMissingDefaults('routing.foo', []);
+        $config->mergeDefaults('routing.foo', []);
     }
 
     /**
@@ -130,11 +130,24 @@ final class WritableConfigTest extends TestCase
     public function that_merging_default_configuration_works_with_empty_current_config(): void
     {
         $config = [];
-
         $config = WritableConfig::fromArray($config);
-        $config->mergeMissingDefaults('routing', [
+        $config->mergeDefaults('routing', [
             'foo' => 'bar',
         ]);
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $config->get('routing'));
+    }
+
+    /**
+     * @test
+     */
+    public function that_defaults_can_be_merged_from_a_file(): void
+    {
+        $config = WritableConfig::fromArray([]);
+
+        $config->mergeDefaultsFromFile(__DIR__ . '/fixtures/routing.php');
+
         $this->assertSame([
             'foo' => 'bar',
         ], $config->get('routing'));

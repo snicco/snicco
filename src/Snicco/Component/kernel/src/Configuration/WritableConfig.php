@@ -13,7 +13,10 @@ use function array_unique;
 use function array_unshift;
 use function array_values;
 use function gettype;
+use function pathinfo;
 use function sprintf;
+
+use const PATHINFO_FILENAME;
 
 final class WritableConfig extends Config
 {
@@ -38,7 +41,7 @@ final class WritableConfig extends Config
      *
      * @param array<string, mixed> $defaults can be a multi-dimensional array, but all values must be scalar|null
      */
-    public function mergeMissingDefaults(string $key, array $defaults): void
+    public function mergeDefaults(string $key, array $defaults): void
     {
         $current = $this->get($key, []);
 
@@ -47,6 +50,20 @@ final class WritableConfig extends Config
         $with_defaults = array_replace($defaults, $current);
 
         $this->set($key, $with_defaults);
+    }
+
+    public function mergeDefaultsFromFile(string $config_file): void
+    {
+        Assert::readable($config_file);
+
+        /** @psalm-suppress UnresolvableInclude */
+        $config = require $config_file;
+
+        Assert::isArray($config);
+        Assert::true(Arr::isAssoc($config), sprintf('config in %s must be an associative array.', $config_file));
+
+        $name = pathinfo($config_file, PATHINFO_FILENAME);
+        $this->mergeDefaults($name, $config);
     }
 
     /**
