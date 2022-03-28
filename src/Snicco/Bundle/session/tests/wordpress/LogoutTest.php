@@ -55,7 +55,7 @@ final class LogoutTest extends WPTestCase
             $config->set('session', [
                 SessionOption::COOKIE_NAME => 'test_cookie',
             ]);
-            $config->appendToList('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
+            $config->appendToList('kernel.bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
         $this->bundle_test->withoutHttpErrorHandling($this->kernel);
         $this->kernel->boot();

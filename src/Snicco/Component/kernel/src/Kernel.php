@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\Kernel;
 
 use Generator;
-use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -87,8 +86,8 @@ final class Kernel
 
         if ($this->loaded_from_cache) {
             $this->setBundlesAndBootstrappers(
-                $this->read_only_config->getArray('bundles'),
-                $this->read_only_config->getListOfStrings('app.bootstrappers')
+                $this->read_only_config->getArray('kernel.bundles'),
+                $this->read_only_config->getListOfStrings('kernel.bootstrappers')
             );
         }
 
@@ -169,32 +168,19 @@ final class Kernel
 
     private function loadConfiguration(): array
     {
-        $config_dir = $this->dirs->configDir();
-
         $loaded_config = (new ConfigLoader())($this->dirs->configDir());
         $writable_config = WritableConfig::fromArray($loaded_config);
 
-        if (! $writable_config->has('app')) {
-            throw new InvalidArgumentException(
-                sprintf('The [app.php] config file was not found in the config dir [%s].', $config_dir)
-            );
-        }
-
-        if (! $writable_config->has('app.bootstrappers')) {
-            $writable_config->set('app.bootstrappers', []);
-        }
-
-        if (! $writable_config->has('bundles')) {
-            $writable_config->set('bundles', []);
-        }
+        $writable_config->setIfMissing('kernel.bundles', []);
+        $writable_config->setIfMissing('kernel.bootstrappers', []);
 
         foreach ($this->after_config_loaded_callbacks as $callback) {
             $callback($writable_config, $this);
         }
 
         $this->setBundlesAndBootstrappers(
-            $writable_config->getArray('bundles'),
-            $writable_config->getListOfStrings('app.bootstrappers')
+            $writable_config->getArray('kernel.bundles'),
+            $writable_config->getListOfStrings('kernel.bootstrappers')
         );
 
         foreach ($this->bundles as $bundle) {

@@ -37,7 +37,7 @@ final class ConfigLoaderTest extends TestCase
 
         $this->assertSame([
             'foo' => 'bar',
-        ], $config['app']);
+        ], $config['foo']);
         $this->assertSame([
             'foo' => 'baz',
         ], $config['custom-config']);

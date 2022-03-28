@@ -49,7 +49,6 @@ final class BundleTestHelpersTest extends TestCase
         $this->directories = $this->bundle_test->setUpDirectories();
 
         $this->assertTrue(is_dir($this->fixtures_dir));
-        $this->assertTrue(is_file($this->fixtures_dir . '/config/app.php'));
 
         $this->assertSame($this->fixtures_dir . '/var/cache', $this->directories->cacheDir());
         $this->assertSame($this->fixtures_dir . '/var/log', $this->directories->logDir());
@@ -98,9 +97,7 @@ final class BundleTestHelpersTest extends TestCase
 
         $kernel->boot();
 
-        $this->assertSame([
-            'bootstrappers' => [],
-        ], $kernel->config()->getArray('app'));
+        $this->assertSame($kernel->directories()->configDir(), $this->directories->configDir());
     }
 
     /**
@@ -112,7 +109,7 @@ final class BundleTestHelpersTest extends TestCase
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });
@@ -154,7 +151,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [TestingBundleBundle2::class],
             ]);
         });
@@ -190,7 +187,7 @@ final class BundleTestHelpersTest extends TestCase
         $this->directories = $this->bundle_test->setUpDirectories();
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [TestingBundleBundle1::class],
             ]);
         });

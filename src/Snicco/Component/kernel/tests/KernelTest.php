@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests;
 
-use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -146,26 +145,6 @@ final class KernelTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_if_app_php_config_file_is_not_found(): void
-    {
-        $app = new Kernel(
-            $this->createContainer(),
-            Environment::testing(),
-            Directories::fromDefaults($this->base_dir . '/base_dir_without_app_config')
-        );
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $dir = $this->base_dir . '/base_dir_without_app_config/config';
-
-        $this->expectExceptionMessage(sprintf('The [app.php] config file was not found in the config dir [%s].', $dir));
-
-        $app->boot();
-    }
-
-    /**
-     * @test
-     */
     public function the_config_method_on_the_app_returns_are_read_only_config(): void
     {
         $app = new Kernel(
@@ -183,7 +162,7 @@ final class KernelTest extends TestCase
         $app->boot();
         $config = $app->config();
         $this->assertInstanceOf(ReadOnlyConfig::class, $config);
-        $this->assertSame('bar', $config->get('app.foo'));
+        $this->assertSame('bar', $config->get('foo.foo'));
     }
 
     /**

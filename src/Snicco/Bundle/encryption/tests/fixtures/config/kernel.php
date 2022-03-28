@@ -6,5 +6,7 @@ use Snicco\Bundle\Encryption\EncryptionBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [EncryptionBundle::class],
+    'bundles' => [
+        Environment::ALL => [EncryptionBundle::class],
+    ],
 ];

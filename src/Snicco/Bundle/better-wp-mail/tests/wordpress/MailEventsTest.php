@@ -117,7 +117,7 @@ final class MailEventsTest extends WPTestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [BetterWPHooksBundle::class, BetterWPMailBundle::class],
             ]);
             $config->set('mail', [
@@ -179,7 +179,7 @@ final class MailEventsTest extends WPTestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [BetterWPHooksBundle::class, BetterWPMailBundle::class],
             ]);
         });

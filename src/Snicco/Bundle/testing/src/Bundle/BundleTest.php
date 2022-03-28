@@ -15,14 +15,11 @@ use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
 use SplFileInfo;
 
-use function file_put_contents;
 use function in_array;
 use function is_dir;
-use function is_file;
 use function mkdir;
 use function rmdir;
 use function unlink;
-use function var_export;
 
 /**
  * @internal
@@ -79,15 +76,6 @@ final class BundleTest
             if (! $res) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException('Could not create config directory');
-                // @codeCoverageIgnoreEnd
-            }
-        }
-
-        if (! is_file($config_dir . '/app.php')) {
-            $res = file_put_contents($config_dir . '/app.php', '<?php return ' . var_export([], true) . ';');
-            if (false === $res) {
-                // @codeCoverageIgnoreStart
-                throw new RuntimeException('Could not create app.php config file');
                 // @codeCoverageIgnoreEnd
             }
         }
