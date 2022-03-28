@@ -68,7 +68,7 @@ final class DebugBundle implements Bundle
 
     private function configureHttpRouting(WritableConfig $config, Kernel $kernel): void
     {
-        $config->prepend(HttpErrorHandlingOption::KEY . '.' . HttpErrorHandlingOption::DISPLAYERS, [
+        $config->prependToList(HttpErrorHandlingOption::KEY . '.' . HttpErrorHandlingOption::DISPLAYERS, [
             WhoopsJsonDisplayer::class,
             WhoopsHtmlDisplayer::class,
         ]);

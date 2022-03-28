@@ -88,7 +88,7 @@ final class TemplatingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->extend('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
+            $config->appendToList('bundles.all', [HttpRoutingBundle::class, BetterWPHooksBundle::class]);
         });
         $kernel->boot();
 
