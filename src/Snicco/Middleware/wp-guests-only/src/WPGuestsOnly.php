@@ -11,7 +11,7 @@ use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Exception\RouteNotFound;
 
-final class GuestsOnly extends Middleware
+final class WPGuestsOnly extends Middleware
 {
     private BetterWPAPI $wp;
 

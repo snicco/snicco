@@ -7,7 +7,7 @@ namespace Snicco\Middleware\WPGuestsOnly\Tests;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
-use Snicco\Middleware\WPGuestsOnly\GuestsOnly;
+use Snicco\Middleware\WPGuestsOnly\WPGuestsOnly;
 
 use function json_encode;
 
@@ -143,8 +143,8 @@ final class WPGuestsOnlyTest extends MiddlewareTestCase
         BetterWPAPI $scopable_wp,
         string $redirect_url = null,
         string $json_message = null
-    ): GuestsOnly {
-        return new GuestsOnly($redirect_url, $json_message, $scopable_wp);
+    ): WPGuestsOnly {
+        return new WPGuestsOnly($redirect_url, $json_message, $scopable_wp);
     }
 }
 
