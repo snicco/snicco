@@ -10,7 +10,7 @@ use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Middleware\WPCap\Authorize;
+use Snicco\Middleware\WPCap\AuthorizeWPCap;
 
 use function array_values;
 use function call_user_func;
@@ -18,7 +18,7 @@ use function call_user_func;
 /**
  * @internal
  */
-final class AuthorizeTest extends MiddlewareTestCase
+final class AuthorizeWPCapTest extends MiddlewareTestCase
 {
     private Request $request;
 
@@ -107,9 +107,9 @@ final class AuthorizeTest extends MiddlewareTestCase
         }
     }
 
-    private function newMiddleware(BetterWPAPI $wp, string $cap, ?int $id = null): Authorize
+    private function newMiddleware(BetterWPAPI $wp, string $cap, ?int $id = null): AuthorizeWPCap
     {
-        return new Authorize($cap, $id, $wp);
+        return new AuthorizeWPCap($cap, $id, $wp);
     }
 }
 
