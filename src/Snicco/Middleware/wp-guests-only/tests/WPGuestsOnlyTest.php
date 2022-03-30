@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\GuestsOnly\Tests;
+namespace Snicco\Middleware\WPGuestsOnly\Tests;
 
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
-use Snicco\Middleware\GuestsOnly\GuestsOnly;
+use Snicco\Middleware\WPGuestsOnly\GuestsOnly;
 
 use function json_encode;
 
@@ -16,7 +16,7 @@ use const JSON_THROW_ON_ERROR;
 /**
  * @internal
  */
-final class GuestsOnlyTest extends MiddlewareTestCase
+final class WPGuestsOnlyTest extends MiddlewareTestCase
 {
     /**
      * @test

@@ -18,12 +18,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Middleware\\GuestsOnly\\": "src"
+      "Snicco\\Middleware\\WPGuestsOnly\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Middleware\\GuestsOnly\\Tests\\": "tests"
+      "Snicco\\Middleware\\WPGuestsOnly\\Tests\\": "tests"
     }
   },
   "config": {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Middleware\GuestsOnly;
+namespace Snicco\Middleware\WPGuestsOnly;
 
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
