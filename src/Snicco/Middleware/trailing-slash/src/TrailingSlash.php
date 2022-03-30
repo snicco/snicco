@@ -18,7 +18,7 @@ final class TrailingSlash extends Middleware
 {
     private bool $trailing_slash;
 
-    public function __construct(bool $trailing_slash = true)
+    public function __construct(bool $trailing_slash = false)
     {
         $this->trailing_slash = $trailing_slash;
     }
