@@ -149,10 +149,6 @@
             "match": "!Snicco\\\\Middleware\\\\DefaultHeaders\\\\.*!"
         },
         {
-            "name": "GuestsOnly",
-            "match": "!Snicco\\\\Middleware\\\\GuestsOnly\\\\.*!"
-        },
-        {
             "name": "HttpsOnly",
             "match": "!Snicco\\\\Middleware\\\\HttpsOnly\\\\.*!"
         },
@@ -199,6 +195,10 @@
         {
             "name": "WPCap",
             "match": "!Snicco\\\\Middleware\\\\WPCap\\\\.*!"
+        },
+        {
+            "name": "WPGuestsOnly",
+            "match": "!Snicco\\\\Middleware\\\\WPGuestsOnly\\\\.*!"
         },
         {
             "name": "WPNonce",
