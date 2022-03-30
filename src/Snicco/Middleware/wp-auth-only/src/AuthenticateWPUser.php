@@ -13,7 +13,7 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 use function sprintf;
 
-final class Authenticate extends Middleware
+final class AuthenticateWPUser extends Middleware
 {
     private BetterWPAPI $wp;
 

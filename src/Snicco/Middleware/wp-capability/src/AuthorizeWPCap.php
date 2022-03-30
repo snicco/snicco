@@ -13,7 +13,7 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 use function sprintf;
 
-final class Authorize implements MiddlewareInterface
+final class AuthorizeWPCap implements MiddlewareInterface
 {
     private string $capability;
 
