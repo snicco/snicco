@@ -1,31 +1,34 @@
-# Middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing) to transform cookies to response headers
+# Body parsing middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://codecov.io/gh/sniccowp/sniccowp)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
-[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/ShareCookies/index.html)
+[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/Payload/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
+
+This package provides middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing) to transform
+the request body to a plain `array`.
+
+Currently, a [`JsonToArray`](src/JsonToArray.php) middleware is provided.
+You can build your own middleware by extending the abstract [`Payload`](src/Payload.php) middleware.
 
 ## Installation
 
 ```shell
-composer require snicco/share-cookies-middleware
+composer require snicco/payload-middleware
 ```
 
 ## Usage
 
-This middleware should be added (in a group) to all routes where cookies should be sent to the client.
-
-This middleware will transform all `Cookies` that were added to the response object to an appropriate HTTP-header.
-
-There are no configuration options.
+This middleware can either be added globally, in certain groups or on a per-route basis.
+Choose what works best for you.
 
 ````php
-use Snicco\Middleware\ShareCookies\ShareCookies;
+use Snicco\Middleware\Payload\JsonToArray;
 
 $configurator->get('route1', '/route1', SomeController::class)
-             ->middleware(ShareCookies::class);
+             ->middleware(JsonToArray::class);
 ````
 
 ## Contributing
