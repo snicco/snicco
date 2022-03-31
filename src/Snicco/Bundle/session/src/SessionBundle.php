@@ -238,11 +238,10 @@ final class SessionBundle implements Bundle
                 $group = $config->getString('session.' . SessionOption::PREFIX);
 
                 return new WPObjectCacheDriver(
-                    new Psr16SessionDriver(
-                        CacheFactory::psr16($group),
+                    $group,
                         $kernel->container()
                             ->make(SessionConfig::class)->idleTimeoutInSec()
-                    )
+
                 );
             });
     }
