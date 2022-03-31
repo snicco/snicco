@@ -25,7 +25,8 @@ final class WPObjectCacheDriverTest extends WPTestCase
     protected function createDriver(Clock $clock): SessionDriver
     {
         return new WPObjectCacheDriver(
-            new Psr16SessionDriver(CacheFactory::psr16('my_sessions'), $this->idleTimeout())
+            'my_sessions',
+             $this->idleTimeout()
         );
     }
 
