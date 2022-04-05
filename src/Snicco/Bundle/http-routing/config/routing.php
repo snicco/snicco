@@ -6,7 +6,7 @@ use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 
 return [
     /*
-     * This configuration value is used for generation URLs among other things.
+     * This configuration value is used for generating URLs, among other things.
      * There are 2 recommended options to set this value depending on your use case:
      * a) You are distributing code:
      *    - Parse this value from the site_url WordPress option
