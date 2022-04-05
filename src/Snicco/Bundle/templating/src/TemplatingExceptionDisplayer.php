@@ -70,15 +70,19 @@ final class TemplatingExceptionDisplayer implements ExceptionDisplayer
         $request = Request::fromPsr($information->serverRequest());
         $is_admin = $request->isToAdminArea();
 
-        if (! isset($this->views[$information->identifier()])) {
-            $status = (string) $information->statusCode();
+        if (!isset($this->views[$information->identifier()])) {
+            $status = (string)$information->statusCode();
             $possible_views = array_filter([
                 $is_admin ? sprintf('%s-admin', $status) : null,
                 $is_admin ? sprintf('errors.%s-admin', $status) : null,
                 $is_admin ? sprintf('exceptions.%s-admin', $status) : null,
+                $is_admin ? 'exceptions.500-admin' : null,
+                $is_admin ? 'exceptions.500-admin' : null,
                 $status,
                 sprintf('errors.%s', $status),
                 sprintf('exceptions.%s', $status),
+                'exceptions.500',
+                'errors.500',
             ]);
             $this->views[$information->identifier()] = $this->engine->make($possible_views);
         }
