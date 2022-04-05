@@ -23,9 +23,10 @@ We also recommend that you read [How to Contribute to Open Source](https://opens
     4. [Linting](#linting)
     5. [Git Hooks](#git-hooks)
 6. [Coding rules](#coding-rules)
-    1. [Source Code](#source-code)
-    2. [Documentation](#documentation)
-    3. [Commit Messages](#commit-message-guidelines)
+   1. [Signed Commits](#signed-commits) 
+   2. [Source Code](#source-code)
+   3. [Documentation](#documentation)
+   4. [Commit Messages](#commit-message-guidelines)
 7. [Legal](#legal)
 
 ## Questions and Problems
@@ -240,6 +241,10 @@ If you want to skip the git hooks you can run your git commands with the `--no-v
 by our CI pipelines.
 
 ## Coding rules
+
+### Signed Commits
+
+To improve supply-chain security, all commits in the monorepo must be [signed with a GPG-key](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
 
 ### Source code
 
