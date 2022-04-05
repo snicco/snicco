@@ -238,7 +238,7 @@ final class SessionBundle implements Bundle
                 return new WPObjectCacheDriver(
                     $group,
                     $kernel->container()
-                            ->make(SessionConfig::class)->idleTimeoutInSec()
+                        ->make(SessionConfig::class)->idleTimeoutInSec()
                 );
             });
     }
