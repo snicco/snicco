@@ -160,9 +160,6 @@ final class DebugBundle implements Bundle
 
     private function copyConfiguration(Kernel $kernel): void
     {
-        if (! $kernel->env()->isDevelop()) {
-            return;
-        }
 
         $destination = $kernel->directories()
             ->configDir() . '/debug.php';
