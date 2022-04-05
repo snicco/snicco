@@ -7,7 +7,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/BetterWPHooksBundle/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-This **WordPress** bundle configures the standalone [`snicco/better-wp-hooks`](https://github.com/sniccowp/better-wp-hooks) library for usage in applications based on [`snicco/kernel`](https://github.com/sniccowp/better-wp-cache).
+This **WordPress** bundle configures the standalone [`snicco/better-wp-hooks`](https://github.com/sniccowp/better-wp-hooks) library for usage in applications based on [`snicco/kernel`](https://github.com/sniccowp/kernel).
 
 ## Installation
 
