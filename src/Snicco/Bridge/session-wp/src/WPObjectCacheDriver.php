@@ -18,10 +18,7 @@ final class WPObjectCacheDriver implements SessionDriver
      */
     public function __construct(string $cache_group, int $idle_timeout_in_seconds)
     {
-        $this->driver = new Psr16SessionDriver(
-            CacheFactory::psr16($cache_group),
-            $idle_timeout_in_seconds
-        );
+        $this->driver = new Psr16SessionDriver(CacheFactory::psr16($cache_group), $idle_timeout_in_seconds);
     }
 
     public function read(string $selector): SerializedSession

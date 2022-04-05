@@ -7,7 +7,6 @@ namespace Snicco\Bundle\Session;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;
 use Snicco\Bridge\SessionWP\WPDBSessionDriver;
 use Snicco\Bridge\SessionWP\WPObjectCacheDriver;
 use Snicco\Bundle\BetterWPCache\BetterWPCacheBundle;
@@ -19,7 +18,6 @@ use Snicco\Bundle\Session\Event\WPLogin;
 use Snicco\Bundle\Session\Event\WPLogout;
 use Snicco\Bundle\Session\Middleware\StatefulRequest;
 use Snicco\Bundle\Session\Option\SessionOption;
-use Snicco\Component\BetterWPCache\CacheFactory;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\EventDispatcher\EventDispatcher;
@@ -239,9 +237,8 @@ final class SessionBundle implements Bundle
 
                 return new WPObjectCacheDriver(
                     $group,
-                        $kernel->container()
+                    $kernel->container()
                             ->make(SessionConfig::class)->idleTimeoutInSec()
-
                 );
             });
     }
