@@ -28,7 +28,7 @@ the first time the kernel is booted in dev mode.
 
 ## Usage
 
-Add the [`DebugBundle`](https://github.com/sniccowp/debug-bundle) to your `bundles.php`
+Add the [`DebugBundle`](src/DebugBundle.php) to your `bundles.php`
 config file **in the DEV environment**.
 
 ```php
