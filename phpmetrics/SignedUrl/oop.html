@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -197,6 +194,9 @@
                         <a href="../WPCap/index.html">WPCap</a>
                     </li>
                                     <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
+                    </li>
+                                    <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
                     </li>
                             </ul>
@@ -209,27 +209,27 @@
             <div class="bloc bloc-number">
                 <div class="label">classes </div>
                 <div class="number">
-                    15                    <small> (100 %)</small>
+                    16                    <small> (100 %)</small>
                 </div>
             </div>
         </div>
         <div class="column">
             <div class="bloc bloc-number">
                 <div class="label">interfaces </div>
-                <div class="number">1                    <small> (7 %)</small>
+                <div class="number">1                    <small> (6 %)</small>
                 </div>
             </div>
         </div>
         <div class="column">
             <div class="bloc bloc-number">
                 <div class="label">average LCOM </div>
-                <div class="number">0.87</div>
+                <div class="number">1</div>
             </div>
         </div>
         <div class="column">
             <div class="bloc bloc-number">
                 <div class="label">logical lines of code by class</div>
-                <div class="number">32</div>
+                <div class="number">31</div>
             </div>
         </div>
         <div class="column">
@@ -284,33 +284,6 @@
                                 </td>
                                                     </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\HMAC</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    72.65                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    2                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
-                                    2                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
-                                    0.02                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.08);">
-                                    4.29                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
                             <td><span class="path">Snicco\Component\SignedUrl\SignedUrlValidator</span></td>
                                                             <td>
                                     <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
@@ -338,14 +311,95 @@
                                 </td>
                                                     </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Secret</span></td>
+                            <td><span class="path">Snicco\Component\SignedUrl\Storage\InMemoryStorage</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
+                                    208.46                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.08);">
+                                    6                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.16);">
+                                    3                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
+                                    0.07                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.21);">
+                                    10.36                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Storage\SessionStorage</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.1);">
+                                    463.08                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.17);">
+                                    12                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.21);">
+                                    4                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.1);">
+                                    0.15                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.29);">
+                                    14.62                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Storage\NullStorage</span></td>
                                                             <td>
                                     <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.06);">
                                     3                                    </span>
                                 </td>
                                                             <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.06);">
-                                    245.97                                    </span>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\GarbageCollector</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
+                                    30.88                                    </span>
                                 </td>
                                                             <td>
                                     <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
@@ -356,12 +410,12 @@
                                     2                                    </span>
                                 </td>
                                                             <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
-                                    0.08                                    </span>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
+                                    0.01                                    </span>
                                 </td>
                                                             <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.13);">
-                                    6.72                                    </span>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.04);">
+                                    1.8                                    </span>
                                 </td>
                                                     </tr>
                                             <tr>
@@ -389,6 +443,114 @@
                                                             <td>
                                     <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.36);">
                                     18                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Exception\InvalidSignature</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Exception\BadIdentifier</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
+                                    30.88                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
+                                    0.01                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.04);">
+                                    1.8                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Exception\UnavailableStorage</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                    0                                    </span>
                                 </td>
                                                     </tr>
                                             <tr>
@@ -446,195 +608,6 @@
                                 </td>
                                                     </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Exception\UnavailableStorage</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Exception\SignedUrlUsageExceeded</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Exception\BadIdentifier</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
-                                    30.88                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    2                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
-                                    2                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
-                                    0.01                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.04);">
-                                    1.8                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Exception\InvalidSignature</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                    0                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Storage\SessionStorage</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.1);">
-                                    463.08                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.17);">
-                                    12                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.21);">
-                                    4                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.1);">
-                                    0.15                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.29);">
-                                    14.62                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Storage\InMemoryStorage</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
-                                    208.46                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.08);">
-                                    6                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.16);">
-                                    3                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
-                                    0.07                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.21);">
-                                    10.36                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\GarbageCollector</span></td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    1                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
-                                    30.88                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                    2                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
-                                    2                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
-                                    0.01                                    </span>
-                                </td>
-                                                            <td>
-                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.04);">
-                                    1.8                                    </span>
-                                </td>
-                                                    </tr>
-                                            <tr>
                             <td><span class="path">Snicco\Component\SignedUrl\SignedUrl</span></td>
                                                             <td>
                                     <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.04);">
@@ -659,6 +632,60 @@
                                                             <td>
                                     <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.09);">
                                     4.33                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\HMAC</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    1                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    72.65                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.01);">
+                                    0.02                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.08);">
+                                    4.29                                    </span>
+                                </td>
+                                                    </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Secret</span></td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.06);">
+                                    3                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.06);">
+                                    245.97                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
+                                    2                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.05);">
+                                    0.08                                    </span>
+                                </td>
+                                                            <td>
+                                    <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.13);">
+                                    6.72                                    </span>
                                 </td>
                                                     </tr>
                                     </table>

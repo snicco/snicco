@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -157,9 +157,6 @@
                                     <li class=" ">
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
-                                    <li class="active ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
                                     <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
@@ -196,174 +193,25 @@
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
                     </li>
+                                    <li class="active ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
+                    </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
                     </li>
                             </ul>
         </div>
-            <div class="row">
-        <div class="column">
-            <div class="bloc bloc-number">
-                <div class="label"><a href="violations.html">Violations</a> (0                    criticals, 0 errors)
-                </div>
-                <div class="number">0</div>
-                <div class="bloc-action">
-                    <a href="violations.html">View details &gt;</a>
-                </div>
-            </div>
-        </div>
-        <div class="column">
-            <div class="bloc bloc-number">
-                                <div class="label"><a href="loc.html">Lines of code</a></div>
-                <div class="number">30</div>
-                <div class="bloc-action">
-                    <a href="loc.html">View details &gt;</a>
-                </div>
-            </div>
-        </div>
-        <div class="column">
-            <div class="bloc bloc-number">
-                                <div class="label"><a href="oop.html">Classes</a></div>
-                <div class="number">1</div>
-                <div class="bloc-action">
-                    <a href="loc.html">View details &gt;</a>
-                </div>
-            </div>
+        
+
+
+<div class="row">
+    <div class="column">
+        <div class="bloc">
+            <h4>Package relations</h4>
+            <div id="chart-relations"></div>
         </div>
     </div>
-
-
-    <div class="row">
-        <div class="column">
-            <div class="bloc bloc-number">
-                                <div class="label"><a href="complexity.html">Average cyclomatic complexity by class</a></div>
-                <div class="number">7.00</div>
-                <div class="bloc-action">
-                    <a href="complexity.html">View details &gt;</a>
-                </div>
-            </div>
-        </div>
-        <div class="column">
-            <div class="bloc bloc-number">
-                <div class="label">
-                    <a href="junit.html">Assertions in tests</a>
-                </div>
-                                    <div class="help number-alternate">
-                        <div class="help-inner">
-                            No JUnit report found. Use the --junit=&lt;junit.xml&gt; option to analyse your unit tests.
-                            See <a href="https://phpunit.readthedocs.io/fr/latest/textui.html" target="_blank">documentation of PHPUnit if needed</a>
-                        </div>
-                    </div>
-                    <div class="bloc-action">
-                        No details
-                    </div>
-                            </div>
-        </div>
-        <div class="column">
-            <div class="bloc bloc-number">
-                                <div class="label"><a href="complexity.html">Average bugs by class</a></div>
-                <div class="number">
-                    0.05                </div>
-                <div class="bloc-action">
-                    <a href="complexity.html">View details &gt;</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="column column-help">
-            <div class="bloc" style="min-height: 540px;">
-                <div class="column column-help-inner">
-                    <div class="row">
-                        <div class="column with-help">
-                            <div>
-                                <div class="label">
-                                    Maintainability / complexity
-                                    <small><a
-                                            data-current="with-comments"
-                                            onclick="toggleChartMaintainability(this)">
-                                                (with comments)
-                                    </a></small>
-                                </div>
-                                <div id="svg-maintainability" class="svg-container"></div>
-                            </div>
-                        </div>
-                        <div class="column help">
-                            <div class="help-inner">
-                                <p>Each file is symbolized by a circle. Size of the circle represents the Cyclomatic
-                                    complexity.
-                                    Color of the circle represents the Maintainability Index.</p>
-                                <p>Large red circles will be probably hard to maintain.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="bloc bloc-number" style="min-height: 540px;">
-                <div class="label">ClassRank
-                    <small>(<a href="https://en.wikipedia.org/wiki/PageRank" target="_blank">Google's page rank applied to relations between classes)</a></small>
-                </div>
-                <div class="help">
-                    <div class="help-inner">
-                        <p>
-                            Page Rank is a way to measure the importance of a class. There is no "good" or "bad" page rank. This metric reflects interactions in your code.
-                        </p>
-                    </div>
-                </div>
-                <div class="clusterize small">
-                    <div id="clusterizeClassRank" class="clusterize-scroll">
-                        <table class="table-small">
-                            <thead>
-                            <tr>
-                                <th>ClassRank</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody id="contentClassRank" class="clusterize-content">
-                                                            <tr>
-                                    <td>
-                                        <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                        0                                    </td>
-                                    </td>
-                                    <td>
-                                        <span class="path">Snicco\Middleware\GuestsOnly\GuestsOnly</span>
-                                                                                <span class="badge" title="Maintainability Index">51.55</span>
-                                        <span class="badge" title="Maintainability Index (w/o comments)">51.55</span>
-                                    </td>
-                                </tr>
-                                                        </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-                <div class="column"></div>
-        <div class="column"></div>
-    </div>
-
-
-    <script type="text/javascript">
-        document.onreadystatechange = function () {
-            if (document.readyState === 'complete') {
-                chartMaintainability();
-
-                new Clusterize({
-                    scrollId: 'clusterizeClassRank',
-                    contentId: 'contentClassRank'
-                });
-
-                // prepare json for packages pie
-                                chartLicenses([]);
-            }
-        };
-    </script>
+</div>
 
 </div>
 
@@ -535,3 +383,212 @@
 
 </body>
 </html>
+
+
+<script type="text/javascript">
+
+
+    var relations = [
+    {
+        "name": "Snicco\\Middleware\\WPGuestsOnly",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Snicco\\Component\\BetterWPAPI",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\Http\\Message",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "size": 3000,
+        "relations": []
+    }
+];
+
+    /**
+     * Thanks to http://bl.ocks.org/mbostock/raw/7607999/
+     */
+    function updateRelationsChart() {
+
+
+        var diameter = document.getElementById('chart-relations').offsetWidth,
+            radius = diameter / 2,
+            innerRadius = radius - 320;
+
+        var cluster = d3.layout.cluster()
+            .size([360, innerRadius])
+            .sort(null)
+            .value(function (d) {
+                return d.size;
+            });
+
+        var bundle = d3.layout.bundle();
+
+        var line = d3.svg.line.radial()
+            .interpolate("bundle")
+            .tension(.85)
+            .radius(function (d) {
+                return d.y;
+            })
+            .angle(function (d) {
+                return d.x / 180 * Math.PI;
+            });
+
+        var svg = d3.select("#chart-relations").append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter)
+            .append("g")
+            .attr("transform", "translate(" + radius + "," + radius + ")");
+
+        var link = svg.append("g").selectAll(".link"),
+            node = svg.append("g").selectAll(".node");
+
+
+        var nodes = cluster.nodes(packageHierarchy(relations)),
+            links = packageImports(nodes);
+        link = link
+            .data(bundle(links))
+            .enter().append("path")
+            .each(function (d) {
+                d.source = d[0], d.target = d[d.length - 1];
+            })
+            .attr("class", "link")
+            .attr("d", line);
+
+        node = node
+            .data(nodes.filter(function (n) {
+                return !n.children;
+            }))
+            .enter().append("text")
+            .attr("class", "node")
+            .attr("dy", ".31em")
+            .attr("transform", function (d) {
+                return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)");
+            })
+            .style("text-anchor", function (d) {
+                return d.x < 180 ? "start" : "end";
+            })
+            .text(function (d) {
+                return d.key;
+            })
+            .on("mouseover", mouseovered)
+            .on("mouseout", mouseouted);
+
+
+//        d3.data(relations);
+
+        function mouseovered(d) {
+            node
+                .each(function (n) {
+                    n.target = n.source = false;
+                });
+
+            link
+                .classed("link--target", function (l) {
+                    if (l.target === d) return l.source.source = true;
+                })
+                .classed("link--source", function (l) {
+                    if (l.source === d) return l.target.target = true;
+                })
+                .filter(function (l) {
+                    return l.target === d || l.source === d;
+                })
+                .each(function () {
+                    this.parentNode.appendChild(this);
+                });
+
+            node
+                .classed("node--target", function (n) {
+                    return n.target;
+                })
+                .classed("node--source", function (n) {
+                    return n.source;
+                });
+        }
+
+        function mouseouted(d) {
+            link
+                .classed("link--target", false)
+                .classed("link--source", false);
+
+            node
+                .classed("node--target", false)
+                .classed("node--source", false);
+        }
+
+        d3.select(self.frameElement).style("height", diameter + "px");
+
+        // Lazily construct the package hierarchy from class names.
+        function packageHierarchy(classes) {
+            var map = {};
+
+            function find(name, data) {
+                name = (data ? name + ' ' : name);
+                var node = map[name];
+                if (!node) {
+                    node = map[name] = data || {name: name, children: []};
+                    if (name.length) {
+                        node.parent = find("");
+                        if (!node.parent.children) {
+                            node.parent.children = []; // fix anomalies
+                        }
+                        node.parent.children.push(node);
+                        node.key = name.trim();
+                    }
+                }
+                return node;
+            }
+
+            classes.forEach(function (d) {
+                find(d.name, d);
+            });
+
+            return map[""];
+        }
+
+        // Return a list of imports for the given array of nodes.
+        function packageImports(nodes) {
+            var map = {},
+                imports = [];
+
+            // Compute a map from name to node.
+            nodes.forEach(function (d) {
+                map[d.name] = d;
+            });
+
+            // For each import, construct a link from the source to target node.
+            nodes.forEach(function (d) {
+                if (d.relations) d.relations.forEach(function (i) {
+                    imports.push({source: map[d.name], target: map[i]});
+                });
+            });
+
+            return imports;
+        }
+
+
+    }
+
+    document.onreadystatechange = function () {
+        if (document.readyState === 'complete') {
+            updateRelationsChart();
+        }
+    };
+
+</script>

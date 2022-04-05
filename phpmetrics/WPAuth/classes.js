@@ -1,6 +1,6 @@
 var classes = [
     {
-        "name": "Snicco\\Middleware\\WPAuth\\Authenticate",
+        "name": "Snicco\\Middleware\\WPAuth\\AuthenticateWPUser",
         "interface": false,
         "abstract": false,
         "final": true,

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -393,8 +393,8 @@
         "name": "Snicco\\Component\\HttpRouting\\Testing",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "PHPUnit\\Framework",
             "Snicco\\Component\\StrArr",
             "Nyholm\\Psr7\\Factory",
@@ -410,22 +410,22 @@
         ]
     },
     {
+        "name": "Psr\\Http\\Message",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
         "size": 3000,
         "relations": [
             "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Http\\Response",
             "Webmozart\\Assert",
             "global",
-            "Snicco\\Component\\HttpRouting\\Http",
             "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher"
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher",
+            "Snicco\\Component\\HttpRouting\\Http",
+            "Snicco\\Component\\HttpRouting\\Http\\Response"
         ]
-    },
-    {
-        "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "PHPUnit\\Framework",
@@ -446,11 +446,11 @@
         "name": "Snicco\\Component\\HttpRouting\\Routing\\Route",
         "size": 3000,
         "relations": [
-            "global",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
             "Snicco\\Component\\HttpRouting\\Routing\\Condition",
             "Webmozart\\Assert",
-            "Snicco\\Component\\StrArr"
+            "Snicco\\Component\\StrArr",
+            "global",
+            "Snicco\\Component\\HttpRouting\\Routing\\Exception"
         ]
     },
     {
@@ -472,12 +472,12 @@
         "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
         "size": 3000,
         "relations": [
-            "Webmozart\\Assert",
-            "global",
             "Snicco\\Component\\HttpRouting\\Routing\\Route",
             "Snicco\\Component\\HttpRouting\\Routing\\Admin",
             "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception"
+            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
+            "global",
+            "Webmozart\\Assert"
         ]
     },
     {
@@ -489,12 +489,12 @@
         "name": "Snicco\\Component\\HttpRouting\\Http",
         "size": 3000,
         "relations": [
-            "global",
-            "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Component\\StrArr",
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
-            "Snicco\\Component\\HttpRouting\\Http\\Response"
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Component\\HttpRouting\\Http\\Response",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\StrArr",
+            "global"
         ]
     },
     {
@@ -502,11 +502,11 @@
         "size": 3000,
         "relations": [
             "Webmozart\\Assert",
-            "Snicco\\Component\\HttpRouting\\Routing\\Route",
-            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Component\\HttpRouting\\Routing",
             "global",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
+            "Snicco\\Component\\HttpRouting\\Routing\\Route",
+            "Snicco\\Component\\StrArr"
         ]
     },
     {
@@ -514,70 +514,30 @@
         "size": 3000,
         "relations": [
             "Psr\\Container",
-            "Snicco\\Component\\Psr7ErrorHandler",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Component\\HttpRouting",
-            "global",
-            "Webmozart\\Assert",
             "Psr\\Http\\Message",
-            "Psr\\Http\\Server",
-            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
-            "Snicco\\Component\\HttpRouting\\Http",
-            "Snicco\\Component\\HttpRouting\\Routing\\Route",
-            "Snicco\\Component\\HttpRouting\\Controller",
-            "Snicco\\Component\\HttpRouting\\Exception",
-            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Controller",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\StrArr",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Webmozart\\Assert",
-            "Snicco\\Component\\HttpRouting\\Http\\Response",
-            "Psr\\Container",
-            "Snicco\\Component\\HttpRouting",
+            "Snicco\\Component\\HttpRouting\\Controller",
+            "Snicco\\Component\\HttpRouting\\Routing\\Route",
             "global",
+            "Snicco\\Component\\HttpRouting\\Exception",
+            "Snicco\\Component\\HttpRouting",
+            "Webmozart\\Assert",
+            "Psr\\Http\\Server",
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher",
+            "Snicco\\Component\\Psr7ErrorHandler",
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
             "Snicco\\Component\\HttpRouting\\Http"
         ]
     },
     {
-        "name": "Webmozart\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Response",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Psr\\Http\\Message"
-        ]
-    },
-    {
-        "name": "Psr\\Container",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\HttpRouting",
         "size": 3000,
         "relations": [
-            "global",
             "Snicco\\Component\\Psr7ErrorHandler",
             "Psr\\Container",
+            "global",
             "Psr\\Http\\Message",
             "Webmozart\\Assert"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Exception",
-        "size": 3000,
-        "relations": [
-            "global"
         ]
     },
     {
@@ -586,43 +546,14 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher",
+        "name": "Psr\\Container",
         "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Routing\\Route",
-            "Snicco\\Component\\HttpRouting\\Routing\\Condition",
-            "Webmozart\\Assert",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
-            "Snicco\\Component\\StrArr",
-            "global",
-            "Snicco\\Component\\HttpRouting\\Routing\\Admin"
-        ]
+        "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader",
+        "name": "Webmozart\\Assert",
         "size": 3000,
-        "relations": [
-            "Webmozart\\Assert",
-            "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator",
-            "global",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
-            "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\HttpRouting\\Routing"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Routing\\Admin",
-            "Snicco\\Component\\HttpRouting\\Routing\\Route",
-            "global",
-            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
-            "Snicco\\Component\\StrArr",
-            "Webmozart\\Assert",
-            "Snicco\\Component\\HttpRouting\\Routing"
-        ]
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\HttpRouting\\Routing\\Exception",
@@ -630,6 +561,19 @@
         "relations": [
             "global",
             "Snicco\\Component\\Psr7ErrorHandler"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Routing",
+            "Webmozart\\Assert",
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin",
+            "Snicco\\Component\\HttpRouting\\Routing\\Route",
+            "global",
+            "Snicco\\Component\\HttpRouting\\Routing\\Exception"
         ]
     },
     {
@@ -653,18 +597,49 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Condition",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "global"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\HttpRouting\\Routing\\Cache",
         "size": 3000,
         "relations": [
             "Webimpress\\SafeWriter"
+        ]
+    },
+    {
+        "name": "Webimpress\\SafeWriter",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator",
+            "Webmozart\\Assert",
+            "global",
+            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\HttpRouting\\Routing"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Condition",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Routing\\Route",
+            "Snicco\\Component\\HttpRouting\\Routing\\Condition",
+            "Webmozart\\Assert",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Component\\HttpRouting\\Routing\\Exception",
+            "Snicco\\Component\\StrArr",
+            "global",
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin"
         ]
     },
     {
@@ -683,9 +658,34 @@
         "relations": []
     },
     {
-        "name": "Webimpress\\SafeWriter",
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Response",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Psr\\Http\\Message"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Exception",
+        "size": 3000,
+        "relations": [
+            "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Controller",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Webmozart\\Assert",
+            "Snicco\\Component\\HttpRouting\\Http\\Response",
+            "Psr\\Container",
+            "Snicco\\Component\\HttpRouting",
+            "global",
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
+            "Snicco\\Component\\HttpRouting\\Http"
+        ]
     }
 ];
 

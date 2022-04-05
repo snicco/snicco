@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -390,14 +390,27 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\Eloquent\\Mysqli",
+        "name": "Snicco\\Component\\Eloquent\\Illuminate",
         "size": 3000,
         "relations": [
+            "Illuminate\\Database\\Eloquent\\Factories",
+            "Illuminate\\Support",
             "global",
-            "Snicco\\Component\\Eloquent\\Illuminate",
+            "Illuminate\\Database",
+            "Snicco\\Component\\Eloquent\\Mysqli",
             "Snicco\\Component\\Eloquent",
-            "Illuminate\\Database"
+            "Illuminate\\Database\\Eloquent"
         ]
+    },
+    {
+        "name": "Illuminate\\Database\\Eloquent\\Factories",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Illuminate\\Support",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "global",
@@ -405,24 +418,27 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Eloquent\\Illuminate",
+        "name": "Illuminate\\Database",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Eloquent\\Mysqli",
         "size": 3000,
         "relations": [
-            "Illuminate\\Database\\Eloquent",
-            "Illuminate\\Database",
-            "Snicco\\Component\\Eloquent\\Mysqli",
+            "Snicco\\Component\\Eloquent\\Illuminate",
             "Snicco\\Component\\Eloquent",
             "global",
-            "Illuminate\\Database\\Eloquent\\Factories",
-            "Illuminate\\Support"
+            "Illuminate\\Database"
         ]
     },
     {
         "name": "Snicco\\Component\\Eloquent",
         "size": 3000,
         "relations": [
-            "Illuminate\\Container",
+            "Snicco\\Component\\BetterWPAPI",
             "global",
+            "Illuminate\\Container",
             "Illuminate\\Support\\Facades",
             "Faker",
             "Illuminate\\Database\\Eloquent\\Factories",
@@ -432,14 +448,8 @@
             "Illuminate\\Support",
             "Illuminate\\Database",
             "Illuminate\\Database\\Connectors",
-            "Snicco\\Component\\Eloquent\\Mysqli",
-            "Snicco\\Component\\BetterWPAPI"
+            "Snicco\\Component\\Eloquent\\Mysqli"
         ]
-    },
-    {
-        "name": "Illuminate\\Database",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Illuminate\\Database\\Eloquent",
@@ -447,12 +457,7 @@
         "relations": []
     },
     {
-        "name": "Illuminate\\Database\\Eloquent\\Factories",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Illuminate\\Support",
+        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
@@ -478,11 +483,6 @@
     },
     {
         "name": "Illuminate\\Database\\Connectors",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     }

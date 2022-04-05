@@ -1,121 +1,5 @@
 var classes = [
     {
-        "name": "Snicco\\Component\\BetterWPCache\\WPCacheItem",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getKey",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "get",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "isHit",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "set",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "expiresAt",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "expiresAfter",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "expirationTimestamp",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "miss",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 9,
-        "nbMethods": 5,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 5,
-        "nbMethodsGetter": 4,
-        "nbMethodsSetters": 0,
-        "wmc": 10,
-        "ccn": 6,
-        "ccnMethodMax": 4,
-        "externals": [
-            "Psr\\Cache\\CacheItemInterface",
-            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
-            "DateTime",
-            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
-            "Snicco\\Component\\BetterWPCache\\WPCacheItem"
-        ],
-        "parents": [],
-        "implements": [
-            "Psr\\Cache\\CacheItemInterface"
-        ],
-        "lcom": 2,
-        "length": 69,
-        "vocabulary": 14,
-        "volume": 262.71,
-        "difficulty": 12.5,
-        "effort": 3283.84,
-        "level": 0.08,
-        "bugs": 0.09,
-        "time": 182,
-        "intelligentContent": 21.02,
-        "number_operators": 24,
-        "number_operands": 45,
-        "number_operators_unique": 5,
-        "number_operands_unique": 9,
-        "cloc": 21,
-        "loc": 87,
-        "lloc": 66,
-        "mi": 77.05,
-        "mIwoC": 42.56,
-        "commentWeight": 34.49,
-        "kanDefect": 0.29,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 2.93,
-        "relativeSystemComplexity": 6.93,
-        "totalStructuralComplexity": 36,
-        "totalDataComplexity": 26.33,
-        "totalSystemComplexity": 62.33,
-        "package": "Snicco\\Component\\BetterWPCache\\",
-        "pageRank": 0,
-        "afferentCoupling": 3,
-        "efferentCoupling": 5,
-        "instability": 0.63,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Component\\BetterWPCache\\CacheFactory",
         "interface": false,
         "abstract": false,
@@ -397,65 +281,6 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [],
-        "nbMethodsIncludingGettersSetters": 0,
-        "nbMethods": 0,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 0,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 0,
-        "ccn": 1,
-        "ccnMethodMax": 0,
-        "externals": [
-            "InvalidArgumentException",
-            "Psr\\Cache\\InvalidArgumentException"
-        ],
-        "parents": [
-            "InvalidArgumentException"
-        ],
-        "implements": [
-            "Psr\\Cache\\InvalidArgumentException"
-        ],
-        "lcom": 0,
-        "length": 0,
-        "vocabulary": 0,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0,
-        "level": 0,
-        "bugs": 0,
-        "time": 0,
-        "intelligentContent": 0,
-        "number_operators": 0,
-        "number_operands": 0,
-        "number_operators_unique": 0,
-        "number_operands_unique": 0,
-        "cloc": 0,
-        "loc": 4,
-        "lloc": 4,
-        "mi": 171,
-        "mIwoC": 171,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 0,
-        "relativeSystemComplexity": 0,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 0,
-        "totalSystemComplexity": 0,
-        "package": "Snicco\\Component\\BetterWPCache\\Exception\\",
-        "pageRank": 0,
-        "afferentCoupling": 2,
-        "efferentCoupling": 2,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Component\\BetterWPCache\\WPCacheAPI",
         "interface": false,
         "abstract": false,
@@ -525,6 +350,181 @@ var classes = [
         "afferentCoupling": 1,
         "efferentCoupling": 2,
         "instability": 0.67,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [],
+        "nbMethodsIncludingGettersSetters": 0,
+        "nbMethods": 0,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 0,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 0,
+        "ccn": 1,
+        "ccnMethodMax": 0,
+        "externals": [
+            "InvalidArgumentException",
+            "Psr\\Cache\\InvalidArgumentException"
+        ],
+        "parents": [
+            "InvalidArgumentException"
+        ],
+        "implements": [
+            "Psr\\Cache\\InvalidArgumentException"
+        ],
+        "lcom": 0,
+        "length": 0,
+        "vocabulary": 0,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0,
+        "level": 0,
+        "bugs": 0,
+        "time": 0,
+        "intelligentContent": 0,
+        "number_operators": 0,
+        "number_operands": 0,
+        "number_operators_unique": 0,
+        "number_operands_unique": 0,
+        "cloc": 0,
+        "loc": 4,
+        "lloc": 4,
+        "mi": 171,
+        "mIwoC": 171,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 0,
+        "relativeSystemComplexity": 0,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 0,
+        "totalSystemComplexity": 0,
+        "package": "Snicco\\Component\\BetterWPCache\\Exception\\",
+        "pageRank": 0,
+        "afferentCoupling": 2,
+        "efferentCoupling": 2,
+        "instability": 0.5,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPCache\\WPCacheItem",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getKey",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "get",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "isHit",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "set",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "expiresAt",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "expiresAfter",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "expirationTimestamp",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "miss",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 9,
+        "nbMethods": 5,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 5,
+        "nbMethodsGetter": 4,
+        "nbMethodsSetters": 0,
+        "wmc": 10,
+        "ccn": 6,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Psr\\Cache\\CacheItemInterface",
+            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
+            "DateTime",
+            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
+            "Snicco\\Component\\BetterWPCache\\WPCacheItem"
+        ],
+        "parents": [],
+        "implements": [
+            "Psr\\Cache\\CacheItemInterface"
+        ],
+        "lcom": 2,
+        "length": 69,
+        "vocabulary": 14,
+        "volume": 262.71,
+        "difficulty": 12.5,
+        "effort": 3283.84,
+        "level": 0.08,
+        "bugs": 0.09,
+        "time": 182,
+        "intelligentContent": 21.02,
+        "number_operators": 24,
+        "number_operands": 45,
+        "number_operators_unique": 5,
+        "number_operands_unique": 9,
+        "cloc": 21,
+        "loc": 87,
+        "lloc": 66,
+        "mi": 77.05,
+        "mIwoC": 42.56,
+        "commentWeight": 34.49,
+        "kanDefect": 0.29,
+        "relativeStructuralComplexity": 4,
+        "relativeDataComplexity": 2.93,
+        "relativeSystemComplexity": 6.93,
+        "totalStructuralComplexity": 36,
+        "totalDataComplexity": 26.33,
+        "totalSystemComplexity": 62.33,
+        "package": "Snicco\\Component\\BetterWPCache\\",
+        "pageRank": 0,
+        "afferentCoupling": 3,
+        "efferentCoupling": 5,
+        "instability": 0.63,
         "violations": {}
     }
 ]

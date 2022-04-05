@@ -1,6 +1,6 @@
 var classes = [
     {
-        "name": "Snicco\\Middleware\\GuestsOnly\\GuestsOnly",
+        "name": "Snicco\\Middleware\\WPGuestsOnly\\WPGuestsOnly",
         "interface": false,
         "abstract": false,
         "final": true,
@@ -68,7 +68,7 @@ var classes = [
         "totalStructuralComplexity": 98,
         "totalDataComplexity": 1.88,
         "totalSystemComplexity": 99.88,
-        "package": "Snicco\\Middleware\\GuestsOnly\\",
+        "package": "Snicco\\Middleware\\WPGuestsOnly\\",
         "pageRank": 0,
         "afferentCoupling": 0,
         "efferentCoupling": 5,

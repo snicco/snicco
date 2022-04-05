@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -393,23 +393,53 @@
         "name": "Snicco\\Bridge\\Blade",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\Templating\\ViewFactory",
+            "Illuminate\\View",
+            "Snicco\\Component\\Templating\\ValueObject",
+            "Snicco\\Component\\Templating\\Exception",
+            "Illuminate\\Support",
             "Snicco\\Component\\Templating\\Context",
+            "global",
             "Illuminate\\Container",
             "Illuminate\\Support\\Facades",
-            "Illuminate\\Support",
             "Illuminate\\Filesystem",
             "Illuminate\\Events",
-            "Illuminate\\View",
             "Snicco\\Bridge\\Blade\\Exception",
-            "Illuminate\\Contracts\\Foundation",
-            "global",
-            "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\Templating\\ViewFactory",
-            "Snicco\\Component\\Templating\\Exception"
+            "Illuminate\\Contracts\\Foundation"
         ]
     },
     {
+        "name": "Snicco\\Component\\Templating\\ViewFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Illuminate\\View",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\ValueObject",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\Exception",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Illuminate\\Support",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\Templating\\Context",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
         "size": 3000,
         "relations": []
     },
@@ -424,22 +454,12 @@
         "relations": []
     },
     {
-        "name": "Illuminate\\Support",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Illuminate\\Filesystem",
         "size": 3000,
         "relations": []
     },
     {
         "name": "Illuminate\\Events",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Illuminate\\View",
         "size": 3000,
         "relations": []
     },
@@ -452,26 +472,6 @@
     },
     {
         "name": "Illuminate\\Contracts\\Foundation",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\ValueObject",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\ViewFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\Exception",
         "size": 3000,
         "relations": []
     }

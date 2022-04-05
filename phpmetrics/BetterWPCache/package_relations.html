@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -393,33 +393,15 @@
         "name": "Snicco\\Component\\BetterWPCache",
         "size": 3000,
         "relations": [
-            "Psr\\Cache",
-            "Snicco\\Component\\BetterWPCache\\Exception",
-            "global",
             "Psr\\SimpleCache",
             "Cache\\Bridge\\SimpleCache",
             "Cache\\TagInterop",
+            "Psr\\Cache",
             "Cache\\Taggable",
-            "Snicco\\Component\\BetterWPAPI"
+            "Snicco\\Component\\BetterWPCache\\Exception",
+            "Snicco\\Component\\BetterWPAPI",
+            "global"
         ]
-    },
-    {
-        "name": "Psr\\Cache",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPCache\\Exception",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Psr\\Cache"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Psr\\SimpleCache",
@@ -437,12 +419,30 @@
         "relations": []
     },
     {
+        "name": "Psr\\Cache",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Cache\\Taggable",
         "size": 3000,
         "relations": []
     },
     {
+        "name": "Snicco\\Component\\BetterWPCache\\Exception",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Psr\\Cache"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
         "size": 3000,
         "relations": []
     }

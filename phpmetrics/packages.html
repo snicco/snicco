@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -197,6 +194,9 @@
                         <a href="WPCap/index.html">WPCap</a>
                     </li>
                                     <li class=" ">
+                        <a href="WPGuestsOnly/index.html">WPGuestsOnly</a>
+                    </li>
+                                    <li class=" ">
                         <a href="WPNonce/index.html">WPNonce</a>
                     </li>
                             </ul>
@@ -224,24 +224,90 @@
                     </tr>
                     </thead>
                                             <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Testing</span></td>
+                            <td><span class="path">Snicco\Bridge\IlluminateContainer</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
                             <td>5</td>
-                            <td>0.4</td>
-                            <td>0.966</td>
-                            <td>0.366</td>
-                            <td>28</td>
-                            <td>14</td>
+                            <td>4</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\SessionPsr16</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0.889</td>
+                            <td>0.111</td>
+                            <td>8</td>
+                            <td>5</td>
                             <td>1</td>
                             <td>1</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Testing</span></td>
+                            <td><span class="path">Snicco\Bridge\SessionWP</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.9</td>
+                            <td>0.1</td>
+                            <td>9</td>
+                            <td>7</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\Blade</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.955</td>
+                            <td>0.155</td>
+                            <td>21</td>
+                            <td>13</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\Blade\Exception</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
                             <td>1</td>
                             <td>1</td>
                             <td>1</td>
                             <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\SignedUrlPsr15</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>8</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\Pimple</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0.833</td>
+                            <td>0.167</td>
                             <td>5</td>
                             <td>4</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bridge\SignedUrlPsr16</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>6</td>
+                            <td>5</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
@@ -279,6 +345,28 @@
                             <td>0</td>
                         </tr>
                                             <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Testing</span></td>
+                            <td>5</td>
+                            <td>0.4</td>
+                            <td>0.966</td>
+                            <td>0.366</td>
+                            <td>28</td>
+                            <td>14</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Testing</span></td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>5</td>
+                            <td>4</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
                             <td><span class="path">Snicco\Component\Kernel\Testing</span></td>
                             <td>4</td>
                             <td>0.25</td>
@@ -286,886 +374,6 @@
                             <td>0.25</td>
                             <td>3</td>
                             <td>3</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Controller</span></td>
-                            <td>6</td>
-                            <td>0.167</td>
-                            <td>0.875</td>
-                            <td>0.042</td>
-                            <td>14</td>
-                            <td>9</td>
-                            <td>2</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Exception</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.667</td>
-                            <td>0.333</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.714</td>
-                            <td>0.286</td>
-                            <td>10</td>
-                            <td>5</td>
-                            <td>4</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Middleware</span></td>
-                            <td>8</td>
-                            <td>0.125</td>
-                            <td>0.511</td>
-                            <td>0.364</td>
-                            <td>24</td>
-                            <td>14</td>
-                            <td>23</td>
-                            <td>18</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\RouteLoader</span></td>
-                            <td>4</td>
-                            <td>0.5</td>
-                            <td>0.833</td>
-                            <td>0.333</td>
-                            <td>10</td>
-                            <td>6</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.758</td>
-                            <td>0.242</td>
-                            <td>25</td>
-                            <td>14</td>
-                            <td>8</td>
-                            <td>5</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\UrlGenerator</span></td>
-                            <td>6</td>
-                            <td>0.333</td>
-                            <td>0.5</td>
-                            <td>0.167</td>
-                            <td>7</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Admin</span></td>
-                            <td>6</td>
-                            <td>0.333</td>
-                            <td>0.412</td>
-                            <td>0.255</td>
-                            <td>7</td>
-                            <td>6</td>
-                            <td>10</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\UrlMatcher</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.75</td>
-                            <td>0.05</td>
-                            <td>9</td>
-                            <td>8</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Exception</span></td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>0.364</td>
-                            <td>0.636</td>
-                            <td>4</td>
-                            <td>2</td>
-                            <td>7</td>
-                            <td>6</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Cache</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.333</td>
-                            <td>0.333</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\RoutingConfigurator</span></td>
-                            <td>5</td>
-                            <td>0.6</td>
-                            <td>0.8</td>
-                            <td>0.4</td>
-                            <td>12</td>
-                            <td>7</td>
-                            <td>3</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Route</span></td>
-                            <td>4</td>
-                            <td>0.25</td>
-                            <td>0.429</td>
-                            <td>0.321</td>
-                            <td>9</td>
-                            <td>5</td>
-                            <td>12</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Condition</span></td>
-                            <td>6</td>
-                            <td>0.333</td>
-                            <td>0.5</td>
-                            <td>0.167</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Http</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.632</td>
-                            <td>0.168</td>
-                            <td>12</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td>6</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Http\Psr7</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0.267</td>
-                            <td>0.733</td>
-                            <td>20</td>
-                            <td>7</td>
-                            <td>55</td>
-                            <td>27</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\HttpRouting\Http\Response</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0.286</td>
-                            <td>0.714</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>5</td>
-                            <td>4</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\TestableClock</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.273</td>
-                            <td>0.394</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>8</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl</span></td>
-                            <td>6</td>
-                            <td>0</td>
-                            <td>0.65</td>
-                            <td>0.35</td>
-                            <td>13</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td>4</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Exception</span></td>
-                            <td>6</td>
-                            <td>0.167</td>
-                            <td>0.333</td>
-                            <td>0.5</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>4</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\SignedUrl\Storage</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.455</td>
-                            <td>0.212</td>
-                            <td>5</td>
-                            <td>4</td>
-                            <td>6</td>
-                            <td>4</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Templating</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.538</td>
-                            <td>0.462</td>
-                            <td>7</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Templating\ValueObject</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.083</td>
-                            <td>0.917</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>11</td>
-                            <td>6</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Templating\Exception</span></td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>0.3</td>
-                            <td>0.7</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>7</td>
-                            <td>6</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Templating\Context</span></td>
-                            <td>7</td>
-                            <td>0.286</td>
-                            <td>0.643</td>
-                            <td>0.071</td>
-                            <td>9</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Templating\ViewFactory</span></td>
-                            <td>4</td>
-                            <td>0.25</td>
-                            <td>0.769</td>
-                            <td>0.019</td>
-                            <td>10</td>
-                            <td>6</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler</span></td>
-                            <td>5</td>
-                            <td>0.4</td>
-                            <td>0.52</td>
-                            <td>0.08</td>
-                            <td>13</td>
-                            <td>6</td>
-                            <td>12</td>
-                            <td>12</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Displayer</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.333</td>
-                            <td>0.333</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>4</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Log</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>0.6</td>
-                            <td>0.1</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Information</span></td>
-                            <td>4</td>
-                            <td>0.5</td>
-                            <td>0.25</td>
-                            <td>0.25</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>15</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Identifier</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>0.333</td>
-                            <td>0.167</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\DisplayerFilter</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.5</td>
-                            <td>0.3</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPDB</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.857</td>
-                            <td>0.057</td>
-                            <td>12</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPDB\Exception</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.667</td>
-                            <td>0.333</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\StrArr</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.094</td>
-                            <td>0.906</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>29</td>
-                            <td>19</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPHooks</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.667</td>
-                            <td>0.333</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPHooks\EventFactory</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>0.75</td>
-                            <td>0.25</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPHooks\Exception</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.667</td>
-                            <td>0.333</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPHooks\EventMapping</span></td>
-                            <td>4</td>
-                            <td>0.75</td>
-                            <td>0.583</td>
-                            <td>0.333</td>
-                            <td>7</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\EventDispatcher</span></td>
-                            <td>9</td>
-                            <td>0.667</td>
-                            <td>0.471</td>
-                            <td>0.137</td>
-                            <td>8</td>
-                            <td>4</td>
-                            <td>9</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\EventDispatcher\Exception</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0.556</td>
-                            <td>0.444</td>
-                            <td>5</td>
-                            <td>2</td>
-                            <td>4</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\EventDispatcher\ListenerFactory</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.667</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Eloquent\Mysqli</span></td>
-                            <td>5</td>
-                            <td>0.4</td>
-                            <td>0.75</td>
-                            <td>0.15</td>
-                            <td>9</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Eloquent\Illuminate</span></td>
-                            <td>4</td>
-                            <td>0.5</td>
-                            <td>0.867</td>
-                            <td>0.367</td>
-                            <td>13</td>
-                            <td>7</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Eloquent</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.895</td>
-                            <td>0.105</td>
-                            <td>17</td>
-                            <td>13</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Transport</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>0.625</td>
-                            <td>0.125</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.722</td>
-                            <td>0.278</td>
-                            <td>13</td>
-                            <td>6</td>
-                            <td>5</td>
-                            <td>5</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\ValueObject</span></td>
-                            <td>6</td>
-                            <td>0</td>
-                            <td>0.429</td>
-                            <td>0.571</td>
-                            <td>6</td>
-                            <td>2</td>
-                            <td>8</td>
-                            <td>5</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Event</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.5</td>
-                            <td>0.3</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Exception</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.5</td>
-                            <td>0.167</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Renderer</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.25</td>
-                            <td>0.417</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>3</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPCache</span></td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>0.833</td>
-                            <td>0.167</td>
-                            <td>10</td>
-                            <td>8</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPCache\Exception</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session</span></td>
-                            <td>5</td>
-                            <td>0.8</td>
-                            <td>0.571</td>
-                            <td>0.371</td>
-                            <td>12</td>
-                            <td>7</td>
-                            <td>9</td>
-                            <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\ValueObject</span></td>
-                            <td>7</td>
-                            <td>0</td>
-                            <td>0.273</td>
-                            <td>0.727</td>
-                            <td>6</td>
-                            <td>3</td>
-                            <td>16</td>
-                            <td>9</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\Event</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\Driver</span></td>
-                            <td>4</td>
-                            <td>0.5</td>
-                            <td>0.438</td>
-                            <td>0.063</td>
-                            <td>7</td>
-                            <td>5</td>
-                            <td>9</td>
-                            <td>6</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\Exception</span></td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>4</td>
-                            <td>1</td>
-                            <td>4</td>
-                            <td>4</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\SessionManager</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.857</td>
-                            <td>0.19</td>
-                            <td>12</td>
-                            <td>7</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\Serializer</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.286</td>
-                            <td>0.381</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>5</td>
-                            <td>4</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\EventDispatcher</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPAPI</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.154</td>
-                            <td>0.846</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>11</td>
-                            <td>10</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Kernel</span></td>
-                            <td>4</td>
-                            <td>0.75</td>
-                            <td>0.515</td>
-                            <td>0.265</td>
-                            <td>17</td>
-                            <td>5</td>
-                            <td>16</td>
-                            <td>15</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Kernel\ValueObject</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.118</td>
-                            <td>0.882</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>15</td>
-                            <td>13</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Kernel\Exception</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0.4</td>
-                            <td>0.6</td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Kernel\Configuration</span></td>
-                            <td>7</td>
-                            <td>0.286</td>
-                            <td>0.368</td>
-                            <td>0.346</td>
-                            <td>7</td>
-                            <td>5</td>
-                            <td>12</td>
-                            <td>11</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Testing\Functional</span></td>
-                            <td>5</td>
-                            <td>0.4</td>
-                            <td>1</td>
-                            <td>0.4</td>
-                            <td>38</td>
-                            <td>21</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Testing\Functional\Concerns</span></td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Testing\Bundle</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>0.5</td>
-                            <td>9</td>
-                            <td>6</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting\ResponseEmitter</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.778</td>
-                            <td>0.111</td>
-                            <td>7</td>
-                            <td>4</td>
-                            <td>2</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting</span></td>
-                            <td>8</td>
-                            <td>0</td>
-                            <td>0.985</td>
-                            <td>0.015</td>
-                            <td>64</td>
-                            <td>31</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting\Option</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting\Event</span></td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting\Middleware</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0.917</td>
-                            <td>0.083</td>
-                            <td>11</td>
-                            <td>7</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Debug</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>13</td>
-                            <td>8</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Debug\Option</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td></td>
-                            <td></td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Debug\Displayer</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.75</td>
-                            <td>0.25</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Templating</span></td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>23</td>
-                            <td>15</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Templating\Option</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td></td>
-                            <td></td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\BetterWPDB</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>4</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
@@ -1181,13 +389,24 @@
                             <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bundle\Blade</span></td>
+                            <td><span class="path">Snicco\Bundle\BetterWPCache\Option</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td></td>
+                            <td></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\BetterWPCache</span></td>
                             <td>1</td>
                             <td>0</td>
                             <td>1</td>
                             <td>0</td>
-                            <td>8</td>
-                            <td>7</td>
+                            <td>6</td>
+                            <td>5</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
@@ -1214,24 +433,24 @@
                             <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bundle\BetterWPCache</span></td>
+                            <td><span class="path">Snicco\Bundle\BetterWPDB</span></td>
                             <td>1</td>
                             <td>0</td>
                             <td>1</td>
                             <td>0</td>
-                            <td>6</td>
                             <td>5</td>
+                            <td>4</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bundle\BetterWPCache\Option</span></td>
+                            <td><span class="path">Snicco\Bundle\Blade</span></td>
                             <td>1</td>
                             <td>0</td>
-                            <td></td>
-                            <td></td>
+                            <td>1</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>8</td>
+                            <td>7</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
@@ -1241,10 +460,21 @@
                             <td>0</td>
                             <td>1</td>
                             <td>0</td>
-                            <td>21</td>
-                            <td>14</td>
+                            <td>19</td>
+                            <td>12</td>
                             <td>0</td>
                             <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\Session\Middleware</span></td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0.95</td>
+                            <td>0.05</td>
+                            <td>19</td>
+                            <td>12</td>
+                            <td>1</td>
+                            <td>1</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Bundle\Session\Option</span></td>
@@ -1280,15 +510,37 @@
                             <td>1</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bundle\Session\Middleware</span></td>
-                            <td>5</td>
+                            <td><span class="path">Snicco\Bundle\Testing\Bundle</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>1</td>
+                            <td>0.5</td>
+                            <td>9</td>
+                            <td>6</td>
                             <td>0</td>
-                            <td>0.95</td>
-                            <td>0.05</td>
-                            <td>19</td>
-                            <td>12</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\Testing\Functional</span></td>
+                            <td>5</td>
+                            <td>0.4</td>
+                            <td>1</td>
+                            <td>0.4</td>
+                            <td>38</td>
+                            <td>21</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\Testing\Functional\Concerns</span></td>
+                            <td>2</td>
                             <td>1</td>
                             <td>1</td>
+                            <td>1</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>0</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Bundle\Encryption\Option</span></td>
@@ -1313,213 +565,840 @@
                             <td>1</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bridge\SignedUrlPsr15</span></td>
+                            <td><span class="path">Snicco\Bundle\Debug</span></td>
                             <td>2</td>
                             <td>0</td>
                             <td>1</td>
                             <td>0</td>
-                            <td>8</td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bridge\SessionWP</span></td>
-                            <td>2</td>
-                            <td>0</td>
-                            <td>0.889</td>
-                            <td>0.111</td>
-                            <td>8</td>
-                            <td>6</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bridge\SessionPsr16</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.8</td>
-                            <td>0.2</td>
-                            <td>8</td>
-                            <td>5</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bridge\Blade</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.955</td>
-                            <td>0.155</td>
-                            <td>21</td>
                             <td>13</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bridge\Blade\Exception</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bridge\SignedUrlPsr16</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>6</td>
-                            <td>5</td>
+                            <td>8</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bridge\IlluminateContainer</span></td>
+                            <td><span class="path">Snicco\Bundle\Debug\Displayer</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.75</td>
+                            <td>0.25</td>
+                            <td>3</td>
+                            <td>3</td>
                             <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\Debug\Option</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td></td>
+                            <td></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\HttpRouting</span></td>
+                            <td>8</td>
+                            <td>0</td>
+                            <td>0.985</td>
+                            <td>0.015</td>
+                            <td>64</td>
+                            <td>31</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\HttpRouting\ResponseEmitter</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.778</td>
+                            <td>0.111</td>
+                            <td>7</td>
+                            <td>4</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\HttpRouting\Middleware</span></td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>0.917</td>
+                            <td>0.083</td>
+                            <td>11</td>
+                            <td>7</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\HttpRouting\Option</span></td>
+                            <td>3</td>
+                            <td>0</td>
                             <td>0</td>
                             <td>1</td>
                             <td>0</td>
-                            <td>5</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\HttpRouting\Event</span></td>
                             <td>4</td>
                             <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\Templating</span></td>
+                            <td>4</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>23</td>
+                            <td>15</td>
+                            <td>0</td>
                             <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bridge\Pimple</span></td>
+                            <td><span class="path">Snicco\Bundle\Templating\Option</span></td>
                             <td>1</td>
+                            <td>0</td>
+                            <td></td>
+                            <td></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPHooks</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.714</td>
+                            <td>0.286</td>
+                            <td>5</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPHooks\EventMapping</span></td>
+                            <td>4</td>
+                            <td>0.75</td>
+                            <td>0.583</td>
+                            <td>0.333</td>
+                            <td>7</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPHooks\Exception</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0.667</td>
+                            <td>0.333</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPHooks\EventFactory</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0.75</td>
+                            <td>0.25</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPCache</span></td>
+                            <td>4</td>
                             <td>0</td>
                             <td>0.833</td>
                             <td>0.167</td>
-                            <td>5</td>
-                            <td>4</td>
+                            <td>10</td>
+                            <td>8</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPCache\Exception</span></td>
                             <td>1</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
                             <td>1</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\NoRobots</span></td>
-                            <td>1</td>
+                            <td><span class="path">Snicco\Component\EventDispatcher</span></td>
+                            <td>9</td>
+                            <td>0.667</td>
+                            <td>0.471</td>
+                            <td>0.137</td>
+                            <td>8</td>
+                            <td>4</td>
+                            <td>9</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\EventDispatcher\Exception</span></td>
+                            <td>3</td>
                             <td>0</td>
-                            <td>1</td>
+                            <td>0.556</td>
+                            <td>0.444</td>
+                            <td>5</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\EventDispatcher\ListenerFactory</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.667</td>
                             <td>0</td>
                             <td>4</td>
                             <td>3</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td>2</td>
+                            <td>2</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\OpenRedirectProtection</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>8</td>
-                            <td>6</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Middleware\WPCap</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>6</td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Middleware\WPNonce</span></td>
+                            <td><span class="path">Snicco\Component\BetterWPMail</span></td>
                             <td>2</td>
                             <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>7</td>
+                            <td>0.722</td>
+                            <td>0.278</td>
+                            <td>13</td>
                             <td>6</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td>5</td>
+                            <td>5</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\Payload</span></td>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Renderer</span></td>
                             <td>3</td>
                             <td>0.333</td>
+                            <td>0.25</td>
+                            <td>0.417</td>
                             <td>1</td>
+                            <td>1</td>
+                            <td>3</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Exception</span></td>
+                            <td>3</td>
                             <td>0.333</td>
+                            <td>0.5</td>
+                            <td>0.167</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Transport</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0.625</td>
+                            <td>0.125</td>
+                            <td>5</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\ValueObject</span></td>
+                            <td>6</td>
+                            <td>0</td>
+                            <td>0.429</td>
+                            <td>0.571</td>
+                            <td>6</td>
+                            <td>2</td>
+                            <td>8</td>
+                            <td>5</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Event</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.5</td>
+                            <td>0.3</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\StrArr</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.094</td>
+                            <td>0.906</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>29</td>
+                            <td>19</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPDB</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.857</td>
+                            <td>0.057</td>
+                            <td>12</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPDB\Exception</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.667</td>
+                            <td>0.333</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session</span></td>
+                            <td>5</td>
+                            <td>0.8</td>
+                            <td>0.6</td>
+                            <td>0.4</td>
+                            <td>12</td>
+                            <td>7</td>
+                            <td>8</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\Driver</span></td>
+                            <td>4</td>
+                            <td>0.5</td>
+                            <td>0.438</td>
+                            <td>0.063</td>
+                            <td>7</td>
+                            <td>5</td>
                             <td>9</td>
                             <td>6</td>
-                            <td>0</td>
-                            <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\DefaultHeaders</span></td>
-                            <td>1</td>
+                            <td><span class="path">Snicco\Component\Session\SessionManager</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0.857</td>
+                            <td>0.357</td>
+                            <td>12</td>
+                            <td>7</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\EventDispatcher</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0</td>
                             <td>0</td>
                             <td>1</td>
-                            <td>0</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\Serializer</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.286</td>
+                            <td>0.381</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>5</td>
                             <td>4</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\Exception</span></td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>4</td>
+                            <td>1</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\ValueObject</span></td>
+                            <td>7</td>
+                            <td>0</td>
+                            <td>0.286</td>
+                            <td>0.714</td>
+                            <td>6</td>
+                            <td>3</td>
+                            <td>15</td>
+                            <td>9</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\Event</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Eloquent\Illuminate</span></td>
+                            <td>4</td>
+                            <td>0.5</td>
+                            <td>0.867</td>
+                            <td>0.367</td>
+                            <td>13</td>
+                            <td>7</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Eloquent\Mysqli</span></td>
+                            <td>5</td>
+                            <td>0.4</td>
+                            <td>0.75</td>
+                            <td>0.15</td>
+                            <td>9</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Eloquent</span></td>
                             <td>2</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0.895</td>
+                            <td>0.105</td>
+                            <td>17</td>
+                            <td>13</td>
+                            <td>2</td>
+                            <td>2</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\WPAuth</span></td>
+                            <td><span class="path">Snicco\Component\BetterWPAPI</span></td>
                             <td>1</td>
                             <td>0</td>
+                            <td>0.154</td>
+                            <td>0.846</td>
+                            <td>2</td>
                             <td>1</td>
+                            <td>11</td>
+                            <td>10</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\TestableClock</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.273</td>
+                            <td>0.394</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>8</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting</span></td>
+                            <td>2</td>
                             <td>0</td>
+                            <td>0.714</td>
+                            <td>0.286</td>
+                            <td>10</td>
+                            <td>5</td>
+                            <td>4</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\UrlGenerator</span></td>
                             <td>6</td>
+                            <td>0.333</td>
+                            <td>0.5</td>
+                            <td>0.167</td>
+                            <td>7</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\RoutingConfigurator</span></td>
+                            <td>5</td>
+                            <td>0.6</td>
+                            <td>0.8</td>
+                            <td>0.4</td>
+                            <td>12</td>
+                            <td>7</td>
+                            <td>3</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Cache</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.333</td>
+                            <td>0.333</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.758</td>
+                            <td>0.242</td>
+                            <td>25</td>
+                            <td>14</td>
+                            <td>8</td>
+                            <td>5</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Route</span></td>
+                            <td>4</td>
+                            <td>0.25</td>
+                            <td>0.429</td>
+                            <td>0.321</td>
+                            <td>9</td>
+                            <td>5</td>
+                            <td>12</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Exception</span></td>
                             <td>5</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0.364</td>
+                            <td>0.636</td>
+                            <td>4</td>
+                            <td>2</td>
+                            <td>7</td>
+                            <td>6</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\Negotiation</span></td>
-                            <td>1</td>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\UrlMatcher</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.75</td>
+                            <td>0.05</td>
+                            <td>9</td>
+                            <td>8</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Condition</span></td>
+                            <td>6</td>
+                            <td>0.333</td>
+                            <td>0.5</td>
+                            <td>0.167</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\Admin</span></td>
+                            <td>6</td>
+                            <td>0.333</td>
+                            <td>0.412</td>
+                            <td>0.255</td>
+                            <td>7</td>
+                            <td>6</td>
+                            <td>10</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Routing\RouteLoader</span></td>
+                            <td>4</td>
+                            <td>0.5</td>
+                            <td>0.833</td>
+                            <td>0.333</td>
+                            <td>10</td>
+                            <td>6</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Http</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.632</td>
+                            <td>0.168</td>
+                            <td>12</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>6</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Http\Psr7</span></td>
+                            <td>3</td>
                             <td>0</td>
-                            <td>1</td>
+                            <td>0.267</td>
+                            <td>0.733</td>
+                            <td>20</td>
+                            <td>7</td>
+                            <td>55</td>
+                            <td>27</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Http\Response</span></td>
+                            <td>3</td>
                             <td>0</td>
+                            <td>0.286</td>
+                            <td>0.714</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>5</td>
+                            <td>4</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Exception</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.667</td>
+                            <td>0.333</td>
+                            <td>2</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Middleware</span></td>
+                            <td>8</td>
+                            <td>0.125</td>
+                            <td>0.511</td>
+                            <td>0.364</td>
+                            <td>24</td>
+                            <td>14</td>
+                            <td>23</td>
+                            <td>18</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\HttpRouting\Controller</span></td>
+                            <td>6</td>
+                            <td>0.167</td>
+                            <td>0.875</td>
+                            <td>0.042</td>
+                            <td>14</td>
+                            <td>9</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Templating</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0.538</td>
+                            <td>0.462</td>
                             <td>7</td>
                             <td>5</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td>6</td>
+                            <td>3</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\Redirect</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>5</td>
+                            <td><span class="path">Snicco\Component\Templating\ViewFactory</span></td>
+                            <td>4</td>
+                            <td>0.25</td>
+                            <td>0.769</td>
+                            <td>0.019</td>
+                            <td>10</td>
+                            <td>6</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Templating\Exception</span></td>
                             <td>4</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0.3</td>
+                            <td>0.7</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>7</td>
+                            <td>6</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\MustMatchRoute</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
+                            <td><span class="path">Snicco\Component\Templating\Context</span></td>
+                            <td>7</td>
+                            <td>0.286</td>
+                            <td>0.643</td>
+                            <td>0.071</td>
+                            <td>9</td>
+                            <td>4</td>
                             <td>5</td>
                             <td>3</td>
-                            <td>0</td>
-                            <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\MethodOverride</span></td>
-                            <td>1</td>
+                            <td><span class="path">Snicco\Component\Templating\ValueObject</span></td>
+                            <td>2</td>
                             <td>0</td>
+                            <td>0.083</td>
+                            <td>0.917</td>
                             <td>1</td>
+                            <td>1</td>
+                            <td>11</td>
+                            <td>6</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl</span></td>
+                            <td>6</td>
                             <td>0</td>
+                            <td>0.619</td>
+                            <td>0.381</td>
+                            <td>13</td>
+                            <td>6</td>
+                            <td>8</td>
+                            <td>4</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Storage</span></td>
+                            <td>4</td>
+                            <td>0.25</td>
+                            <td>0.455</td>
+                            <td>0.295</td>
+                            <td>5</td>
+                            <td>4</td>
+                            <td>6</td>
+                            <td>4</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\SignedUrl\Exception</span></td>
+                            <td>6</td>
+                            <td>0.167</td>
+                            <td>0.333</td>
+                            <td>0.5</td>
+                            <td>2</td>
+                            <td>1</td>
                             <td>4</td>
                             <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler</span></td>
+                            <td>5</td>
+                            <td>0.4</td>
+                            <td>0.52</td>
+                            <td>0.08</td>
+                            <td>13</td>
+                            <td>6</td>
+                            <td>12</td>
+                            <td>12</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Information</span></td>
+                            <td>4</td>
+                            <td>0.5</td>
+                            <td>0.25</td>
+                            <td>0.25</td>
+                            <td>5</td>
+                            <td>3</td>
+                            <td>15</td>
+                            <td>7</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Displayer</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.333</td>
+                            <td>0.333</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Identifier</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0.333</td>
+                            <td>0.167</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\DisplayerFilter</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.5</td>
+                            <td>0.3</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Log</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0.6</td>
+                            <td>0.1</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Kernel\Configuration</span></td>
+                            <td>7</td>
+                            <td>0.286</td>
+                            <td>0.368</td>
+                            <td>0.346</td>
+                            <td>7</td>
+                            <td>5</td>
+                            <td>12</td>
+                            <td>11</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Kernel</span></td>
+                            <td>4</td>
+                            <td>0.75</td>
+                            <td>0.515</td>
+                            <td>0.265</td>
+                            <td>17</td>
+                            <td>5</td>
+                            <td>16</td>
+                            <td>15</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Kernel\Exception</span></td>
+                            <td>3</td>
                             <td>0</td>
+                            <td>0.4</td>
+                            <td>0.6</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Kernel\ValueObject</span></td>
+                            <td>2</td>
                             <td>0</td>
+                            <td>0.118</td>
+                            <td>0.882</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>15</td>
+                            <td>13</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Middleware\ShareCookies</span></td>
@@ -1533,18 +1412,7 @@
                             <td>0</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Middleware\HttpsOnly</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Middleware\GuestsOnly</span></td>
+                            <td><span class="path">Snicco\Middleware\Redirect</span></td>
                             <td>1</td>
                             <td>0</td>
                             <td>1</td>
@@ -1562,6 +1430,138 @@
                             <td>0</td>
                             <td>5</td>
                             <td>4</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\OpenRedirectProtection</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>8</td>
+                            <td>6</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\Negotiation</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>7</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\WPCap</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>6</td>
+                            <td>4</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\NoRobots</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\WPGuestsOnly</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>5</td>
+                            <td>4</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\HttpsOnly</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\DefaultHeaders</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\Payload</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>1</td>
+                            <td>0.333</td>
+                            <td>9</td>
+                            <td>6</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\WPAuth</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>6</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\MustMatchRoute</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>5</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\WPNonce</span></td>
+                            <td>2</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>7</td>
+                            <td>6</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Middleware\MethodOverride</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>3</td>
                             <td>0</td>
                             <td>0</td>
                         </tr>
@@ -1755,19 +1755,67 @@
 
     var spots = [
     {
-        "name": "Snicco\\Component\\HttpRouting\\Testing",
-        "abstraction": 0.4,
-        "instability": 0.9655172413793104,
-        "distance": 0.2584597200199105,
-        "normalizedDistance": 0.3655172413793104,
+        "name": "Snicco\\Bridge\\IlluminateContainer",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bridge\\SessionPsr16",
+        "abstraction": 0,
+        "instability": 0.8888888888888888,
+        "distance": 0.07856742013183865,
+        "normalizedDistance": 0.11111111111111116,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bridge\\SessionWP",
+        "abstraction": 0,
+        "instability": 0.9,
+        "distance": 0.07071067811865474,
+        "normalizedDistance": 0.09999999999999998,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bridge\\Blade",
+        "abstraction": 0.2,
+        "instability": 0.9545454545454546,
+        "distance": 0.10928013891064825,
+        "normalizedDistance": 0.15454545454545454,
         "classCount": 5
     },
     {
-        "name": "Snicco\\Component\\SignedUrl\\Testing",
-        "abstraction": 1,
+        "name": "Snicco\\Bridge\\Blade\\Exception",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlPsr15",
+        "abstraction": 0,
         "instability": 1,
-        "distance": 0.7071067811865475,
-        "normalizedDistance": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bridge\\Pimple",
+        "abstraction": 0,
+        "instability": 0.8333333333333334,
+        "distance": 0.11785113019775789,
+        "normalizedDistance": 0.16666666666666663,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlPsr16",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
         "classCount": 1
     },
     {
@@ -1795,6 +1843,22 @@
         "classCount": 2
     },
     {
+        "name": "Snicco\\Component\\HttpRouting\\Testing",
+        "abstraction": 0.4,
+        "instability": 0.9655172413793104,
+        "distance": 0.2584597200199105,
+        "normalizedDistance": 0.3655172413793104,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl\\Testing",
+        "abstraction": 1,
+        "instability": 1,
+        "distance": 0.7071067811865475,
+        "normalizedDistance": 1,
+        "classCount": 1
+    },
+    {
         "name": "Snicco\\Component\\Kernel\\Testing",
         "abstraction": 0.25,
         "instability": 1,
@@ -1803,15 +1867,71 @@
         "classCount": 4
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Controller",
-        "abstraction": 0.16666666666666666,
-        "instability": 0.875,
-        "distance": 0.029462782549439532,
-        "normalizedDistance": 0.04166666666666674,
-        "classCount": 6
+        "name": "Snicco\\Bundle\\BetterWPHooks",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Exception",
+        "name": "Snicco\\Bundle\\BetterWPCache",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bundle\\BetterWPMail",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Bundle\\BetterWPDB",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bundle\\Blade",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bundle\\Session",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\Middleware",
+        "abstraction": 0,
+        "instability": 0.95,
+        "distance": 0.035355339059327404,
+        "normalizedDistance": 0.050000000000000044,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\ValueObject",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\Event",
         "abstraction": 0,
         "instability": 0.6666666666666666,
         "distance": 0.23570226039551584,
@@ -1819,7 +1939,103 @@
         "classCount": 2
     },
     {
-        "name": "Snicco\\Component\\HttpRouting",
+        "name": "Snicco\\Bundle\\Testing\\Bundle",
+        "abstraction": 0.5,
+        "instability": 1,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Functional",
+        "abstraction": 0.4,
+        "instability": 1,
+        "distance": 0.28284271247461895,
+        "normalizedDistance": 0.3999999999999999,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
+        "abstraction": 1,
+        "instability": 1,
+        "distance": 0.7071067811865475,
+        "normalizedDistance": 1,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bundle\\Encryption",
+        "abstraction": 0,
+        "instability": 0.9,
+        "distance": 0.07071067811865474,
+        "normalizedDistance": 0.09999999999999998,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bundle\\Debug",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bundle\\Debug\\Displayer",
+        "abstraction": 0,
+        "instability": 0.75,
+        "distance": 0.17677669529663687,
+        "normalizedDistance": 0.25,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting",
+        "abstraction": 0,
+        "instability": 0.9846153846153847,
+        "distance": 0.010878565864408385,
+        "normalizedDistance": 0.01538461538461533,
+        "classCount": 8
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.7777777777777778,
+        "distance": 0.07856742013183865,
+        "normalizedDistance": 0.11111111111111116,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
+        "abstraction": 0,
+        "instability": 0.9166666666666666,
+        "distance": 0.05892556509887898,
+        "normalizedDistance": 0.08333333333333337,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting\\Option",
+        "abstraction": 0,
+        "instability": 0,
+        "distance": 0.7071067811865475,
+        "normalizedDistance": 1,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Bundle\\HttpRouting\\Event",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Bundle\\Templating",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPHooks",
         "abstraction": 0,
         "instability": 0.7142857142857143,
         "distance": 0.20203050891044214,
@@ -1827,276 +2043,12 @@
         "classCount": 2
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Middleware",
-        "abstraction": 0.125,
-        "instability": 0.5106382978723404,
-        "distance": 0.257642630379141,
-        "normalizedDistance": 0.3643617021276596,
-        "classCount": 8
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader",
-        "abstraction": 0.5,
-        "instability": 0.8333333333333334,
+        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
+        "abstraction": 0.75,
+        "instability": 0.5833333333333334,
         "distance": 0.23570226039551592,
         "normalizedDistance": 0.3333333333333335,
         "classCount": 4
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing",
-        "abstraction": 0,
-        "instability": 0.7575757575757576,
-        "distance": 0.17141982574219333,
-        "normalizedDistance": 0.24242424242424243,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.5,
-        "distance": 0.11785113019775796,
-        "normalizedDistance": 0.16666666666666674,
-        "classCount": 6
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Admin",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.4117647058823529,
-        "distance": 0.18024290500833562,
-        "normalizedDistance": 0.2549019607843137,
-        "classCount": 6
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher",
-        "abstraction": 0.2,
-        "instability": 0.75,
-        "distance": 0.035355339059327404,
-        "normalizedDistance": 0.050000000000000044,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Exception",
-        "abstraction": 0,
-        "instability": 0.36363636363636365,
-        "distance": 0.4499770425732575,
-        "normalizedDistance": 0.6363636363636364,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Cache",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.3333333333333333,
-        "distance": 0.23570226039551584,
-        "normalizedDistance": 0.33333333333333337,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator",
-        "abstraction": 0.6,
-        "instability": 0.8,
-        "distance": 0.28284271247461895,
-        "normalizedDistance": 0.3999999999999999,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Route",
-        "abstraction": 0.25,
-        "instability": 0.42857142857142855,
-        "distance": 0.22728432252424738,
-        "normalizedDistance": 0.3214285714285714,
-        "classCount": 4
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Condition",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.5,
-        "distance": 0.11785113019775796,
-        "normalizedDistance": 0.16666666666666674,
-        "classCount": 6
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http",
-        "abstraction": 0.2,
-        "instability": 0.631578947368421,
-        "distance": 0.11909166841036595,
-        "normalizedDistance": 0.16842105263157903,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-        "abstraction": 0,
-        "instability": 0.26666666666666666,
-        "distance": 0.5185449728701349,
-        "normalizedDistance": 0.7333333333333334,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Response",
-        "abstraction": 0,
-        "instability": 0.2857142857142857,
-        "distance": 0.5050762722761053,
-        "normalizedDistance": 0.7142857142857143,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\TestableClock",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.2727272727272727,
-        "distance": 0.2785572168310642,
-        "normalizedDistance": 0.39393939393939403,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\SignedUrl",
-        "abstraction": 0,
-        "instability": 0.65,
-        "distance": 0.2474873734152916,
-        "normalizedDistance": 0.35,
-        "classCount": 6
-    },
-    {
-        "name": "Snicco\\Component\\SignedUrl\\Exception",
-        "abstraction": 0.16666666666666666,
-        "instability": 0.3333333333333333,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 6
-    },
-    {
-        "name": "Snicco\\Component\\SignedUrl\\Storage",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.45454545454545453,
-        "distance": 0.14999234752441917,
-        "normalizedDistance": 0.21212121212121215,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\Templating",
-        "abstraction": 0,
-        "instability": 0.5384615384615384,
-        "distance": 0.3263569759322527,
-        "normalizedDistance": 0.46153846153846156,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\ValueObject",
-        "abstraction": 0,
-        "instability": 0.08333333333333333,
-        "distance": 0.6481812160876685,
-        "normalizedDistance": 0.9166666666666666,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\Exception",
-        "abstraction": 0,
-        "instability": 0.3,
-        "distance": 0.4949747468305832,
-        "normalizedDistance": 0.7,
-        "classCount": 4
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\Context",
-        "abstraction": 0.2857142857142857,
-        "instability": 0.6428571428571429,
-        "distance": 0.05050762722761051,
-        "normalizedDistance": 0.0714285714285714,
-        "classCount": 7
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\ViewFactory",
-        "abstraction": 0.25,
-        "instability": 0.7692307692307693,
-        "distance": 0.01359820733051048,
-        "normalizedDistance": 0.019230769230769162,
-        "classCount": 4
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler",
-        "abstraction": 0.4,
-        "instability": 0.52,
-        "distance": 0.05656854249492377,
-        "normalizedDistance": 0.07999999999999996,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.3333333333333333,
-        "distance": 0.23570226039551584,
-        "normalizedDistance": 0.33333333333333337,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Log",
-        "abstraction": 0.5,
-        "instability": 0.6,
-        "distance": 0.07071067811865481,
-        "normalizedDistance": 0.10000000000000009,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
-        "abstraction": 0.5,
-        "instability": 0.25,
-        "distance": 0.17677669529663687,
-        "normalizedDistance": 0.25,
-        "classCount": 4
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Identifier",
-        "abstraction": 0.5,
-        "instability": 0.3333333333333333,
-        "distance": 0.11785113019775796,
-        "normalizedDistance": 0.16666666666666674,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
-        "abstraction": 0.2,
-        "instability": 0.5,
-        "distance": 0.21213203435596428,
-        "normalizedDistance": 0.30000000000000004,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPDB",
-        "abstraction": 0.2,
-        "instability": 0.8571428571428571,
-        "distance": 0.04040610178208844,
-        "normalizedDistance": 0.05714285714285716,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPDB\\Exception",
-        "abstraction": 0,
-        "instability": 0.6666666666666666,
-        "distance": 0.23570226039551584,
-        "normalizedDistance": 0.33333333333333337,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\StrArr",
-        "abstraction": 0,
-        "instability": 0.09375,
-        "distance": 0.6408155204503087,
-        "normalizedDistance": 0.90625,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPHooks",
-        "abstraction": 0,
-        "instability": 0.6666666666666666,
-        "distance": 0.23570226039551584,
-        "normalizedDistance": 0.33333333333333337,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPHooks\\EventFactory",
-        "abstraction": 0.5,
-        "instability": 0.75,
-        "distance": 0.17677669529663687,
-        "normalizedDistance": 0.25,
-        "classCount": 2
     },
     {
         "name": "Snicco\\Component\\BetterWPHooks\\Exception",
@@ -2107,12 +2059,28 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
-        "abstraction": 0.75,
-        "instability": 0.5833333333333334,
-        "distance": 0.23570226039551592,
-        "normalizedDistance": 0.3333333333333335,
+        "name": "Snicco\\Component\\BetterWPHooks\\EventFactory",
+        "abstraction": 0.5,
+        "instability": 0.75,
+        "distance": 0.17677669529663687,
+        "normalizedDistance": 0.25,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPCache",
+        "abstraction": 0,
+        "instability": 0.8333333333333334,
+        "distance": 0.11785113019775789,
+        "normalizedDistance": 0.16666666666666663,
         "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPCache\\Exception",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 1
     },
     {
         "name": "Snicco\\Component\\EventDispatcher",
@@ -2139,28 +2107,28 @@
         "classCount": 3
     },
     {
-        "name": "Snicco\\Component\\Eloquent\\Mysqli",
-        "abstraction": 0.4,
-        "instability": 0.75,
-        "distance": 0.10606601717798206,
-        "normalizedDistance": 0.1499999999999999,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\Eloquent\\Illuminate",
-        "abstraction": 0.5,
-        "instability": 0.8666666666666667,
-        "distance": 0.25927248643506745,
-        "normalizedDistance": 0.3666666666666667,
-        "classCount": 4
-    },
-    {
-        "name": "Snicco\\Component\\Eloquent",
+        "name": "Snicco\\Component\\BetterWPMail",
         "abstraction": 0,
-        "instability": 0.8947368421052632,
-        "distance": 0.07443229275647868,
-        "normalizedDistance": 0.10526315789473684,
+        "instability": 0.7222222222222222,
+        "distance": 0.19641855032959654,
+        "normalizedDistance": 0.2777777777777778,
         "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Renderer",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.25,
+        "distance": 0.2946278254943948,
+        "normalizedDistance": 0.41666666666666674,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Exception",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.5,
+        "distance": 0.11785113019775796,
+        "normalizedDistance": 0.16666666666666674,
+        "classCount": 3
     },
     {
         "name": "Snicco\\Component\\BetterWPMail\\Transport",
@@ -2168,14 +2136,6 @@
         "instability": 0.625,
         "distance": 0.08838834764831843,
         "normalizedDistance": 0.125,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail",
-        "abstraction": 0,
-        "instability": 0.7222222222222222,
-        "distance": 0.19641855032959654,
-        "normalizedDistance": 0.2777777777777778,
         "classCount": 2
     },
     {
@@ -2195,51 +2155,83 @@
         "classCount": 5
     },
     {
-        "name": "Snicco\\Component\\BetterWPMail\\Exception",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.5,
-        "distance": 0.11785113019775796,
-        "normalizedDistance": 0.16666666666666674,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Renderer",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.25,
-        "distance": 0.2946278254943948,
-        "normalizedDistance": 0.41666666666666674,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPCache",
+        "name": "Snicco\\Component\\StrArr",
         "abstraction": 0,
-        "instability": 0.8333333333333334,
-        "distance": 0.11785113019775789,
-        "normalizedDistance": 0.16666666666666663,
-        "classCount": 4
+        "instability": 0.09375,
+        "distance": 0.6408155204503087,
+        "normalizedDistance": 0.90625,
+        "classCount": 2
     },
     {
-        "name": "Snicco\\Component\\BetterWPCache\\Exception",
+        "name": "Snicco\\Component\\BetterWPDB",
+        "abstraction": 0.2,
+        "instability": 0.8571428571428571,
+        "distance": 0.04040610178208844,
+        "normalizedDistance": 0.05714285714285716,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPDB\\Exception",
         "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 1
+        "instability": 0.6666666666666666,
+        "distance": 0.23570226039551584,
+        "normalizedDistance": 0.33333333333333337,
+        "classCount": 2
     },
     {
         "name": "Snicco\\Component\\Session",
         "abstraction": 0.8,
-        "instability": 0.5714285714285714,
-        "distance": 0.26263966158357477,
-        "normalizedDistance": 0.37142857142857144,
+        "instability": 0.6,
+        "distance": 0.28284271247461895,
+        "normalizedDistance": 0.3999999999999999,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Driver",
+        "abstraction": 0.5,
+        "instability": 0.4375,
+        "distance": 0.044194173824159216,
+        "normalizedDistance": 0.0625,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\Session\\SessionManager",
+        "abstraction": 0.5,
+        "instability": 0.8571428571428571,
+        "distance": 0.2525381361380527,
+        "normalizedDistance": 0.3571428571428572,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\Session\\EventDispatcher",
+        "abstraction": 0.5,
+        "instability": 0,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Serializer",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.2857142857142857,
+        "distance": 0.2693740118805895,
+        "normalizedDistance": 0.38095238095238093,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Exception",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
         "classCount": 5
     },
     {
         "name": "Snicco\\Component\\Session\\ValueObject",
         "abstraction": 0,
-        "instability": 0.2727272727272727,
-        "distance": 0.5142594772265799,
-        "normalizedDistance": 0.7272727272727273,
+        "instability": 0.2857142857142857,
+        "distance": 0.5050762722761053,
+        "normalizedDistance": 0.7142857142857143,
         "classCount": 7
     },
     {
@@ -2251,43 +2243,27 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Component\\Session\\Driver",
+        "name": "Snicco\\Component\\Eloquent\\Illuminate",
         "abstraction": 0.5,
-        "instability": 0.4375,
-        "distance": 0.044194173824159216,
-        "normalizedDistance": 0.0625,
+        "instability": 0.8666666666666667,
+        "distance": 0.25927248643506745,
+        "normalizedDistance": 0.3666666666666667,
         "classCount": 4
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
+        "name": "Snicco\\Component\\Eloquent\\Mysqli",
+        "abstraction": 0.4,
+        "instability": 0.75,
+        "distance": 0.10606601717798206,
+        "normalizedDistance": 0.1499999999999999,
         "classCount": 5
     },
     {
-        "name": "Snicco\\Component\\Session\\SessionManager",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.8571428571428571,
-        "distance": 0.13468700594029476,
-        "normalizedDistance": 0.19047619047619047,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\Session\\Serializer",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.2857142857142857,
-        "distance": 0.2693740118805895,
-        "normalizedDistance": 0.38095238095238093,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\Session\\EventDispatcher",
-        "abstraction": 0.5,
-        "instability": 0,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
+        "name": "Snicco\\Component\\Eloquent",
+        "abstraction": 0,
+        "instability": 0.8947368421052632,
+        "distance": 0.07443229275647868,
+        "normalizedDistance": 0.10526315789473684,
         "classCount": 2
     },
     {
@@ -2299,28 +2275,260 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Component\\Kernel",
-        "abstraction": 0.75,
-        "instability": 0.5151515151515151,
-        "distance": 0.18749043440552393,
-        "normalizedDistance": 0.26515151515151514,
-        "classCount": 4
+        "name": "Snicco\\Component\\TestableClock",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.2727272727272727,
+        "distance": 0.2785572168310642,
+        "normalizedDistance": 0.39393939393939403,
+        "classCount": 3
     },
     {
-        "name": "Snicco\\Component\\Kernel\\ValueObject",
+        "name": "Snicco\\Component\\HttpRouting",
         "abstraction": 0,
-        "instability": 0.11764705882352941,
-        "distance": 0.6239177481057772,
-        "normalizedDistance": 0.8823529411764706,
+        "instability": 0.7142857142857143,
+        "distance": 0.20203050891044214,
+        "normalizedDistance": 0.2857142857142857,
         "classCount": 2
     },
     {
-        "name": "Snicco\\Component\\Kernel\\Exception",
-        "abstraction": 0,
-        "instability": 0.4,
-        "distance": 0.42426406871192845,
-        "normalizedDistance": 0.6,
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.5,
+        "distance": 0.11785113019775796,
+        "normalizedDistance": 0.16666666666666674,
+        "classCount": 6
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\RoutingConfigurator",
+        "abstraction": 0.6,
+        "instability": 0.8,
+        "distance": 0.28284271247461895,
+        "normalizedDistance": 0.3999999999999999,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Cache",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.3333333333333333,
+        "distance": 0.23570226039551584,
+        "normalizedDistance": 0.33333333333333337,
         "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing",
+        "abstraction": 0,
+        "instability": 0.7575757575757576,
+        "distance": 0.17141982574219333,
+        "normalizedDistance": 0.24242424242424243,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Route",
+        "abstraction": 0.25,
+        "instability": 0.42857142857142855,
+        "distance": 0.22728432252424738,
+        "normalizedDistance": 0.3214285714285714,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Exception",
+        "abstraction": 0,
+        "instability": 0.36363636363636365,
+        "distance": 0.4499770425732575,
+        "normalizedDistance": 0.6363636363636364,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlMatcher",
+        "abstraction": 0.2,
+        "instability": 0.75,
+        "distance": 0.035355339059327404,
+        "normalizedDistance": 0.050000000000000044,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Condition",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.5,
+        "distance": 0.11785113019775796,
+        "normalizedDistance": 0.16666666666666674,
+        "classCount": 6
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Admin",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.4117647058823529,
+        "distance": 0.18024290500833562,
+        "normalizedDistance": 0.2549019607843137,
+        "classCount": 6
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader",
+        "abstraction": 0.5,
+        "instability": 0.8333333333333334,
+        "distance": 0.23570226039551592,
+        "normalizedDistance": 0.3333333333333335,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http",
+        "abstraction": 0.2,
+        "instability": 0.631578947368421,
+        "distance": 0.11909166841036595,
+        "normalizedDistance": 0.16842105263157903,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "abstraction": 0,
+        "instability": 0.26666666666666666,
+        "distance": 0.5185449728701349,
+        "normalizedDistance": 0.7333333333333334,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Response",
+        "abstraction": 0,
+        "instability": 0.2857142857142857,
+        "distance": 0.5050762722761053,
+        "normalizedDistance": 0.7142857142857143,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Exception",
+        "abstraction": 0,
+        "instability": 0.6666666666666666,
+        "distance": 0.23570226039551584,
+        "normalizedDistance": 0.33333333333333337,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "abstraction": 0.125,
+        "instability": 0.5106382978723404,
+        "distance": 0.257642630379141,
+        "normalizedDistance": 0.3643617021276596,
+        "classCount": 8
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Controller",
+        "abstraction": 0.16666666666666666,
+        "instability": 0.875,
+        "distance": 0.029462782549439532,
+        "normalizedDistance": 0.04166666666666674,
+        "classCount": 6
+    },
+    {
+        "name": "Snicco\\Component\\Templating",
+        "abstraction": 0,
+        "instability": 0.5384615384615384,
+        "distance": 0.3263569759322527,
+        "normalizedDistance": 0.46153846153846156,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\ViewFactory",
+        "abstraction": 0.25,
+        "instability": 0.7692307692307693,
+        "distance": 0.01359820733051048,
+        "normalizedDistance": 0.019230769230769162,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\Exception",
+        "abstraction": 0,
+        "instability": 0.3,
+        "distance": 0.4949747468305832,
+        "normalizedDistance": 0.7,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\Context",
+        "abstraction": 0.2857142857142857,
+        "instability": 0.6428571428571429,
+        "distance": 0.05050762722761051,
+        "normalizedDistance": 0.0714285714285714,
+        "classCount": 7
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\ValueObject",
+        "abstraction": 0,
+        "instability": 0.08333333333333333,
+        "distance": 0.6481812160876685,
+        "normalizedDistance": 0.9166666666666666,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl",
+        "abstraction": 0,
+        "instability": 0.6190476190476191,
+        "distance": 0.2693740118805895,
+        "normalizedDistance": 0.38095238095238093,
+        "classCount": 6
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl\\Storage",
+        "abstraction": 0.25,
+        "instability": 0.45454545454545453,
+        "distance": 0.2089179126232981,
+        "normalizedDistance": 0.2954545454545454,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl\\Exception",
+        "abstraction": 0.16666666666666666,
+        "instability": 0.3333333333333333,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 6
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler",
+        "abstraction": 0.4,
+        "instability": 0.52,
+        "distance": 0.05656854249492377,
+        "normalizedDistance": 0.07999999999999996,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
+        "abstraction": 0.5,
+        "instability": 0.25,
+        "distance": 0.17677669529663687,
+        "normalizedDistance": 0.25,
+        "classCount": 4
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.3333333333333333,
+        "distance": 0.23570226039551584,
+        "normalizedDistance": 0.33333333333333337,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Identifier",
+        "abstraction": 0.5,
+        "instability": 0.3333333333333333,
+        "distance": 0.11785113019775796,
+        "normalizedDistance": 0.16666666666666674,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
+        "abstraction": 0.2,
+        "instability": 0.5,
+        "distance": 0.21213203435596428,
+        "normalizedDistance": 0.30000000000000004,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Log",
+        "abstraction": 0.5,
+        "instability": 0.6,
+        "distance": 0.07071067811865481,
+        "normalizedDistance": 0.10000000000000009,
+        "classCount": 2
     },
     {
         "name": "Snicco\\Component\\Kernel\\Configuration",
@@ -2331,295 +2539,31 @@
         "classCount": 7
     },
     {
-        "name": "Snicco\\Bundle\\Testing\\Functional",
-        "abstraction": 0.4,
-        "instability": 1,
-        "distance": 0.28284271247461895,
-        "normalizedDistance": 0.3999999999999999,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
-        "abstraction": 1,
-        "instability": 1,
-        "distance": 0.7071067811865475,
-        "normalizedDistance": 1,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bundle\\Testing\\Bundle",
-        "abstraction": 0.5,
-        "instability": 1,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.7777777777777778,
-        "distance": 0.07856742013183865,
-        "normalizedDistance": 0.11111111111111116,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting",
-        "abstraction": 0,
-        "instability": 0.9846153846153847,
-        "distance": 0.010878565864408385,
-        "normalizedDistance": 0.01538461538461533,
-        "classCount": 8
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\Option",
-        "abstraction": 0,
-        "instability": 0,
-        "distance": 0.7071067811865475,
-        "normalizedDistance": 1,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\Event",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
+        "name": "Snicco\\Component\\Kernel",
+        "abstraction": 0.75,
+        "instability": 0.5151515151515151,
+        "distance": 0.18749043440552393,
+        "normalizedDistance": 0.26515151515151514,
         "classCount": 4
     },
     {
-        "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
+        "name": "Snicco\\Component\\Kernel\\Exception",
         "abstraction": 0,
-        "instability": 0.9166666666666666,
-        "distance": 0.05892556509887898,
-        "normalizedDistance": 0.08333333333333337,
+        "instability": 0.4,
+        "distance": 0.42426406871192845,
+        "normalizedDistance": 0.6,
         "classCount": 3
     },
     {
-        "name": "Snicco\\Bundle\\Debug",
+        "name": "Snicco\\Component\\Kernel\\ValueObject",
         "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
+        "instability": 0.11764705882352941,
+        "distance": 0.6239177481057772,
+        "normalizedDistance": 0.8823529411764706,
         "classCount": 2
     },
     {
-        "name": "Snicco\\Bundle\\Debug\\Displayer",
-        "abstraction": 0,
-        "instability": 0.75,
-        "distance": 0.17677669529663687,
-        "normalizedDistance": 0.25,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bundle\\Templating",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 4
-    },
-    {
-        "name": "Snicco\\Bundle\\BetterWPDB",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bundle\\BetterWPHooks",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bundle\\Blade",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bundle\\BetterWPMail",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Bundle\\BetterWPCache",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bundle\\Session",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bundle\\Session\\ValueObject",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bundle\\Session\\Event",
-        "abstraction": 0,
-        "instability": 0.6666666666666666,
-        "distance": 0.23570226039551584,
-        "normalizedDistance": 0.33333333333333337,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bundle\\Session\\Middleware",
-        "abstraction": 0,
-        "instability": 0.95,
-        "distance": 0.035355339059327404,
-        "normalizedDistance": 0.050000000000000044,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Bundle\\Encryption",
-        "abstraction": 0,
-        "instability": 0.9,
-        "distance": 0.07071067811865474,
-        "normalizedDistance": 0.09999999999999998,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bridge\\SignedUrlPsr15",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bridge\\SessionWP",
-        "abstraction": 0,
-        "instability": 0.8888888888888888,
-        "distance": 0.07856742013183865,
-        "normalizedDistance": 0.11111111111111116,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bridge\\SessionPsr16",
-        "abstraction": 0,
-        "instability": 0.8,
-        "distance": 0.14142135623730948,
-        "normalizedDistance": 0.19999999999999996,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bridge\\Blade",
-        "abstraction": 0.2,
-        "instability": 0.9545454545454546,
-        "distance": 0.10928013891064825,
-        "normalizedDistance": 0.15454545454545454,
-        "classCount": 5
-    },
-    {
-        "name": "Snicco\\Bridge\\Blade\\Exception",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bridge\\SignedUrlPsr16",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bridge\\IlluminateContainer",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Bridge\\Pimple",
-        "abstraction": 0,
-        "instability": 0.8333333333333334,
-        "distance": 0.11785113019775789,
-        "normalizedDistance": 0.16666666666666663,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Middleware\\NoRobots",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Middleware\\OpenRedirectProtection",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Middleware\\WPCap",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Middleware\\WPNonce",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 2
-    },
-    {
-        "name": "Snicco\\Middleware\\Payload",
-        "abstraction": 0.3333333333333333,
-        "instability": 1,
-        "distance": 0.23570226039551578,
-        "normalizedDistance": 0.33333333333333326,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Middleware\\DefaultHeaders",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Middleware\\WPAuth",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    },
-    {
-        "name": "Snicco\\Middleware\\Negotiation",
+        "name": "Snicco\\Middleware\\ShareCookies",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,
@@ -2635,7 +2579,7 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Middleware\\MustMatchRoute",
+        "name": "Snicco\\Middleware\\TrailingSlash",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,
@@ -2643,7 +2587,7 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Middleware\\MethodOverride",
+        "name": "Snicco\\Middleware\\OpenRedirectProtection",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,
@@ -2651,7 +2595,31 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Middleware\\ShareCookies",
+        "name": "Snicco\\Middleware\\Negotiation",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Middleware\\WPCap",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Middleware\\NoRobots",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Middleware\\WPGuestsOnly",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,
@@ -2667,7 +2635,7 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Middleware\\GuestsOnly",
+        "name": "Snicco\\Middleware\\DefaultHeaders",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,
@@ -2675,7 +2643,39 @@
         "classCount": 1
     },
     {
-        "name": "Snicco\\Middleware\\TrailingSlash",
+        "name": "Snicco\\Middleware\\Payload",
+        "abstraction": 0.3333333333333333,
+        "instability": 1,
+        "distance": 0.23570226039551578,
+        "normalizedDistance": 0.33333333333333326,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Middleware\\WPAuth",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Middleware\\MustMatchRoute",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 1
+    },
+    {
+        "name": "Snicco\\Middleware\\WPNonce",
+        "abstraction": 0,
+        "instability": 1,
+        "distance": 0,
+        "normalizedDistance": 0,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Middleware\\MethodOverride",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,

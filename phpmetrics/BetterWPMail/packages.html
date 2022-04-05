@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -235,17 +235,6 @@
                             <td>2</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Transport</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
-                            <td>0.625</td>
-                            <td>0.125</td>
-                            <td>5</td>
-                            <td>3</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
                             <td><span class="path">Snicco\Component\BetterWPMail</span></td>
                             <td>2</td>
                             <td>0</td>
@@ -255,6 +244,39 @@
                             <td>6</td>
                             <td>5</td>
                             <td>5</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Renderer</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.25</td>
+                            <td>0.417</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>3</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Exception</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.5</td>
+                            <td>0.167</td>
+                            <td>3</td>
+                            <td>1</td>
+                            <td>3</td>
+                            <td>3</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\BetterWPMail\Transport</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0.625</td>
+                            <td>0.125</td>
+                            <td>5</td>
+                            <td>3</td>
+                            <td>3</td>
+                            <td>3</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\BetterWPMail\ValueObject</span></td>
@@ -275,28 +297,6 @@
                             <td>0.3</td>
                             <td>3</td>
                             <td>2</td>
-                            <td>3</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Exception</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.5</td>
-                            <td>0.167</td>
-                            <td>3</td>
-                            <td>1</td>
-                            <td>3</td>
-                            <td>3</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\BetterWPMail\Renderer</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.25</td>
-                            <td>0.417</td>
-                            <td>1</td>
-                            <td>1</td>
                             <td>3</td>
                             <td>2</td>
                         </tr>
@@ -333,7 +333,7 @@
                             <path d="M0 0h24v24H0z" fill="none"/>
                             <path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5c-.49 0-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/>
                         </svg>
-                        Violations (14)
+                        Violations (15)
                     </a>
                 </li>
                                                 <li>
@@ -492,19 +492,35 @@
         "classCount": 2
     },
     {
-        "name": "Snicco\\Component\\BetterWPMail\\Transport",
-        "abstraction": 0.5,
-        "instability": 0.625,
-        "distance": 0.08838834764831843,
-        "normalizedDistance": 0.125,
-        "classCount": 2
-    },
-    {
         "name": "Snicco\\Component\\BetterWPMail",
         "abstraction": 0,
         "instability": 0.7222222222222222,
         "distance": 0.19641855032959654,
         "normalizedDistance": 0.2777777777777778,
+        "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Renderer",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.25,
+        "distance": 0.2946278254943948,
+        "normalizedDistance": 0.41666666666666674,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Exception",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.5,
+        "distance": 0.11785113019775796,
+        "normalizedDistance": 0.16666666666666674,
+        "classCount": 3
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Transport",
+        "abstraction": 0.5,
+        "instability": 0.625,
+        "distance": 0.08838834764831843,
+        "normalizedDistance": 0.125,
         "classCount": 2
     },
     {
@@ -522,22 +538,6 @@
         "distance": 0.21213203435596428,
         "normalizedDistance": 0.30000000000000004,
         "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Exception",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.5,
-        "distance": 0.11785113019775796,
-        "normalizedDistance": 0.16666666666666674,
-        "classCount": 3
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Renderer",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.25,
-        "distance": 0.2946278254943948,
-        "normalizedDistance": 0.41666666666666674,
-        "classCount": 3
     }
 ];
 

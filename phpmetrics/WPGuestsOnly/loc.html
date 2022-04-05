@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -157,9 +157,6 @@
                                     <li class=" ">
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
-                                    <li class="active ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
                                     <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
@@ -196,48 +193,72 @@
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
                     </li>
+                                    <li class="active ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
+                    </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
                     </li>
                             </ul>
         </div>
         
-    <div class="row">
-        <div class="column">
-            <div class="bloc">
-                <h4>Packages</h4>
 
-                <div id="distances" class="scattered-plot"></div>
 
-                <table class="js-sort-table" id="table-length">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th class="js-sort-number">Classes</th>
-                        <th class="js-sort-number">Abstraction</th>
-                        <th class="js-sort-number">Instability</th>
-                        <th class="js-sort-number">Distance</th>
-                        <th class="js-sort-number">Outgoing class dep.</th>
-                        <th class="js-sort-number">Outgoing package dep.</th>
-                        <th class="js-sort-number">Incoming class dep.</th>
-                        <th class="js-sort-number">Incoming package dep.</th>
-                    </tr>
-                    </thead>
-                                            <tr>
-                            <td><span class="path">Snicco\Middleware\GuestsOnly</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                    </table>
-            </div>
+
+<div class="row">
+    <div class="column">
+        <div class="bloc">
+            <h4>Percentile distribution of logical lines of code by class</h4>
+            <div id="lloc-repartition" style="height: 200px"></div>
+            <div class="help" style="text-align: center">Percentile</div>
         </div>
     </div>
+</div>
+
+<div class="row">
+    <div class="column">
+        <div class="bloc">
+            <h4>Explore</h4>
+            <table class="js-sort-table" id="table-length">
+                <thead>
+                <tr>
+                    <th>Class</th>
+                    <th class="js-sort-number">LLOC</th>
+                    <th class="js-sort-number">CLOC</th>
+                    <th class="js-sort-number">Volume</th>
+                    <th class="js-sort-number">Intelligent content</th>
+                    <th class="js-sort-number">Comment Weight</th>
+                </tr>
+                </thead>
+                                    <tr>
+                        <td><span class="path">Snicco\Middleware\WPGuestsOnly\WPGuestsOnly</span></td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.06);">
+                                30                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.03);">
+                                152.37                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.04);">
+                                31.04                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                            </tr>
+                            </table>
+        </div>
+    </div>
+</div>
+
+
 </div>
 
 <!-- Sidebar -->
@@ -408,114 +429,83 @@
 
 </body>
 </html>
-<script type="text/javascript">
-    /**
-     * Thx to http://bl.ocks.org/weiglemc/6185069
-     */
-    var margin = {top: 20, right: 20, bottom: 20, left: 20},
-        width = 500 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
 
-    var spots = [
-    {
-        "name": "Snicco\\Middleware\\GuestsOnly",
-        "abstraction": 0,
-        "instability": 1,
-        "distance": 0,
-        "normalizedDistance": 0,
-        "classCount": 1
-    }
-];
 
-    /*
-     * value accessor - returns the value to encode for a given data object.
-     * scale - maps value to a visual display encoding, such as a pixel position.
-     * map function - maps from data value to display value
-     * axis - sets up axis
-     */
+<script>
 
-    // setup x
-    var xValue = function(d) { return d.abstraction;}, // data -> value
-        xScale = d3.scale.linear().range([0, width]), // value -> display
-        xMap = function(d) { return xScale(xValue(d));}, // data -> display
-        xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+    // table
+    sortTable(document.getElementById('table-length'), 1, -1);
 
-    // setup y
-    var yValue = function(d) { return d.instability;}, // data -> value
-        yScale = d3.scale.linear().range([height, 0]), // value -> display
-        yMap = function(d) { return yScale(yValue(d));}, // data -> display
-        yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-    // setup fill color
-    var cValue = function(d) { return d.normalizedDistance;},
-        color = d3.scale.linear().domain([0,1])
-            .interpolate(d3.interpolateHcl)
-            .range([d3.rgb("#00FF00"), d3.rgb('#FF0000')])
+    var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = document.getElementById('lloc-repartition').offsetWidth - margin.left - margin.right,
+        height = document.getElementById('lloc-repartition').offsetHeight - margin.top - margin.bottom;
 
-    // add the graph canvas to #distances
-    var svg = d3.select("#distances").append("svg")
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+        ;
+
+    var svg = d3.select("#lloc-repartition").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // add the tooltip area to the webpage
-    var tooltip = d3.select("#distances").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
+    data = [];
 
-    // x-axis
-    svg
-        .append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis)
+    x.domain(data.map(function (d) {
+        return d.percentile;
+    }));
+    y.domain([0, d3.max(data, function (d) {
+        return d.lloc;
+    })]);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
         .append("text")
-            .attr("class", "label")
-            .attr("x", width)
-            .attr("y", -6)
-            .style("text-anchor", "end")
-            .text("Abstraction");
+        .style("text-anchor", "end")
 
-    // y-axis
-    svg
-        .append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
         .append("text")
-            .attr("class", "label")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text("Instability");
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Logical lines of code");
 
-    // optimal distance line
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", (d3.svg.line().x(function (d) { return xScale(d); }).y(function (d) { return yScale(1-d); }))([0, 1]));
-
-    // draw dots
-    svg.selectAll(".dot")
-        .data(spots)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", function(d) { return 3.0 + 0.5 * d.classCount; })
-        .attr("cx", xMap)
-        .attr("cy", yMap)
-        .style("fill", function(d) { return color(cValue(d));})
-        .on("mouseover", function(d) {
-            tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-            tooltip.html(d.name + "<br/> (" + (Math.round(1000 * xValue(d)) / 1000)
-                + ", " + (Math.round(1000 * yValue(d)) / 1000) + ")")
-                .style("left", (d3.event.pageX + 5) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) {
+            return x(d.percentile);
         })
-        .on("mouseout", function(d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
+        .attr("width", x.rangeBand())
+        .attr("y", function (d) {
+            return y(d.lloc);
+        })
+        .attr("height", function (d) {
+            return height - y(d.lloc);
         });
+
+    function type(d) {
+        d.lloc = +d.lloc;
+        return d;
+    }
+
 </script>

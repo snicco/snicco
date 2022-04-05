@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -400,14 +400,14 @@
             "Snicco\\Component\\Templating",
             "Snicco\\Component\\Templating\\ViewFactory",
             "Snicco\\Component\\Templating\\Context",
-            "Snicco\\Component\\HttpRouting\\Middleware",
-            "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Psr\\Container",
+            "Snicco\\Component\\Templating\\Exception",
             "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
             "Snicco\\Component\\Psr7ErrorHandler\\Information",
             "Snicco\\Component\\Templating\\ValueObject",
-            "Psr\\Container",
-            "Snicco\\Component\\Templating\\Exception"
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Psr\\Http\\Message"
         ]
     },
     {
@@ -446,17 +446,12 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "name": "Psr\\Container",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "name": "Snicco\\Component\\Templating\\Exception",
         "size": 3000,
         "relations": []
     },
@@ -476,12 +471,17 @@
         "relations": []
     },
     {
-        "name": "Psr\\Container",
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Templating\\Exception",
+        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\Http\\Message",
         "size": 3000,
         "relations": []
     },

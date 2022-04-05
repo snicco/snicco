@@ -1,6 +1,6 @@
 var classes = [
     {
-        "name": "Snicco\\Middleware\\WPCap\\Authorize",
+        "name": "Snicco\\Middleware\\WPCap\\AuthorizeWPCap",
         "interface": false,
         "abstract": false,
         "final": true,

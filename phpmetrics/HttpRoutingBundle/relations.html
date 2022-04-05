@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -390,6 +390,71 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\HttpKernel",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\MiddlewarePipeline",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\ResponsePreparation",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\EventDispatcher\\EventDispatcherInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandlingRequest",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
+        ]
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandledRequest",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\WPAdminMenu",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminMenu",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\StrArr\\Str",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\TestEmitter",
         "size": 3000,
         "relations": []
@@ -420,11 +485,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\EmitterStack",
         "size": 3000,
         "relations": []
@@ -436,71 +496,6 @@
     },
     {
         "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiStreamEmitter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\WPAdminMenu",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminMenu",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\StrArr\\Str",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Psr17FactoryDiscovery",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ServerRequestFactoryInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\UriFactoryInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\UploadedFileFactoryInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\StreamFactoryInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ResponseFactoryInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Webmozart\\Assert\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ReflectionClass",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
@@ -520,17 +515,17 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\HttpErrorHandlingOption",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponsePostProcessor",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\RoutingOption",
+        "name": "\\Snicco\\Component\\EventDispatcher\\Unremovable",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\MiddlewareOption",
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
         "size": 3000,
         "relations": []
     },
@@ -540,22 +535,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\HttpKernel",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Nyholm\\Psr7Server\\ServerRequestCreator",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Psr\\EventDispatcher\\EventDispatcherInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+        "name": "\\Psr\\Http\\Message\\StreamFactoryInterface",
         "size": 3000,
         "relations": []
     },
@@ -577,29 +562,24 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\MiddlewarePipeline",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\MiddlewareCache",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\ResponsePreparation",
+        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareResolver",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandlingRequest",
+        "name": "\\Closure",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
-        ]
+        "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandledRequest",
+        "name": "\\Webimpress\\SafeWriter\\FileWriter",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Bundle\\HttpRouting\\HttpRoutingBundle",
@@ -661,17 +641,22 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Kernel\\Kernel",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\RoutingOption",
         "size": 3000,
         "relations": []
     },
@@ -736,6 +721,11 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\HttpErrorHandlingOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\class",
         "size": 3000,
         "relations": []
@@ -771,18 +761,23 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareResolver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\MiddlewareCache",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Psr17FactoryDiscovery",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareResolver",
-            "\\Closure",
-            "\\Webimpress\\SafeWriter\\FileWriter"
+            "\\Psr\\Http\\Message\\ServerRequestFactoryInterface",
+            "\\Psr\\Http\\Message\\UriFactoryInterface",
+            "\\Psr\\Http\\Message\\UploadedFileFactoryInterface",
+            "\\Psr\\Http\\Message\\StreamFactoryInterface",
+            "\\Psr\\Http\\Message\\ResponseFactoryInterface",
+            "\\Webmozart\\Assert\\Assert",
+            "\\ReflectionClass",
+            "\\RuntimeException"
         ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\MiddlewareOption",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Psr\\Log\\Test\\TestLogger",
@@ -810,14 +805,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponsePostProcessor",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\Unremovable",
-            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment"
-        ]
-    },
-    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\Middleware\\ErrorsToExceptions",
         "size": 3000,
         "relations": [
@@ -830,17 +817,22 @@
         ]
     },
     {
-        "name": "\\Closure",
+        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Webimpress\\SafeWriter\\FileWriter",
+        "name": "\\Psr\\Log\\LoggerInterface",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Unremovable",
+        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ErrorException",
         "size": 3000,
         "relations": []
     },
@@ -866,26 +858,6 @@
         "relations": []
     },
     {
-        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Log\\LoggerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ErrorException",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\Middleware\\SetUserId",
         "size": 3000,
         "relations": [
@@ -898,6 +870,36 @@
     },
     {
         "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ServerRequestFactoryInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\UriFactoryInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\UploadedFileFactoryInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ResponseFactoryInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webmozart\\Assert\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionClass",
         "size": 3000,
         "relations": []
     }

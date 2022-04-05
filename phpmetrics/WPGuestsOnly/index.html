@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -157,9 +157,6 @@
                                     <li class=" ">
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
-                                    <li class="active ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
                                     <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
@@ -196,59 +193,177 @@
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
                     </li>
+                                    <li class="active ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
+                    </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
                     </li>
                             </ul>
         </div>
-        
-<div class="row">
-    <div class="column">
-        <div class="bloc">
-            <h4>Coupling</h4>
-
-            <div class="help">
-                <strong>Afferent coupling (AC)</strong> is the number of classes affected by given class.
-                <br/><strong>Efferent coupling (EC)</strong> is the number of classes from which given class receives
-                effects.
+            <div class="row">
+        <div class="column">
+            <div class="bloc bloc-number">
+                <div class="label"><a href="violations.html">Violations</a> (0                    criticals, 0 errors)
+                </div>
+                <div class="number">0</div>
+                <div class="bloc-action">
+                    <a href="violations.html">View details &gt;</a>
+                </div>
             </div>
-
-            <table id="table-relations" class="js-sort-table">
-                <thead>
-                <tr>
-                    <th>Class</th>
-                    <th class="js-sort-number">Afferent coupling</th>
-                    <th class="js-sort-number">Efferent coupling</th>
-                    <th class="js-sort-number">Instability</th>
-                    <th class="js-sort-number">ClassRank</th>
-                </thead>
-                <tbody>
-                                    <tr>
-                        <td><span class="path">Snicco\Middleware\GuestsOnly\GuestsOnly</span></td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.1);">
-                                5                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 1);">
-                                1                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
-                            </td>
-                                            </tr>
-                                </tbody>
-            </table>
-
+        </div>
+        <div class="column">
+            <div class="bloc bloc-number">
+                                <div class="label"><a href="loc.html">Lines of code</a></div>
+                <div class="number">30</div>
+                <div class="bloc-action">
+                    <a href="loc.html">View details &gt;</a>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="bloc bloc-number">
+                                <div class="label"><a href="oop.html">Classes</a></div>
+                <div class="number">1</div>
+                <div class="bloc-action">
+                    <a href="loc.html">View details &gt;</a>
+                </div>
+            </div>
         </div>
     </div>
 
-</div>
+
+    <div class="row">
+        <div class="column">
+            <div class="bloc bloc-number">
+                                <div class="label"><a href="complexity.html">Average cyclomatic complexity by class</a></div>
+                <div class="number">7.00</div>
+                <div class="bloc-action">
+                    <a href="complexity.html">View details &gt;</a>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="bloc bloc-number">
+                <div class="label">
+                    <a href="junit.html">Assertions in tests</a>
+                </div>
+                                    <div class="help number-alternate">
+                        <div class="help-inner">
+                            No JUnit report found. Use the --junit=&lt;junit.xml&gt; option to analyse your unit tests.
+                            See <a href="https://phpunit.readthedocs.io/fr/latest/textui.html" target="_blank">documentation of PHPUnit if needed</a>
+                        </div>
+                    </div>
+                    <div class="bloc-action">
+                        No details
+                    </div>
+                            </div>
+        </div>
+        <div class="column">
+            <div class="bloc bloc-number">
+                                <div class="label"><a href="complexity.html">Average bugs by class</a></div>
+                <div class="number">
+                    0.05                </div>
+                <div class="bloc-action">
+                    <a href="complexity.html">View details &gt;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="column column-help">
+            <div class="bloc" style="min-height: 540px;">
+                <div class="column column-help-inner">
+                    <div class="row">
+                        <div class="column with-help">
+                            <div>
+                                <div class="label">
+                                    Maintainability / complexity
+                                    <small><a
+                                            data-current="with-comments"
+                                            onclick="toggleChartMaintainability(this)">
+                                                (with comments)
+                                    </a></small>
+                                </div>
+                                <div id="svg-maintainability" class="svg-container"></div>
+                            </div>
+                        </div>
+                        <div class="column help">
+                            <div class="help-inner">
+                                <p>Each file is symbolized by a circle. Size of the circle represents the Cyclomatic
+                                    complexity.
+                                    Color of the circle represents the Maintainability Index.</p>
+                                <p>Large red circles will be probably hard to maintain.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="bloc bloc-number" style="min-height: 540px;">
+                <div class="label">ClassRank
+                    <small>(<a href="https://en.wikipedia.org/wiki/PageRank" target="_blank">Google's page rank applied to relations between classes)</a></small>
+                </div>
+                <div class="help">
+                    <div class="help-inner">
+                        <p>
+                            Page Rank is a way to measure the importance of a class. There is no "good" or "bad" page rank. This metric reflects interactions in your code.
+                        </p>
+                    </div>
+                </div>
+                <div class="clusterize small">
+                    <div id="clusterizeClassRank" class="clusterize-scroll">
+                        <table class="table-small">
+                            <thead>
+                            <tr>
+                                <th>ClassRank</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="contentClassRank" class="clusterize-content">
+                                                            <tr>
+                                    <td>
+                                        <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                        0                                    </td>
+                                    </td>
+                                    <td>
+                                        <span class="path">Snicco\Middleware\WPGuestsOnly\WPGuestsOnly</span>
+                                                                                <span class="badge" title="Maintainability Index">51.55</span>
+                                        <span class="badge" title="Maintainability Index (w/o comments)">51.55</span>
+                                    </td>
+                                </tr>
+                                                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+                <div class="column"></div>
+        <div class="column"></div>
+    </div>
+
+
+    <script type="text/javascript">
+        document.onreadystatechange = function () {
+            if (document.readyState === 'complete') {
+                chartMaintainability();
+
+                new Clusterize({
+                    scrollId: 'clusterizeClassRank',
+                    contentId: 'contentClassRank'
+                });
+
+                // prepare json for packages pie
+                                chartLicenses([]);
+            }
+        };
+    </script>
 
 </div>
 
@@ -420,8 +535,3 @@
 
 </body>
 </html>
-
-
-<script type="text/javascript">
-    sortTable(document.getElementById('table-relations'), 1, -1);
-</script>

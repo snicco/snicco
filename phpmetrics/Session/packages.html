@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -195,6 +192,9 @@
                     </li>
                                     <li class=" ">
                         <a href="../WPCap/index.html">WPCap</a>
+                    </li>
+                                    <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
                     </li>
                                     <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
@@ -238,34 +238,12 @@
                             <td><span class="path">Snicco\Component\Session</span></td>
                             <td>5</td>
                             <td>0.8</td>
-                            <td>0.571</td>
-                            <td>0.371</td>
+                            <td>0.6</td>
+                            <td>0.4</td>
                             <td>12</td>
                             <td>7</td>
-                            <td>9</td>
+                            <td>8</td>
                             <td>7</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\ValueObject</span></td>
-                            <td>7</td>
-                            <td>0</td>
-                            <td>0.273</td>
-                            <td>0.727</td>
-                            <td>6</td>
-                            <td>3</td>
-                            <td>16</td>
-                            <td>9</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\Event</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Session\Driver</span></td>
@@ -279,26 +257,26 @@
                             <td>6</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\Session\Exception</span></td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>4</td>
-                            <td>1</td>
-                            <td>4</td>
-                            <td>4</td>
-                        </tr>
-                                            <tr>
                             <td><span class="path">Snicco\Component\Session\SessionManager</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
+                            <td>2</td>
+                            <td>0.5</td>
                             <td>0.857</td>
-                            <td>0.19</td>
+                            <td>0.357</td>
                             <td>12</td>
                             <td>7</td>
                             <td>2</td>
                             <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\EventDispatcher</span></td>
+                            <td>2</td>
+                            <td>0.5</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>1</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Session\Serializer</span></td>
@@ -312,13 +290,35 @@
                             <td>4</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\Session\EventDispatcher</span></td>
-                            <td>2</td>
-                            <td>0.5</td>
+                            <td><span class="path">Snicco\Component\Session\Exception</span></td>
+                            <td>5</td>
                             <td>0</td>
                             <td>0.5</td>
+                            <td>0.5</td>
+                            <td>4</td>
+                            <td>1</td>
+                            <td>4</td>
+                            <td>4</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\ValueObject</span></td>
+                            <td>7</td>
                             <td>0</td>
+                            <td>0.286</td>
+                            <td>0.714</td>
+                            <td>6</td>
+                            <td>3</td>
+                            <td>15</td>
+                            <td>9</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\Event</span></td>
+                            <td>1</td>
                             <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>1</td>
+                            <td>1</td>
                             <td>1</td>
                             <td>1</td>
                         </tr>
@@ -516,26 +516,10 @@
     {
         "name": "Snicco\\Component\\Session",
         "abstraction": 0.8,
-        "instability": 0.5714285714285714,
-        "distance": 0.26263966158357477,
-        "normalizedDistance": 0.37142857142857144,
+        "instability": 0.6,
+        "distance": 0.28284271247461895,
+        "normalizedDistance": 0.3999999999999999,
         "classCount": 5
-    },
-    {
-        "name": "Snicco\\Component\\Session\\ValueObject",
-        "abstraction": 0,
-        "instability": 0.2727272727272727,
-        "distance": 0.5142594772265799,
-        "normalizedDistance": 0.7272727272727273,
-        "classCount": 7
-    },
-    {
-        "name": "Snicco\\Component\\Session\\Event",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 1
     },
     {
         "name": "Snicco\\Component\\Session\\Driver",
@@ -546,20 +530,20 @@
         "classCount": 4
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 5
+        "name": "Snicco\\Component\\Session\\SessionManager",
+        "abstraction": 0.5,
+        "instability": 0.8571428571428571,
+        "distance": 0.2525381361380527,
+        "normalizedDistance": 0.3571428571428572,
+        "classCount": 2
     },
     {
-        "name": "Snicco\\Component\\Session\\SessionManager",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.8571428571428571,
-        "distance": 0.13468700594029476,
-        "normalizedDistance": 0.19047619047619047,
-        "classCount": 3
+        "name": "Snicco\\Component\\Session\\EventDispatcher",
+        "abstraction": 0.5,
+        "instability": 0,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 2
     },
     {
         "name": "Snicco\\Component\\Session\\Serializer",
@@ -570,12 +554,28 @@
         "classCount": 3
     },
     {
-        "name": "Snicco\\Component\\Session\\EventDispatcher",
-        "abstraction": 0.5,
-        "instability": 0,
+        "name": "Snicco\\Component\\Session\\Exception",
+        "abstraction": 0,
+        "instability": 0.5,
         "distance": 0.35355339059327373,
         "normalizedDistance": 0.5,
-        "classCount": 2
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\Session\\ValueObject",
+        "abstraction": 0,
+        "instability": 0.2857142857142857,
+        "distance": 0.5050762722761053,
+        "normalizedDistance": 0.7142857142857143,
+        "classCount": 7
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Event",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 1
     }
 ];
 

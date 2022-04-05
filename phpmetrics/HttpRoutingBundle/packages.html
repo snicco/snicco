@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-03-26 18:11:46        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -158,9 +158,6 @@
                         <a href="../DefaultHeaders/index.html">DefaultHeaders</a>
                     </li>
                                     <li class=" ">
-                        <a href="../GuestsOnly/index.html">GuestsOnly</a>
-                    </li>
-                                    <li class=" ">
                         <a href="../HttpsOnly/index.html">HttpsOnly</a>
                     </li>
                                     <li class=" ">
@@ -197,6 +194,9 @@
                         <a href="../WPCap/index.html">WPCap</a>
                     </li>
                                     <li class=" ">
+                        <a href="../WPGuestsOnly/index.html">WPGuestsOnly</a>
+                    </li>
+                                    <li class=" ">
                         <a href="../WPNonce/index.html">WPNonce</a>
                     </li>
                             </ul>
@@ -224,6 +224,17 @@
                     </tr>
                     </thead>
                                             <tr>
+                            <td><span class="path">Snicco\Bundle\HttpRouting</span></td>
+                            <td>8</td>
+                            <td>0</td>
+                            <td>0.985</td>
+                            <td>0.015</td>
+                            <td>64</td>
+                            <td>31</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
                             <td><span class="path">Snicco\Bundle\HttpRouting\ResponseEmitter</span></td>
                             <td>3</td>
                             <td>0.333</td>
@@ -235,13 +246,13 @@
                             <td>1</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting</span></td>
-                            <td>8</td>
+                            <td><span class="path">Snicco\Bundle\HttpRouting\Middleware</span></td>
+                            <td>3</td>
                             <td>0</td>
-                            <td>0.985</td>
-                            <td>0.015</td>
-                            <td>64</td>
-                            <td>31</td>
+                            <td>0.917</td>
+                            <td>0.083</td>
+                            <td>11</td>
+                            <td>7</td>
                             <td>1</td>
                             <td>1</td>
                         </tr>
@@ -265,17 +276,6 @@
                             <td>2</td>
                             <td>1</td>
                             <td>2</td>
-                            <td>1</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\HttpRouting\Middleware</span></td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>0.917</td>
-                            <td>0.083</td>
-                            <td>11</td>
-                            <td>7</td>
-                            <td>1</td>
                             <td>1</td>
                         </tr>
                                     </table>
@@ -462,6 +462,14 @@
 
     var spots = [
     {
+        "name": "Snicco\\Bundle\\HttpRouting",
+        "abstraction": 0,
+        "instability": 0.9846153846153847,
+        "distance": 0.010878565864408385,
+        "normalizedDistance": 0.01538461538461533,
+        "classCount": 8
+    },
+    {
         "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
         "abstraction": 0.3333333333333333,
         "instability": 0.7777777777777778,
@@ -470,12 +478,12 @@
         "classCount": 3
     },
     {
-        "name": "Snicco\\Bundle\\HttpRouting",
+        "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
         "abstraction": 0,
-        "instability": 0.9846153846153847,
-        "distance": 0.010878565864408385,
-        "normalizedDistance": 0.01538461538461533,
-        "classCount": 8
+        "instability": 0.9166666666666666,
+        "distance": 0.05892556509887898,
+        "normalizedDistance": 0.08333333333333337,
+        "classCount": 3
     },
     {
         "name": "Snicco\\Bundle\\HttpRouting\\Option",
@@ -492,14 +500,6 @@
         "distance": 0.35355339059327373,
         "normalizedDistance": 0.5,
         "classCount": 4
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
-        "abstraction": 0,
-        "instability": 0.9166666666666666,
-        "distance": 0.05892556509887898,
-        "normalizedDistance": 0.08333333333333337,
-        "classCount": 3
     }
 ];
 
