@@ -6,7 +6,6 @@ namespace Snicco\Component\BetterWPMail\Tests\wordpress\ValueObjects;
 
 use Codeception\TestCase\WPTestCase;
 use InvalidArgumentException;
-use LogicException;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 
@@ -489,18 +488,5 @@ final class EmailTest extends WPTestCase
         $email = new Email();
         $email = $email->withPriority(5);
         $email->withPriority(6);
-    }
-
-    /**
-     * @test
-     */
-    public function test_exception_if_settings_images_context(): void
-    {
-        $email = new Email();
-
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('[images] is a reserved context key');
-
-        $email->addContext('images', 'foo');
     }
 }

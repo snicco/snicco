@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPMail\ValueObject;
 
 use InvalidArgumentException;
-use LogicException;
 use WP_User;
 
 use function array_key_first;
 use function array_merge;
 use function is_array;
 use function is_string;
-use function sprintf;
 use function strip_tags;
 
 /**
@@ -23,13 +21,6 @@ use function strip_tags;
  */
 class Email
 {
-    /**
-     * @var array<string, string>
-     */
-    private const RESERVED_CONTEXT = [
-        'images' => 'Its used to generated CIDs in your templates',
-    ];
-
     protected string $subject = '';
 
     protected ?string $html = null;
@@ -45,50 +36,53 @@ class Email
     protected string $html_charset = 'utf-8';
 
     /**
-     * @var list<Mailbox>
-     */
-    private array $to = [];
-
-    /**
-     * @var list<Mailbox>
-     */
-    private array $cc = [];
-
-    /**
-     * @var list<Mailbox>
-     */
-    private array $bcc = [];
-
-    private ?Mailbox $sender = null;
-
-    private ?Mailbox $return_path = null;
-
-    /**
-     * @var list<Mailbox>
-     */
-    private array $reply_to = [];
-
-    /**
-     * @var list<Mailbox>
-     */
-    private array $from = [];
-
-    /**
-     * @var list<Attachment>
-     */
-    private array $attachments = [];
-
-    private ?int $priority = null;
-
-    /**
      * @var array<string,mixed>
      */
-    private array $context = [];
+    protected array $context = [];
 
     /**
      * @var array<string,string>
      */
-    private array $custom_headers = [];
+    protected array $custom_headers = [];
+
+    /**
+     * @var list<Attachment>
+     */
+    protected array $attachments = [];
+
+    /**
+     * @var 1|2|3|4|5|null
+     */
+    protected ?int $priority = null;
+
+    /**
+     * @var list<Mailbox>
+     */
+    protected array $to = [];
+
+    /**
+     * @var list<Mailbox>
+     */
+    protected array $cc = [];
+
+    /**
+     * @var list<Mailbox>
+     */
+    protected array $bcc = [];
+
+    protected ?Mailbox $sender = null;
+
+    protected ?Mailbox $return_path = null;
+
+    /**
+     * @var list<Mailbox>
+     */
+    protected array $reply_to = [];
+
+    /**
+     * @var list<Mailbox>
+     */
+    protected array $from = [];
 
     /**
      * @template T as array{0:string, 1:string}|array{email:string, name:string}
@@ -257,7 +251,7 @@ class Email
     final public function addAttachment(string $path, string $name = null, string $content_type = null): Email
     {
         $new = clone $this;
-        $new->_addAttachment(Attachment::fromPath($path, $name, $content_type));
+        $new->attachments[] = Attachment::fromPath($path, $name, $content_type);
 
         return $new;
     }
@@ -268,7 +262,7 @@ class Email
     final public function addBinaryAttachment($data, string $name, string $content_type = null): Email
     {
         $new = clone $this;
-        $new->_addAttachment(Attachment::fromData($data, $name, $content_type));
+        $new->attachments[] = Attachment::fromData($data, $name, $content_type);
 
         return $new;
     }
@@ -276,7 +270,7 @@ class Email
     final public function addEmbed(string $path, string $name = null, string $content_type = null): Email
     {
         $new = clone $this;
-        $new->_addAttachment(Attachment::fromPath($path, $name, $content_type, true));
+        $new->attachments[] = Attachment::fromPath($path, $name, $content_type, true);
 
         return $new;
     }
@@ -287,15 +281,19 @@ class Email
     final public function addBinaryEmbed($data, string $name, string $content_type = null): Email
     {
         $new = clone $this;
-        $new->_addAttachment(Attachment::fromData($data, $name, $content_type, true));
+        $new->attachments[] = Attachment::fromData($data, $name, $content_type, true);
 
         return $new;
     }
 
     final public function withPriority(int $priority): Email
     {
+        if ($priority < 1 || $priority > 5) {
+            throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
+        }
+
         $new = clone $this;
-        $new->_setPriority($priority);
+        $new->priority = $priority;
 
         return $new;
     }
@@ -506,58 +504,23 @@ class Email
     }
 
     /**
-     * @api
-     */
-    final protected function _addAttachment(Attachment $attachment): void
-    {
-        $this->attachments[] = $attachment;
-    }
-
-    /**
-     * @api
-     */
-    final protected function _setPriority(int $priority): void
-    {
-        if ($priority < 1 || $priority > 5) {
-            throw new InvalidArgumentException('$priority must be an integer between 1 and 5.');
-        }
-
-        $this->priority = $priority;
-    }
-
-    /**
      * @param array<string,mixed>|string $key
      * @param mixed                      $value
      *
-     * @api
-     *
      * @psalm-suppress MixedAssignment
      */
-    final protected function _addContext($key, $value = null): void
+    private function _addContext($key, $value = null): void
     {
         $context = is_array($key) ? $key : [
             $key => $value,
         ];
 
         foreach ($context as $key => $value) {
-            if (isset(self::RESERVED_CONTEXT[$key])) {
-                throw new LogicException(
-                    sprintf(
-                        "[%s] is a reserved context key.\n[%s].\nPlease choose a different key.",
-                        $key,
-                        self::RESERVED_CONTEXT[$key]
-                    )
-                );
-            }
-
             $this->context[$key] = $value;
         }
     }
 
-    /**
-     * @api
-     */
-    final protected function _addCustomHeader(string $name, string $value): void
+    private function _addCustomHeader(string $name, string $value): void
     {
         $this->custom_headers = array_merge($this->custom_headers, [
             $name => $value,

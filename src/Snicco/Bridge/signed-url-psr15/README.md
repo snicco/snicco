@@ -1,25 +1,25 @@
-# A psr3, psr7 and psr15 compatible middleware for the [sniccowp/signed-url](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Component/signed-url) library
+# A PSR-15 middleware for the [sniccowp/signed-url](https://github.com/sniccowp/signed-url) library
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://app.codecov.io/gh/sniccowp/sniccowp)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
-[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SignedUrlMiddleware/index.html)
+[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SignedUrlPsr15Bridge/index.html)
 
 This package consists of two simple middlewares that will make working with `sniccowp/signed-url` a breeze. Make sure to
-read the general [documenation](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Component/signed-url) to
+read the general [documentation](https://github.com/sniccowp/signed-url) to
 know how to instantiate the needed collaborators.<br>
 
 ## Installation
 
 ```shell
-composer require sniccowp/signed-url-psr15-bridge
+composer require snicco/signed-url-psr15-bridge
 ```
 
 ## Usage
 
 Make sure that your favorite framework supports binding middleware on the route level. This middleware should only be
-added to a route where you expect signed urls, not globally.
+added to a route where you expect signed urls, **not globally.**
 
 ### Basic Usage
 
@@ -34,8 +34,7 @@ $validator = new \Snicco\Component\SignedUrl\SignedUrlValidator($storage, $hmac)
 $middleware = new \Snicco\Bridge\SignedUrlPsr15\ValidateSignature(
     $validator,
 );
-// Attach $middleware to your route.
-/* */
+/* Attach $middleware to your route */
 ```
 
 ### Customizing the additional request context.
@@ -60,18 +59,17 @@ $middleware = new \Snicco\Bridge\SignedUrlPsr15\ValidateSignature(
     }
 );
 
-// Attach $middleware to your route.
-/* */
+/* Attach $middleware to your route */
 ```
 
 ### Only validate unsafe HTTP methods
 
 ---
 
-If a signed-url should be used exactly one time you might run into trouble with certain email clients that preload all
-links. In this case you can set the third argument of the middleware to `true`. The signature will then only be checked
+If a signed-url should be used exactly one time (for `GET` requests) you might run into trouble with certain email clients that preload all
+links. In this case you can set the third argument of the middleware to `(bool) true`. The signature will then only be checked
 if the request method is one of `[POST, PATCH, PUT, DELETE]`.
-**Make sure you route is not accessible with safe request methods if you use this option**
+**Make sure you route is not accessible with safe request methods if you use this option.**
 
 ### Garbage collection
 
@@ -91,6 +89,5 @@ $percentage = 4;
 
 $middleware = new \Snicco\Bridge\SignedUrlPsr15\CollectGarbage($percentage, $storage, $logger);
 
-// Attach middleware 
-/* */
+/* Attach $middleware to your route */
 ```

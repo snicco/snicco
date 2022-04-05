@@ -18,7 +18,7 @@ use Snicco\Component\Session\Exception\CouldNotDestroySession;
 use Snicco\Component\Session\ImmutableSession;
 use Snicco\Component\Session\MutableSession;
 use Snicco\Component\Session\Session;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\ValueObject\SessionCookie;
@@ -33,7 +33,7 @@ final class StatefulRequest extends Middleware
      */
     public const ALLOW_WRITE_SESSION_FOR_READ_VERBS = '_stateful_request.allow_write';
 
-    private SessionManager $session_manager;
+    private SessionManagerInterface $session_manager;
 
     private LoggerInterface $logger;
 
@@ -45,7 +45,7 @@ final class StatefulRequest extends Middleware
 
     private bool $rotate_next_session = false;
 
-    public function __construct(SessionManager $session_manager, LoggerInterface $logger, string $cookie_path)
+    public function __construct(SessionManagerInterface $session_manager, LoggerInterface $logger, string $cookie_path)
     {
         $this->session_manager = $session_manager;
         $this->logger = $logger;

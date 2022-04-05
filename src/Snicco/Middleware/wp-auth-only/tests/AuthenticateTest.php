@@ -7,7 +7,7 @@ namespace Snicco\Middleware\WPAuth\Tests;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
-use Snicco\Middleware\WPAuth\Authenticate;
+use Snicco\Middleware\WPAuth\AuthenticateWPUser;
 
 /**
  * @internal
@@ -19,7 +19,7 @@ final class AuthenticateTest extends MiddlewareTestCase
      */
     public function logged_in_users_can_access_the_route(): void
     {
-        $middleware = new Authenticate(new WPAPI(true));
+        $middleware = new AuthenticateWPUser(new WPAPI(true));
 
         $response = $this->runMiddleware($middleware, $this->frontendRequest('/foo'));
 
@@ -33,7 +33,7 @@ final class AuthenticateTest extends MiddlewareTestCase
     {
         $request = $this->frontendRequest('https://mysite.com/foo');
 
-        $middleware = new Authenticate(new WPAPI(false));
+        $middleware = new AuthenticateWPUser(new WPAPI(false));
 
         try {
             $this->runMiddleware($middleware, $request);

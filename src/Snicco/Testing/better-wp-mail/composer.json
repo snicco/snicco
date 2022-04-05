@@ -1,77 +1,78 @@
 {
-  "name": "sniccowp/better-wp-mail-testing",
-  "description": "Provides test utilities for sniccowp/better-wp-mail",
-  "authors": [
-    {
-      "name": "Calvin Alkan",
-      "email": "calvin@snicco.de"
-    }
-  ],
-  "require": {
-    "php": "^7.4|^8.0",
-    "sniccowp/better-wp-mail": "^1.0",
-    "phpunit/phpunit": "9.5.13",
-    "codeception/codeception": "4.1.29",
-    "lucatume/wp-browser": "~3.1.4"
-  },
-  "autoload": {
-    "psr-4": {
-      "Snicco\\Component\\BetterWPMail\\Testing\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Snicco\\Component\\BetterWPMail\\Tests\\Testing\\": "tests"
-    }
-  },
-  "conflict": {
-    "sniccowp/http-routing": "<1.0.0",
-    "sniccowp/testable-clock": "<1.0.0",
-    "sniccowp/signed-url": "<1.0.0",
-    "sniccowp/templating": "<1.0.0",
-    "sniccowp/psr7-error-handler": "<1.0.0",
-    "sniccowp/better-wpdb": "<1.0.0",
-    "sniccowp/str-arr": "<1.0.0",
-    "sniccowp/better-wp-hooks": "<1.0.0",
-    "sniccowp/event-dispatcher": "<1.0.0",
-    "sniccowp/eloquent": "<1.0.0",
-    "sniccowp/better-wp-cache": "<1.0.0",
-    "sniccowp/session": "<1.0.0",
-    "sniccowp/kernel": "<1.0.0",
-    "sniccowp/session-wp-bridge": "<1.0.0",
-    "sniccowp/session-psr16-bridge": "<1.0.0",
-    "sniccowp/blade-bridge": "<1.0.0",
-    "sniccowp/signed-url-psr16-bridge": "<1.0.0",
-    "sniccowp/illuminate-container-bridge": "<1.0.0",
-    "sniccowp/signed-url-psr15-bridge": "<1.0.0",
-    "sniccowp/pimple-bridge": "<1.0.0",
-    "sniccowp/no-robots-middleware": "<1.0.0",
-    "sniccowp/open-redirect-protection-middleware": "<1.0.0",
-    "sniccowp/wp-capapility-middleware": "<1.0.0",
-    "sniccowp/wp-nonce-middleware": "<1.0.0",
-    "sniccowp/payload-middleware": "<1.0.0",
-    "sniccowp/default-headers-middleware": "<1.0.0",
-    "sniccowp/wp-auth-only-middleware": "<1.0.0",
-    "sniccowp/content-negotiation-middleware": "<1.0.0",
-    "sniccowp/redirect-middleware": "<1.0.0",
-    "sniccowp/must-match-route-middleware": "<1.0.0",
-    "sniccowp/method-override-middleware": "<1.0.0",
-    "sniccowp/share-cookies-middleware": "<1.0.0",
-    "sniccowp/https-only-middleware": "<1.0.0",
-    "sniccowp/guests-only-middleware": "<1.0.0",
-    "sniccowp/trailing-slash-middleware": "<1.0.0",
-    "sniccowp/testing-bundle": "<1.0.0",
-    "sniccowp/http-routing-bundle": "<1.0.0",
-    "sniccowp/debug-bundle": "<1.0.0",
-    "sniccowp/templating-bundle": "<1.0.0",
-    "sniccowp/better-wpdb-bundle": "<1.0.0",
-    "sniccowp/better-wp-hooks-bundle": "<1.0.0",
-    "sniccowp/blade-bundle": "<1.0.0",
-    "sniccowp/better-wp-mail-bundle": "<1.0.0",
-    "sniccowp/better-wp-cache-bundle": "<1.0.0",
-    "sniccowp/session-bundle": "<1.0.0",
-    "sniccowp/encryption-bundle": "<1.0.0"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "sniccowp/better-wp-mail-testing",
+    "description": "Provides test utilities for sniccowp/better-wp-mail",
+    "authors": [
+        {
+            "name": "Calvin Alkan",
+            "email": "calvin@snicco.de"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "sniccowp/better-wp-mail": "^1.0",
+        "phpunit/phpunit": "9.5.13",
+        "codeception/codeception": "4.1.29",
+        "lucatume/wp-browser": "~3.1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Snicco\\Component\\BetterWPMail\\Testing\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Snicco\\Component\\BetterWPMail\\Tests\\Testing\\": "tests"
+        }
+    },
+    "conflict": {
+        "sniccowp/http-routing": "<1.0.0",
+        "sniccowp/testable-clock": "<1.0.0",
+        "sniccowp/signed-url": "<1.0.0",
+        "sniccowp/templating": "<1.0.0",
+        "sniccowp/psr7-error-handler": "<1.0.0",
+        "sniccowp/better-wpdb": "<1.0.0",
+        "sniccowp/str-arr": "<1.0.0",
+        "sniccowp/better-wp-hooks": "<1.0.0",
+        "sniccowp/event-dispatcher": "<1.0.0",
+        "sniccowp/eloquent": "<1.0.0",
+        "sniccowp/better-wp-cache": "<1.0.0",
+        "sniccowp/session": "<1.0.0",
+        "sniccowp/kernel": "<1.0.0",
+        "sniccowp/session-wp-bridge": "<1.0.0",
+        "sniccowp/session-psr16-bridge": "<1.0.0",
+        "sniccowp/blade-bridge": "<1.0.0",
+        "sniccowp/signed-url-psr16-bridge": "<1.0.0",
+        "sniccowp/illuminate-container-bridge": "<1.0.0",
+        "sniccowp/signed-url-psr15-bridge": "<1.0.0",
+        "sniccowp/pimple-bridge": "<1.0.0",
+        "sniccowp/no-robots-middleware": "<1.0.0",
+        "sniccowp/open-redirect-protection-middleware": "<1.0.0",
+        "sniccowp/wp-capapility-middleware": "<1.0.0",
+        "sniccowp/wp-nonce-middleware": "<1.0.0",
+        "sniccowp/payload-middleware": "<1.0.0",
+        "sniccowp/default-headers-middleware": "<1.0.0",
+        "sniccowp/wp-auth-only-middleware": "<1.0.0",
+        "sniccowp/content-negotiation-middleware": "<1.0.0",
+        "sniccowp/redirect-middleware": "<1.0.0",
+        "sniccowp/must-match-route-middleware": "<1.0.0",
+        "sniccowp/method-override-middleware": "<1.0.0",
+        "sniccowp/share-cookies-middleware": "<1.0.0",
+        "sniccowp/https-only-middleware": "<1.0.0",
+        "sniccowp/guests-only-middleware": "<1.0.0",
+        "sniccowp/trailing-slash-middleware": "<1.0.0",
+        "sniccowp/testing-bundle": "<1.0.0",
+        "sniccowp/http-routing-bundle": "<1.0.0",
+        "sniccowp/debug-bundle": "<1.0.0",
+        "sniccowp/templating-bundle": "<1.0.0",
+        "sniccowp/better-wpdb-bundle": "<1.0.0",
+        "sniccowp/better-wp-hooks-bundle": "<1.0.0",
+        "sniccowp/blade-bundle": "<1.0.0",
+        "sniccowp/better-wp-mail-bundle": "<1.0.0",
+        "sniccowp/better-wp-cache-bundle": "<1.0.0",
+        "sniccowp/session-bundle": "<1.0.0",
+        "sniccowp/encryption-bundle": "<1.0.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "LGPL-3.0-only"
 }

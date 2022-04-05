@@ -25,9 +25,9 @@ module.exports = {
         'scope-enum': [2, 'always', scopes],
         'scope-empty': [2, 'never'],
         'header-max-length': [2, 'always', 72],
-        'body-max-line-length': [2, 'always', 80],
+        'body-max-line-length': [2, 'always', 100],
         'body-case': [2, 'always', 'sentence-case'],
-        'footer-max-line-length': [2, 'always', 80],
+        'footer-max-line-length': [2, 'always', 100],
     },
     prompt: {
         messages: {
@@ -86,7 +86,7 @@ module.exports = {
                         emoji: '⚙️',
                     },
                     chore: {
-                        description: "Any Other changes that don't modify src or test files (example: changing .gitignore)",
+                        description: "Any other changes that don't modify src or test files (example: changing .gitignore)",
                         title: 'Chores',
                         emoji: '♻️',
                     },

@@ -20,7 +20,6 @@ use Snicco\Component\Templating\ViewFactory\PHPViewFactory;
 use Snicco\Component\Templating\ViewFactory\ViewFactory;
 
 use function file_get_contents;
-use function get_class;
 use function ob_get_clean;
 use function ob_start;
 use function realpath;
@@ -105,19 +104,6 @@ final class TemplateEngineTest extends TestCase
         $view = $this->template_engine->make($path);
         $this->assertSame($path, (string) $view->path());
         $this->assertSame('foo', $this->template_engine->renderView($view));
-    }
-
-    /**
-     * @test
-     */
-    public function that_a_view_has_access_to_the_template_engine(): void
-    {
-        $this->global_view_context->add('view', $this->template_engine);
-        $view = $this->template_engine->make('has-engine.php');
-        $this->assertSame(
-            'View has engine: ' . get_class($this->template_engine),
-            $this->template_engine->renderView($view)
-        );
     }
 
     /**

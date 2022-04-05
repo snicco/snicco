@@ -197,12 +197,12 @@ final class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_replace(): void
+    public function test_put_replaces_data(): void
     {
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-        $session->replace([
+        $session->put([
             'foo' => 'baz',
         ]);
         $this->assertSame('baz', $session->get('foo'));
@@ -438,21 +438,6 @@ final class ReadWriteSessionTest extends TestCase
         $session = $this->newSession();
         $session->put('foo', 'bar');
         $session->put('baz', 'biz');
-
-        $session->remove('foo');
-
-        $this->assertSame('biz', $session->get('baz'));
-        $this->assertFalse($session->has('foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function test_forget(): void
-    {
-        $session = $this->newSession();
-        $session->put('foo', 'bar');
-        $session->put('baz', 'biz');
         $session->put('boo', [
             'boom',
             'bang' => 'bam',
@@ -466,8 +451,8 @@ final class ReadWriteSessionTest extends TestCase
         ], $session->get('boo'));
         $this->assertSame('bam', $session->get('boo.bang'));
 
-        $session->forget('foo');
-        $session->forget('boo.bang');
+        $session->remove('foo');
+        $session->remove('boo.bang');
 
         $this->assertFalse($session->exists('foo'));
         $this->assertTrue($session->exists('baz'));
@@ -769,19 +754,6 @@ final class ReadWriteSessionTest extends TestCase
     /**
      * @test
      */
-    public function test_forget_throws_after_saving(): void
-    {
-        $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'v', time());
-
-        $this->expectException(SessionIsLocked::class);
-
-        $session->forget(['foo']);
-    }
-
-    /**
-     * @test
-     */
     public function test_put_throws_after_saving(): void
     {
         $session = $this->newSession();
@@ -790,21 +762,6 @@ final class ReadWriteSessionTest extends TestCase
         $this->expectException(SessionIsLocked::class);
 
         $session->put('foo', 'bar');
-    }
-
-    /**
-     * @test
-     */
-    public function test_replace_throws_after_saving(): void
-    {
-        $session = $this->newSession();
-        $session->saveUsing(new InMemoryDriver(), new JsonSerializer(), 'validator', time());
-
-        $this->expectException(SessionIsLocked::class);
-
-        $session->replace([
-            'foo' => 'bar',
-        ]);
     }
 
     /**

@@ -1,6 +1,6 @@
 {
-  "name": "sniccowp/guests-only-middleware",
-  "license": "MIT",
+  "name": "sniccowp/wp-guests-only-middleware",
+  "license": "LGPL-3.0-only",
   "authors": [
     {
       "name": "Calvin Alkan",
@@ -18,12 +18,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Snicco\\Middleware\\GuestsOnly\\": "src"
+      "Snicco\\Middleware\\WPGuestsOnly\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Snicco\\Middleware\\GuestsOnly\\Tests\\": "tests"
+      "Snicco\\Middleware\\WPGuestsOnly\\Tests\\": "tests"
     }
   },
   "config": {
