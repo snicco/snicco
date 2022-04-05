@@ -21,9 +21,9 @@ final class HMAC
     }
 
     /**
-     * @psalm-internal Snicco\Component\SignedUrl
-     *
      * @interal
+     *
+     * @psalm-internal Snicco\Component\SignedUrl
      */
     public function create(string $plain_text): string
     {

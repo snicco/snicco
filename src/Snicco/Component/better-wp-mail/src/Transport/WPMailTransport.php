@@ -121,13 +121,16 @@ final class WPMailTransport implements Transport
             }
 
             foreach ($attachments as $attachment) {
+                $type = $attachment->contentType();
+                $type ??= '';
+
                 if ('inline' === $attachment->disposition()) {
                     $php_mailer->addStringEmbeddedImage(
                         $attachment->bodyAsString(),
                         $attachment->cid(),
                         $attachment->name(),
                         $attachment->encoding(),
-                        $attachment->contentType(),
+                        $type,
                     );
 
                     continue;
@@ -137,7 +140,7 @@ final class WPMailTransport implements Transport
                     $attachment->bodyAsString(),
                     $attachment->name(),
                     $attachment->encoding(),
-                    $attachment->contentType(),
+                    $type,
                 );
             }
 

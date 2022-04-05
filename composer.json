@@ -8,6 +8,7 @@
         }
     ],
     "type": "library",
+    "license": "LGPL-3.0-only",
     "require": {
         "php": "^7.4|^8.0",
         "ext-filter": "*",
@@ -112,7 +113,6 @@
             "Snicco\\Component\\Templating\\": "src/Snicco/Component/templating/src",
             "Snicco\\Component\\TestableClock\\": "src/Snicco/Component/testable-clock/src",
             "Snicco\\Middleware\\DefaultHeaders\\": "src/Snicco/Middleware/default-headers/src",
-            "Snicco\\Middleware\\GuestsOnly\\": "src/Snicco/Middleware/wp-guests-only/src",
             "Snicco\\Middleware\\HttpsOnly\\": "src/Snicco/Middleware/https-only/src",
             "Snicco\\Middleware\\MethodOverride\\": "src/Snicco/Middleware/method-override/src",
             "Snicco\\Middleware\\MustMatchRoute\\": "src/Snicco/Middleware/must-match-route/src",
@@ -125,6 +125,7 @@
             "Snicco\\Middleware\\TrailingSlash\\": "src/Snicco/Middleware/trailing-slash/src",
             "Snicco\\Middleware\\WPAuth\\": "src/Snicco/Middleware/wp-auth-only/src",
             "Snicco\\Middleware\\WPCap\\": "src/Snicco/Middleware/wp-capability/src",
+            "Snicco\\Middleware\\WPGuestsOnly\\": "src/Snicco/Middleware/wp-guests-only/src",
             "Snicco\\Middleware\\WPNonce\\": "src/Snicco/Middleware/wp-nonce/src"
         }
     },
@@ -167,7 +168,6 @@
             "Snicco\\Component\\Templating\\Tests\\": "src/Snicco/Component/templating/tests",
             "Snicco\\Component\\TestableClock\\Tests\\": "src/Snicco/Component/testable-clock/tests",
             "Snicco\\Middleware\\DefaultHeaders\\Tests\\": "src/Snicco/Middleware/default-headers/tests",
-            "Snicco\\Middleware\\GuestsOnly\\Tests\\": "src/Snicco/Middleware/wp-guests-only/tests",
             "Snicco\\Middleware\\HttpsOnly\\Tests\\": "src/Snicco/Middleware/https-only/tests",
             "Snicco\\Middleware\\MethodOverride\\Tests\\": "src/Snicco/Middleware/method-override/tests",
             "Snicco\\Middleware\\MustMatchRoute\\Tests\\": "src/Snicco/Middleware/must-match-route/tests",
@@ -180,6 +180,7 @@
             "Snicco\\Middleware\\TrailingSlash\\Tests\\": "src/Snicco/Middleware/trailing-slash/tests",
             "Snicco\\Middleware\\WPAuth\\Tests\\": "src/Snicco/Middleware/wp-auth-only/tests",
             "Snicco\\Middleware\\WPCap\\Tests\\": "src/Snicco/Middleware/wp-capability/tests",
+            "Snicco\\Middleware\\WPGuestsOnly\\Tests\\": "src/Snicco/Middleware/wp-guests-only/tests",
             "Snicco\\Middleware\\WPNonce\\Tests\\": "src/Snicco/Middleware/wp-nonce/tests",
             "Snicco\\Monorepo\\": "src/Monorepo/",
             "Snicco\\Monorepo\\Tests\\": "tests/Monorepo/"
@@ -299,6 +300,7 @@
         "sniccowp/trailing-slash-middleware": "self.version",
         "sniccowp/wp-auth-only-middleware": "self.version",
         "sniccowp/wp-capability-middleware": "self.version",
+        "sniccowp/wp-guests-only-middleware": "self.version",
         "sniccowp/wp-nonce-middleware": "self.version"
     },
     "minimum-stability": "dev",

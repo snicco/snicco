@@ -26,7 +26,7 @@ use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Snicco\Component\Psr7ErrorHandler\TestErrorHandler;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\ValueObject\CookiePool;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionId;
@@ -121,7 +121,7 @@ abstract class WebTestCase extends WPTestCase
             ->make(SessionConfig::class)->cookieName();
 
         $session_manager = $kernel->container()
-            ->make(SessionManager::class);
+            ->make(SessionManagerInterface::class);
         $session = $session_manager->start(new CookiePool($this->cookies));
         $session->put($data);
 

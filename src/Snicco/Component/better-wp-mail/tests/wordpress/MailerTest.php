@@ -636,6 +636,41 @@ final class MailerTest extends WPTestCase
     /**
      * @test
      */
+    public function that_the_transport_handles_the_content_type_detection_if_nothing_is_passed_explicitly(): void
+    {
+        $mailer = new Mailer();
+
+        $email = new TestMail();
+        $email = $email->withTo('c@web.de')
+            ->withTextBody('öö')
+            ->withHtmlBody('<h1>ÜÜ</h1>')
+            ->addAttachment($this->fixtures_dir . '/php-elephant.jpg', 'my-elephant.jpeg');
+
+        $mailer->send($email);
+
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+
+        $this->assertStringContainsString('Content-Type: multipart/mixed', $header);
+
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $body);
+
+        $this->assertStringContainsString('öö', $body);
+        $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
+
+        $this->assertStringContainsString('Content-Type: image/jpeg', $body);
+        $this->assertStringContainsString('name=my-elephant.jpeg', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: attachment;', $body);
+        $this->assertStringContainsString('filename=my-elephant.jpeg', $body);
+    }
+
+    /**
+     * @test
+     */
     public function attachments_can_be_added_as_an_in_memory_string(): void
     {
         $mailer = new Mailer();
@@ -804,6 +839,52 @@ final class MailerTest extends WPTestCase
      * @test
      */
     public function the_cid_gets_passed_into_the_template_for_inline_attachments(): void
+    {
+        $mailer = new Mailer();
+
+        $email =
+            (new TestMail())->withTextBody('öö')
+                ->addEmbed($this->fixtures_dir . '/php-elephant.jpg', 'php-elephant-inline')
+                ->withHtmlTemplate($this->fixtures_dir . '/inline-attachment.php')
+                ->withTo('c@web.de');
+
+        $first_attachment = $email->attachments()[0];
+
+        $mailer->send($email);
+
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
+        $this->assertStringContainsString('Content-Type: multipart/related', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+
+        // us-ascii set by phpmailer because we have no 8-bit chars.
+        $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $body);
+
+        $this->assertStringContainsString('öö', $body);
+
+        // The CID is random we can't know.
+        $this->assertStringContainsString(
+            '<h1>Hi</h1><p>Here is your image</p><img src="cid:' . $first_attachment->cid() . '"',
+            $body
+        );
+
+        $this->assertStringContainsString('Content-Type: application/octet-stream;', $body);
+        $this->assertStringContainsString('name=php-elephant-inline', $body);
+        $this->assertStringContainsString('Content-Transfer-Encoding: base64', $body);
+        $this->assertStringContainsString('Content-Disposition: inline;', $body);
+        $this->assertStringContainsString('filename=php-elephant-inline', $body);
+        $expected_cid = $email->attachments()[0]
+            ->cid();
+        $this->assertStringContainsString(sprintf('Content-ID: <%s>', $expected_cid), $body);
+    }
+
+    /**
+     * @test
+     */
+    public function that_the_cid_is_replaced_in_the_template(): void
     {
         $mailer = new Mailer();
 

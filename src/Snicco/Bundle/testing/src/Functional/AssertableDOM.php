@@ -2,13 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * Modified Version of Symfony's DomCrawler Assertions Trait
- *
- * License: MIT, https://github.com/symfony/dom-crawler/blob/5.4/LICENSE
- * Copyright: (c) Fabien Potencier <fabien@symfony.com>
- */
-
 namespace Snicco\Bundle\Testing\Functional;
 
 use PHPUnit\Framework\Assert as PHPUnit;

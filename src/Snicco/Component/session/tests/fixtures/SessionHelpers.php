@@ -10,8 +10,8 @@ use Snicco\Component\Session\EventDispatcher\SessionEventDispatcher;
 use Snicco\Component\Session\ReadWriteSession;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\Session;
-use Snicco\Component\Session\SessionManager\FactorySessionManager;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 use Snicco\Component\Session\ValueObject\SessionId;
 use Snicco\Component\TestableClock\SystemClock;
@@ -29,8 +29,8 @@ trait SessionHelpers
         SessionConfig $config = null,
         SessionDriver $driver = null,
         SessionEventDispatcher $dispatcher = null
-    ): SessionManager {
-        return new FactorySessionManager(
+    ): SessionManagerInterface {
+        return new SessionManger(
             $config ?? SessionConfig::fromDefaults('sniccowp_test_cookie'),
             $driver ?? new InMemoryDriver(),
             new JsonSerializer(),

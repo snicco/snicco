@@ -5,29 +5,32 @@
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SignedUrl/index.html)
+![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
 ## Table of contents
 
 1. [Motivation](#motivation)
-2. [Dependencies](#dependencies)
-3. [Installation](#how-to-install)
-4. [Usage](#how-to-use)
+2. [Installation](#how-to-install)
+3. [Usage](#how-to-use)
     1. [Creating a secret](#creating-a-secret)
-    2. [Signing an url](#creating-a-signed-url)
+    2. [Creating a signed-url](#creating-a-signed-url)
     3. [Validating a signed url](#validating-a-signed-url)
-        1. [PSR-15 middleware](#PSR-15)
-        2. [Other PHP applications](#validating-a-signed-url)
-5. [Supported storage types](#supported-storage-types)
-    1. [Session](#session)
-    2. [Memory](#memory)
-    3. [PSR-16-cache](#psr-16-cache)
-    4. [WordPress object cache](#wordpress-object-cache)
-    5. [Implementing your own](#implementing-your-own-storage)
+        1. [PSR-15 middleware](#psr-15-middleware)
+        2. [Other PHP applications](#all-php-apps)
+    4. [Storage types](#storage-types)
+       1. [Session](#sessionstorage-included)
+       2. [Null](#nullstorage-included)
+       3. [InMemory](#inmemory-included)
+       4. [PSR-16](#psr16-cache-bridge-package)
+       5. [Implement your own](#implementing-your-own-storage)
+6. [Contributing](#contributing)
+7. [Issues and PR's](#reporting-issues-and-sending-pull-requests)
+8. [Security](#security)
 
 ## Motivation
 
-While developing the [SniccoWP framework](https://github.com/sniccowp/sniccowp) we couldn't find any good
-**standalone** PHP-libraries for signing urls. We needed this functionality in a couple of places, so we decided to roll
+While developing the [**Snicco** project](https://github.com/sniccowp/sniccowp) we couldn't find any good
+**standalone PHP-libraries** for signing urls. We needed this functionality in a couple of places, so we decided to roll
 our own implementation.
 
 Features:
@@ -37,25 +40,23 @@ Features:
   functions.
 - Validates the signature, the expiration and an enforced usage-limit on a per url basis.
 - PSR-7/15 compatible. No hidden dependencies on PHP super globals.
-- Protection against [cache-timing-attacks](https://blog.ircmaxell.com/2014/11/its-all-about-time.html)
+- Protects against [timing based side-channel attacks](https://blog.ircmaxell.com/2014/11/its-all-about-time.html)
 - Permanently invalidates a signed-url after the max usage. (Rotating your secret invalidates all signed-urls)
 - Defensively programmed, making incorrect usage very hard.
 - Support for multiple storage backends.
 - A properly tested and straightforward API.
 
-## Dependencies
+While the term `signed-url` is technically incorrect (this package uses HMACs, not asymmetric signatures), 
+we chose to stick to the way [Symfony](https://symfony.com/blog/new-in-symfony-5-1-improved-urisigner) and [Laravel](https://laravel.com/docs/9.x/urls#signed-urls) name it.
 
-- PHP ^7.4|^8.0
-- [paragonie/constant_time_encoding](https://github.com/paragonie/constant_time_encoding)
-- [webmozart/assert](https://github.com/webmozarts/assert)
 
-## How to Install
+## Installation
 
 ```sh
-composer require sniccowp/signed-url
+composer require snicco/signed-url
 ```
 
-## How to Use
+## Usage
 
 ### Creating a secret
 
@@ -65,15 +66,19 @@ your web root.
 ```shell
 vendor/bin/generate-signed-url-secret
 ```
+This will output a random, hex-encoded secret that looks like this:
+`32|1e21be67f2279e485c7c5e8291d05edda7e76ffb01ddb8eb290ce826528ad2ff`
 
 **This secret should NEVER be stored in version control.**
 
-Load the secret from an environment variable in your application
+In your application, load the secret from an environment variable in your application using something like [`symfony/dotenv`](https://github.com/symfony/dotenv).
 
 ```php
 // require 'vendor/autoload.php';
 $secret = \Snicco\Component\SignedUrl\Secret::fromHexEncoded(getenv('SIGNED_URL_SECRET'));
 ```
+
+---
 
 ### Creating a signed-url
 
@@ -83,17 +88,21 @@ $secret = /* */
 $hmac = new Snicco\Component\SignedUrl\HMAC($secret, 'sha256')
 
 // This is a simple interface.
-// check the provided storages below in the repo or simple provide your own.
-$storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($_SESSION);
+// Use one of the inbuilt storages in the #storages section or provide your own.
+$storage = /* */
 
 $signer = new \Snicco\Component\SignedUrl\UrlSigner($storage, $hmac);
 
+// The maximum lifetime in seconds that this link should be valid for.
 $lifetime_in_sec = 60;
 
+// The maximum amount that this link should be valid for.
+// After each successfully validation this amount will be decreased by 1.
 $usage_limit = 1;
 
-// optional: as a fourth parameter,
-$context = $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']
+// optional: adding request context that must be the same in order to
+// successfully validate a signed-url.
+$context = ($_SERVER['REMOTE_ADDR'] ?? '') . ($_SERVER['HTTP_USER_AGENT'] ?? '');
 
 $signed_url = $signer->sign('https://example.com/unsubscribe?user_id=12' , $lifetime_in_sec, $usage_limit, $context);
 
@@ -107,27 +116,34 @@ $href = $signed_url->asString();
 $mailer->send('user12@gmail.com', "Click <a href='{{$href}}'> here <a/> to unsubscribe.")
 ```
 
+---
+
 ### Validating a signed-url
 
-Validation signed urls should be performed in a middleware to avoid boilerplate.
-<br> The code samples below describe the **manual** way to validate urls in any PHP app.
+Validation of signed-urls should be performed in a middleware to avoid boilerplate.
+
+The code samples below describe the **manual** way to validate urls in any **PHP** application.
 
 #### PSR-15 middleware
 
-If your favorite framework is psr7/psr15 compatible and supports middleware on a per-route basis, you can use our
-inbuilt [psr15 middleware](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-psr15-bridge)
-which makes usage dead simple.
+If your favorite framework is PSR-7/PSR-15 compatible and supports middleware on a per-route basis, you can use our
+[PSR-15 middleware bridge](https://github.com/sniccowp/signed-url-psr15-bridge)
+which makes this dead simple.
 
 #### All PHP apps
 
 ```php
+
+$storage = /* */
+$hmac = /* */
+
 // Clean expired links periodically.
 try {
     // 0-100
     $percentage = 2;
    \Snicco\Component\SignedUrl\GarbageCollector::clean($storage, $percentage);
    
-} catch (RuntimeException $e) {
+} catch (UnavailableStorage $e) {
     // gc did not work for some reason. Log and continue.
     error_log($e->getMessage());
     
@@ -135,12 +151,12 @@ try {
 
 $validator = new \Snicco\Component\SignedUrl\SignedUrlValidator($storage, $hmac);
 
-$target = $_SERVER['PATH_INFO'].'?'.$_SERVER['QUERY_STRING'];
+$target = $_SERVER['REQUEST_URI'].'?'.$_SERVER['QUERY_STRING'];
 
 try {
 
     // optional context, has to be the same scheme used at creation.
-    $context = $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']
+    $context = ($_SERVER['REMOTE_ADDR'] ?? '') . ($_SERVER['HTTP_USER_AGENT'] ?? '');
     
     $validator->validate( $target, $context);
     
@@ -165,56 +181,82 @@ try {
 echo "You have been unsubscribed."
 ```
 
-## Supported storage types
+--- 
 
-Every signed url storage implements `Snicco\SignedUrl\Contracts\SingedUrlStorage`.<br>By default, the following storage
-classes are provided:
+### Storage types
 
-### Session:
+The [`Snicco\SignedUrl\Contracts\SingedUrlStorage`](src/Storage/SignedUrlStorage.php) keeps an identifier
+for each signed-url that is created and ensures that your max usage limits are enforced.
 
-***
+Without some form of backend storage, signed-urls are valid any number of times until the expiration
+timestamp is passed. (If this is what you want you can use the [`NullStorage`](src/Storage/NullStorage.php)).
 
-Will use an array passed by reference or an object implementing ArrayAccess.
+---
+
+#### SessionStorage (included):
+
+The [`SessionStorage`](src/Storage/SessionStorage.php) accepts an `array` or any object that implements
+`ArrayAccess` (**passed by reference**).
 
 ```php
+// using an array.
+$storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($_SESSION);
+
+// using an object implementing ArrayAccess
 $arr = new MyArrayAccess();
 $storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($arr);
-
-$storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($_SESSION);
 ```
 
-### Memory:
+---
 
-***
+#### NullStorage (included)
 
-You can use the InMemoryStorage during unit tests.
+The [`NullStorage`](src/Storage/NullStorage.php) does nothing. No signed-urls will be stored
+and no usage limits are enforced. Use this only if your signed-urls should be valid any number of times before expiring.
+
+Validity of a signed-url will be based solely on the correct signature and expriation timestamp.
+
+---
+
+#### InMemory (included):
+
+You can use the  [`InMemoryStorage`](src/Storage/InMemoryStorage.php) during unit tests.
 
 ```php
 $storage = new \Snicco\Component\SignedUrl\Storage\InMemoryStorage()
 ```
 
-### PSR-16 Cache
+---
+
+#### PSR16-Cache (bridge package):
+
+We have a dedicated 
+[PSR-16 bridge](https://github.com/sniccowp/signed-url-psr16-bridge)
+that will allow you to use any **PSR-16 cache** as a storage.
 
 ---
 
-There is a
-dedicated [PSR-16 bridge](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Bridge/signed-url-psr16-bridge)
-that allows you to use any compatible cache driver.
+#### Implementing your own storage:
 
-### WordPress Object Cache
+Implementing your own storage is very easy. 
+You only have to implement the simple [`SingedUrlStorage`](src/Storage/SignedUrlStorage.php) interface.
 
----
+Use the [`snicco/signed-url-testing` package](https://github.com/sniccowp/signed-url-testing)
+to test your implementation against the contract of the interface.
 
-You can use
-our [psr16 adapter for the WordPress object cache](https://github.com/sniccowp/sniccowp/tree/master/src/Snicco/Component/wp-object-cache-psr16)
-in combination with the PSR-16 storage.
+## Contributing
 
-### Implementing your own storage:
+This repository is a read-only split of the development repo of the
+[**Snicco** project](https://github.com/sniccowp/sniccowp).
 
-Implementing your own storage is very easy. Simply implement
-the [SignedUrlStorage](https://github.com/sniccowp/sniccowp/blob/master/src/Snicco/Component/signed-url/src/Storage/SignedUrlStorage.php)
-interface. There is
-a [trait](https://github.com/sniccowp/sniccowp/blob/master/src/Snicco/Component/signed-url/testing/SignedUrlStorageTests.php)
-that you can use in your phpunit tests to test your implementation.
+[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
 
+## Reporting issues and sending pull requests
 
+Please report issues in the
+[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+
+## Security
+
+If you discover a security vulnerability, please follow
+our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).

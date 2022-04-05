@@ -12,7 +12,7 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Event\SessionRotated;
 use Snicco\Component\Session\Exception\SessionIsLocked;
 use Snicco\Component\Session\Serializer\Serializer;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\ValueObject\ReadOnlySession;
 use Snicco\Component\Session\ValueObject\SerializedSession;
 use Snicco\Component\Session\ValueObject\SessionId;
@@ -54,7 +54,7 @@ final class ReadWriteSession implements Session
     private array $stored_events = [];
 
     /**
-     * @interal Sessions MUST only be started from a {@see SessionManager}
+     * @interal Sessions MUST only be started from a {@see SessionManagerInterface}
      *
      * @param mixed[] $data
      */
@@ -341,15 +341,10 @@ final class ReadWriteSession implements Session
         return $events;
     }
 
-    public function remove(string $key): void
+    public function remove($keys): void
     {
         $this->checkIfLocked();
-        Arr::remove($this->attributes, $key);
-    }
-
-    public function replace(array $attributes): void
-    {
-        $this->put($attributes);
+        Arr::remove($this->attributes, $keys);
     }
 
     public function saveUsing(
@@ -381,12 +376,6 @@ final class ReadWriteSession implements Session
         }
 
         $this->lock();
-    }
-
-    public function forget($keys): void
-    {
-        $this->checkIfLocked();
-        Arr::remove($this->attributes, $keys);
     }
 
     public function setUserId($user_id): void
@@ -500,7 +489,7 @@ final class ReadWriteSession implements Session
 
     private function ageFlashData(): void
     {
-        $this->forget($this->oldFlashes());
+        $this->remove($this->oldFlashes());
 
         $this->put('_flash.old', $this->get('_flash.new', []));
 

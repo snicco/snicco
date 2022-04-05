@@ -6,6 +6,7 @@ namespace Snicco\Component\BetterWPHooks;
 
 use Psr\EventDispatcher\StoppableEventInterface as PsrStoppableEvent;
 use Snicco\Component\BetterWPHooks\EventMapping\ExposeToWP;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\Event;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\GenericEvent;
@@ -20,6 +21,11 @@ final class WPEventDispatcher implements EventDispatcher
     {
         $this->dispatcher = $dispatcher;
         $this->wp = $wp ?: new WPHookAPI();
+    }
+
+    public static function fromDefaults(): self
+    {
+        return new self(new BaseEventDispatcher());
     }
 
     public function dispatch(object $event): object

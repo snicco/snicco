@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\Session;
 
 use Closure;
+use LogicException;
 use Snicco\Component\Session\Exception\SessionIsLocked;
 
 interface MutableSession
@@ -32,26 +33,12 @@ interface MutableSession
     public function rotate(): void;
 
     /**
-     * @param string|string[] $keys
-     *
-     * @throws SessionIsLocked
-     */
-    public function forget($keys): void;
-
-    /**
      * @param array<string,mixed>|string $key
      * @param mixed                      $value Only used if key is string
      *
      * @throws SessionIsLocked
      */
     public function put($key, $value = null): void;
-
-    /**
-     * @param array<string,mixed> $attributes
-     *
-     * @throws SessionIsLocked
-     */
-    public function replace(array $attributes): void;
 
     /**
      * @throws SessionIsLocked
@@ -72,6 +59,7 @@ interface MutableSession
      * @param mixed $value
      *
      * @throws SessionIsLocked
+     * @throws LogicException  if $value of key is not an array
      */
     public function push(string $key, $value): void;
 
@@ -129,7 +117,9 @@ interface MutableSession
     public function flush(): void;
 
     /**
+     * @param string|string[] $keys
+     *
      * @throws SessionIsLocked
      */
-    public function remove(string $key): void;
+    public function remove($keys): void;
 }

@@ -32,8 +32,8 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\Serializer\PHPSerializer;
 use Snicco\Component\Session\Serializer\Serializer;
-use Snicco\Component\Session\SessionManager\FactorySessionManager;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use stdClass;
 
 use function dirname;
@@ -101,8 +101,8 @@ final class SessionBundleTest extends WPTestCase
         });
         $kernel->boot();
 
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
-        $this->assertInstanceOf(FactorySessionManager::class, $kernel->container()->get(SessionManager::class));
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
+        $this->assertInstanceOf(SessionManger::class, $kernel->container()->get(SessionManagerInterface::class));
         $this->assertInstanceOf(InMemoryDriver::class, $kernel->container()->make(SessionDriver::class));
         $this->assertCanBeResolved(StatefulRequest::class, $kernel);
     }
@@ -164,7 +164,7 @@ final class SessionBundleTest extends WPTestCase
         );
 
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
         $this->assertInstanceOf(WPDBSessionDriver::class, $kernel->container()->make(SessionDriver::class));
 
         $this->assertSame(
@@ -189,7 +189,7 @@ final class SessionBundleTest extends WPTestCase
             $config->extend('bundles.all', BetterWPCacheBundle::class);
         });
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
         $this->assertInstanceOf(WPObjectCacheDriver::class, $kernel->container()->make(SessionDriver::class));
     }
 
@@ -209,7 +209,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
         });
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
         $this->assertInstanceOf(EncryptedDriver::class, $kernel->container()->make(SessionDriver::class));
     }
 
@@ -250,7 +250,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
         });
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
@@ -260,7 +260,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
         });
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
@@ -273,7 +273,7 @@ final class SessionBundleTest extends WPTestCase
                 ->shared(TestSerializer::class, fn (): TestSerializer => new TestSerializer());
         });
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
     }
 
     /**
@@ -345,7 +345,7 @@ final class SessionBundleTest extends WPTestCase
             ]);
         });
         $kernel->boot();
-        $this->assertCanBeResolved(SessionManager::class, $kernel);
+        $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
     }
 
     /**

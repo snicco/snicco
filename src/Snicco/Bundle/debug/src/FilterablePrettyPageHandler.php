@@ -12,6 +12,9 @@ use Whoops\Exception\FrameCollection;
 use Whoops\Handler\PrettyPageHandler;
 
 /**
+ * @internal
+ *
+ * @psalm-internal Snicco\Bundle\Debug
  * @psalm-suppress PropertyNotSetInConstructor
  */
 final class FilterablePrettyPageHandler extends PrettyPageHandler

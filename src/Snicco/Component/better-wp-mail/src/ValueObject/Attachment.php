@@ -35,13 +35,13 @@ final class Attachment
      */
     private const ENCODING = 'base64';
 
-    private string $content_type;
-
     private string $filename;
 
     private string $disposition;
 
     private ?string $cid = null;
+
+    private ?string $content_type;
 
     /**
      * @var resource|string
@@ -55,7 +55,7 @@ final class Attachment
      */
     private function __construct($body, string $filename, string $content_type = null, bool $inline = false)
     {
-        $this->content_type = $content_type ?? 'application/octet-stream';
+        $this->content_type = $content_type;
         $this->filename = $filename;
         $this->disposition = $inline ? 'inline' : 'attachment';
 
@@ -136,7 +136,7 @@ final class Attachment
         return $this->filename;
     }
 
-    public function contentType(): string
+    public function contentType(): ?string
     {
         return $this->content_type;
     }

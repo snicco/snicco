@@ -15,15 +15,18 @@ use Snicco\Component\BetterWPMail\Renderer\FilesystemRenderer;
 use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 use Snicco\Component\BetterWPMail\Transport\Transport;
 use Snicco\Component\BetterWPMail\Transport\WPMailTransport;
+use Snicco\Component\BetterWPMail\ValueObject\Attachment;
 use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Envelope;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 use Snicco\Component\BetterWPMail\ValueObject\MailboxList;
 use Snicco\Component\BetterWPMail\ValueObject\MailDefaults;
 
+use function array_filter;
 use function count;
 use function get_class;
 use function sprintf;
+use function strtr;
 
 final class Mailer
 {
@@ -107,6 +110,22 @@ final class Mailer
 
         if (null === $mail->textBody() && null === $mail->htmlBody() && [] === $mail->attachments()) {
             throw new LogicException('An email must have a text or an HTML body or attachments.');
+        }
+
+        $html_content = $mail->htmlBody();
+        $inline_attachments = array_filter(
+            $mail->attachments(),
+            fn (Attachment $attachment): bool => $attachment->isInline()
+        );
+
+        if (null !== $html_content && [] !== $inline_attachments) {
+            $replace = [];
+            foreach ($inline_attachments as $inline_attachment) {
+                $replace['cid:' . $inline_attachment->name()] = 'cid:' . $inline_attachment->cid();
+            }
+
+            $replaced_content = strtr($html_content, $replace);
+            $mail = $mail->withHtmlBody($replaced_content);
         }
 
         if (count($mail->cc()) > 0) {

@@ -1,7 +1,7 @@
 {
     "name": "sniccowp/better-wp-api",
     "description": "This small package tries to solve the pain point of not being able to solve to scope code that references WordPress core code.",
-    "license": "MIT",
+    "license": "LGPL-3.0-only",
     "authors": [
         {
             "name": "Calvin Alkan",

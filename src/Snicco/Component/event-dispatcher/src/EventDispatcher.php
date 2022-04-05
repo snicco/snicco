@@ -16,7 +16,7 @@ interface EventDispatcher extends EventDispatcherInterface
     /**
      * @template T of object
      *
-     * @param Closure(T)|string                                         $event_name if the event name is a closure the event will be
+     * @param string|Closure(T)                                         $event_name if the event name is a closure the event will be
      *                                                                              retrieved from the first typehinted parameter in the closure
      * @param array{0:class-string, 1:string}|class-string|Closure|null $listener
      *

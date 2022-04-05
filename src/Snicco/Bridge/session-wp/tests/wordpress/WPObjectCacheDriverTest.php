@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Bridge\SessionWP\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
-use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;
 use Snicco\Bridge\SessionWP\WPObjectCacheDriver;
-use Snicco\Component\BetterWPCache\CacheFactory;
 use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Testing\SessionDriverTests;
 use Snicco\Component\TestableClock\Clock;
@@ -24,9 +22,7 @@ final class WPObjectCacheDriverTest extends WPTestCase
 
     protected function createDriver(Clock $clock): SessionDriver
     {
-        return new WPObjectCacheDriver(
-            new Psr16SessionDriver(CacheFactory::psr16('my_sessions'), $this->idleTimeout())
-        );
+        return new WPObjectCacheDriver('my_sessions', $this->idleTimeout());
     }
 
     /**

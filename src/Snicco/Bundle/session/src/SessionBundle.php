@@ -7,7 +7,6 @@ namespace Snicco\Bundle\Session;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Snicco\Bridge\SessionPsr16\Psr16SessionDriver;
 use Snicco\Bridge\SessionWP\WPDBSessionDriver;
 use Snicco\Bridge\SessionWP\WPObjectCacheDriver;
 use Snicco\Bundle\BetterWPCache\BetterWPCacheBundle;
@@ -19,7 +18,6 @@ use Snicco\Bundle\Session\Event\WPLogin;
 use Snicco\Bundle\Session\Event\WPLogout;
 use Snicco\Bundle\Session\Middleware\StatefulRequest;
 use Snicco\Bundle\Session\Option\SessionOption;
-use Snicco\Component\BetterWPCache\CacheFactory;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\EventDispatcher\EventDispatcher;
@@ -34,8 +32,8 @@ use Snicco\Component\Session\Driver\SessionDriver;
 use Snicco\Component\Session\Serializer\JsonSerializer;
 use Snicco\Component\Session\Serializer\PHPSerializer;
 use Snicco\Component\Session\Serializer\Serializer;
-use Snicco\Component\Session\SessionManager\FactorySessionManager;
-use Snicco\Component\Session\SessionManager\SessionManager;
+use Snicco\Component\Session\SessionManager\SessionManagerInterface;
+use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
 use function array_replace;
@@ -135,7 +133,7 @@ final class SessionBundle implements Bundle
     private function bindSessionManager(Kernel $kernel): void
     {
         $kernel->container()
-            ->shared(SessionManager::class, fn (): FactorySessionManager => new FactorySessionManager(
+            ->shared(SessionManagerInterface::class, fn (): SessionManger => new SessionManger(
                 $kernel->container()
                     ->make(SessionConfig::class),
                 $kernel->container()
@@ -238,11 +236,9 @@ final class SessionBundle implements Bundle
                 $group = $config->getString('session.' . SessionOption::PREFIX);
 
                 return new WPObjectCacheDriver(
-                    new Psr16SessionDriver(
-                        CacheFactory::psr16($group),
-                        $kernel->container()
-                            ->make(SessionConfig::class)->idleTimeoutInSec()
-                    )
+                    $group,
+                    $kernel->container()
+                        ->make(SessionConfig::class)->idleTimeoutInSec()
                 );
             });
     }
@@ -307,7 +303,7 @@ final class SessionBundle implements Bundle
         $kernel->container()
             ->shared(StatefulRequest::class, fn (): StatefulRequest => new StatefulRequest(
                 $kernel->container()
-                    ->make(SessionManager::class),
+                    ->make(SessionManagerInterface::class),
                 $kernel->container()
                     ->make(LoggerInterface::class),
                 $kernel->container()
