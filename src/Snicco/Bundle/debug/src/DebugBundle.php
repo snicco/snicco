@@ -22,10 +22,10 @@ use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
 use function array_merge;
-use function array_replace;
 use function copy;
 use function dirname;
 use function is_file;
+use function sprintf;
 
 final class DebugBundle implements Bundle
 {
@@ -68,27 +68,20 @@ final class DebugBundle implements Bundle
 
     private function configureHttpRouting(WritableConfig $config, Kernel $kernel): void
     {
-        $config->prepend(HttpErrorHandlingOption::KEY . '.' . HttpErrorHandlingOption::DISPLAYERS, [
+        $config->prependToList('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS, [
             WhoopsJsonDisplayer::class,
             WhoopsHtmlDisplayer::class,
         ]);
 
         $defaults = require dirname(__DIR__) . '/config/debug.php';
 
-        if (! is_file($to = $kernel->directories()->configDir() . '/debug.php')) {
-            $copied = copy(dirname(__DIR__) . '/config/debug.php', $to);
-            if (! $copied) {
-                // @codeCoverageIgnoreStart
-                throw new RuntimeException('Could not copy default debug.php config.');
-                // @codeCoverageIgnoreEnd
-            }
-        }
-
         $defaults = array_merge($defaults, [
             DebugOption::APPLICATION_PATHS => $this->allDirectoriesExpectVendor($kernel->directories()),
         ]);
 
-        $config->set('debug', array_replace($defaults, $config->getArray('debug', [])));
+        $config->mergeDefaults('debug', $defaults);
+
+        $this->copyConfiguration($kernel);
     }
 
     private function registerHttpDebugServices(Kernel $kernel): void
@@ -163,5 +156,25 @@ final class DebugBundle implements Bundle
         }
 
         return $dirs;
+    }
+
+    private function copyConfiguration(Kernel $kernel): void
+    {
+        $destination = $kernel->directories()
+            ->configDir() . '/debug.php';
+        if (is_file($destination)) {
+            return;
+        }
+
+        $copied = copy(dirname(__DIR__) . '/config/debug.php', $destination);
+
+        if (! $copied) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException(sprintf(
+                'Could not copy the default templating config to destination [%s]',
+                $destination
+            ));
+            // @codeCoverageIgnoreEnd
+        }
     }
 }

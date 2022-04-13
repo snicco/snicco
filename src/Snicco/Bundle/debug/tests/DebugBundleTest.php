@@ -84,7 +84,7 @@ final class DebugBundleTest extends TestCase
         $kernel->boot();
 
         $displayers = $kernel->config()
-            ->getListOfStrings(HttpErrorHandlingOption::key(HttpErrorHandlingOption::DISPLAYERS));
+            ->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS);
 
         $this->assertSame([
             WhoopsHtmlDisplayer::class,
@@ -101,7 +101,7 @@ final class DebugBundleTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [DebugBundle::class]);
+            $config->set('kernel.bundles', [DebugBundle::class]);
         });
 
         $kernel->boot();

@@ -50,12 +50,4 @@ final class RoutingOption
      * @var string
      */
     public const USE_HTTPS = 'https';
-
-    /**
-     * @interal
-     */
-    public static function key(string $constant): string
-    {
-        return 'routing.' . $constant;
-    }
 }

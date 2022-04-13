@@ -36,7 +36,6 @@ use Snicco\Component\Session\SessionManager\SessionManagerInterface;
 use Snicco\Component\Session\SessionManager\SessionManger;
 use Snicco\Component\Session\ValueObject\SessionConfig;
 
-use function array_replace;
 use function class_exists;
 use function class_implements;
 use function copy;
@@ -59,9 +58,7 @@ final class SessionBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        $defaults = require dirname(__DIR__) . '/config/session.php';
-        $config->set('session', array_replace($defaults, $config->getArray('session', [])));
-
+        $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/session.php');
         $this->validateConfig($kernel, $config);
         $this->copyConfig($kernel);
     }

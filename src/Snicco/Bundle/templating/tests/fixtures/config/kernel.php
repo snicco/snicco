@@ -6,5 +6,7 @@ use Snicco\Bundle\Templating\TemplatingBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [TemplatingBundle::class],
+    'bundles' => [
+        Environment::ALL => [TemplatingBundle::class],
+    ],
 ];

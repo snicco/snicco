@@ -52,8 +52,9 @@ final class KernelBootstrappersTest extends TestCase
             Environment::prod(),
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
-                'app' => [
+                'kernel' => [
                     'bootstrappers' => [Bootstrap1::class],
+                    'bundles' => [],
                 ],
             ])
         );
@@ -94,8 +95,9 @@ final class KernelBootstrappersTest extends TestCase
             Environment::prod(),
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
-                'app' => [
+                'kernel' => [
                     'bootstrappers' => [BootstrapperWithExceptionInBoostrap::class],
+                    'bundles' => [],
                 ],
             ])
         );

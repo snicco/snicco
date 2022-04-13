@@ -76,7 +76,7 @@ final class BladeBundleTest extends WPTestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [BladeBundle::class],
             ]);
         });
