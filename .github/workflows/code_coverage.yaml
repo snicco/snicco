@@ -9,30 +9,8 @@ on:
 
 jobs:
 
-  should_run:
-    name: 'Generate diff'
-    runs-on: ubuntu-20.04
-    outputs:
-      diff: ${{ steps.get_diff.outputs.php }}
-    steps:
-      - name: 'Checkout code'
-        uses: actions/checkout@v2
-
-      - name: 'Generate diff'
-        # https://github.com/dorny/paths-filter/tree/v2.10.2
-        uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721
-        id: get_diff
-        with:
-          filters: |
-            php:
-              - 'src/Snicco/**/*.php'
-              - 'codecov.yml'
-  
-
   phpunit_coverage:
     name: 'PHPUnit coverage'
-    needs: should_run
-    if: ${{ needs.should_run.outputs.diff == 'true' || github.event_name == 'push' || github.event_name  == 'workflow_dispatch' }}
     runs-on: ubuntu-20.04
     steps:
       - name: 'Checkout code'
@@ -70,8 +48,6 @@ jobs:
   codeception_coverage:
     name: 'Codeception coverage'
     runs-on: ubuntu-20.04
-    needs: should_run
-    if: ${{ needs.should_run.outputs.diff == 'true' || github.event_name == 'push' || github.event_name  == 'workflow_dispatch' }}
     services:
       mysql:
         image: mysql:8.0.21
