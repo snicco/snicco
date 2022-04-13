@@ -8,23 +8,26 @@ use LogicException;
 use Snicco\Component\StrArr\Arr;
 use Webmozart\Assert\Assert;
 
-use function array_keys;
-use function array_merge;
+use function array_replace;
 use function array_unique;
 use function array_unshift;
 use function array_values;
-use function count;
 use function gettype;
-use function is_array;
-use function range;
+use function pathinfo;
+use function sprintf;
+
+use const PATHINFO_FILENAME;
 
 final class WritableConfig extends Config
 {
     private array $items;
 
-    public function __construct(?array $items = null)
+    /**
+     * @param mixed[] $items
+     */
+    private function __construct(array $items)
     {
-        $this->items = $items ?: [];
+        $this->items = $items;
     }
 
     public static function fromArray(array $items): self
@@ -33,34 +36,34 @@ final class WritableConfig extends Config
     }
 
     /**
-     * Extend the configuration with the given values. Existing values have
-     * priority.
+     * Keys that are already present in the current configuration are not
+     * replaced.
      *
-     * @note This method does not work for multidimensional arrays. The existing config has to be an array of scalars.
-     *
-     * @param array<?scalar>|?scalar $extend_with
+     * @param array<string, mixed> $defaults can be a multi-dimensional array, but all values must be scalar|null
      */
-    public function extend(string $key, $extend_with): void
+    public function mergeDefaults(string $key, array $defaults): void
     {
-        $existing_config = $this->get($key);
+        $current = $this->get($key, []);
 
-        if (null === $existing_config) {
-            $this->set($key, $extend_with);
+        Assert::isArray($current);
 
-            return;
-        }
+        $with_defaults = array_replace($defaults, $current);
 
-        if (! is_array($existing_config)) {
-            return;
-        }
+        $this->set($key, $with_defaults);
+    }
 
-        Assert::allScalar($existing_config);
+    public function mergeDefaultsFromFile(string $config_file): void
+    {
+        Assert::readable($config_file);
 
-        $extend_with = is_array($extend_with) ? $extend_with : [$extend_with];
+        /** @psalm-suppress UnresolvableInclude */
+        $config = require $config_file;
 
-        $new_value = $this->mergedArrayConfig($extend_with, $existing_config);
+        Assert::isArray($config);
+        Assert::true(Arr::isAssoc($config), sprintf('config in %s must be an associative array.', $config_file));
 
-        $this->set($key, $new_value);
+        $name = pathinfo($config_file, PATHINFO_FILENAME);
+        $this->mergeDefaults($name, $config);
     }
 
     /**
@@ -69,7 +72,7 @@ final class WritableConfig extends Config
      * @throws LogicException if key is missing or not a numerical array
      * @throws LogicException if value has a different type than the list values
      */
-    public function append(string $key, $value): void
+    public function appendToList(string $key, $value): void
     {
         if (! $this->has($key)) {
             throw new LogicException(sprintf('Cant append to missing config key [%s].', $key));
@@ -88,6 +91,39 @@ final class WritableConfig extends Config
             }
 
             $current[] = $item;
+        }
+
+        $this->set($key, array_unique($current));
+    }
+
+    /**
+     * @note Assuming you have [4,5,6]. $config->prepend([1,2,3]) will result in [3,2,1,4,5,6].
+     *       Arrays are NOT merged. Each value is prepended individually.
+     *
+     * @param scalar|scalar[] $value
+     *
+     * @throws LogicException if key is missing or not a numerical array
+     * @throws LogicException if value has a different type than the list values
+     */
+    public function prependToList(string $key, $value): void
+    {
+        if (! $this->has($key)) {
+            throw new LogicException(sprintf('Cant prepend to missing config key [%s].', $key));
+        }
+
+        $current = $this->get($key);
+
+        Assert::isArray($current);
+        Assert::isList($current, sprintf('Cant prepend to key [%s] because its not a list.', $key));
+
+        $type = isset($current[0]) ? gettype($current[0]) : null;
+
+        foreach (Arr::toArray($value) as $item) {
+            if (($actual = gettype($item)) !== $type && (null !== $type)) {
+                throw new LogicException("Expected scalar type [{$type}].\nGot [{$actual}].");
+            }
+
+            array_unshift($current, $item);
         }
 
         $this->set($key, array_values(array_unique($current)));
@@ -117,41 +153,6 @@ final class WritableConfig extends Config
     }
 
     /**
-     * @note Assuming you have [4,5,6]. ->prepend([1,2,3]) will result in [3,2,1,4,5,6].
-     *       Arrays are NOT merged. Each value is prepended individually.
-     *
-     * @param scalar|scalar[] $value
-     *
-     * @throws LogicException if key is missing or not a numerical array
-     * @throws LogicException if value has a different type than the list values
-     */
-    public function prepend(string $key, $value): void
-    {
-        if (! $this->has($key)) {
-            throw new LogicException(sprintf('Cant prepend to missing config key [%s].', $key));
-        }
-
-        $current = $this->get($key);
-
-        Assert::isArray($current);
-        Assert::isList($current, sprintf('Cant prepend to key [%s] because its not a list.', $key));
-
-        $type = isset($current[0]) ? gettype($current[0]) : null;
-
-        $value = Arr::toArray($value);
-
-        foreach (Arr::toArray($value) as $item) {
-            if (($actual = gettype($item)) !== $type && (null !== $type)) {
-                throw new LogicException("Expected scalar type [{$type}].\nGot [{$actual}].");
-            }
-
-            array_unshift($current, $item);
-        }
-
-        $this->set($key, array_values(array_unique($current)));
-    }
-
-    /**
      * @param mixed $default
      *
      * @return mixed
@@ -164,40 +165,5 @@ final class WritableConfig extends Config
     public function toArray(): array
     {
         return $this->items;
-    }
-
-    /**
-     * @param array<?scalar> $extend_with
-     * @param array<?scalar> $exiting_config
-     */
-    private function mergedArrayConfig(array $extend_with, array $exiting_config): array
-    {
-        if ($this->isList($extend_with) && $this->isList($exiting_config)) {
-            return array_values(array_unique(array_merge($exiting_config, $extend_with)));
-        }
-
-        $current = $exiting_config;
-
-        foreach ($extend_with as $key => $value) {
-            if (! isset($current[$key])) {
-                $current[$key] = $value;
-            }
-        }
-
-        return $current;
-    }
-
-    /**
-     * @psalm-assert list $array
-     */
-    private function isList(array $array): bool
-    {
-        $count = count($array);
-
-        if (0 === $count) {
-            return true;
-        }
-
-        return array_keys($array) === range(0, count($array) - 1);
     }
 }

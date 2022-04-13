@@ -30,12 +30,4 @@ final class MiddlewareOption
      * @var string
      */
     public const KERNEL_MIDDLEWARE = 'kernel_middleware';
-
-    /**
-     * @interal
-     */
-    public static function key(string $constant): string
-    {
-        return 'middleware.' . $constant;
-    }
 }

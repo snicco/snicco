@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\Kernel\Configuration\ConfigCache;
@@ -68,23 +67,6 @@ final class KernelConfigCachingTest extends TestCase
 
         $saved_config = require $expected_path;
         $this->assertSame($kernel->config()->toArray(), $saved_config);
-    }
-
-    /**
-     * @test
-     */
-    public function an_exception_is_thrown_if_the_cached_config_does_not_contain_the_app_key(): void
-    {
-        $app = new Kernel(
-            $this->createContainer(),
-            Environment::prod(),
-            Directories::fromDefaults($this->fixtures_dir . '/base_dir_without_app_config'),
-        );
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The [app.php] config file was not found in the config dir');
-
-        $app->boot();
     }
 
     /**

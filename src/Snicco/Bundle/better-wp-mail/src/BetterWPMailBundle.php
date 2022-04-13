@@ -27,7 +27,6 @@ use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Templating\TemplateEngine;
 
 use function array_map;
-use function array_replace;
 use function class_exists;
 use function copy;
 use function dirname;
@@ -48,9 +47,7 @@ final class BetterWPMailBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        $defaults = require dirname(__DIR__) . '/config/mail.php';
-        $config->set('mail', array_replace($defaults, $config->getArray('mail', [])));
-
+        $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/mail.php');
         $this->copyConfiguration($kernel);
     }
 

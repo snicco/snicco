@@ -20,13 +20,13 @@ final class WritableConfigTest extends TestCase
     {
         parent::setUp();
 
-        $this->config = new WritableConfig();
+        $this->config = WritableConfig::fromArray([]);
     }
 
     /**
      * @test
      */
-    public function test_set_if_missing(): void
+    public function that_set_if_missing_works(): void
     {
         $this->config->set('foo', null);
         $this->config->setIfMissing('foo', 'bar');
@@ -39,9 +39,9 @@ final class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function a_value_can_be_a_boolean_false(): void
+    public function that_a_value_can_be_a_boolean_false(): void
     {
-        $this->config->extend('foo', false);
+        $this->config->set('foo', false);
 
         $this->assertFalse($this->config->get('foo'));
     }
@@ -49,9 +49,9 @@ final class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function a_value_can_be_null(): void
+    public function that_a_value_can_be_null(): void
     {
-        $this->config->extend('foo', null);
+        $this->config->set('foo', null);
 
         $this->assertNull($this->config->get('foo'));
     }
@@ -59,10 +59,10 @@ final class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function a_value_can_be_string_int_zero(): void
+    public function that_a_value_can_be_string_int_zero(): void
     {
-        $this->config->extend('foo', '0');
-        $this->config->extend('bar', 0);
+        $this->config->set('foo', '0');
+        $this->config->set('bar', 0);
 
         $this->assertSame('0', $this->config->get('foo'));
         $this->assertSame(0, $this->config->get('bar'));
@@ -71,35 +71,7 @@ final class WritableConfigTest extends TestCase
     /**
      * @test
      */
-    public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config(): void
-    {
-        $this->assertNull($this->config->get('foo'));
-
-        $this->config->extend('foo', 'bar');
-
-        $this->assertSame('bar', $this->config->get('foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function user_config_has_precedence_over_default_config(): void
-    {
-        $this->assertNull($this->config->get('foo'));
-
-        $this->config->set('foo', 'bar');
-
-        $this->assertSame('bar', $this->config->get('foo'));
-
-        $this->config->extend('foo', 'baz');
-
-        $this->assertSame('bar', $this->config->get('foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function user_config_has_precedence_over_default_config_and_gets_merged_recursively(): void
+    public function that_default_configuration_can_be_merged_recursively(): void
     {
         $config = [
             'routing' => [
@@ -110,93 +82,81 @@ final class WritableConfigTest extends TestCase
                 ],
             ],
         ];
-
         $config = WritableConfig::fromArray($config);
 
-        $config->extend('routing.definitions', ['routes3', 'routes4']);
-
-        $config->extend('routing.features', [
-            'feature1' => false,
-            'feature2' => true,
-            'feature3' => true,
-            'feature4' => 'yes',
-        ]);
-
-        $this->assertSame(['routes1', 'routes2', 'routes3', 'routes4'], $config->get('routing.definitions'));
+        $config->mergeDefaults(
+            'routing',
+            [
+                'definitions' => ['routes3', 'routes4'],
+                'features' => [
+                    'feature1' => false,
+                    'feature2' => true,
+                    'feature3' => true,
+                    'feature4' => 'yes',
+                ],
+                'dir' => __DIR__,
+            ]
+        );
 
         $this->assertSame([
-            'feature1' => true,
-            'feature2' => false,
-            'feature3' => true,
-            'feature4' => 'yes',
-        ], $config->get('routing.features'));
-    }
-
-    /**
-     * @test
-     */
-    public function everything_works_with_dot_notation_as_well(): void
-    {
-        $config = WritableConfig::fromArray([
-            'foo' => [
-                'foo' => 'foo',
-                'bar' => 'baz',
-                'baz' => [
-                    'biz' => 'boo',
-                ],
+            'definitions' => ['routes1', 'routes2'],
+            'features' => [
+                'feature1' => true,
+                'feature2' => false,
             ],
-        ]);
-
-        $config->extend('foo.bar', 'biz');
-        $this->assertSame('baz', $config->get('foo.bar'));
-
-        $config->extend('foo.boo', 'bam');
-        $this->assertSame('bam', $config->get('foo.boo'));
-
-        $config->extend('foo.baz', [
-            'bam' => 'boom',
-        ]);
-        $this->assertEquals([
-            'biz' => 'boo',
-            'bam' => 'boom',
-        ], $config->get('foo.baz'));
-
-        $config->extend('foo.baz.biz', 'bogus');
-        $this->assertSame('boo', $config->get('foo.baz.biz'));
+            'dir' => __DIR__,
+        ], $config->get('routing'));
     }
 
     /**
      * @test
      */
-    public function numerically_indexed_arrays_are_merged_and_unique_values_remain(): void
+    public function that_merging_default_configuration_on_a_non_array_value_throws_an_exception(): void
     {
-        $config = WritableConfig::fromArray([
-            'first' => ['foo', 'bar'],
-        ]);
+        $config = [
+            'routing' => [
+                'foo' => 'bar',
+            ],
+        ];
+        $config = WritableConfig::fromArray($config);
 
-        $config->extend('first', ['boo', 'bar', 'biz', 'foo']);
-
-        $this->assertEquals(['foo', 'bar', 'boo', 'biz'], $config->get('first'));
+        $this->expectException(InvalidArgumentException::class);
+        $config->mergeDefaults('routing.foo', []);
     }
 
     /**
      * @test
      */
-    public function scalar_values_can_be_pushed_onto_an_array(): void
+    public function that_merging_default_configuration_works_with_empty_current_config(): void
     {
-        $config = WritableConfig::fromArray([
-            'foo' => ['bar'],
+        $config = [];
+        $config = WritableConfig::fromArray($config);
+        $config->mergeDefaults('routing', [
+            'foo' => 'bar',
         ]);
-
-        $config->extend('foo', 'baz');
-
-        $this->assertSame(['bar', 'baz'], $config->get('foo'));
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $config->get('routing'));
     }
 
     /**
      * @test
      */
-    public function test_append(): void
+    public function that_defaults_can_be_merged_from_a_file(): void
+    {
+        $config = WritableConfig::fromArray([]);
+
+        $config->mergeDefaultsFromFile(__DIR__ . '/fixtures/routing.php');
+
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $config->get('routing'));
+    }
+
+    /**
+     * @test
+     */
+    public function that_values_can_be_appended_to_a_list(): void
     {
         $config = [
             'routing' => [
@@ -210,11 +170,11 @@ final class WritableConfigTest extends TestCase
 
         $config = WritableConfig::fromArray($config);
 
-        $config->append('routing.definitions', 'routes3');
+        $config->appendToList('routing.definitions', 'routes3');
 
         $this->assertSame(['routes1', 'routes2', 'routes3'], $config->get('routing.definitions'));
 
-        $config->append('routing.definitions', ['routes4', 'routes5']);
+        $config->appendToList('routing.definitions', ['routes4', 'routes5']);
 
         $this->assertSame([
             'routes1',
@@ -224,7 +184,7 @@ final class WritableConfigTest extends TestCase
             'routes5',
         ], $config->get('routing.definitions'));
 
-        $config->append('routing.definitions', 'routes5');
+        $config->appendToList('routing.definitions', 'routes5');
 
         // Unique values only
         $this->assertSame([
@@ -238,7 +198,7 @@ final class WritableConfigTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Cant append to key [routing.features] because its not a list.');
 
-        $config->append('routing.features', 'foo');
+        $config->appendToList('routing.features', 'foo');
     }
 
     /**
@@ -260,7 +220,7 @@ final class WritableConfigTest extends TestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Expected scalar type [string].\nGot [integer].");
-        $config->append('routing.definitions', 1);
+        $config->appendToList('routing.definitions', 1);
     }
 
     /**
@@ -276,13 +236,13 @@ final class WritableConfigTest extends TestCase
 
         $config = WritableConfig::fromArray($config);
 
-        $config->append('routing.definitions', ['routes1', 'routes2']);
+        $config->appendToList('routing.definitions', ['routes1', 'routes2']);
 
         $this->assertSame(['routes1', 'routes2'], $config->get('routing.definitions'));
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('boolean');
-        $config->append('routing.definitions', ['routes3', true]);
+        $config->appendToList('routing.definitions', ['routes3', true]);
     }
 
     /**
@@ -298,7 +258,7 @@ final class WritableConfigTest extends TestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('missing config key [routing.definitions]');
-        $config->append('routing.definitions', 'foo');
+        $config->appendToList('routing.definitions', 'foo');
     }
 
     /**
@@ -318,11 +278,11 @@ final class WritableConfigTest extends TestCase
 
         $config = WritableConfig::fromArray($config);
 
-        $config->prepend('routing.definitions', 'routes3');
+        $config->prependToList('routing.definitions', 'routes3');
 
         $this->assertSame(['routes3', 'routes1', 'routes2'], $config->get('routing.definitions'));
 
-        $config->prepend('routing.definitions', ['routes4', 'routes5']);
+        $config->prependToList('routing.definitions', ['routes4', 'routes5']);
 
         $this->assertSame([
             'routes5',
@@ -332,7 +292,7 @@ final class WritableConfigTest extends TestCase
             'routes2',
         ], $config->get('routing.definitions'));
 
-        $config->prepend('routing.definitions', 'routes5');
+        $config->prependToList('routing.definitions', 'routes5');
 
         // Unique values only
         $this->assertSame([
@@ -346,7 +306,7 @@ final class WritableConfigTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Cant prepend to key [routing.features] because its not a list.');
 
-        $config->prepend('routing.features', 'foo');
+        $config->prependToList('routing.features', 'foo');
     }
 
     /**
@@ -368,7 +328,7 @@ final class WritableConfigTest extends TestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Expected scalar type [string].\nGot [integer].");
-        $config->prepend('routing.definitions', 1);
+        $config->prependToList('routing.definitions', 1);
     }
 
     /**
@@ -384,13 +344,13 @@ final class WritableConfigTest extends TestCase
 
         $config = WritableConfig::fromArray($config);
 
-        $config->prepend('routing.definitions', ['routes1', 'routes2']);
+        $config->prependToList('routing.definitions', ['routes1', 'routes2']);
 
         $this->assertSame(['routes2', 'routes1'], $config->get('routing.definitions'));
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('boolean');
-        $config->prepend('routing.definitions', ['routes3', true]);
+        $config->prependToList('routing.definitions', ['routes3', true]);
     }
 
     /**
@@ -406,25 +366,7 @@ final class WritableConfigTest extends TestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('missing config key [routing.definitions]');
-        $config->prepend('routing.definitions', 'foo');
-    }
-
-    /**
-     * @test
-     */
-    public function test_merge_if_current_is_empty_array(): void
-    {
-        $config = [
-            'routing' => [],
-            'foo' => [],
-        ];
-
-        $config = WritableConfig::fromArray($config);
-        $config->extend('routing', 'foo');
-        $this->assertSame(['foo'], $config->get('routing'));
-
-        $config->extend('foo', ['bar']);
-        $this->assertSame(['bar'], $config->get('foo'));
+        $config->prependToList('routing.definitions', 'foo');
     }
 
     /**

@@ -50,7 +50,7 @@ final class HttpRoutingBundleTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles', [
+            $config->set('kernel.bundles', [
                 Environment::ALL => [HttpRoutingBundle::class],
             ]);
         });

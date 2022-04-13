@@ -10,7 +10,11 @@ use Snicco\Component\Kernel\Tests\fixtures\bundles\BundleProduction;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    Environment::ALL => [AllEnvBundle::class, Bundle1::class, Bundle2::class, BundleAssertsMethodOrder::class],
+    'bundles' => [
+        Environment::ALL => [AllEnvBundle::class, Bundle1::class, Bundle2::class, BundleAssertsMethodOrder::class],
 
-    Environment::PROD => [BundleProduction::class],
+        Environment::PROD => [BundleProduction::class],
+    ],
+
+    'bootstrappers' => [],
 ];

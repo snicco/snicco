@@ -186,7 +186,7 @@ final class SessionBundleTest extends WPTestCase
             $config->set('session', [
                 SessionOption::DRIVER => WPObjectCacheDriver::class,
             ]);
-            $config->extend('bundles.all', BetterWPCacheBundle::class);
+            $config->appendToList('kernel.bundles.all', BetterWPCacheBundle::class);
         });
         $kernel->boot();
         $this->assertCanBeResolved(SessionManagerInterface::class, $kernel);
@@ -203,7 +203,7 @@ final class SessionBundleTest extends WPTestCase
             $config->set('session', [
                 SessionOption::ENCRYPT_DATA => true,
             ]);
-            $config->extend('bundles.all', EncryptionBundle::class);
+            $config->appendToList('kernel.bundles.all', EncryptionBundle::class);
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey(),
             ]);
@@ -223,7 +223,7 @@ final class SessionBundleTest extends WPTestCase
             $config->set('session', [
                 SessionOption::ENCRYPT_DATA => true,
             ]);
-            $config->extend('bundles.all', EncryptionBundle::class);
+            $config->appendToList('kernel.bundles.all', EncryptionBundle::class);
             $config->set('encryption', [
                 EncryptionOption::KEY_ASCII => DefuseEncryptor::randomAsciiKey(),
             ]);
@@ -358,7 +358,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
+            $config->set('kernel.bundles.all', [SessionBundle::class, BetterWPDBBundle::class]);
         });
         $kernel->boot();
     }
@@ -434,7 +434,7 @@ final class SessionBundleTest extends WPTestCase
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
-            $config->set('bundles.all', [SessionBundle::class]);
+            $config->set('kernel.bundles.all', [SessionBundle::class]);
         });
         $kernel->boot();
     }
