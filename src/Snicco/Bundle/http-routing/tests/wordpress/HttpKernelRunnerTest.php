@@ -472,7 +472,7 @@ final class HttpKernelRunnerTest extends WPTestCase
     public function test_api_requests_are_run_on_init_if_the_path_matches(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/sniccowp/auth/register';
+        $_SERVER['REQUEST_URI'] = '/snicco/auth/register';
 
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
@@ -536,7 +536,7 @@ final class HttpKernelRunnerTest extends WPTestCase
     public function test_run_sends_an_api_response_immediately(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/sniccowp/auth/register';
+        $_SERVER['REQUEST_URI'] = '/snicco/auth/register';
 
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()

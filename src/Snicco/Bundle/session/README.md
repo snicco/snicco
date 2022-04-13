@@ -7,9 +7,9 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SessionBundle/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-This **WordPress** bundle integrates [`snicco/session`](https://github.com/sniccowp/session) in applications based on [`snicco/kernel`](https://github.com/sniccowp/kernel).
+This **WordPress** bundle integrates [`snicco/session`](https://github.com/snicco/session) in applications based on [`snicco/kernel`](https://github.com/snicco/kernel).
 
-The [`snicco/http-routing-bundle`](https://github.com/sniccowp/http-routing-bundle) is required for this bundle.
+The [`snicco/http-routing-bundle`](https://github.com/snicco/http-routing-bundle) is required for this bundle.
 
 ## Installation
 
@@ -53,7 +53,7 @@ This bundle contains several [middleware](src/Middleware) that manage the sessio
 - [`ShareSessionWithViews`](src/Middleware/ShareSessionWithViews.php), adds an `ImmutableSession` and an instance of [`SessionErrors`](src/ValueObject/SessionErrors.php) to all `ViewResponses`.
 - [`SaveResponseAttributes`](src/Middleware/SaveResponseAttributes.php), saves flash messages, errors and old-input in the session.
 
-Its recommended configure the session middleware in the `middleware` config of the [`HttpRoutingBundle`](https://github.com/sniccowp/http-routing-bundle) like so:
+Its recommended configure the session middleware in the `middleware` config of the [`HttpRoutingBundle`](https://github.com/snicco/http-routing-bundle) like so:
 
 ```php
 //path/to/config/middleware.php
@@ -96,16 +96,16 @@ $request->getAttribute(MutableSession::class);
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPCache**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

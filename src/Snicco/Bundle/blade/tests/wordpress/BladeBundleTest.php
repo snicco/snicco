@@ -38,7 +38,7 @@ final class BladeBundleTest extends WPTestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/blade-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/blade-bundle'));
     }
 
     /**
@@ -82,7 +82,7 @@ final class BladeBundleTest extends WPTestCase
         });
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('needs sniccowp/templating-bundle');
+        $this->expectExceptionMessage('needs snicco/templating-bundle');
 
         $kernel->boot();
     }

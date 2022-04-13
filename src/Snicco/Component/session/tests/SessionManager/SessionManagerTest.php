@@ -49,7 +49,7 @@ final class SessionManagerTest extends TestCase
      */
     private int $rotation_interval = 5;
 
-    private string $cookie_name = 'sniccowp_session';
+    private string $cookie_name = 'snicco_session';
 
     private InMemoryDriver $driver;
 

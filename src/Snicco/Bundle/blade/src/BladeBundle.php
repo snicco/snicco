@@ -25,7 +25,7 @@ final class BladeBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/blade-bundle';
+    public const ALIAS = 'snicco/blade-bundle';
 
     public function shouldRun(Environment $env): bool
     {
@@ -38,8 +38,8 @@ final class BladeBundle implements Bundle
 
     public function register(Kernel $kernel): void
     {
-        if (! $kernel->usesBundle('sniccowp/templating-bundle')) {
-            throw new RuntimeException(BladeBundle::ALIAS . ' needs sniccowp/templating-bundle to run.');
+        if (! $kernel->usesBundle('snicco/templating-bundle')) {
+            throw new RuntimeException(BladeBundle::ALIAS . ' needs snicco/templating-bundle to run.');
         }
 
         $container = $kernel->container();

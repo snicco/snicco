@@ -1,4 +1,4 @@
-# PSR-16 session driver for [`snicco/session`](https://github.com/sniccowp/session)
+# PSR-16 session driver for [`snicco/session`](https://github.com/snicco/session)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://codecov.io/gh/sniccowp/sniccowp)
@@ -8,7 +8,7 @@
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
 This package provides a [`Psr16SessionDriver`](src/Psr16SessionDriver.php) for
-the [`snicco/session`](https://github.com/sniccowp/session) library.
+the [`snicco/session`](https://github.com/snicco/session) library.
 
 ## Installation
 
@@ -31,16 +31,16 @@ $psr16_session_driver = new Psr16SessionDriver($psr16_cache, $idle_timeout_in_se
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

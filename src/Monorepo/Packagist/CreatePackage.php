@@ -53,7 +53,7 @@ final class CreatePackage
         try {
             $response = $this->client->get($this->packageUrlJson($package), [
                 'headers' => [
-                    'User-Agent' => 'sniccowp/sniccowp',
+                    'User-Agent' => 'snicco/snicco',
                     'Accept' => 'application/json',
                 ],
             ]);
@@ -72,7 +72,7 @@ final class CreatePackage
     {
         $response = $this->client->post('https://packagist.org/api/create-package', [
             'headers' => [
-                'User-Agent' => 'sniccowp/sniccowp monorepo',
+                'User-Agent' => 'snicco/snicco-monorepo',
                 'Accept' => 'application/json',
             ],
             'query' => [

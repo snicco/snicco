@@ -41,7 +41,7 @@ final class WPEloquentStandalone
     {
         $this->illuminate_container = Container::getInstance();
 
-        if ($this->illuminate_container->has('sniccowp_eloquent_bootstrapped')) {
+        if ($this->illuminate_container->has('snicco_eloquent_bootstrapped')) {
             throw new RuntimeException(
                 'EloquentStandalone can only be bootstrapped once because eloquent uses a global service locator.
                  If you are using this library in a distributed package you need to run it through a php-scoper to avoid unintended code collision.'
@@ -55,7 +55,7 @@ final class WPEloquentStandalone
 
         $this->enable_global_facades = $enable_global_facades;
         $this->connection_configuration = $connection_configuration;
-        $this->illuminate_container->instance('sniccowp_eloquent_bootstrapped', true);
+        $this->illuminate_container->instance('snicco_eloquent_bootstrapped', true);
     }
 
     public function withDatabaseFactories(

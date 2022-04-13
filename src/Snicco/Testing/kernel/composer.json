@@ -1,6 +1,6 @@
 {
-    "name": "sniccowp/kernel-testing",
-    "description": "Provides test utils for sniccowp/kernel",
+    "name": "snicco/kernel-testing",
+    "description": "Provides test utils for snicco/kernel",
     "authors": [
         {
             "name": "Calvin Alkan",
@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "sniccowp/kernel": "^1.0",
+        "snicco/kernel": "^1.0",
         "phpunit/phpunit": "9.5.13"
     },
     "autoload": {

@@ -1,7 +1,7 @@
 # A secure, modular and framework-agnostic PHP library to sign and verify urls.
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
-)](https://app.codecov.io/gh/sniccowp/sniccowp)
+)](https://app.codecov.io/gh/snicco/snicco)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SignedUrl/index.html)
@@ -29,7 +29,7 @@
 
 ## Motivation
 
-While developing the [**Snicco** project](https://github.com/sniccowp/sniccowp) we couldn't find any good
+While developing the [**Snicco** project](https://github.com/snicco/snicco) we couldn't find any good
 **standalone PHP-libraries** for signing urls. We needed this functionality in a couple of places, so we decided to roll
 our own implementation.
 
@@ -127,7 +127,7 @@ The code samples below describe the **manual** way to validate urls in any **PHP
 #### PSR-15 middleware
 
 If your favorite framework is PSR-7/PSR-15 compatible and supports middleware on a per-route basis, you can use our
-[PSR-15 middleware bridge](https://github.com/sniccowp/signed-url-psr15-bridge)
+[PSR-15 middleware bridge](https://github.com/snicco/signed-url-psr15-bridge)
 which makes this dead simple.
 
 #### All PHP apps
@@ -231,7 +231,7 @@ $storage = new \Snicco\Component\SignedUrl\Storage\InMemoryStorage()
 #### PSR16-Cache (bridge package):
 
 We have a dedicated 
-[PSR-16 bridge](https://github.com/sniccowp/signed-url-psr16-bridge)
+[PSR-16 bridge](https://github.com/snicco/signed-url-psr16-bridge)
 that will allow you to use any **PSR-16 cache** as a storage.
 
 ---
@@ -241,22 +241,22 @@ that will allow you to use any **PSR-16 cache** as a storage.
 Implementing your own storage is very easy. 
 You only have to implement the simple [`SingedUrlStorage`](src/Storage/SignedUrlStorage.php) interface.
 
-Use the [`snicco/signed-url-testing` package](https://github.com/sniccowp/signed-url-testing)
+Use the [`snicco/signed-url-testing` package](https://github.com/snicco/signed-url-testing)
 to test your implementation against the contract of the interface.
 
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

@@ -4,7 +4,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within the **SniccoWP** monorepo, please email Calvin Alkan
+If you discover a security vulnerability within the **Snicco** monorepo, please email Calvin Alkan
 at [calvin@snicco.de](mailto:calvin@snicco.de) and encrypt your message with the public **GPG** key below.
 
 All security vulnerabilities will be promptly addressed.

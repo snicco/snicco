@@ -48,7 +48,7 @@ final class TemplatingBundleTest extends TestCase
 
         $kernel->boot();
 
-        $this->assertTrue($kernel->usesBundle('sniccowp/templating-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/templating-bundle'));
     }
 
     /**

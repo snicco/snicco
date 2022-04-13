@@ -7,7 +7,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/DebugBundle/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-This **WordPress** bundle can be used together with the [`snicco/http-routing-bundle`](https://github.com/sniccowp/http-routing-bundle) in applications based on [`snicco/kernel`](https://github.com/sniccowp/kernel).
+This **WordPress** bundle can be used together with the [`snicco/http-routing-bundle`](https://github.com/snicco/http-routing-bundle) in applications based on [`snicco/kernel`](https://github.com/snicco/kernel).
 
 The DebugBundle configures [`Whoops`](https://github.com/filp/whoops) as the error handler for the middleware pipeline of your application.
 
@@ -54,16 +54,16 @@ To disable the whoops error handler set the kernel env to `Environment::dev(fals
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPCache**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

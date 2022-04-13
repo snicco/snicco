@@ -1,4 +1,4 @@
-# Body parsing middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing)
+# Body parsing middleware for [`snicco/http-routing`](https://github.com/snicco/http-routing)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://codecov.io/gh/sniccowp/sniccowp)
@@ -7,7 +7,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/Payload/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-This package provides middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing) to transform
+This package provides middleware for [`snicco/http-routing`](https://github.com/snicco/http-routing) to transform
 the request body to a plain `array`.
 
 Currently, a [`JsonToArray`](src/JsonToArray.php) middleware is provided.
@@ -33,16 +33,16 @@ $configurator->get('route1', '/route1', SomeController::class)
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

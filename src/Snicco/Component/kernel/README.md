@@ -6,7 +6,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/Kernel/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-The **Kernel** component of the [**Snicco** project](https://github.com/sniccowp/sniccowp) helps to bootstrap an
+The **Kernel** component of the [**Snicco** project](https://github.com/snicco/snicco) helps to bootstrap an
 application that uses a plugin architecture.
 
 ## Table of contents
@@ -147,13 +147,13 @@ that extends the
 
 There are currently two implementations of this interface:
 
-- [`snicco/pimple-bridge`](https://github.com/sniccowp/pimple-bridge),
+- [`snicco/pimple-bridge`](https://github.com/snicco/pimple-bridge),
   using [`pimple/pimple`](https://github.com/silexphp/Pimple)
-- [`snicco/illuminate-container-bridge`](https://github.com/sniccowp/illuminate-container-bridge),
+- [`snicco/illuminate-container-bridge`](https://github.com/snicco/illuminate-container-bridge),
   using [`illuminate/container`](https://github.com/illuminate/container)
 
 You can also provide your own implementation and test it using the test cases
-in [`snicco/kernel-testing`](https://github.com/sniccowp/kernel-testing).
+in [`snicco/kernel-testing`](https://github.com/snicco/kernel-testing).
 
 The [`DIContainer`](src/DIContainer.php) class is an abstraction meant to be used inside [bundles](#bundles).
 
@@ -365,16 +365,16 @@ $response = $http_kernel->handle($server_request_creator->fromGlobals());
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

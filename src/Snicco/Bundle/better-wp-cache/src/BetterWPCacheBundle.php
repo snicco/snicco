@@ -25,7 +25,7 @@ final class BetterWPCacheBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/better-wp-cache-bundle';
+    public const ALIAS = 'snicco/better-wp-cache-bundle';
 
     public function shouldRun(Environment $env): bool
     {
