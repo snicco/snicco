@@ -62,6 +62,8 @@ trait AssertListenerResponse
     /**
      * @psalm-suppress MixedArrayOffset
      * @psalm-suppress MixedArgument
+     *
+     * @param mixed $event
      */
     private function assertListenerNotRun($event, string $key): void
     {
