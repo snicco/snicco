@@ -1,10 +1,10 @@
 # HTTP-method override middleware for [`snicco/http-routing`](https://github.com/snicco/http-routing)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
-)](https://codecov.io/gh/sniccowp/sniccowp)
-[![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
-[![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
-[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/MethodOverride/index.html)
+)](https://codecov.io/gh/snicco/snicco)
+[![Psalm Type-Coverage](https://shepherd.dev/github/snicco/snicco/coverage.svg?)](https://shepherd.dev/github/snicco/snicco)
+[![Psalm level](https://shepherd.dev/github/snicco/snicco/level.svg?)](https://psalm.dev/)
+[![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://snicco.github.io/snicco/phpmetrics/MethodOverride/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
 A middleware for the [`snicco/http-routing`](https://github.com/snicco/http-routing) component that allows you
