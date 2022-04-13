@@ -49,7 +49,7 @@ final class SessionBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/session-bundle';
+    public const ALIAS = 'snicco/session-bundle';
 
     public function shouldRun(Environment $env): bool
     {

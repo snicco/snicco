@@ -41,7 +41,7 @@ final class BetterWPMailBundleTest extends WPTestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-mail-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wp-mail-bundle'));
     }
 
     /**

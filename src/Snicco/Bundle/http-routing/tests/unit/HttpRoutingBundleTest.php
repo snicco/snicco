@@ -56,7 +56,7 @@ final class HttpRoutingBundleTest extends TestCase
         });
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('The http-routing-bundle needs the sniccowp-better-wp-hooks-bundle to run.');
+        $this->expectExceptionMessage('The http-routing-bundle needs the snicco/better-wp-hooks-bundle to run.');
 
         $kernel->boot();
     }
@@ -69,7 +69,7 @@ final class HttpRoutingBundleTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->boot();
 
-        $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/http-routing-bundle'));
     }
 
     /**
@@ -79,19 +79,19 @@ final class HttpRoutingBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/http-routing-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/http-routing-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(false), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/http-routing-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::staging(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/http-routing-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/http-routing-bundle'));
     }
 
     /**
@@ -145,7 +145,7 @@ final class HttpRoutingBundleTest extends TestCase
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing', [
-                RoutingOption::HOST => 'sniccowp.test',
+                RoutingOption::HOST => 'snicco.test',
             ]);
         });
 

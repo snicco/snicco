@@ -1,6 +1,6 @@
-# Contributing to the SniccoWP project
+# Contributing to the Snicco project
 
-✨ Thanks for your interest in contributing to **SniccoWP**! ✨
+✨ Thanks for your interest in contributing to the **Snicco** project! ✨
 
 As a contributor, here are the guidelines we would like you to follow:
 
@@ -33,7 +33,7 @@ We also recommend that you read [How to Contribute to Open Source](https://opens
 
 Please do not open issues for general support questions as we want to keep **GitHub** issues for bug reports and feature
 requests. You've got much better chances of getting your question answered on dedicated support platforms, the best
-being [stackoverflow](https://stackoverflow.com/questions/tagged/sniccowp).
+being [stackoverflow](https://stackoverflow.com/questions/tagged/snicco).
 
 **Stack Overflow** is a much better place to ask questions since:
 
@@ -48,9 +48,9 @@ people to the section you are reading right now.
 
 ### Improve documentation
 
-As a **SniccoWP** user, you are the perfect candidate to help us improve our documentation: typo corrections,
+As a **Snicco** user, you are the perfect candidate to help us improve our documentation: typo corrections,
 clarifications, more examples, etc. Take a look at
-the [documentation issues that need help](https://github.com/sniccowp/sniccowp/issues?q=is%3Aopen+label%3Adocumentation+label%3Ahelp-wanted)
+the [documentation issues that need help](https://github.com/snicco/snicco/issues?q=is%3Aopen+label%3Adocumentation+label%3Ahelp-wanted)
 .
 
 Please follow the [documentation guidelines](#documentation).
@@ -58,9 +58,9 @@ Please follow the [documentation guidelines](#documentation).
 ### Fix bugs and implement features
 
 Confirmed bugs and ready-to-implement features are marked with
-the [help wanted label](https://github.com/sniccowp/sniccowp/labels/help-wanted)
+the [help wanted label](https://github.com/snicco/snicco/labels/help-wanted)
 . Post a comment on an issue to indicate you would like to work on it and to request help from us and the community.
-Look for issues with the [good first issue label](https://github.com/sniccowp/sniccowp/labels/good%20first%20issue) if
+Look for issues with the [good first issue label](https://github.com/snicco/snicco/labels/good%20first%20issue) if
 you are a first time contributor.
 
 ## Using the issue tracker
@@ -69,7 +69,7 @@ The issue tracker is the channel for [bug reports](#bug-report), [features reque
 and [submitting pull requests](#submitting-a-pull-request).
 
 Before opening an issue or a pull request, please use
-the [GitHub issue search](https://github.com/sniccowp/sniccowp/issues) to make sure the bug or feature request hasn't
+the [GitHub issue search](https://github.com/snicco/snicco/issues) to make sure the bug or feature request hasn't
 been already reported or fixed.
 
 **DO NOT USE THE ISSUE TRACKER TO REPORT SECURITY VULNERABILITIES**
@@ -83,7 +83,7 @@ Consult our [security policy](SECURITY.md) instead.
 the [bug report template](https://github.com/semantic-release/semantic-release/issues/new?template=01_bug_report.md).
 
 **! Not following the bug report template will lead to automatic closing of the issue by
-our [SniccoWP-Bot](https://github.com/sniccowp-bot).**
+our [Snicco-Bot](https://github.com/snicco-bot).**
 
 ### Feature request
 
@@ -108,10 +108,10 @@ If you have never created a pull request before, welcome 🎉 😄.
 Here is a summary of the steps to follow:
 
 1. Read the short [legal](#legal) paragraph.
-2. Search [GitHub](https://github.com/sniccowp/sniccowp/pulls) for an open or closed pull request that relates to your
+2. Search [GitHub](https://github.com/snicco/snicco/pulls) for an open or closed pull request that relates to your
    submission. You don't want to duplicate existing efforts.
 3. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
-   the [`sniccowp/sniccowp`](https://github.com/sniccowp/sniccowp) repo.
+   the [`snicco/snicco`](https://github.com/snicco/snicco) repo.
 4. [Set up the development environment.](#development-environment)
 5. [Clone your for](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to
    your local machine.
@@ -130,23 +130,23 @@ Here is a summary of the steps to follow:
      ```
 9. [Open a Pull Request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request) with a
    clear description and title that follows the [commit-message guidelines](#commit-message-guidelines)
-10. Review the automatic [status checks](https://github.com/sniccowp/sniccowp/actions) for your pull request and adjust
+10. Review the automatic [status checks](https://github.com/snicco/snicco/actions) for your pull request and adjust
     your code if necessary.
 
 **Tips**:
 
-- [Allow SniccoWP maintainers to make changes to your Pull Request branch](https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork)
+- [Allow Snicco maintainers to make changes to your Pull Request branch](https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork)
   . This way, we can rebase it and make some minor changes if necessary. All changes we make will be done in new commit,
   and we'll ask for your approval before merging them.
 - **Don't be afraid:** One great thing about our [strict coding rules](#coding-rules) is that it’s very hard to
-  introduce any sort of type error in the **SniccoWP** codebase. There are well over 6,000 test assertions, so the risk
+  introduce any sort of type error in the **Snicco** codebase. There are well over 6,000 test assertions, so the risk
   of you messing up (without the CI system noticing) is very small.
 
 ## Development environment
 
 ### Setup
 
-Before you can build and test the **SniccoWP** repository, you must install have the following software installed on
+Before you can build and test the **Snicco** repository, you must install have the following software installed on
 your development machine:
 
 - [PHP](https://www.php.net/): Either `7.4` | `8.0` | `8.1` as defined in the `composer.json` file.
@@ -201,7 +201,7 @@ vendor/bin/codecept run src/Snicco/Component/better-wpdb/tests
 
 ### Static analysis
 
-The **SniccoWP** codebase uses [vimeo/psalm](https://github.com/vimeo/psalm) on the strictest level.
+The **Snicco** codebase uses [vimeo/psalm](https://github.com/vimeo/psalm) on the strictest level.
 
 To run psalm:
 
@@ -215,7 +215,7 @@ composer psalm:clear-cache
 
 ### Linting
 
-The **SniccoWP** codebase uses and [symplify/easy-coding-standards](https://github.com/symplify/easy-coding-standard)
+The **Snicco** codebase uses and [symplify/easy-coding-standards](https://github.com/symplify/easy-coding-standard)
 and [Rector](https://github.com/rectorphp/rector) to automatically style and refactor its code.
 
 ```shell
@@ -228,7 +228,7 @@ composer lint:fix
 
 ### Git Hooks
 
-**SniccoWP** uses [husky](https://github.com/typicode/husky) to automatically
+**Snicco** uses [husky](https://github.com/typicode/husky) to automatically
 create [git hooks](https://git-scm.com/docs/githooks) when you run the `install.sh` script.
 
 This does not affect any other projects of yours.
@@ -264,21 +264,21 @@ These rules are automatically validated by our CI pipelines when you open a pull
 To ensure consistency and quality, all documentation modifications must:
 
 - Refer to brand in [bold](https://help.github.com/articles/basic-writing-and-formatting-syntax/#styling-text) with
-  proper capitalization, i.e. **GitHub**, **SniccoWP**, **npm**
+  proper capitalization, i.e. **GitHub**, **Snicco**, **npm**
 - Prefer [tables](https://help.github.com/articles/organizing-information-with-tables)
   over [lists](https://help.github.com/articles/basic-writing-and-formatting-syntax/#lists) when listing key values,
   i.e. List of options with their description
 - Use [links](https://help.github.com/articles/basic-writing-and-formatting-syntax/#links) when you are referring to:
-    - a **SniccoWP** concept described somewhere else in the documentation, i.e. How to [contribute](CONTRIBUTING.md)
+    - a **Snicco** concept described somewhere else in the documentation, i.e. How to [contribute](CONTRIBUTING.md)
     - a third-party product/brand/service, i.e. Integrate with [GitHub](https://github.com)
     - an external concept or feature, i.e. Create a [GitHub release](https://help.github.com/articles/creating-releases)
-    - a package or module, i.e. The [`sniccowp/kernel`](https://github.com/sniccowp/kernel) package
+    - a package or module, i.e. The [`snicco/kernel`](https://github.com/snicco/kernel) package
 - Use
   the [single backtick `code` quoting](https://help.github.com/articles/basic-writing-and-formatting-syntax/#quoting-code)
   for:
     - commands inside sentences, i.e. the `composer tests` command
     - programming language keywords, i.e. `function`, `method`, `class`
-    - packages or modules, i.e. The [`sniccowp/kernel`](https://github.com/semantic-release/github) module
+    - packages or modules, i.e. The [`snicco/kernel`](https://github.com/semantic-release/github) module
 - Use the [triple backtick `code` formatting](https://help.github.com/articles/creating-and-highlighting-code-blocks)
   for:
     - code examples
@@ -400,7 +400,7 @@ This allows users to configure their bundles before booting the kernel.
 
 ## Legal
 
-By submitting a pull request, you disavow any rights or claims to any changes submitted to the **SniccoWP** project and
+By submitting a pull request, you disavow any rights or claims to any changes submitted to the **Snicco** project and
 assign the copyright of those changes to Calvin Alkan.
 
 If you cannot or do not want to reassign those rights (your employment contract for your employer may not allow this),

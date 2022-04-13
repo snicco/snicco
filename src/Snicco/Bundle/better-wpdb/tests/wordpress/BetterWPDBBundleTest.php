@@ -29,7 +29,7 @@ final class BetterWPDBBundleTest extends WPTestCase
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
 
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wpdb-bundle'));
     }
 
     /**
@@ -39,23 +39,23 @@ final class BetterWPDBBundleTest extends WPTestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wpdb-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wpdb-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(false), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wpdb-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::staging(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wpdb-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wpdb-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wpdb-bundle'));
     }
 
     /**

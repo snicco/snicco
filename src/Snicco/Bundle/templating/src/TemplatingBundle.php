@@ -30,7 +30,7 @@ final class TemplatingBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/templating-bundle';
+    public const ALIAS = 'snicco/templating-bundle';
 
     public function shouldRun(Environment $env): bool
     {
@@ -59,7 +59,7 @@ final class TemplatingBundle implements Bundle
         $this->bindViewComposerCollection($kernel);
         $this->bindGlobalViewContext($kernel);
 
-        if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
+        if ($kernel->usesBundle('snicco/http-routing-bundle')) {
             $this->bindTemplatingMiddleware($kernel);
             $this->bindExceptionDisplayer($kernel);
         }
@@ -178,7 +178,7 @@ final class TemplatingBundle implements Bundle
                 // This needs to be a closure.
                 $context->add('view', fn (): TemplateEngine => $kernel->container()->make(TemplateEngine::class));
 
-                if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
+                if ($kernel->usesBundle('snicco/http-routing-bundle')) {
                     $context->add('url', fn (): UrlGenerator => $kernel->container()->make(UrlGenerator::class));
                 }
 

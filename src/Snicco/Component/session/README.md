@@ -1,7 +1,7 @@
 # Snicco Session: A custom session implementation for environments where `$_SESSION` can't be used
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
-)](https://app.codecov.io/gh/sniccowp/sniccowp)
+)](https://app.codecov.io/gh/snicco/snicco)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/Session/index.html)
@@ -35,7 +35,7 @@
 While **PHP's** native `$_SESSION` is fine for most use cases there are certain environments where it's not ideal. Two of
 them being distributed **WordPress code** or **PSR7/PSR15** applications.
 
-The **Session** component of the [**Snicco** project](https://github.com/sniccowp/sniccowp) is a **completely
+The **Session** component of the [**Snicco** project](https://github.com/snicco/snicco) is a **completely
 standalone** library with zero dependencies on any framework.
 
 Features:
@@ -122,13 +122,13 @@ Currently, the following drivers are available:
 - [`EncryptedDriver`](src/Driver/EncryptedDriver.php), takes another `SessionDriver` as an argument and
   encrypts/decrypts its data.
 - `Psr16Driver`, allows you to use any **PSR-16 cache**. You can use this driver by using
-  the [`snicco/session-psr16-bridge`](https://github.com/sniccowp/session-psr16-bridge).
+  the [`snicco/session-psr16-bridge`](https://github.com/snicco/session-psr16-bridge).
 
-- `WPDBDriver`, you can use [`snicco/session-wp-bridge`](https://github.com/sniccowp/session-wp-bridge) to store sessions
+- `WPDBDriver`, you can use [`snicco/session-wp-bridge`](https://github.com/snicco/session-wp-bridge) to store sessions
     using the **WordPress** database.
-- `WP_Object_Cache` you can use [`snicco/session-wp-bridge`](https://github.com/sniccowp/session-wp-bridge) to store sessions
+- `WP_Object_Cache` you can use [`snicco/session-wp-bridge`](https://github.com/snicco/session-wp-bridge) to store sessions
   using the **WordPress** object cache.
-- `Custom`, if none of these drivers work for you (and there is no **PSR-16** adapter) you can use [`snicco/session-testing`](https://github.com/sniccowp/session-testing)
+- `Custom`, if none of these drivers work for you (and there is no **PSR-16** adapter) you can use [`snicco/session-testing`](https://github.com/snicco/session-testing)
     to test a custom implementation of yours against the interface.
 ---
 
@@ -542,16 +542,16 @@ $session_manager->gc();
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

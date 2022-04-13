@@ -61,8 +61,8 @@ final class CreateRepository
     {
         $repo = $this->github_client->create(
             $package->name,
-            sprintf('[READ ONLY] Subtree split of the %s package (see sniccowp/sniccowp).', $package->full_name),
-            'https://github.com/sniccowp/sniccowp',
+            sprintf('[READ ONLY] Subtree split of the %s package (see snicco/snicco).', $package->full_name),
+            'https://snicco.io',
             true,
             $package->vendor_name,
             false,

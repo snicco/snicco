@@ -1,13 +1,13 @@
-# A PSR-15 middleware for the [sniccowp/signed-url](https://github.com/sniccowp/signed-url) library
+# A PSR-15 middleware for the [snicco/signed-url](https://github.com/snicco/signed-url) library
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
-)](https://app.codecov.io/gh/sniccowp/sniccowp)
+)](https://app.codecov.io/gh/snicco/snicco)
 [![Psalm Type-Coverage](https://shepherd.dev/github/sniccowp/sniccowp/coverage.svg?)](https://shepherd.dev/github/sniccowp/sniccowp)
 [![Psalm level](https://shepherd.dev/github/sniccowp/sniccowp/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/SignedUrlPsr15Bridge/index.html)
 
-This package consists of two simple middlewares that will make working with `sniccowp/signed-url` a breeze. Make sure to
-read the general [documentation](https://github.com/sniccowp/signed-url) to
+This package consists of two simple middlewares that will make working with `snicco/signed-url` a breeze. Make sure to
+read the general [documentation](https://github.com/snicco/signed-url) to
 know how to instantiate the needed collaborators.<br>
 
 ## Installation

@@ -29,19 +29,19 @@ final class BetterWPHooksBundleTest extends TestCase
     {
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wp-hooks-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wp-hooks-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::staging(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wp-hooks-bundle'));
 
         $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->boot();
-        $this->assertTrue($kernel->usesBundle('sniccowp/better-wp-hooks-bundle'));
+        $this->assertTrue($kernel->usesBundle('snicco/better-wp-hooks-bundle'));
     }
 
     /**

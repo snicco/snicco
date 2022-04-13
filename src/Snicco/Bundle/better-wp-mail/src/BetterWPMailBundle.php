@@ -38,7 +38,7 @@ final class BetterWPMailBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/better-wp-mail-bundle';
+    public const ALIAS = 'snicco/better-wp-mail-bundle';
 
     public function shouldRun(Environment $env): bool
     {

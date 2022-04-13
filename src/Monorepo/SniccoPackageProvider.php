@@ -8,7 +8,7 @@ use Snicco\Monorepo\Package\PackageProvider;
 
 use function dirname;
 
-final class SniccoWPPackageProvider
+final class SniccoPackageProvider
 {
     public static function create(): PackageProvider
     {

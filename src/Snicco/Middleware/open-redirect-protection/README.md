@@ -1,4 +1,4 @@
-# Open redirect protection middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing)
+# Open redirect protection middleware for [`snicco/http-routing`](https://github.com/snicco/http-routing)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://codecov.io/gh/sniccowp/sniccowp)
@@ -26,7 +26,7 @@ composer require snicco/open-redirect-protection-middleware
 This middleware should be added globally in the `MiddlewareResolver`.
 
 The [`OpenRedirectProtection`](src/OpenRedirectProtection.php) middleware must be bound in the **PSR-11** container
-that is used by the [`snicco/http-routing`](https://github.com/sniccowp/http-routing) component.
+that is used by the [`snicco/http-routing`](https://github.com/snicco/http-routing) component.
 
 ````php
 use Snicco\Middleware\OpenRedirectProtection\OpenRedirectProtection;
@@ -45,16 +45,16 @@ $open_redirect_protection = new OpenRedirectProtection(
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

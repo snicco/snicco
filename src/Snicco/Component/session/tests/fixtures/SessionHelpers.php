@@ -31,7 +31,7 @@ trait SessionHelpers
         SessionEventDispatcher $dispatcher = null
     ): SessionManagerInterface {
         return new SessionManger(
-            $config ?? SessionConfig::fromDefaults('sniccowp_test_cookie'),
+            $config ?? SessionConfig::fromDefaults('snicco_test_cookie'),
             $driver ?? new InMemoryDriver(),
             new JsonSerializer(),
             new SystemClock(),

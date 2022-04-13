@@ -7,7 +7,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/TemplatingBundle/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-This **WordPress** bundle integrates [`snicco/templating`](https://github.com/sniccowp/session) in applications based on [`snicco/kernel`](https://github.com/sniccowp/kernel).
+This **WordPress** bundle integrates [`snicco/templating`](https://github.com/snicco/session) in applications based on [`snicco/kernel`](https://github.com/snicco/kernel).
 
 ## Installation
 
@@ -46,7 +46,7 @@ return [
 ### Templating Middleware
 
 The [`TemplatingBundle`](src/TemplatingBundle.php) provides a [`TemplatingMiddleware`](src/TemplatingMiddleware.php) that
-renders `ViewResponses` by using the templating engine of the [`snicco/templating`](https://github.com/sniccowp/templating) library.
+renders `ViewResponses` by using the templating engine of the [`snicco/templating`](https://github.com/snicco/templating) library.
 
 It should replace the simpler `SimpleTemplating` middleware of the `http-routing-bundle`. 
 
@@ -77,16 +77,16 @@ Just add the `-admin` suffix to the corresponding file name like so:
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPCache**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).
