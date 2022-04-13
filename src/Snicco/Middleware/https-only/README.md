@@ -1,7 +1,7 @@
 # HTTPS-only middleware for [`snicco/http-routing`](https://github.com/snicco/http-routing)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
-)](https://codecov.io/gh/sniccowp/sniccowp)
+)](https://codecov.io/gh/snicco/snicco)
 [![Psalm Type-Coverage](https://shepherd.dev/github/snicco/snicco/coverage.svg?)](https://shepherd.dev/github/snicco/snicco)
 [![Psalm level](https://shepherd.dev/github/snicco/snicco/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://snicco.github.io/snicco/phpmetrics/HttpsOnly/index.html)

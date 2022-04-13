@@ -1,6 +1,6 @@
 # Snicco - Taking the pain out of enterprise WordPress development
 
-[![codecov](https://codecov.io/gh/sniccowp/sniccowp/branch/master/graph/badge.svg?token=4W8R6FZ948)](https://codecov.io/gh/sniccowp/sniccowp)
+[![codecov](https://codecov.io/gh/snicco/snicco/branch/master/graph/badge.svg?token=4W8R6FZ948)](https://codecov.io/gh/snicco/snicco)
 [![Psalm Type-Coverage](https://shepherd.dev/github/snicco/snicco/coverage.svg?)](https://shepherd.dev/github/snicco/snicco)
 [![Psalm level](https://shepherd.dev/github/snicco/snicco/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://snicco.github.io/snicco/phpmetrics/)
