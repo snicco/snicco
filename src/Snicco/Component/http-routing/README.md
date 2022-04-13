@@ -1,6 +1,6 @@
 # Snicco HTTP-Routing: A PSR7-/PSR-15 routing system and middleware-dispatcher for legacy CMSs
 
-[![codecov](https://img.shields.io/badge/Coverage-100%25-success)](https://codecov.io/gh/sniccowp/sniccowp)
+[![codecov](https://img.shields.io/badge/Coverage-100%25-success)](https://codecov.io/gh/snicco/snicco)
 [![Psalm Type-Coverage](https://shepherd.dev/github/snicco/snicco/coverage.svg?)](https://shepherd.dev/github/snicco/snicco)
 [![Psalm level](https://shepherd.dev/github/snicco/snicco/level.svg?)](https://psalm.dev/)
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://snicco.github.io/snicco/phpmetrics/HttpRouting/index.html)
