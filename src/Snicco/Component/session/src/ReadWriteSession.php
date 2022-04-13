@@ -63,13 +63,13 @@ final class ReadWriteSession implements Session
         $this->id = $id;
         $this->attributes = $data;
 
-        if (! $this->has('_sniccowp.timestamps.created_at')) {
-            $this->put('_sniccowp.timestamps.created_at', $last_activity);
+        if (! $this->has('_snicco.timestamps.created_at')) {
+            $this->put('_snicco.timestamps.created_at', $last_activity);
             $this->is_new = true;
         }
 
-        if (! $this->has('_sniccowp.timestamps.last_rotated')) {
-            $this->put('_sniccowp.timestamps.last_rotated', $last_activity);
+        if (! $this->has('_snicco.timestamps.last_rotated')) {
+            $this->put('_snicco.timestamps.last_rotated', $last_activity);
         }
 
         $this->original_attributes = $this->attributes;
@@ -110,7 +110,7 @@ final class ReadWriteSession implements Session
 
     public function all(): array
     {
-        return Arr::except($this->attributes, '_sniccowp');
+        return Arr::except($this->attributes, '_snicco');
     }
 
     public function boolean(string $key, bool $default = false): bool
@@ -125,10 +125,10 @@ final class ReadWriteSession implements Session
 
     public function createdAt(): int
     {
-        $ts = $this->get('_sniccowp.timestamps.created_at');
+        $ts = $this->get('_snicco.timestamps.created_at');
         if (! is_int($ts)) {
             throw new RuntimeException(
-                'The session storage seems corrupted as the value for key [_sniccowp.timestamps.created_at] is not an integer.'
+                'The session storage seems corrupted as the value for key [_snicco.timestamps.created_at] is not an integer.'
             );
         }
 
@@ -255,9 +255,9 @@ final class ReadWriteSession implements Session
     public function flush(): void
     {
         $this->checkIfLocked();
-        $internal = $this->get('_sniccowp');
+        $internal = $this->get('_snicco');
         $this->attributes = [];
-        $this->put('_sniccowp', $internal);
+        $this->put('_snicco', $internal);
     }
 
     public function keep($keys): void
@@ -278,10 +278,10 @@ final class ReadWriteSession implements Session
 
     public function lastRotation(): int
     {
-        $ts = $this->get('_sniccowp.timestamps.last_rotated');
+        $ts = $this->get('_snicco.timestamps.last_rotated');
         if (! is_int($ts)) {
             throw new RuntimeException(
-                'The session storage seems corrupted as the value for key [_sniccowp.timestamps.last_rotated] is not an integer.'
+                'The session storage seems corrupted as the value for key [_snicco.timestamps.last_rotated] is not an integer.'
             );
         }
 
@@ -360,7 +360,7 @@ final class ReadWriteSession implements Session
         } else {
             if ($this->invalidated_id instanceof SessionId) {
                 $driver->destroy($this->invalidated_id->selector());
-                $this->put('_sniccowp.timestamps.last_rotated', $this->last_activity);
+                $this->put('_snicco.timestamps.last_rotated', $this->last_activity);
             }
 
             $this->ageFlashData();

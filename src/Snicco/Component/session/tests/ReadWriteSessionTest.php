@@ -918,7 +918,7 @@ final class ReadWriteSessionTest extends TestCase
         $session = $this->newPersistedSession(null, [], $driver);
 
         $this->assertNotEmpty($session->createdAt());
-        $session->remove('_sniccowp.timestamps.created_at');
+        $session->remove('_snicco.timestamps.created_at');
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('corrupted');
         $session->createdAt();
@@ -933,7 +933,7 @@ final class ReadWriteSessionTest extends TestCase
         $session = $this->newPersistedSession(null, [], $driver);
 
         $this->assertNotEmpty($session->lastRotation());
-        $session->remove('_sniccowp.timestamps.last_rotated');
+        $session->remove('_snicco.timestamps.last_rotated');
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('corrupted');
         $session->lastRotation();

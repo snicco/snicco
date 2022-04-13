@@ -15,7 +15,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * The DependencyInjection(DI) container takes care of lazily constructing and
- * loading services for your application. The sniccowp core itself DOES NOT
+ * loading services for your application. The snicco core itself DOES NOT
  * require your implementation to be capable of auto-wiring. However, you are
  * free to use a container that supports auto-wiring in your application code.
  */

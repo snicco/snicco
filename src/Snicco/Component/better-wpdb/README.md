@@ -339,7 +339,7 @@ dependencies.
 ### composer
 
 ````shell
-composer require sniccowp/betterwpdb
+composer require snicco/betterwpdb
 ````
 
 ### setup
@@ -731,7 +731,7 @@ $better_wpdb->transactional(function () {
 You can a second argument to the constructor of **BetterWPDB**.
 
 Implement the
-simple [QueryLogger](https://github.com/sniccowp/sniccowp/blob/master/src/Snicco/Component/better-wpdb/src/QueryLogger.php)
+simple [QueryLogger](https://github.com/snicco/snicco/blob/master/src/Snicco/Component/better-wpdb/src/QueryLogger.php)
 interface and start logging your database queries to your favorite profiling service.
 
 The following is pseudocode to log to **New Relic**:
@@ -823,16 +823,16 @@ $results = $better_wpdb->selectRow($sql, $bindings);
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPDB**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

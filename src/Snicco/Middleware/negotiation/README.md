@@ -1,4 +1,4 @@
-# Content negotiation middleware for [`snicco/http-routing`](https://github.com/sniccowp/http-routing)
+# Content negotiation middleware for [`snicco/http-routing`](https://github.com/snicco/http-routing)
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://codecov.io/gh/sniccowp/sniccowp)
@@ -25,7 +25,7 @@ composer require snicco/content-negotiation-middleware
 
 This middleware should be added globally in the `MiddlewareResolver`.
 
-It must be bound in the **PSR-11** container that the [`snicco/http-routing`](https://github.com/sniccowp/http-routing)
+It must be bound in the **PSR-11** container that the [`snicco/http-routing`](https://github.com/snicco/http-routing)
 component uses.
 
 ```php
@@ -63,16 +63,16 @@ $negotiation = new NegotiateContent(
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

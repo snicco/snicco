@@ -6,7 +6,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/Templating/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-The **Templating** component of the [**Snicco** project](https://github.com/sniccowp/sniccowp) provides a simple,
+The **Templating** component of the [**Snicco** project](https://github.com/snicco/snicco) provides a simple,
 object-oriented API around popular **PHP** template engines.
 
 ## Table of contents
@@ -244,7 +244,7 @@ The following view factories are currently available:
 
 - [`PHPViewFactory`](src/ViewFactory/PHPViewFactory.php), included in this package. A bare-bones implementation that
   works great for small projects with only a handful of views.
-- `BladeViewFactory`, included in a [separate package](https://github.com/sniccowp/blade-bridge). Integrates
+- `BladeViewFactory`, included in a [separate package](https://github.com/snicco/blade-bridge). Integrates
   Laraval's **Blade** as a standalone template engine with this package, while retaining all features of both.
 - `TwigViewFactory` - coming soon.
 
@@ -356,16 +356,16 @@ A couple of things to note:
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

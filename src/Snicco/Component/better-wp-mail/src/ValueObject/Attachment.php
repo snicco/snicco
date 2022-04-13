@@ -60,7 +60,7 @@ final class Attachment
         $this->disposition = $inline ? 'inline' : 'attachment';
 
         if ('inline' === $this->disposition) {
-            $this->cid = bin2hex(random_bytes(16)) . '@sniccowp';
+            $this->cid = bin2hex(random_bytes(16)) . '@snicco';
         }
 
         $this->body = $body;

@@ -59,11 +59,11 @@ final class PackageCollectionTest extends TestCase
     {
         $all = $this->provider->getAll();
 
-        $package = $all->get('sniccowp/component-a-name');
+        $package = $all->get('snicco/component-a-name');
 
-        $this->assertSame('sniccowp/component-a-name', $package->full_name);
+        $this->assertSame('snicco/component-a-name', $package->full_name);
 
-        $this->expectExceptionMessage('The package [sniccowp/bogus] is not in the collection.');
-        $all->get('sniccowp/bogus');
+        $this->expectExceptionMessage('The package [snicco/bogus] is not in the collection.');
+        $all->get('snicco/bogus');
     }
 }

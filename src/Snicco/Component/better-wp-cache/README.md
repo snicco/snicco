@@ -33,7 +33,7 @@ the [wp-redis cache](https://github.com/rhubarbgroup/redis-cache) by [Till Krüs
 ## Motivation
 
 We developed this library because many **WordPress** related components of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp) require some form of caching.
+[**Snicco** project](https://github.com/snicco/snicco) require some form of caching.
 
 To offer the greatest flexibility for users, they all only depend on
 the [PSR cache interfaces](https://www.php-fig.org/psr/psr-6/).
@@ -56,7 +56,7 @@ the need for this library vanishes. In the meantime **BetterWPCache** will do th
 ## Installation
 
 ```shell
-composer require sniccowp/better-wp-cache
+composer require snicco/better-wp-cache
 ```
 
 ## Usage
@@ -147,16 +147,16 @@ $cache->save($item);
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPCache**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

@@ -43,7 +43,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     /**
      * @var string
      */
-    private const BASE_PREFIX = '/sniccowp';
+    private const BASE_PREFIX = '/snicco';
 
     public static bool $web_include_partial = false;
 
@@ -237,7 +237,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         );
         $routing = $this->newRoutingFacade($loader);
 
-        $this->assertSame('/sniccowp/partials/cart', $routing->urlGenerator()->toRoute('api.partials.cart'));
+        $this->assertSame('/snicco/partials/cart', $routing->urlGenerator()->toRoute('api.partials.cart'));
     }
 
     /**
@@ -283,7 +283,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
         $response->assertOk()
             ->assertNotDelegated();
 
-        $this->assertSame('/sniccowp/rest/v1/posts', $routing->urlGenerator()->toRoute('api.rest.v1.posts'));
+        $this->assertSame('/snicco/rest/v1/posts', $routing->urlGenerator()->toRoute('api.rest.v1.posts'));
     }
 
     /**
