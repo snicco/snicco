@@ -7,8 +7,8 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/HttpRoutingBundle/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-This **WordPress** bundle configures the standalone [`snicco/http-routing`](https://github.com/sniccowp/http-routing)
-library for usage in applications based on [`snicco/kernel`](https://github.com/sniccowp/kernel).
+This **WordPress** bundle configures the standalone [`snicco/http-routing`](https://github.com/snicco/http-routing)
+library for usage in applications based on [`snicco/kernel`](https://github.com/snicco/kernel).
 
 ## Installation
 
@@ -92,7 +92,7 @@ if ($is_admin) {
 ### Requests and Responses
 
 This bundle takes care of running the middleware pipeline of
-the [`snicco/http-routing`](https://github.com/sniccowp/http-routing) library at just the right moments inside the
+the [`snicco/http-routing`](https://github.com/snicco/http-routing) library at just the right moments inside the
 **WordPress** request lifecycle.
 
 There are three types of requests that can be handled:
@@ -138,7 +138,7 @@ This bundle provides a couple [**PSR-15** middlewares](src/Middleware) that you 
 
 ### Error handling
 
-This bundle automatically configures the [`snicco/psr7-error-handler`](https://github.com/sniccowp/psr7-error-handler) library that is used by [`snicco/http-routing`](https://github.com/sniccowp/http-routing).
+This bundle automatically configures the [`snicco/psr7-error-handler`](https://github.com/snicco/psr7-error-handler) library that is used by [`snicco/http-routing`](https://github.com/snicco/http-routing).
 
 You can configure this behaviour with the [http_error_handling](config/http_error_handling.php) configuration.
 
@@ -147,16 +147,16 @@ All exceptions inside **YOUR** middleware pipeline will be handled automatically
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPCache**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

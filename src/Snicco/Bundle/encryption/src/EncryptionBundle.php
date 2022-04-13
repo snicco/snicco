@@ -25,7 +25,7 @@ final class EncryptionBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/encryption-bundle';
+    public const ALIAS = 'snicco/encryption-bundle';
 
     public function shouldRun(Environment $env): bool
     {

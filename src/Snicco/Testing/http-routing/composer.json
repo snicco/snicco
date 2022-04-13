@@ -1,6 +1,6 @@
 {
-    "name": "sniccowp/http-routing-testing",
-    "description": "Provides testing utilities for sniccowp/http-routing",
+    "name": "snicco/http-routing-testing",
+    "description": "Provides testing utilities for snicco/http-routing",
     "authors": [
         {
             "name": "Calvin Alkan",
@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "sniccowp/http-routing": "^1.0",
+        "snicco/http-routing": "^1.0",
         "phpunit/phpunit": "9.5.13",
         "nyholm/psr7": "^1.0.0",
         "pimple/pimple": "^3.5"

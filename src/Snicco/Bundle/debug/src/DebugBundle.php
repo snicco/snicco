@@ -32,7 +32,7 @@ final class DebugBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/debug-bundle';
+    public const ALIAS = 'snicco/debug-bundle';
 
     public function shouldRun(Environment $env): bool
     {
@@ -45,14 +45,14 @@ final class DebugBundle implements Bundle
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
-        if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
+        if ($kernel->usesBundle('snicco/http-routing-bundle')) {
             $this->configureHttpRouting($config, $kernel);
         }
     }
 
     public function register(Kernel $kernel): void
     {
-        if ($kernel->usesBundle('sniccowp/http-routing-bundle')) {
+        if ($kernel->usesBundle('snicco/http-routing-bundle')) {
             $this->registerHttpDebugServices($kernel);
         }
     }

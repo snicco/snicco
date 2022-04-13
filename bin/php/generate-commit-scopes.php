@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Snicco\Component\StrArr\Str;
-use Snicco\Monorepo\SniccoWPPackageProvider;
+use Snicco\Monorepo\SniccoPackageProvider;
 use Webmozart\Assert\Assert;
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
@@ -16,7 +16,7 @@ try {
     $bridge = [];
     $testing = [];
 
-    $package_provider = SniccoWPPackageProvider::create();
+    $package_provider = SniccoPackageProvider::create();
 
     $packages = $package_provider->getAll();
 

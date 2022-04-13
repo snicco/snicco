@@ -157,7 +157,7 @@ final class WebTestCaseTest extends WebTestCase
         $response = $browser->lastResponse();
 
         $response->assertOk()
-            ->assertSeeText('https://sniccowp.test/full-url');
+            ->assertSeeText('https://snicco.test/full-url');
     }
 
     /**
@@ -192,7 +192,7 @@ final class WebTestCaseTest extends WebTestCase
         $response = $browser->lastResponse();
 
         $response->assertOk()
-            ->assertSeeText('https://sniccowp.test/full-url');
+            ->assertSeeText('https://snicco.test/full-url');
 
         $event_dispatcher->assertDispatched(HandlingRequest::class);
     }

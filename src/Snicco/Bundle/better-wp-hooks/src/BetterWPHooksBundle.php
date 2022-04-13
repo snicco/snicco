@@ -25,7 +25,7 @@ final class BetterWPHooksBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/better-wp-hooks-bundle';
+    public const ALIAS = 'snicco/better-wp-hooks-bundle';
 
     public function shouldRun(Environment $env): bool
     {

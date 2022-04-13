@@ -140,7 +140,7 @@ jobs:
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=${{ matrix.wp }}
           wp config create --dbname="sniccowp_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
-          wp core install --url="sniccowp.test" --title="SniccoWP" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
+          wp core install --url="sniccowp.test" --title="Snicco" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
           wp core update-db
           wp rewrite structure '/%postname%/'
           wp plugin install redis-cache

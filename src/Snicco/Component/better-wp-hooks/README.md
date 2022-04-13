@@ -34,7 +34,7 @@ complex **WordPress** projects.
 ## Motivation
 
 **BetterWPHooks** is a central component in the
-[**Snicco** project](https://github.com/sniccowp/sniccowp) and was developed because the [**WordPress hook** system](
+[**Snicco** project](https://github.com/snicco/snicco) and was developed because the [**WordPress hook** system](
 )
 suffers the following problems:
 
@@ -56,7 +56,7 @@ suffers the following problems:
    . ([mocking sucks](https://twitter.com/icooper/status/1036527957798412288))
 
 While throwing in a quick action here and there is completely fine for small projects,
-for [enterprise level projects](https://github.com/sniccowp/sniccowp) or complex distributed plugins **WordPress hooks**
+for [enterprise level projects](https://github.com/snicco/snicco) or complex distributed plugins **WordPress hooks**
 become a maintenance and testability burden.
 
 ## Installation
@@ -701,16 +701,16 @@ $testable_dispatcher->resetDispatchedEvents();
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPHooks**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

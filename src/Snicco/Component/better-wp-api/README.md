@@ -24,7 +24,7 @@ It's meant to be used in **distributed** **WordPress libraries** and helps you t
 ## Motivation
 
 We developed this library for the **WordPress** related components of the
-[**Snicco**](https://github.com/sniccowp/sniccowp) project.
+[**Snicco**](https://github.com/snicco/snicco) project.
 
 Directly interacting with core functions was problematic for us because:
 
@@ -38,8 +38,8 @@ Directly interacting with core functions was problematic for us because:
 If you can't relate to these issues, you probably don't need this library.
 
 **Edit:** The scoping problem was solved, by us creating
-a [command-line-programm](https://github.com/sniccowp/php-scoper-excludes) that can be used to generate
-a [list of all functions and classes](https://github.com/sniccowp/php-scoper-wordpress-excludes/blob/master/generated/exclude-wordpress-functions.json)
+a [command-line-programm](https://github.com/snicco/php-scoper-excludes) that can be used to generate
+a [list of all functions and classes](https://github.com/snicco/php-scoper-wordpress-excludes/blob/master/generated/exclude-wordpress-functions.json)
 in the entire **WordPress** core codebase. For now, the best example on how to use it
 is [the `scoper.inc.php` configuration](https://github.com/GoogleForCreators/web-stories-wp/blob/main/scoper.inc.php#L13)
 of the [Google Web stories plugin](https://github.com/GoogleForCreators/web-stories-wp).
@@ -47,12 +47,12 @@ of the [Google Web stories plugin](https://github.com/GoogleForCreators/web-stor
 ## Installation
 
 ```shell
-composer require sniccowp/better-wp-api
+composer require snicco/better-wp-api
 ```
 
 ## Usage
 
-[This is the public API](https://github.com/sniccowp/better-wp-api/blob/master/src/BetterWPAPI.php#L36) of
+[This is the public API](https://github.com/snicco/better-wp-api/blob/master/src/BetterWPAPI.php#L36) of
 **BetterWPAPI**. No public or protected methods will be added until a next major version.
 
 The idea is to limit the interaction with **WordPress** core to this class.
@@ -65,7 +65,7 @@ The important thing is that: **All classes that need anything from WordPress mus
 dependency.**
 
 A simple example: (for a real example, check out the 
-[**BetterWPMail**](https://github.com/sniccowp/sniccowp/blob/licensing-and-docs/src/Snicco/Component/better-wp-mail/src/WPMailAPI.php)
+[**BetterWPMail**](https://github.com/snicco/snicco/blob/licensing-and-docs/src/Snicco/Component/better-wp-mail/src/WPMailAPI.php)
 component)
 
 Assuming we have the following class:
@@ -126,16 +126,16 @@ class CSVImporterTest extends TestCase {
 
 ## Contributing
 
-This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/sniccowp/sniccowp).
+This repository is a read-only split of the development repo of the [**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability within **BetterWPAPI**, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).

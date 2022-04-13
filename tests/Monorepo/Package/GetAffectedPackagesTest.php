@@ -63,12 +63,12 @@ final class GetAffectedPackagesTest extends TestCase
         );
 
         $this->assertCount(1, $packages);
-        $this->assertTrue($packages->contains('sniccowp/bundle-a-name'));
+        $this->assertTrue($packages->contains('snicco/bundle-a-name'));
 
         $packages = $this->package_provider->getAffected(['/packages/Bundle/bundle-a/bundle-a.php']);
 
         $this->assertCount(1, $packages);
-        $this->assertTrue($packages->contains('sniccowp/bundle-a-name'));
+        $this->assertTrue($packages->contains('snicco/bundle-a-name'));
     }
 
     /**
@@ -81,13 +81,13 @@ final class GetAffectedPackagesTest extends TestCase
         );
 
         $this->assertCount(2, $packages);
-        $this->assertTrue($packages->contains('sniccowp/bundle-a-name'));
-        $this->assertTrue($packages->contains('sniccowp/component-a-name'));
+        $this->assertTrue($packages->contains('snicco/bundle-a-name'));
+        $this->assertTrue($packages->contains('snicco/component-a-name'));
 
         $packages = $this->package_provider->getAffected(['/packages/Component/component-a/component-a.php']);
 
         $this->assertCount(2, $packages);
-        $this->assertTrue($packages->contains('sniccowp/bundle-a-name'));
-        $this->assertTrue($packages->contains('sniccowp/component-a-name'));
+        $this->assertTrue($packages->contains('snicco/bundle-a-name'));
+        $this->assertTrue($packages->contains('snicco/component-a-name'));
     }
 }

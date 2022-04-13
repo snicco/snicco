@@ -85,7 +85,7 @@ final class HttpRoutingBundle implements Bundle
     /**
      * @var string
      */
-    public const ALIAS = 'sniccowp/http-routing-bundle';
+    public const ALIAS = 'snicco/http-routing-bundle';
 
     public function shouldRun(Environment $env): bool
     {
@@ -102,7 +102,7 @@ final class HttpRoutingBundle implements Bundle
     public function register(Kernel $kernel): void
     {
         if (! class_exists(BetterWPHooksBundle::class) || ! $kernel->usesBundle(BetterWPHooksBundle::ALIAS)) {
-            throw new RuntimeException('The http-routing-bundle needs the sniccowp-better-wp-hooks-bundle to run.');
+            throw new RuntimeException('The http-routing-bundle needs the snicco/better-wp-hooks-bundle to run.');
         }
 
         $container = $kernel->container();

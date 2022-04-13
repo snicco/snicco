@@ -39,7 +39,7 @@ final class Route
      *
      * @var string
      */
-    public const FALLBACK_NAME = 'sniccowp_fallback_route';
+    public const FALLBACK_NAME = 'snicco_fallback_route';
 
     /**
      * @interal

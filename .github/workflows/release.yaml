@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          # If we use the default token the sniccowp-bot is authenticated correctly for some reason.
+          # If we use the default token the snicco-bot is authenticated correctly for some reason.
           # Commits will then fail due to branch protection rules.
           token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
@@ -59,9 +59,9 @@ jobs:
       - name: 'Semantic release'
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GIT_AUTHOR_NAME: sniccowp-bot
+          GIT_AUTHOR_NAME: snicco-bot
           GIT_AUTHOR_EMAIL: sniccowp-github@snicco.de
-          GIT_COMMITTER_NAME: sniccowp-bot
+          GIT_COMMITTER_NAME: snicco-bot
           GIT_COMMITTER_EMAIL: sniccowp-github@snicco.de
         # This needs to be executable before the release.
         run: |

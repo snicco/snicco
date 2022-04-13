@@ -6,7 +6,7 @@
 [![PhpMetrics - Static Analysis](https://img.shields.io/badge/PhpMetrics-Static_Analysis-2ea44f)](https://sniccowp.github.io/sniccowp/phpmetrics/HttpRouting/index.html)
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
-The **HTTP-Routing** component of the [**Snicco project**](https://github.com/sniccowp/sniccowp) is an opinionated
+The **HTTP-Routing** component of the [**Snicco project**](https://github.com/snicco/snicco) is an opinionated
 library that combines a routing system built upon [`FastRoute`](https://github.com/nikic/FastRoute) with a power PSR-15
 middleware dispatcher.
 
@@ -694,7 +694,7 @@ The central piece is the [`MiddlewarePipeline`](src/Middleware/MiddlewarePipelin
 The middleware pipeline needs a [**PSR-11** container](https://www.php-fig.org/psr/psr-11/) to lazily resolve your
 controllers and middleware.
 
-Furthermore, an instance of [`HTTPErrorHanlder`](https://github.com/sniccowp/psr7-error-handler) is needed to handle
+Furthermore, an instance of [`HTTPErrorHanlder`](https://github.com/snicco/psr7-error-handler) is needed to handle
 exceptions for each middleware.
 
 ```php
@@ -893,16 +893,16 @@ Using them is entirely optional:
 ## Contributing
 
 This repository is a read-only split of the development repo of the
-[**Snicco** project](https://github.com/sniccowp/sniccowp).
+[**Snicco** project](https://github.com/snicco/snicco).
 
-[This is how you can contribute](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md).
+[This is how you can contribute](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md).
 
 ## Reporting issues and sending pull requests
 
 Please report issues in the
-[**Snicco** monorepo](https://github.com/sniccowp/sniccowp/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
+[**Snicco** monorepo](https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md##using-the-issue-tracker).
 
 ## Security
 
 If you discover a security vulnerability, please follow
-our [disclosure procedure](https://github.com/sniccowp/sniccowp/blob/master/SECURITY.md).
+our [disclosure procedure](https://github.com/snicco/snicco/blob/master/SECURITY.md).
