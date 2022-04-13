@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-13 08:44:22        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,21 +390,6 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Debug\\FilterablePrettyPageHandler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Whoops\\Handler\\PrettyPageHandler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Whoops\\Exception\\FrameCollection",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Bundle\\Debug\\DebugBundle",
         "size": 3000,
         "relations": [
@@ -412,14 +397,14 @@
             "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
             "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
             "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\RuntimeException",
             "\\Whoops\\Run",
             "\\Snicco\\Bundle\\Debug\\FilterablePrettyPageHandler",
             "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsHtmlDisplayer",
             "\\Whoops\\Handler\\JsonResponseHandler",
             "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsJsonDisplayer",
             "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
-            "\\RecursiveDirectoryIterator"
+            "\\RecursiveDirectoryIterator",
+            "\\RuntimeException"
         ]
     },
     {
@@ -443,14 +428,17 @@
         "relations": []
     },
     {
-        "name": "\\RuntimeException",
+        "name": "\\Whoops\\Run",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Whoops\\Run",
+        "name": "\\Snicco\\Bundle\\Debug\\FilterablePrettyPageHandler",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Whoops\\Handler\\PrettyPageHandler",
+            "\\Whoops\\Exception\\FrameCollection"
+        ]
     },
     {
         "name": "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsHtmlDisplayer",
@@ -486,17 +474,32 @@
         "relations": []
     },
     {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Debug\\Option\\DebugOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Whoops\\Handler\\PrettyPageHandler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Whoops\\Exception\\FrameCollection",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Debug\\Option\\DebugOption",
         "size": 3000,
         "relations": []
     }

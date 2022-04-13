@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-13 08:44:22        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,36 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Bundle\\BetterWPMail\\TemplateEngineMailRenderer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\BetterWPMail\\Option\\MailOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bundle\\BetterWPMail\\BetterWPMailBundle",
         "size": 3000,
         "relations": [
@@ -467,16 +497,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\BetterWPMail\\TemplateEngineMailRenderer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
-            "\\Snicco\\Component\\Templating\\TemplateEngine",
-            "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
-            "\\Snicco\\Component\\Templating\\ValueObject\\View"
-        ]
-    },
-    {
         "name": "\\Snicco\\Bundle\\BetterWPMail\\MailEventsUsingBetterWPHooks",
         "size": 3000,
         "relations": [
@@ -526,31 +546,6 @@
     },
     {
         "name": "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\BetterWPMail\\Option\\MailOption",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
         "size": 3000,
         "relations": []
     }

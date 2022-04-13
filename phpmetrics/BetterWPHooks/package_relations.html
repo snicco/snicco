@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-13 08:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -393,15 +393,10 @@
         "name": "Snicco\\Component\\BetterWPHooks",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\EventDispatcher",
             "Snicco\\Component\\BetterWPAPI",
-            "global"
+            "global",
+            "Snicco\\Component\\EventDispatcher"
         ]
-    },
-    {
-        "name": "Snicco\\Component\\EventDispatcher",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Snicco\\Component\\BetterWPAPI",
@@ -414,14 +409,9 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
+        "name": "Snicco\\Component\\EventDispatcher",
         "size": 3000,
-        "relations": [
-            "Snicco\\Component\\EventDispatcher",
-            "Snicco\\Component\\BetterWPHooks",
-            "Snicco\\Component\\BetterWPHooks\\EventFactory",
-            "global"
-        ]
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\BetterWPHooks\\EventFactory",
@@ -430,6 +420,16 @@
             "Snicco\\Component\\BetterWPHooks\\EventMapping",
             "global",
             "Snicco\\Component\\BetterWPHooks\\Exception"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\EventDispatcher",
+            "Snicco\\Component\\BetterWPHooks",
+            "Snicco\\Component\\BetterWPHooks\\EventFactory",
+            "global"
         ]
     },
     {

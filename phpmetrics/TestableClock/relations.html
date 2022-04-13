@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-13 08:44:22        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,16 +390,20 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\TestableClock\\TestClock",
+        "name": "\\Snicco\\Component\\TestableClock\\SystemClock",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\TestableClock\\Clock",
-            "\\DateTimeImmutable",
-            "\\DateInterval"
+            "\\Snicco\\Component\\TestableClock\\SystemClock",
+            "\\DateTimeZone"
         ]
     },
     {
         "name": "\\Snicco\\Component\\TestableClock\\Clock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\DateTimeZone",
         "size": 3000,
         "relations": []
     },
@@ -409,20 +413,16 @@
         "relations": []
     },
     {
-        "name": "\\DateInterval",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\TestableClock\\SystemClock",
+        "name": "\\Snicco\\Component\\TestableClock\\TestClock",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\TestableClock\\SystemClock",
-            "\\DateTimeZone"
+            "\\Snicco\\Component\\TestableClock\\Clock",
+            "\\DateTimeImmutable",
+            "\\DateInterval"
         ]
     },
     {
-        "name": "\\DateTimeZone",
+        "name": "\\DateInterval",
         "size": 3000,
         "relations": []
     }

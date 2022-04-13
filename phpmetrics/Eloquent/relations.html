@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-05 14:26:00        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-04-13 08:44:22        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,38 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\wpdb",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPModel",
+        "size": 3000,
+        "relations": [
+            "\\Illuminate\\Database\\Eloquent\\Model"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\Database\\Eloquent\\Model",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WithFactory",
         "size": 3000,
         "relations": [
@@ -429,15 +461,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
-            "\\wpdb",
-            "\\mysqli"
-        ]
-    },
-    {
         "name": "\\Generator",
         "size": 3000,
         "relations": []
@@ -465,75 +488,16 @@
     {
         "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Snicco\\Component\\Eloquent\\Illuminate\\MysqliConnection",
+            "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
+            "\\RuntimeException"
+        ]
     },
     {
         "name": "\\Illuminate\\Database\\ConnectionInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPModel",
-        "size": 3000,
-        "relations": [
-            "\\Illuminate\\Database\\Eloquent\\Model"
-        ]
-    },
-    {
-        "name": "\\Illuminate\\Database\\Eloquent\\Model",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
-            "\\mysqli",
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
-            "\\Illuminate\\Database\\QueryException",
-            "\\mysqli_result",
-            "\\mysqli_stmt",
-            "\\mysqli_sql_exception"
-        ]
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_result",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_stmt",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_sql_exception",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\wpdb",
         "size": 3000,
         "relations": []
     },
@@ -559,6 +523,11 @@
     },
     {
         "name": "\\Illuminate\\Container\\Container",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
@@ -594,6 +563,31 @@
     },
     {
         "name": "\\Illuminate\\Database\\DatabaseManager",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_result",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_stmt",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_sql_exception",
         "size": 3000,
         "relations": []
     }
