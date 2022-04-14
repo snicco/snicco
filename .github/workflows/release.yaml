@@ -51,8 +51,8 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             result = github.rest.repos.deleteAdminBranchProtection({
-              owner: 'sniccowp',
-              repo: 'sniccowp',
+              owner: 'snicco',
+              repo: 'snicco',
               branch: 'master'
             })
 
@@ -60,9 +60,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           GIT_AUTHOR_NAME: snicco-bot
-          GIT_AUTHOR_EMAIL: sniccowp-github@snicco.de
+          GIT_AUTHOR_EMAIL: github-bot@snicco.io
           GIT_COMMITTER_NAME: snicco-bot
-          GIT_COMMITTER_EMAIL: sniccowp-github@snicco.de
+          GIT_COMMITTER_EMAIL: github-bot@snicco.io
         # This needs to be executable before the release.
         run: |
           chmod +x ./bin/prepare-composer.sh
@@ -76,7 +76,7 @@ jobs:
           github-token: ${{ secrets.ACCESS_TOKEN }}
           script: |
             result = github.rest.repos.setAdminBranchProtection({
-              owner: 'sniccowp',
-              repo: 'sniccowp',
+              owner: 'snicco',
+              repo: 'snicco',
               branch: 'master'
             })
