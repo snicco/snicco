@@ -119,7 +119,7 @@ final class Str
     }
 
     /**
-     * This method converts: "snicco_wp-framework" => "SniccoWpFramework".
+     * This method converts: "snicco_wp-framework" => "sniccoFramework".
      *
      * @psalm-external-mutation-free
      */

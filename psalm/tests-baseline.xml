@@ -1041,24 +1041,24 @@
       <code>$response</code>
     </MissingParamType>
     <MixedArgument occurrences="4">
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
+      <code>$GLOBALS['test']['snicco_listeners']</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event]</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event]</code>
       <code>$event</code>
     </MixedArgument>
     <MixedArrayAccess occurrences="3">
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
+      <code>$GLOBALS['test']['snicco_listeners']</code>
+      <code>$GLOBALS['test']['snicco_listeners']</code>
+      <code>$GLOBALS['test']['snicco_listeners']</code>
     </MixedArrayAccess>
     <MixedArrayOffset occurrences="4">
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event]</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event]</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event]</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event]</code>
     </MixedArrayOffset>
     <MixedAssignment occurrences="2">
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event][$key]</code>
+      <code>$GLOBALS['test']['snicco_listeners'][$event][$key]</code>
       <code>$actual</code>
     </MixedAssignment>
     <UndefinedMethod occurrences="1">

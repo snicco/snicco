@@ -2,7 +2,7 @@ module.exports = {
     "branches": [
         "master"
     ],
-    "repositoryUrl": "https://github.com/sniccowp/sniccowp.git",
+    "repositoryUrl": "https://github.com/snicco/snicco.git",
     "tagFormat": "v${version}",
     "plugins": [
         ["@semantic-release/commit-analyzer", {

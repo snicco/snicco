@@ -106,7 +106,7 @@ jobs:
         image: mysql:8.0.21
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: sniccowp_1
+          MYSQL_DATABASE: snicco_1
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=3s --health-timeout=3s --health-retries=10
@@ -139,8 +139,8 @@ jobs:
         run: |
           mkdir wordpress && cd wordpress
           wp core download --force --skip-content --version=${{ matrix.wp }}
-          wp config create --dbname="sniccowp_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
-          wp core install --url="sniccowp.test" --title="Snicco" --admin_user="admin" --admin_password="admin" --admin_email="admin@sniccowp.com" --skip-email
+          wp config create --dbname="snicco_1" --dbuser="root" --dbpass="root" --dbhost="127.0.0.1" --dbprefix="wp_"
+          wp core install --url="snicco.test" --title="Snicco" --admin_user="admin" --admin_password="admin" --admin_email="admin@snicco.com" --skip-email
           wp core update-db
           wp rewrite structure '/%postname%/'
           wp plugin install redis-cache
