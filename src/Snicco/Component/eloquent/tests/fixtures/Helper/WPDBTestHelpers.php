@@ -53,7 +53,7 @@ trait WPDBTestHelpers
         return [
             'mysql2' => [
                 'driver' => 'mysql',
-                'database' => 'sniccowp_2_testing',
+                'database' => 'snicco_2_testing',
                 'host' => $_SERVER['SECONDARY_DB_HOST'] ?? '127.0.0.1',
                 'username' => $_SERVER['SECONDARY_DB_USER'] ?? 'root',
                 'password' => $_SERVER['SECONDARY_DB_PASSWORD'] ?? '',

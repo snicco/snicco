@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.19.0@a2ad69ae4f5ab1f7d225a8dc4e2ec2d9415ed599">
-  <file src="src/Snicco/Bridge/blade/tests/ViewComposingTest.php">
-    <ArgumentTypeCoercion occurrences="2"/>
-  </file>
+<files psalm-version="4.22.0@fc2c6ab4d5fa5d644d8617089f012f3bb84b8703">
   <file src="src/Snicco/Bridge/blade/tests/fixtures/Components/Alert.php">
     <PropertyNotSetInConstructor occurrences="2">
       <code>Alert</code>
@@ -27,85 +24,16 @@
       <code>InlineComponent</code>
     </PropertyNotSetInConstructor>
   </file>
-  <file src="src/Snicco/Bridge/blade/tests/wordpress/CustomDirectivesTest.php">
-    <MixedArgument occurrences="5">
-      <code>$admin-&gt;ID</code>
-      <code>$author-&gt;ID</code>
-      <code>$editor-&gt;ID</code>
-      <code>$this-&gt;factory()-&gt;user-&gt;create_and_get()-&gt;ID</code>
-      <code>$user-&gt;ID</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="4">
-      <code>$admin</code>
-      <code>$author</code>
-      <code>$editor</code>
-      <code>$user</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="5">
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-    </MixedMethodCall>
-    <MixedPropertyFetch occurrences="9">
-      <code>$admin-&gt;ID</code>
-      <code>$author-&gt;ID</code>
-      <code>$editor-&gt;ID</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$user-&gt;ID</code>
-    </MixedPropertyFetch>
-  </file>
   <file src="src/Snicco/Component/better-wp-hooks/tests/wordpress/EventMapperTest.php">
-    <InternalClass occurrences="1">
-      <code>new NewableListenerFactory()</code>
-    </InternalClass>
     <InvalidArgument occurrences="1">
       <code>NormalEvent::class</code>
     </InvalidArgument>
-    <MissingClosureParamType occurrences="5">
-      <code>$value</code>
+    <MissingClosureParamType occurrences="4">
       <code>$value1</code>
       <code>$value1</code>
       <code>$value2</code>
       <code>$value2</code>
     </MissingClosureParamType>
-    <MissingParamType occurrences="9">
-      <code>$bar</code>
-      <code>$bar</code>
-      <code>$bar</code>
-      <code>$baz</code>
-      <code>$filterable_value</code>
-      <code>$foo</code>
-      <code>$foo</code>
-      <code>$foo</code>
-      <code>$suffix</code>
-    </MissingParamType>
-    <MissingPropertyType occurrences="16">
-      <code>$bar</code>
-      <code>$bar</code>
-      <code>$bar</code>
-      <code>$baz</code>
-      <code>$event-&gt;bar</code>
-      <code>$event-&gt;bar</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;foo</code>
-      <code>$event-&gt;foo</code>
-      <code>$filterable_value</code>
-      <code>$foo</code>
-      <code>$foo</code>
-      <code>$foo</code>
-    </MissingPropertyType>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$words</code>
-    </MixedArgumentTypeCoercion>
     <MixedAssignment occurrences="7">
       <code>$count</code>
       <code>$count</code>
@@ -115,7 +43,7 @@
       <code>$count</code>
       <code>$count</code>
     </MixedAssignment>
-    <MixedOperand occurrences="16">
+    <MixedOperand occurrences="7">
       <code>$count</code>
       <code>$count</code>
       <code>$count</code>
@@ -123,26 +51,12 @@
       <code>$count</code>
       <code>$count</code>
       <code>$count</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;filterable_value</code>
-      <code>$event-&gt;foo</code>
-      <code>$event-&gt;foo</code>
-      <code>$suffix</code>
-      <code>$this-&gt;baz</code>
-      <code>$this-&gt;foo</code>
     </MixedOperand>
     <TooManyArguments occurrences="3">
       <code>apply_filters('filter', 'foo', 'PREVENT')</code>
       <code>apply_filters('filter', 'foo', 'bar')</code>
       <code>apply_filters('filter', 'foo', 'bar')</code>
     </TooManyArguments>
-    <UnusedClosureParam occurrences="3">
-      <code>$event</code>
-      <code>$event</code>
-      <code>$event</code>
-    </UnusedClosureParam>
   </file>
   <file src="src/Snicco/Component/better-wp-hooks/tests/wordpress/WPEventDispatcherTest.php">
     <MixedArgument occurrences="2">
@@ -158,17 +72,6 @@
       <code>Event</code>
     </UndefinedClass>
   </file>
-  <file src="src/Snicco/Component/better-wp-mail/tests/fixtures/inline-attachment.php">
-    <MixedArgument occurrences="1">
-      <code>$images['php-elephant-inline']</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$images['php-elephant-inline']</code>
-    </MixedArrayAccess>
-    <UndefinedGlobalVariable occurrences="1">
-      <code>$images</code>
-    </UndefinedGlobalVariable>
-  </file>
   <file src="src/Snicco/Component/better-wp-mail/tests/fixtures/php-mail.php">
     <MixedArgument occurrences="2">
       <code>$baz</code>
@@ -179,31 +82,13 @@
       <code>$foo</code>
     </UndefinedGlobalVariable>
   </file>
-  <file src="src/Snicco/Component/better-wp-mail/tests/wordpress/FakeMailerTest.php">
-    <MissingClosureParamType occurrences="1">
-      <code>$null</code>
-    </MissingClosureParamType>
-    <MixedAssignment occurrences="1">
-      <code>$count</code>
-    </MixedAssignment>
-    <MixedOperand occurrences="1">
-      <code>$count</code>
-    </MixedOperand>
-    <PossiblyUndefinedIntArrayOffset occurrences="2">
-      <code>iterator_to_array($email-&gt;from())[0]</code>
-      <code>iterator_to_array($email-&gt;replyTo())[0]</code>
-    </PossiblyUndefinedIntArrayOffset>
-    <UnusedClosureParam occurrences="1">
-      <code>$null</code>
-    </UnusedClosureParam>
-  </file>
   <file src="src/Snicco/Component/better-wp-mail/tests/wordpress/MailerEventsTest.php">
     <MixedArgument occurrences="3">
       <code>$data['body']</code>
       <code>$header</code>
       <code>$header</code>
     </MixedArgument>
-    <MixedArrayAccess occurrences="4">
+    <MixedArrayAccess occurrences="3">
       <code>$data['body']</code>
       <code>$data['header']</code>
       <code>$data['header']</code>
@@ -241,204 +126,20 @@
     </UnusedClosureParam>
   </file>
   <file src="src/Snicco/Component/better-wp-mail/tests/wordpress/MailerTest.php">
-    <MixedArgument occurrences="44">
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$headers</code>
-      <code>$headers</code>
-      <code>$mail['body']</code>
-      <code>$mail['header']</code>
-      <code>$second_mail['body']</code>
-      <code>$second_mail['header']</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="45">
-      <code>$data['body']</code>
-      <code>$data['header']</code>
-      <code>$data['header']</code>
-      <code>$data['header']</code>
-      <code>$data['subject']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['body']</code>
-      <code>$first_email['header']</code>
-      <code>$first_email['header']</code>
-      <code>$first_email['header']</code>
-      <code>$first_email['header']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['body']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$first_mail['header']</code>
-      <code>$mail['body']</code>
-      <code>$mail['header']</code>
-      <code>$mail['header']</code>
-      <code>$mail['header']</code>
-      <code>$second_mail['body']</code>
-      <code>$second_mail['header']</code>
-      <code>$this-&gt;getSentMails()[0]['header']</code>
-    </MixedArrayAccess>
-    <MixedAssignment occurrences="48">
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$body</code>
-      <code>$data</code>
-      <code>$data</code>
-      <code>$data</code>
-      <code>$first_email</code>
-      <code>$first_email</code>
-      <code>$first_email</code>
-      <code>$first_email</code>
-      <code>$first_email</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$first_mail</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$header</code>
-      <code>$headers</code>
-      <code>$headers</code>
-      <code>$mail</code>
-      <code>$mail</code>
-      <code>$mail</code>
-      <code>$second_mail</code>
-    </MixedAssignment>
-    <MixedInferredReturnType occurrences="2">
-      <code>WP_User</code>
-      <code>array</code>
-    </MixedInferredReturnType>
-    <MixedMethodCall occurrences="1">
-      <code>create_and_get</code>
-    </MixedMethodCall>
     <MixedPropertyAssignment occurrences="2">
       <code>$phpmailer</code>
       <code>$phpmailer</code>
     </MixedPropertyAssignment>
-    <MixedPropertyFetch occurrences="6">
+    <MixedPropertyFetch occurrences="4">
       <code>$phpmailer-&gt;AltBody</code>
       <code>$phpmailer-&gt;AltBody</code>
       <code>$phpmailer-&gt;Body</code>
       <code>$phpmailer-&gt;Priority</code>
-      <code>$phpmailer-&gt;mock_sent</code>
-      <code>$this-&gt;factory()-&gt;user</code>
     </MixedPropertyFetch>
-    <MixedReturnStatement occurrences="2">
-      <code>$phpmailer-&gt;mock_sent</code>
-    </MixedReturnStatement>
     <PossiblyFalseArgument occurrences="2">
       <code>file_get_contents($this-&gt;fixtures_dir . '/php-elephant.jpg')</code>
       <code>file_get_contents($this-&gt;fixtures_dir . '/php-elephant.jpg')</code>
     </PossiblyFalseArgument>
-    <PossiblyUndefinedIntArrayOffset occurrences="27">
-      <code>$email-&gt;attachments()[0]</code>
-      <code>$email-&gt;attachments()[0]</code>
-      <code>$email-&gt;attachments()[0]</code>
-      <code>$email-&gt;attachments()[0]</code>
-      <code>$email-&gt;attachments()[0]</code>
-      <code>$mails[1]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-      <code>$this-&gt;getSentMails()[0]</code>
-    </PossiblyUndefinedIntArrayOffset>
   </file>
   <file src="src/Snicco/Component/better-wp-mail/tests/wordpress/ValueObjects/EmailTest.php">
     <MixedOperand occurrences="6">
@@ -473,68 +174,10 @@
       <code>$this-&gt;attachment_dir</code>
     </UndefinedThisPropertyFetch>
   </file>
-  <file src="src/Snicco/Component/better-wp-mail/tests/wordpress/ValueObjects/MailBoxTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>1</code>
-    </InvalidScalarArgument>
-    <MixedInferredReturnType occurrences="1">
-      <code>WP_User</code>
-    </MixedInferredReturnType>
-    <MixedMethodCall occurrences="1">
-      <code>create_and_get</code>
-    </MixedMethodCall>
-    <MixedPropertyFetch occurrences="1">
-      <code>$this-&gt;factory()-&gt;user</code>
-    </MixedPropertyFetch>
-    <MixedReturnStatement occurrences="1"/>
-  </file>
-  <file src="src/Snicco/Component/eloquent/tests/fixtures/Factory/ActivityFactory.php">
-    <MissingReturnType occurrences="1">
-      <code>activity</code>
-    </MissingReturnType>
-    <PossiblyUndefinedIntArrayOffset occurrences="1">
-      <code>Arr::random($activities)[0]</code>
-    </PossiblyUndefinedIntArrayOffset>
-  </file>
   <file src="src/Snicco/Component/eloquent/tests/fixtures/Factory/CountryFactory.php">
-    <MissingReturnType occurrences="1">
-      <code>continent</code>
-    </MissingReturnType>
-    <PossiblyUndefinedIntArrayOffset occurrences="1">
-      <code>Arr::random($continents)[0]</code>
-    </PossiblyUndefinedIntArrayOffset>
     <UnusedClosureParam occurrences="1">
       <code>$attributes</code>
     </UnusedClosureParam>
-  </file>
-  <file src="src/Snicco/Component/eloquent/tests/fixtures/Helper/AssertableWpDB.php">
-    <InvalidOperand occurrences="3">
-      <code>$column</code>
-      <code>$column</code>
-      <code>$column</code>
-    </InvalidOperand>
-    <MixedArgument occurrences="5">
-      <code>$query</code>
-      <code>$query</code>
-      <code>$query</code>
-      <code>$this-&gt;wpdb-&gt;prepare("SELECT * FROM $this-&gt;table WHERE $wheres LIMIT 1", $values)</code>
-      <code>ARRAY_A</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="10">
-      <code>$query</code>
-      <code>$query</code>
-      <code>$query</code>
-      <code>$this-&gt;wpdb</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$value</code>
-      <code>$values[]</code>
-      <code>$values[]</code>
-    </MixedAssignment>
-    <UndefinedConstant occurrences="1">
-      <code>ARRAY_A</code>
-    </UndefinedConstant>
   </file>
   <file src="src/Snicco/Component/eloquent/tests/fixtures/Helper/WPDBTestHelpers.php">
     <MixedAssignment occurrences="1">
@@ -560,9 +203,6 @@
     </PossiblyUndefinedIntArrayOffset>
   </file>
   <file src="src/Snicco/Component/eloquent/tests/fixtures/Helper/WithTestTables.php">
-    <MissingPropertyType occurrences="1">
-      <code>$tables_created</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$table</code>
     </MixedArgument>
@@ -607,7 +247,7 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="src/Snicco/Component/eloquent/tests/wordpress/DatabaseFactoriesTest.php">
-    <MissingClosureParamType occurrences="4">
+    <MissingClosureParamType occurrences="1">
       <code>$country</code>
       <code>$country</code>
       <code>$country</code>
@@ -628,7 +268,7 @@
       <code>create</code>
       <code>make</code>
     </MixedMethodCall>
-    <MixedPropertyFetch occurrences="12">
+    <MixedPropertyFetch occurrences="9">
       <code>$cities[0]-&gt;country</code>
       <code>$cities[0]-&gt;country</code>
       <code>$cities[0]-&gt;country-&gt;id</code>
@@ -638,9 +278,6 @@
       <code>$city-&gt;country-&gt;id</code>
       <code>$city-&gt;country-&gt;name</code>
       <code>$city-&gt;id</code>
-      <code>$country-&gt;continent</code>
-      <code>$country-&gt;continent</code>
-      <code>$country-&gt;name</code>
     </MixedPropertyFetch>
     <NullArgument occurrences="1">
       <code>null</code>
@@ -655,24 +292,6 @@
       <code>hasCities</code>
       <code>narnia</code>
     </UndefinedMagicMethod>
-    <UndefinedMagicPropertyFetch occurrences="12">
-      <code>$city-&gt;country</code>
-      <code>$city-&gt;id</code>
-      <code>$city-&gt;id</code>
-      <code>$city-&gt;id</code>
-      <code>$country-&gt;continent</code>
-      <code>$country-&gt;id</code>
-      <code>$country-&gt;id</code>
-      <code>$country-&gt;id</code>
-      <code>$country-&gt;name</code>
-      <code>$country-&gt;name</code>
-      <code>$country-&gt;name</code>
-      <code>$country-&gt;name</code>
-    </UndefinedMagicPropertyFetch>
-    <UnusedClosureParam occurrences="2">
-      <code>$attributes</code>
-      <code>$country</code>
-    </UnusedClosureParam>
   </file>
   <file src="src/Snicco/Component/eloquent/tests/wordpress/MysqliConnectionConformsToInterfaceTest.php">
     <MixedArgument occurrences="1">
@@ -795,18 +414,16 @@
     <MissingClosureParamType occurrences="1">
       <code>$table</code>
     </MissingClosureParamType>
-    <MissingParamType occurrences="2">
-      <code>$connection</code>
+    <MissingParamType occurrences="1">
       <code>$table</code>
     </MissingParamType>
     <MissingReturnType occurrences="2">
       <code>getFullColumnInfo</code>
       <code>getTableCollation</code>
     </MissingReturnType>
-    <MixedArgument occurrences="4">
+    <MixedArgument occurrences="3">
       <code>$collation</code>
       <code>$columns['name']-&gt;Collation</code>
-      <code>$connection</code>
       <code>$wpdb-&gt;prefix</code>
     </MixedArgument>
     <MixedArrayAccess occurrences="3">
@@ -891,14 +508,6 @@
     <NullArgument occurrences="1">
       <code>null</code>
     </NullArgument>
-    <PossiblyInvalidMethodCall occurrences="2">
-      <code>fetch_object</code>
-      <code>fetch_object</code>
-    </PossiblyInvalidMethodCall>
-    <PossiblyNullPropertyFetch occurrences="2">
-      <code>$result-&gt;fetch_object()-&gt;count</code>
-      <code>$result-&gt;fetch_object()-&gt;count</code>
-    </PossiblyNullPropertyFetch>
     <UndefinedConstant occurrences="4">
       <code>DB_HOST</code>
       <code>DB_NAME</code>
@@ -916,17 +525,7 @@
     </NullArgument>
   </file>
   <file src="src/Snicco/Component/event-dispatcher/tests/EventDispatcherTest.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>'BogusClass'</code>
-    </ArgumentTypeCoercion>
-    <InvalidArgument occurrences="1">
-      <code>['BogusClass', 'bogus']</code>
-    </InvalidArgument>
-    <MissingClosureParamType occurrences="2">
-      <code>$bar</code>
-      <code>$foo</code>
-    </MissingClosureParamType>
-    <MissingPropertyType occurrences="10">
+    <MissingPropertyType occurrences="6">
       <code>$event-&gt;user_name</code>
       <code>$event-&gt;val</code>
       <code>$event-&gt;val</code>
@@ -941,11 +540,9 @@
     <MixedAssignment occurrences="1">
       <code>$val</code>
     </MixedAssignment>
-    <MixedOperand occurrences="4">
-      <code>$event-&gt;foo</code>
+    <MixedOperand occurrences="2">
       <code>$event-&gt;val</code>
       <code>$event-&gt;val</code>
-      <code>$foo</code>
     </MixedOperand>
   </file>
   <file src="src/Snicco/Component/event-dispatcher/tests/EventDispatcherWithContainerTest.php">
@@ -957,110 +554,22 @@
     <InvalidArgument occurrences="1">
       <code>BadSubscriber::class</code>
     </InvalidArgument>
-    <MissingPropertyType occurrences="1">
-      <code>$event-&gt;val1</code>
-    </MissingPropertyType>
   </file>
   <file src="src/Snicco/Component/event-dispatcher/tests/PsrEventDispatcherTest.php">
     <UnusedClosureParam occurrences="1">
       <code>$event</code>
     </UnusedClosureParam>
   </file>
-  <file src="src/Snicco/Component/event-dispatcher/tests/TestableDispatcherAssertionsTest.php">
-    <InvalidArgument occurrences="5"/>
-    <MissingClosureParamType occurrences="13">
-      <code>$bar</code>
-      <code>$bar</code>
-      <code>$bar</code>
-      <code>$foo</code>
-      <code>$foo</code>
-      <code>$foo</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-    </MissingClosureParamType>
-    <MissingPropertyType occurrences="12">
-      <code>$event_stub-&gt;val1</code>
-      <code>$event_stub-&gt;val1</code>
-      <code>$event_stub-&gt;val1</code>
-      <code>$event_stub-&gt;val1</code>
-      <code>$event_stub-&gt;val1</code>
-      <code>$event_stub-&gt;val1</code>
-      <code>$event_stub-&gt;val2</code>
-      <code>$event_stub-&gt;val2</code>
-      <code>$event_stub-&gt;val2</code>
-      <code>$event_stub-&gt;val2</code>
-      <code>$event_stub-&gt;val2</code>
-      <code>$event_stub-&gt;val2</code>
-    </MissingPropertyType>
-    <UnusedClosureParam occurrences="1">
-      <code>$event_stub</code>
-    </UnusedClosureParam>
-  </file>
-  <file src="src/Snicco/Component/event-dispatcher/tests/TestableDispatcherTest.php">
-    <MissingClosureParamType occurrences="13">
-      <code>$event</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-      <code>$val</code>
-    </MissingClosureParamType>
-    <MissingPropertyType occurrences="2">
-      <code>$result-&gt;val1</code>
-      <code>$result-&gt;val2</code>
-    </MissingPropertyType>
-    <MixedOperand occurrences="1">
-      <code>$event-&gt;val1</code>
-    </MixedOperand>
-    <MixedPropertyFetch occurrences="2">
-      <code>$event-&gt;val1</code>
-      <code>$event-&gt;val2</code>
-    </MixedPropertyFetch>
-  </file>
   <file src="src/Snicco/Component/event-dispatcher/tests/fixtures/AssertListenerResponse.php">
     <InvalidArrayOffset occurrences="1">
       <code>$GLOBALS['test']</code>
     </InvalidArrayOffset>
-    <MissingParamType occurrences="5">
+    <MissingParamType occurrences="2">
       <code>$event</code>
       <code>$event</code>
       <code>$event</code>
-      <code>$expected</code>
       <code>$response</code>
     </MissingParamType>
-    <MixedArgument occurrences="4">
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$event</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="3">
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-      <code>$GLOBALS['test']['sniccowp_listeners']</code>
-    </MixedArrayAccess>
-    <MixedArrayOffset occurrences="4">
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event]</code>
-    </MixedArrayOffset>
-    <MixedAssignment occurrences="2">
-      <code>$GLOBALS['test']['sniccowp_listeners'][$event][$key]</code>
-      <code>$actual</code>
-    </MixedAssignment>
     <UndefinedMethod occurrences="1">
       <code>assertTrue</code>
     </UndefinedMethod>
@@ -1078,25 +587,7 @@
       <code>$val</code>
     </MissingPropertyType>
   </file>
-  <file src="src/Snicco/Component/event-dispatcher/tests/fixtures/Event/EventStub.php">
-    <MissingParamType occurrences="2">
-      <code>$bar</code>
-      <code>$foo</code>
-    </MissingParamType>
-    <MissingPropertyType occurrences="2">
-      <code>$val1</code>
-      <code>$val2</code>
-    </MissingPropertyType>
-  </file>
   <file src="src/Snicco/Component/event-dispatcher/tests/fixtures/Event/FilterableEvent.php">
-    <MissingParamType occurrences="1">
-      <code>$val</code>
-    </MissingParamType>
-    <MissingPropertyType occurrences="1">
-      <code>$val</code>
-    </MissingPropertyType>
-  </file>
-  <file src="src/Snicco/Component/event-dispatcher/tests/fixtures/Event/FooEvent.php">
     <MissingParamType occurrences="1">
       <code>$val</code>
     </MissingParamType>
@@ -1151,20 +642,12 @@
     <MissingParamType occurrences="1">
       <code>$event</code>
     </MissingParamType>
-    <MissingPropertyType occurrences="1">
-      <code>$event-&gt;val</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$event</code>
     </MixedArgument>
     <MixedPropertyFetch occurrences="1">
       <code>$event-&gt;val</code>
     </MixedPropertyFetch>
-  </file>
-  <file src="src/Snicco/Component/event-dispatcher/tests/fixtures/Listener/ClassListener2.php">
-    <MissingPropertyType occurrences="1">
-      <code>$event-&gt;val</code>
-    </MissingPropertyType>
   </file>
   <file src="src/Snicco/Component/event-dispatcher/tests/fixtures/Listener/InvokableListener.php">
     <MissingParamType occurrences="2">
@@ -1179,33 +662,12 @@
     <MissingParamType occurrences="1">
       <code>$event</code>
     </MissingParamType>
-    <MissingPropertyType occurrences="1">
-      <code>$event-&gt;val</code>
-    </MissingPropertyType>
     <MixedArgument occurrences="1">
       <code>$event</code>
     </MixedArgument>
     <MixedPropertyFetch occurrences="1">
       <code>$event-&gt;val</code>
     </MixedPropertyFetch>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Http/CookieTest.php">
-    <InvalidArgument occurrences="4">
-      <code>'bogus'</code>
-      <code>'lax'</code>
-      <code>'none'</code>
-      <code>'strict'</code>
-    </InvalidArgument>
-    <InvalidScalarArgument occurrences="1">
-      <code>'1000'</code>
-    </InvalidScalarArgument>
-    <TypeDoesNotContainType occurrences="1">
-      <code>assertSame</code>
-    </TypeDoesNotContainType>
-    <UnusedMethodCall occurrences="2">
-      <code>withExpiryTimestamp</code>
-      <code>withSameSite</code>
-    </UnusedMethodCall>
   </file>
   <file src="src/Snicco/Component/http-routing/tests/Http/CookiesTest.php">
     <InvalidArgument occurrences="1">
@@ -1217,415 +679,12 @@
       <code>$headers[2]</code>
     </PossiblyUndefinedIntArrayOffset>
   </file>
-  <file src="src/Snicco/Component/http-routing/tests/Http/DefaultResponseFactoryTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>1</code>
-    </InvalidScalarArgument>
-    <MixedAssignment occurrences="2">
-      <code>$response</code>
-      <code>$response</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="4">
-      <code>getHeaderLine</code>
-      <code>getHeaderLine</code>
-      <code>getStatusCode</code>
-      <code>getStatusCode</code>
-    </MixedMethodCall>
-    <PropertyTypeCoercion occurrences="1"/>
-    <UndefinedInterfaceMethod occurrences="2">
-      <code>home</code>
-      <code>toRoute</code>
-    </UndefinedInterfaceMethod>
-    <UndefinedThisPropertyAssignment occurrences="2">
-      <code>$this-&gt;app_domain</code>
-      <code>$this-&gt;routes</code>
-    </UndefinedThisPropertyAssignment>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Http/InteractsWithInputTest.php">
-    <TooManyArguments occurrences="1">
-      <code>missing</code>
-    </TooManyArguments>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Http/LazyErrorHandlerTest.php">
-    <MixedAssignment occurrences="1">
-      <code>$count</code>
-    </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>ResponseInterface</code>
-    </MixedInferredReturnType>
-    <MixedOperand occurrences="1">
-      <code>$count</code>
-    </MixedOperand>
-    <MixedReturnStatement occurrences="1">
-      <code>call_user_func($this-&gt;return, $e, $request)</code>
-    </MixedReturnStatement>
-    <UnusedClosureParam occurrences="2">
-      <code>$e</code>
-      <code>$request</code>
-    </UnusedClosureParam>
-    <UnusedVariable occurrences="1">
-      <code>$c</code>
-    </UnusedVariable>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Http/ResponsePreparationTest.php">
-    <InvalidScalarArgument occurrences="2">
-      <code>3</code>
-      <code>3</code>
-    </InvalidScalarArgument>
-    <PropertyTypeCoercion occurrences="1">
-      <code>$this-&gt;createResponseFactory($this-&gt;createUrlGenerator())</code>
-    </PropertyTypeCoercion>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Http/ResponseTest.php">
-    <NoInterfaceProperties occurrences="3">
-      <code>$response1-&gt;foo</code>
-      <code>$response1-&gt;foo</code>
-      <code>$response2-&gt;foo</code>
-    </NoInterfaceProperties>
-    <PossiblyFalseArgument occurrences="1">
-      <code>json_encode(['foo' =&gt; 'bar'])</code>
-    </PossiblyFalseArgument>
-    <PossiblyUndefinedIntArrayOffset occurrences="2">
-      <code>$headers[0]</code>
-      <code>$headers[1]</code>
-    </PossiblyUndefinedIntArrayOffset>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/HttpRunnerTestCase.php">
-    <MixedArgumentTypeCoercion occurrences="3">
-      <code>$aliases</code>
-      <code>$array</code>
-      <code>[RoutingConfigurator::GLOBAL_MIDDLEWARE =&gt; $middleware]</code>
-    </MixedArgumentTypeCoercion>
-    <TypeDoesNotContainType occurrences="2">
-      <code>$this-&gt;routing_configurator instanceof AdminRoutingConfigurator</code>
-      <code>$this-&gt;routing_configurator instanceof WebRoutingConfigurator</code>
-    </TypeDoesNotContainType>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Middleware/MiddlewareFactoryTest.php">
-    <UndefinedPropertyAssignment occurrences="2">
-      <code>$bar-&gt;bar</code>
-      <code>$foo-&gt;foo</code>
-    </UndefinedPropertyAssignment>
-    <UndefinedPropertyFetch occurrences="2">
-      <code>$m-&gt;bar-&gt;bar</code>
-      <code>$m-&gt;foo-&gt;foo</code>
-    </UndefinedPropertyFetch>
-    <UnusedClosureParam occurrences="2">
-      <code>$bar</code>
-      <code>$baz</code>
-    </UnusedClosureParam>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Middleware/MiddlewareStackTest.php">
-    <UndefinedInterfaceMethod occurrences="1">
-      <code>get</code>
-    </UndefinedInterfaceMethod>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/ReflectionTest.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>'Foo'</code>
-    </ArgumentTypeCoercion>
-    <InvalidReturnType occurrences="2">
-      <code>bool</code>
-      <code>int</code>
-    </InvalidReturnType>
-    <MissingClosureParamType occurrences="1">
-      <code>$foo</code>
-    </MissingClosureParamType>
-    <MissingParamType occurrences="1">
-      <code>$foo</code>
-    </MissingParamType>
-    <PossiblyNullReference occurrences="2">
-      <code>getName</code>
-      <code>getParameters</code>
-    </PossiblyNullReference>
-    <PossiblyUndefinedIntArrayOffset occurrences="2">
-      <code>$reflection-&gt;getParameters()[0]</code>
-      <code>$reflection-&gt;getParameters()[0]</code>
-    </PossiblyUndefinedIntArrayOffset>
-    <UndefinedClass occurrences="1">
-      <code>'Foo'</code>
-    </UndefinedClass>
-    <UnusedClosureParam occurrences="1">
-      <code>$foo</code>
-    </UnusedClosureParam>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/AdminMenuItemTest.php">
-    <PossiblyNullReference occurrences="1">
-      <code>asString</code>
-    </PossiblyNullReference>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/AdminMenuTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>1</code>
-    </InvalidScalarArgument>
-    <PossiblyNullReference occurrences="4">
-      <code>asString</code>
-      <code>asString</code>
-      <code>asString</code>
-      <code>asString</code>
-    </PossiblyNullReference>
-    <PossiblyUndefinedIntArrayOffset occurrences="9">
-      <code>$item[0]</code>
-      <code>$items[0]</code>
-      <code>$items[0]</code>
-      <code>$items[0]</code>
-      <code>$items[0]</code>
-      <code>$items[1]</code>
-      <code>$items[1]</code>
-      <code>$items[1]</code>
-      <code>$items[2]</code>
-    </PossiblyUndefinedIntArrayOffset>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/AdminRoutesTest.php">
-    <InvalidArgument occurrences="1"/>
-    <UndefinedInterfaceMethod occurrences="2">
-      <code>get</code>
-      <code>page</code>
-    </UndefinedInterfaceMethod>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/CachedRouteCollectionTest.php">
-    <InvalidArgument occurrences="1">
-      <code>['r1' =&gt; $r1]</code>
-    </InvalidArgument>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/FallbackRouteTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>['foo', 1]</code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/IncludingRoutesTest.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>1</code>
-    </InvalidScalarArgument>
-    <MixedArgument occurrences="1">
-      <code>$closure</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="1">
-      <code>$closure</code>
-    </MixedAssignment>
-    <UnresolvableInclude occurrences="1">
-      <code>require $this-&gt;routes_dir . '/_partial.php'</code>
-    </UnresolvableInclude>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/MiddlewarePipelineTest.php">
-    <InvalidArgument occurrences="4"/>
-    <MissingClosureReturnType occurrences="9">
-      <code>function (Request $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-      <code>function (ServerRequestInterface $request) {</code>
-    </MissingClosureReturnType>
-    <MixedArgument occurrences="4">
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-    </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="9"/>
-    <MixedMethodCall occurrences="1">
-      <code>instance</code>
-    </MixedMethodCall>
-    <MixedOperand occurrences="1">
-      <code>$request-&gt;getAttribute(PipelineTestMiddleware1::ATTRIBUTE)</code>
-    </MixedOperand>
-    <UndefinedInterfaceMethod occurrences="9">
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-      <code>html</code>
-    </UndefinedInterfaceMethod>
-    <UndefinedThisPropertyAssignment occurrences="3">
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-    </UndefinedThisPropertyAssignment>
-    <UndefinedThisPropertyFetch occurrences="3">
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-      <code>$this-&gt;container</code>
-    </UndefinedThisPropertyFetch>
-    <UnusedClosureParam occurrences="10">
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-      <code>$request</code>
-    </UnusedClosureParam>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteAttributesTest.php">
-    <MixedArgument occurrences="2">
-      <code>$path</code>
-      <code>$path</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="2">
-      <code>$path</code>
-      <code>$path</code>
-    </MixedAssignment>
-    <TypeDoesNotContainType occurrences="1">
-      <code>assertSame</code>
-    </TypeDoesNotContainType>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteCollectionTest.php">
-    <InvalidArgument occurrences="1">
-      <code>[new stdClass()]</code>
-    </InvalidArgument>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteConditionsTest.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>assertSame</code>
-    </DocblockTypeContradiction>
-    <MissingClosureParamType occurrences="1">
-      <code>$pass</code>
-    </MissingClosureParamType>
-    <MixedArgument occurrences="1">
-      <code>$pass</code>
-    </MixedArgument>
-    <TypeDoesNotContainType occurrences="1">
-      <code>assertSame</code>
-    </TypeDoesNotContainType>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteGroupsTest.php">
-    <ArgumentTypeCoercion occurrences="11">
-      <code>'RoutingTestController'</code>
-      <code>'RoutingTestController'</code>
-    </ArgumentTypeCoercion>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteLoaderTest.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>$att</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>array</code>
-    </InvalidReturnType>
-    <MixedReturnTypeCoercion occurrences="4">
-      <code>$this-&gt;return_api</code>
-      <code>$this-&gt;return_normal</code>
-      <code>array</code>
-      <code>array</code>
-    </MixedReturnTypeCoercion>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteMiddlewareDependencyInjectionTest.php">
-    <ArgumentTypeCoercion occurrences="2">
-      <code>ControllerWithMiddleware::class . '@handle'</code>
-      <code>ControllerWithMiddleware::class . '@handle'</code>
-    </ArgumentTypeCoercion>
-    <MissingClosureParamType occurrences="2">
-      <code>$bar</code>
-      <code>$foo</code>
-    </MissingClosureParamType>
-    <MissingParamType occurrences="3">
-      <code>$baz</code>
-      <code>$biz</code>
-      <code>$class</code>
-    </MissingParamType>
-    <MixedOperand occurrences="4">
-      <code>$this-&gt;bar-&gt;bar</code>
-      <code>$this-&gt;baz</code>
-      <code>$this-&gt;biz</code>
-      <code>$this-&gt;foo-&gt;foo</code>
-    </MixedOperand>
-    <UndefinedPropertyAssignment occurrences="2">
-      <code>$bar-&gt;bar</code>
-      <code>$foo-&gt;foo</code>
-    </UndefinedPropertyAssignment>
-    <UndefinedPropertyFetch occurrences="2">
-      <code>$this-&gt;bar-&gt;bar</code>
-      <code>$this-&gt;foo-&gt;foo</code>
-    </UndefinedPropertyFetch>
-    <UndefinedThisPropertyAssignment occurrences="2">
-      <code>$this-&gt;baz</code>
-      <code>$this-&gt;biz</code>
-    </UndefinedThisPropertyAssignment>
-    <UndefinedThisPropertyFetch occurrences="2">
-      <code>$this-&gt;baz</code>
-      <code>$this-&gt;biz</code>
-    </UndefinedThisPropertyFetch>
-    <UnusedParam occurrences="2">
-      <code>$class</code>
-      <code>$times</code>
-    </UnusedParam>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteMiddlewareTest.php">
-    <ArgumentTypeCoercion occurrences="2"/>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/RouteTest.php">
-    <InvalidArgument occurrences="8">
-      <code>['Bogus', 'foo']</code>
-      <code>['foo' =&gt; new stdClass()]</code>
-      <code>['foo', new FooMiddleware()]</code>
-      <code>['foo']</code>
-      <code>[RoutingTestController::class, new stdClass()]</code>
-      <code>[]</code>
-      <code>[new stdClass(), 'foo']</code>
-      <code>stdClass::class</code>
-    </InvalidArgument>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/UrlGeneratorTest.php">
-    <InvalidArgument occurrences="1">
-      <code>['required' =&gt; []]</code>
-    </InvalidArgument>
-    <TooManyArguments occurrences="1">
-      <code>refreshUrlGenerator</code>
-    </TooManyArguments>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/UrlPathTest.php">
-    <MissingParamType occurrences="6">
-      <code>$append_path</code>
-      <code>$expected</code>
-      <code>$path</code>
-      <code>$path</code>
-      <code>$path</code>
-      <code>$prepend</code>
-    </MissingParamType>
-    <MixedArgument occurrences="5">
-      <code>$append_path</code>
-      <code>$path</code>
-      <code>$path</code>
-      <code>$path</code>
-      <code>$prepend</code>
-    </MixedArgument>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Routing/ViewRoutesTest.php">
-    <MixedArgument occurrences="2">
-      <code>$this-&gt;view</code>
-      <code>$this-&gt;view</code>
-    </MixedArgument>
-    <UndefinedThisPropertyAssignment occurrences="1">
-      <code>$this-&gt;view</code>
-    </UndefinedThisPropertyAssignment>
-    <UndefinedThisPropertyFetch occurrences="2">
-      <code>$this-&gt;view</code>
-      <code>$this-&gt;view</code>
-    </UndefinedThisPropertyFetch>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/Testing/TestResponseTest.php">
-    <PossiblyFalseOperand occurrences="1">
-      <code>json_encode(['foo' =&gt; 'baz'])</code>
-    </PossiblyFalseOperand>
-  </file>
   <file src="src/Snicco/Component/http-routing/tests/fixtures/BarMiddleware.php">
-    <MissingParamType occurrences="2">
-      <code>$bar</code>
+    <MissingParamType occurrences="1">
       <code>$next</code>
     </MissingParamType>
-    <MixedAssignment occurrences="2">
+    <MixedAssignment occurrences="1">
       <code>$response</code>
-      <code>$this-&gt;bar</code>
     </MixedAssignment>
     <MixedFunctionCall occurrences="1">
       <code>$next($request)</code>
@@ -1642,29 +701,6 @@
     </MixedReturnStatement>
   </file>
   <file src="src/Snicco/Component/http-routing/tests/fixtures/BazMiddleware.php">
-    <MissingParamType occurrences="2">
-      <code>$baz</code>
-      <code>$next</code>
-    </MissingParamType>
-    <MixedAssignment occurrences="2">
-      <code>$response</code>
-      <code>$this-&gt;baz</code>
-    </MixedAssignment>
-    <MixedFunctionCall occurrences="1">
-      <code>$next($request)</code>
-    </MixedFunctionCall>
-    <MixedInferredReturnType occurrences="1">
-      <code>ResponseInterface</code>
-    </MixedInferredReturnType>
-    <MixedMethodCall occurrences="2">
-      <code>getBody</code>
-      <code>write</code>
-    </MixedMethodCall>
-    <MixedReturnStatement occurrences="1">
-      <code>$response</code>
-    </MixedReturnStatement>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/fixtures/BooleanMiddleware.php">
     <MissingParamType occurrences="1">
       <code>$next</code>
     </MissingParamType>
@@ -1702,17 +738,6 @@
       <code>$val</code>
     </MixedOperand>
   </file>
-  <file src="src/Snicco/Component/http-routing/tests/fixtures/Conditions/RouteConditionWithDependency.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>[$this-&gt;config-&gt;get('foo')]</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>array</code>
-    </InvalidReturnType>
-    <RedundantIdentityWithTrue occurrences="1">
-      <code>$this-&gt;make_it_pass === true</code>
-    </RedundantIdentityWithTrue>
-  </file>
   <file src="src/Snicco/Component/http-routing/tests/fixtures/Controller/ControllerWithMiddleware.php">
     <MixedArrayAssignment occurrences="1">
       <code>$GLOBALS['test'][self::CONSTRUCTED_KEY]</code>
@@ -1725,15 +750,6 @@
     <MixedOperand occurrences="1">
       <code>$count</code>
     </MixedOperand>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/fixtures/Controller/RoutingTestController.php">
-    <InvalidOperand occurrences="2">
-      <code>$id</code>
-      <code>$param</code>
-    </InvalidOperand>
-    <MissingParamType occurrences="1">
-      <code>$param1</code>
-    </MissingParamType>
   </file>
   <file src="src/Snicco/Component/http-routing/tests/fixtures/FooMiddleware.php">
     <MissingParamType occurrences="1">
@@ -1796,30 +812,6 @@
       <code>$request-&gt;body</code>
     </NoInterfaceProperties>
   </file>
-  <file src="src/Snicco/Component/http-routing/tests/fixtures/TestDependencies/Bar.php">
-    <MissingParamType occurrences="1">
-      <code>$value</code>
-    </MissingParamType>
-    <MixedAssignment occurrences="1">
-      <code>$this-&gt;value</code>
-    </MixedAssignment>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/fixtures/TestDependencies/Baz.php">
-    <MissingParamType occurrences="1">
-      <code>$value</code>
-    </MissingParamType>
-    <MixedAssignment occurrences="1">
-      <code>$this-&gt;value</code>
-    </MixedAssignment>
-  </file>
-  <file src="src/Snicco/Component/http-routing/tests/fixtures/TestDependencies/Foo.php">
-    <MissingParamType occurrences="1">
-      <code>$value</code>
-    </MissingParamType>
-    <MixedAssignment occurrences="1">
-      <code>$this-&gt;value</code>
-    </MixedAssignment>
-  </file>
   <file src="src/Snicco/Component/http-routing/tests/fixtures/bad-routes/admin/admin.php">
     <UnusedClosureParam occurrences="1">
       <code>$router</code>
@@ -1857,343 +849,17 @@
       <code>$greet ?? 'World'</code>
     </MixedOperand>
   </file>
-  <file src="src/Snicco/Component/http-routing/tests/helpers/CreateTestPsr17Factories.php">
-    <MissingParamType occurrences="2">
-      <code>$arguments</code>
-      <code>$name</code>
-    </MissingParamType>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/Configuration/ConfigFactoryTest.php">
-    <MixedArrayAccess occurrences="3">
-      <code>$config['app']['foo']</code>
-      <code>$config['app']['foo']</code>
-      <code>$config['custom-config']['foo']</code>
-    </MixedArrayAccess>
-    <RedundantCondition occurrences="2">
-      <code>assertIsArray</code>
-      <code>assertIsArray</code>
-    </RedundantCondition>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/Configuration/WritableConfigTest.php">
-    <NullArgument occurrences="1">
-      <code>null</code>
-    </NullArgument>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/EnvironmentTest.php">
-    <InvalidArgument occurrences="2">
-      <code>''</code>
-      <code>'local'</code>
-    </InvalidArgument>
-    <TooManyArguments occurrences="1">
-      <code>Environment::prod(true)</code>
-    </TooManyArguments>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/KernelBootstrappersTest.php">
-    <MixedPropertyAssignment occurrences="3">
-      <code>$container['bootstrapper_1_booted']</code>
-      <code>$container['bootstrapper_2_booted']</code>
-      <code>$kernel-&gt;container()['bundle_info_booted']</code>
-    </MixedPropertyAssignment>
-    <MixedPropertyFetch occurrences="4">
-      <code>$app-&gt;container()-&gt;get('bootstrapper_2_booted')-&gt;val</code>
-      <code>$app-&gt;container()-&gt;get('bundle_info_booted')-&gt;val</code>
-      <code>$app-&gt;container()['bootstrapper_1_booted']-&gt;val</code>
-      <code>$container['bundle_info_booted']-&gt;val</code>
-    </MixedPropertyFetch>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/KernelBundlesTest.php">
-    <MixedArrayAssignment occurrences="1">
-      <code>$_SERVER['_test']['custom_env_bundle_should_run']</code>
-    </MixedArrayAssignment>
-    <MixedPropertyAssignment occurrences="2">
-      <code>$kernel-&gt;container()[$this-&gt;alias() . '.booted']</code>
-      <code>$kernel-&gt;container()['custom_env_bundle_run']</code>
-    </MixedPropertyAssignment>
-    <MixedPropertyFetch occurrences="5">
-      <code>$app-&gt;container()['bundle1.booted']-&gt;val</code>
-      <code>$app-&gt;container()['bundle2.booted']-&gt;val</code>
-      <code>$app-&gt;container()['bundle_that_asserts_order.bootstrapped']-&gt;val</code>
-      <code>$app-&gt;container()['bundle_that_configures.booted']-&gt;val</code>
-      <code>$app2-&gt;container()['custom_env_bundle_run']-&gt;val</code>
-    </MixedPropertyFetch>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/KernelTest.php">
-    <UnusedVariable occurrences="2">
-      <code>$container</code>
-      <code>$env</code>
-    </UnusedVariable>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/ValueObject/PHPCacheFileTest.php">
-    <MixedAssignment occurrences="1">
-      <code>$res</code>
-    </MixedAssignment>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/fixtures/bundles/Bundle1.php">
-    <MixedPropertyAssignment occurrences="1">
-      <code>$container['bundle1.booted']</code>
-    </MixedPropertyAssignment>
-    <MixedPropertyFetch occurrences="1">
-      <code>$container['bundle2.booted']-&gt;val</code>
-    </MixedPropertyFetch>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/fixtures/bundles/Bundle2.php">
-    <MixedPropertyAssignment occurrences="1">
-      <code>$container['bundle2.booted']</code>
-    </MixedPropertyAssignment>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/fixtures/bundles/BundleAssertsMethodOrder.php">
-    <MixedPropertyAssignment occurrences="1">
-      <code>$container[$this-&gt;alias() . '.bootstrapped']</code>
-    </MixedPropertyAssignment>
-  </file>
-  <file src="src/Snicco/Component/kernel/tests/helpers/WriteTestConfig.php">
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$dirs</code>
-    </MixedArgumentTypeCoercion>
-  </file>
   <file src="src/Snicco/Component/psr7-error-handler/tests/DisplayerFilter/CanDisplayTest.php">
-    <InvalidReturnType occurrences="3">
+    <InvalidReturnType occurrences="2">
       <code>string</code>
       <code>string</code>
       <code>string</code>
     </InvalidReturnType>
-  </file>
-  <file src="src/Snicco/Component/psr7-error-handler/tests/HttpErrorHandlerTest.php">
-    <ArgumentTypeCoercion occurrences="14">
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request</code>
-      <code>$this-&gt;base_request-&gt;withHeader('Accept', 'application/json')</code>
-      <code>$this-&gt;base_request-&gt;withHeader('Accept', 'text/plain')</code>
-      <code>$this-&gt;base_request-&gt;withHeader('Accept', 'text/plain')</code>
-      <code>$this-&gt;base_request-&gt;withHeader('Accept', 'text/plain')</code>
-      <code>$this-&gt;base_request-&gt;withHeader('Accept', 'text/plain')</code>
-      <code>$this-&gt;base_request-&gt;withHeader('Accept', 'text/plain')</code>
-    </ArgumentTypeCoercion>
-    <FalsableReturnStatement occurrences="1">
-      <code>json_encode('custom_fallback_displayer')</code>
-    </FalsableReturnStatement>
-    <InvalidFalsableReturnType occurrences="1">
-      <code>string</code>
-    </InvalidFalsableReturnType>
-    <MixedArgument occurrences="1">
-      <code>$transformers</code>
-    </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="4">
-      <code>$displayers</code>
-      <code>$this-&gt;error_data</code>
-      <code>$this-&gt;error_data</code>
-      <code>$this-&gt;error_data</code>
-    </MixedArgumentTypeCoercion>
-    <MixedArrayAccess occurrences="7">
-      <code>$body['details']</code>
-      <code>$body['identifier']</code>
-      <code>$body['title']</code>
-      <code>$this-&gt;error_data[500]['message']</code>
-      <code>$this-&gt;error_data[500]['message']</code>
-      <code>$this-&gt;error_data[500]['title']</code>
-      <code>$this-&gt;error_data[500]['title']</code>
-    </MixedArrayAccess>
-    <MixedAssignment occurrences="4">
-      <code>$body</code>
-      <code>$details</code>
-      <code>$this-&gt;error_data</code>
-      <code>$title</code>
-    </MixedAssignment>
-    <MixedOperand occurrences="2">
-      <code>$details</code>
-      <code>$title</code>
-    </MixedOperand>
-    <PossiblyFalseArgument occurrences="1"/>
-    <PossiblyUndefinedIntArrayOffset occurrences="3">
-      <code>$this-&gt;error_data[500]</code>
-      <code>$this-&gt;error_data[500]</code>
-      <code>$this-&gt;error_data[500]</code>
-    </PossiblyUndefinedIntArrayOffset>
-  </file>
-  <file src="src/Snicco/Component/psr7-error-handler/tests/HttpInformationProviderTest.php">
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$data</code>
-    </MixedArgumentTypeCoercion>
-  </file>
-  <file src="src/Snicco/Component/psr7-error-handler/tests/fixtures/JsonExceptionDisplayer.php">
-    <FalsableReturnStatement occurrences="1"/>
-    <InvalidFalsableReturnType occurrences="1">
-      <code>string</code>
-    </InvalidFalsableReturnType>
-  </file>
-  <file src="src/Snicco/Component/psr7-error-handler/tests/fixtures/TooManyRequestsTransformer.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>['X-Retry-After' =&gt; 10]</code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="src/Snicco/Component/scopable-wp/tests/wordpress/ScopableWPTest.php">
-    <InvalidArgument occurrences="4">
-      <code>$user1</code>
-      <code>$user1</code>
-      <code>$user2</code>
-      <code>$user2</code>
-    </InvalidArgument>
-    <MixedArgument occurrences="2">
-      <code>$user-&gt;ID</code>
-      <code>$user-&gt;ID</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="4">
-      <code>$count</code>
-      <code>$count</code>
-      <code>$user</code>
-      <code>$user</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="8">
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-      <code>create_and_get</code>
-    </MixedMethodCall>
-    <MixedOperand occurrences="2">
-      <code>$count</code>
-      <code>$count</code>
-    </MixedOperand>
-    <MixedPropertyFetch occurrences="10">
-      <code>$this-&gt;factory()-&gt;post</code>
-      <code>$this-&gt;factory()-&gt;post</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$this-&gt;factory()-&gt;user</code>
-      <code>$user-&gt;ID</code>
-      <code>$user-&gt;ID</code>
-    </MixedPropertyFetch>
-    <TooManyArguments occurrences="1">
-      <code>apply_filters('foobar', 'foo', 'bar')</code>
-    </TooManyArguments>
-    <UndefinedMagicMethod occurrences="3">
-      <code>bogus</code>
-      <code>cacheFlush</code>
-      <code>cacheGetMultiple</code>
-    </UndefinedMagicMethod>
-  </file>
-  <file src="src/Snicco/Component/session/tests/ReadWriteSessionTest.php">
-    <InvalidReturnType occurrences="1">
-      <code>SerializedSessionData</code>
-    </InvalidReturnType>
-    <MixedArgument occurrences="10">
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.new')</code>
-      <code>$session-&gt;get('_flash.old')</code>
-      <code>$session-&gt;get('_flash.old')</code>
-      <code>$session-&gt;get('_flash.old')</code>
-    </MixedArgument>
-    <PossiblyUndefinedIntArrayOffset occurrences="1">
-      <code>$events[0]</code>
-    </PossiblyUndefinedIntArrayOffset>
-  </file>
-  <file src="src/Snicco/Component/session/tests/SessionManager/FactorySessionManagerTest.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$default</code>
-    </ArgumentTypeCoercion>
-    <MixedAssignment occurrences="1">
-      <code>$count</code>
-    </MixedAssignment>
-    <MixedOperand occurrences="1">
-      <code>$count</code>
-    </MixedOperand>
-  </file>
-  <file src="src/Snicco/Component/session/tests/ValueObject/SessionConfigTest.php">
-    <MixedArgumentTypeCoercion occurrences="27">
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-      <code>$this-&gt;defaults</code>
-    </MixedArgumentTypeCoercion>
-  </file>
-  <file src="src/Snicco/Component/session/tests/fixtures/SessionHelpers.php">
-    <MissingParamType occurrences="1">
-      <code>$id</code>
-    </MissingParamType>
-    <MixedArgument occurrences="1">
-      <code>$id ?? SessionId::createFresh()</code>
-    </MixedArgument>
-  </file>
-  <file src="src/Snicco/Component/session/tests/fixtures/TestEventDispatcher.php">
-    <MixedPropertyTypeCoercion occurrences="1">
-      <code>$listeners</code>
-    </MixedPropertyTypeCoercion>
-  </file>
-  <file src="src/Snicco/Component/signed-url/tests/SignedUrlValidatorTest.php">
-    <PossiblyUndefinedIntArrayOffset occurrences="1">
-      <code>$matches[1]</code>
-    </PossiblyUndefinedIntArrayOffset>
-  </file>
-  <file src="src/Snicco/Component/str-arr/tests/ArrTest.php">
-    <InvalidArgument occurrences="2">
-      <code>'foo'</code>
-      <code>0</code>
-    </InvalidArgument>
-    <NullArgument occurrences="2">
-      <code>null</code>
-      <code>null</code>
-    </NullArgument>
-    <PossiblyUndefinedIntArrayOffset occurrences="3">
-      <code>$random[0]</code>
-      <code>$random[0]</code>
-      <code>$random[1]</code>
-    </PossiblyUndefinedIntArrayOffset>
   </file>
   <file src="src/Snicco/Component/templating/tests/fixtures/views/bad-function.php">
     <UndefinedFunction occurrences="1">
       <code>foo()</code>
     </UndefinedFunction>
-  </file>
-  <file src="src/Snicco/Component/templating/tests/fixtures/views/context-priority.php">
-    <MixedArgument occurrences="1">
-      <code>$test_context['foo.bar']</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$test_context['foo.bar']</code>
-    </MixedArrayAccess>
-    <UndefinedGlobalVariable occurrences="1">
-      <code>$test_context</code>
-    </UndefinedGlobalVariable>
   </file>
   <file src="src/Snicco/Component/templating/tests/fixtures/views/global-context.php">
     <MixedArgument occurrences="1">
@@ -2209,22 +875,6 @@
   <file src="src/Snicco/Component/templating/tests/fixtures/views/greeting.php">
     <UndefinedGlobalVariable occurrences="1">
       <code>$name</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="src/Snicco/Component/templating/tests/fixtures/views/has-engine.php">
-    <MixedArgument occurrences="1">
-      <code>$view</code>
-    </MixedArgument>
-  </file>
-  <file src="src/Snicco/Component/templating/tests/fixtures/views/inline-render.php">
-    <MixedMethodCall occurrences="1">
-      <code>render</code>
-    </MixedMethodCall>
-    <MixedOperand occurrences="1">
-      <code>$view-&gt;render('greeting', ['name' =&gt; 'Calvin'])</code>
-    </MixedOperand>
-    <UndefinedGlobalVariable occurrences="1">
-      <code>$view</code>
     </UndefinedGlobalVariable>
   </file>
   <file src="src/Snicco/Component/templating/tests/fixtures/views/multiple-globals.php">

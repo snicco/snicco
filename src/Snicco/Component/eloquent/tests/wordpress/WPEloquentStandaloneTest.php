@@ -40,7 +40,7 @@ final class WPEloquentStandaloneTest extends WPTestCase
 
         $this->withDatabaseExceptions(function (): void {
             global $wpdb;
-            $wpdb->query('CREATE DATABASE IF NOT EXISTS sniccowp_2_testing');
+            $wpdb->query('CREATE DATABASE IF NOT EXISTS snicco_2_testing');
         });
     }
 
@@ -48,7 +48,7 @@ final class WPEloquentStandaloneTest extends WPTestCase
     {
         $this->withDatabaseExceptions(function (): void {
             global $wpdb;
-            $wpdb->query('DROP DATABASE IF EXISTS sniccowp_2_testing');
+            $wpdb->query('DROP DATABASE IF EXISTS snicco_2_testing');
         });
         parent::tearDown();
     }
@@ -194,6 +194,6 @@ final class WPEloquentStandaloneTest extends WPTestCase
 
         $this->assertSame('mysql2', $schema->getConnection()->getName());
         $this->assertSame('mysql', $schema->getConnection()->getConfig('driver'));
-        $this->assertSame('sniccowp_2_testing', $schema->getConnection()->getConfig('database'));
+        $this->assertSame('snicco_2_testing', $schema->getConnection()->getConfig('database'));
     }
 }
