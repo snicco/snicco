@@ -34,7 +34,7 @@ module.exports = {
                 "src/**/composer.json",
                 "monorepo-builder.php"
             ],
-            "message": "chore(monorepo): release v${nextRelease.version} [skip ci]"
+            "message": "chore(monorepo): release v${nextRelease.version}"
         }]
     ]
 }
