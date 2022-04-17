@@ -17,9 +17,9 @@
         }
     },
     "require-dev": {
+        "codeception/codeception": "4.1.29",
         "lucatume/wp-browser": "~3.1.4",
-        "phpunit/phpunit": "9.5.13",
-        "codeception/codeception": "4.1.29"
+        "phpunit/phpunit": "9.5.13"
     },
     "autoload-dev": {
         "psr-4": {
@@ -78,7 +78,15 @@
         "snicco/better-wp-mail-bundle": "<1.0.0",
         "snicco/better-wp-cache-bundle": "<1.0.0",
         "snicco/session-bundle": "<1.0.0",
-        "snicco/encryption-bundle": "<1.0.0"
+        "snicco/encryption-bundle": "<1.0.0",
+        "snicco/wp-guests-only-middleware": "<1.0.0",
+        "snicco/wp-capability-middleware": "<1.0.0",
+        "snicco/better-wp-mail-testing": "<1.0.0",
+        "snicco/session-testing": "<1.0.0",
+        "snicco/kernel-testing": "<1.0.0",
+        "snicco/signed-url-testing": "<1.0.0",
+        "snicco/http-routing-testing": "<1.0.0",
+        "snicco/event-dispatcher-testing": "<1.0.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
