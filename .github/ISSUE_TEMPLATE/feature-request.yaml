@@ -1,0 +1,104 @@
+name: 🚀 Feature Request
+description: RFC and ideas for new features and improvements
+labels: feature
+title: "[Feature]: "
+
+
+body:
+
+  - type: checkboxes
+    id: conditions
+    attributes:
+      label: Thanks for taking the time to fill out this feature request!"
+      options:
+        - label: I have searched the issue tracker for similar requests
+          required: true
+          
+  - type: dropdown
+    id: affected-packages
+    attributes:
+      label: "Which @snicco/* package(s) are relevant/related of the feature request?"
+      options:
+        - monorepo
+        - other/dont-know
+        - better-wp-api
+        - better-wp-cache
+        - better-wp-hooks
+        - better-wp-mail
+        - better-wpdb
+        - eloquent
+        - event-dispatcher
+        - http-routing
+        - kernel
+        - psr7-error-handler
+        - session
+        - signed-url
+        - str-arr
+        - templating
+        - testable-clock
+        - blade-bridge
+        - illuminate-container-bridge
+        - pimple-bridge
+        - session-psr16-bridge
+        - session-wp-bridge
+        - signed-url-psr15-bridge
+        - signed-url-psr16-bridge
+        - better-wp-cache-bundle
+        - better-wp-hooks-bundle
+        - better-wp-mail-bundle
+        - better-wpdb-bundle
+        - blade-bundle
+        - debug-bundle
+        - encryption-bundle
+        - http-routing-bundle
+        - session-bundle
+        - templating-bundle
+        - testing-bundle
+        - content-negotiation-middleware
+        - default-headers-middleware
+        - https-only-middleware
+        - method-override-middleware
+        - must-match-route-middleware
+        - no-robots-middleware
+        - open-redirect-protection-middleware
+        - payload-middleware
+        - redirect-middleware
+        - share-cookies-middleware
+        - trailing-slash-middleware
+        - wp-auth-only-middleware
+        - wp-capability-middleware
+        - wp-guests-only-middleware
+        - wp-nonce-middleware
+        - better-wp-mail-testing
+        - event-dispatcher-testing
+        - http-routing-testing
+        - kernel-testing
+        - session-testing
+        - signed-url-testing
+      multiple: true
+    validations:
+      required: true
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the context, the use-case and the advantages of the feature request.
+    validations:
+      required: true
+  
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe your proposed solution.
+    validations:
+      required: true
+      
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: "Optional: describe alternatives you have considered."
+      
+  

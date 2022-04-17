@@ -1,0 +1,153 @@
+name: 🐛 Bug Report
+description: Something is not working as expected. ⚠️ NEVER report security issues here.
+labels: bug
+title: "[Bug]: "
+
+
+body:
+  - type: checkboxes
+    id: conditions
+    attributes:
+      label: Thanks for taking the time to fill out this bug report!"
+      options:
+        - label: I have searched the issue tracker for similar issues
+          required: true
+        - label: I have verified that the issue is present when using the most recent version of the affected package(s)
+          required: true
+   
+  - type: dropdown
+    id: affected-packages
+    attributes:
+      label: "Which @snicco/* package(s) are the source of the bug?"
+      options:
+        - monorepo
+        - other/dont-know
+        - better-wp-api
+        - better-wp-cache
+        - better-wp-hooks
+        - better-wp-mail
+        - better-wpdb
+        - eloquent
+        - event-dispatcher
+        - http-routing
+        - kernel
+        - psr7-error-handler
+        - session
+        - signed-url
+        - str-arr
+        - templating
+        - testable-clock
+        - blade-bridge
+        - illuminate-container-bridge
+        - pimple-bridge
+        - session-psr16-bridge
+        - session-wp-bridge
+        - signed-url-psr15-bridge
+        - signed-url-psr16-bridge
+        - better-wp-cache-bundle
+        - better-wp-hooks-bundle
+        - better-wp-mail-bundle
+        - better-wpdb-bundle
+        - blade-bundle
+        - debug-bundle
+        - encryption-bundle
+        - http-routing-bundle
+        - session-bundle
+        - templating-bundle
+        - testing-bundle
+        - content-negotiation-middleware
+        - default-headers-middleware
+        - https-only-middleware
+        - method-override-middleware
+        - must-match-route-middleware
+        - no-robots-middleware
+        - open-redirect-protection-middleware
+        - payload-middleware
+        - redirect-middleware
+        - share-cookies-middleware
+        - trailing-slash-middleware
+        - wp-auth-only-middleware
+        - wp-capability-middleware
+        - wp-guests-only-middleware
+        - wp-nonce-middleware
+        - better-wp-mail-testing
+        - event-dispatcher-testing
+        - http-routing-testing
+        - kernel-testing
+        - session-testing
+        - signed-url-testing
+      multiple: true
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: is-regression
+    attributes:
+      label: Is this a regression?
+      options:
+        - 'Yes'
+        - 'No'
+    validations:
+      required: true
+  
+  - type: textarea
+    id: composer-deps
+    attributes:
+      label: Composer dependencies
+      description: Please copy and paste the output of running `composer show` here. This will be automatically formatted into code, so no need for backticks.
+      render: shell      
+    validations:
+      required: true       
+      
+  
+  - type: textarea
+    id: current-behaviour
+    attributes:
+      label: Current behaviour
+      description: What is currently happening. Try to be as concise as possible.
+      placeholder: The session id is not rotated when a user is logged out.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behaviour
+      description: What is the desired behaviour. Try to be as concise as possible.
+      placeholder: When a user is logged out the session id should be rotated automatically and the old session should be destroyed.
+    validations:
+      required: true
+  - type: textarea
+    id: how-to-reproduce
+    attributes:
+      label: How to reproduce
+      description: |
+            ⚠️  This is the most important part of the report ⚠️
+            Without a way to easily reproduce your issue, there is little chance we will be able to help you and work on a fix.
+            Please, take the time to show us some code and/or config that is needed for others to reproduce the problem easily.
+            A code snippet is sufficient. A failing test is ideal.
+      value: | 
+            ```php
+                // Code goes here
+            ```      
+    validations:
+      required: true
+
+  - type: textarea
+    id: possible-solution
+    attributes:
+      label: Possible solution
+      description: "Optional: only if you have suggestions on a fix/reason for the bug."
+      
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Relevant log output"
+      description: "Optional: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks."
+      render: shell
+
+  - type: textarea
+    id: additional-context
+    attributes:
+       label: Additional Context
+       description: "Optional: any other context about the problem: screenshots, etc."
+

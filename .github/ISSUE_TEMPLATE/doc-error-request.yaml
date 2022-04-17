@@ -1,0 +1,89 @@
+name: 📚 Documentation error/request
+description: Something is wrong, unclear or missing in the documentation.
+labels: docs
+title: "[Docs]: "
+
+
+body:
+  - type: checkboxes
+    id: conditions
+    attributes:
+      label: Thanks for taking the time to fill out this documentation request!"
+      options:
+        - label: I have searched the issue tracker for similar issues
+          required: true
+        - label: I have searched the documentation of the relevant package(s)
+          required: true 
+   
+  - type: dropdown
+    id: affected-packages
+    attributes:
+      label: "Which @snicco/* package(s) have missing/wrong/unclear documenation?"
+      options:
+        - monorepo
+        - other/dont-know
+        - better-wp-api
+        - better-wp-cache
+        - better-wp-hooks
+        - better-wp-mail
+        - better-wpdb
+        - eloquent
+        - event-dispatcher
+        - http-routing
+        - kernel
+        - psr7-error-handler
+        - session
+        - signed-url
+        - str-arr
+        - templating
+        - testable-clock
+        - blade-bridge
+        - illuminate-container-bridge
+        - pimple-bridge
+        - session-psr16-bridge
+        - session-wp-bridge
+        - signed-url-psr15-bridge
+        - signed-url-psr16-bridge
+        - better-wp-cache-bundle
+        - better-wp-hooks-bundle
+        - better-wp-mail-bundle
+        - better-wpdb-bundle
+        - blade-bundle
+        - debug-bundle
+        - encryption-bundle
+        - http-routing-bundle
+        - session-bundle
+        - templating-bundle
+        - testing-bundle
+        - content-negotiation-middleware
+        - default-headers-middleware
+        - https-only-middleware
+        - method-override-middleware
+        - must-match-route-middleware
+        - no-robots-middleware
+        - open-redirect-protection-middleware
+        - payload-middleware
+        - redirect-middleware
+        - share-cookies-middleware
+        - trailing-slash-middleware
+        - wp-auth-only-middleware
+        - wp-capability-middleware
+        - wp-guests-only-middleware
+        - wp-nonce-middleware
+        - better-wp-mail-testing
+        - event-dispatcher-testing
+        - http-routing-testing
+        - kernel-testing
+        - session-testing
+        - signed-url-testing
+      multiple: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: doc-request
+    attributes:
+      label: Which part of the documentation is unclear, missing or wrong?
+    validations:
+      required: true
+

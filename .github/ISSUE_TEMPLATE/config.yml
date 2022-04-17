@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support Question
+    url: https://github.com/snicco/snicco/blob/master/CONTRIBUTING.md#questions-and-problems
+    about: We use GitHub issues for bug reports and feature requests only. For other types of questions please consult CONTRIBUTING.md#questions-and-problems
