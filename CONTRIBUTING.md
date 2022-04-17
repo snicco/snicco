@@ -80,7 +80,7 @@ Consult our [security policy](SECURITY.md) instead.
 
 [A good bug report shouldn't leave others needing to chase you for more information](https://tomasvotruba.com/blog/2021/02/01/effective-debug-tricks-narrow-scoping/)
 . Please try to be as detailed as possible in your report and fill the information requested in
-the [bug report template](https://github.com/semantic-release/semantic-release/issues/new?template=01_bug_report.md).
+the [bug report template](https://github.com/snicco/snicco/issues/new?assignees=&labels=bug&template=bug-report.yaml&title=%5BBug%5D%3A+).
 
 **! Not following the bug report template will lead to automatic closing of the issue by
 our [Snicco-Bot](https://github.com/snicco-bot).**
@@ -90,7 +90,7 @@ our [Snicco-Bot](https://github.com/snicco-bot).**
 Feature requests are welcome, but take a moment to find out whether your idea fits with the scope and aims of the
 project. It's up to you to make a strong case to convince the project's developers of the merits of this feature. Please
 provide as much detail and context as possible and fill the information requested in
-the [feature request template](https://github.com/semantic-release/semantic-release/issues/new?template=02_feature_request.md)
+the [feature request template](https://github.com/snicco/snicco/issues/new?assignees=&labels=feature&template=feature-request.yaml&title=%5BFeature%5D%3A+)
 .
 
 ## Submitting a Pull Request
@@ -278,7 +278,7 @@ To ensure consistency and quality, all documentation modifications must:
   for:
     - commands inside sentences, i.e. the `composer tests` command
     - programming language keywords, i.e. `function`, `method`, `class`
-    - packages or modules, i.e. The [`snicco/kernel`](https://github.com/semantic-release/github) module
+    - packages or modules, i.e. The [`snicco/kernel`](https://github.com/snicco/kernel) module
 - Use the [triple backtick `code` formatting](https://help.github.com/articles/creating-and-highlighting-code-blocks)
   for:
     - code examples
@@ -290,7 +290,7 @@ To ensure consistency and quality, all documentation modifications must:
 We have very precise rules over how our git commit messages can be formatted. This leads to more readable messages that
 are easy to follow when looking through the project history.
 
-But also, we use the git commit messages to automatically generate our [changelog](#CHANGELOG.md) and even our releases
+But also, we use the git commit messages to automatically generate our [changelog](CHANGELOG.md) and even our releases
 are [fully automatic based on the commit messages](https://semantic-release.gitbook.io/semantic-release/).
 
 **DON'T BE SCARED!**
@@ -327,7 +327,7 @@ a **type**, a **scope** and a **subject**:
 <footer>
 ```
 
-The **header** is mandatory and the scope must be one of the [defined scopes.](/commit-scopes.json)
+The **header** is mandatory and the scope must be one of the [defined scopes.](commit-scopes.json)
 
 Multiple scopes can be combined with a `,`. A `*` can be used if a lot of scopes are affected.
 
