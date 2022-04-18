@@ -21,7 +21,7 @@
         "snicco/better-wp-api": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "symfony/finder": "^5.0"
     },
     "autoload": {

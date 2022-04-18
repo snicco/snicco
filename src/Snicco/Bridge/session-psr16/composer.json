@@ -14,7 +14,7 @@
     },
     "require-dev": {
         "cache/array-adapter": "^1.0.0",
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "snicco/session-testing": "^1.0",
         "snicco/testable-clock": "^1.0"
     },

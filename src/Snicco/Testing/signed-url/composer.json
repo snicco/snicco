@@ -12,7 +12,7 @@
         "php": "^7.4|^8.0",
         "snicco/testable-clock": "^1.0",
         "snicco/signed-url": "^1.0",
-        "phpunit/phpunit": "9.5.13"
+        "phpunit/phpunit": "^9.5.13"
     },
     "autoload": {
         "psr-4": {

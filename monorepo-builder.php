@@ -29,11 +29,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ComposerJsonSection::REQUIRE_DEV => [
             // These packages are needed during development in the monorepo but are not a dependency of any other package
             // (expect the testing packages).
-            'phpunit/phpunit' => '9.5.13',
-            'codeception/codeception' => '4.1.29',
+            'phpunit/phpunit' => '^9.5.13',
+            'codeception/codeception' => '^4.1.29',
             'symplify/monorepo-builder' => '9.4.70',
             'vlucas/phpdotenv' => '5.4.1',
-            'lucatume/wp-browser' => '~3.1.4',
+            'lucatume/wp-browser' => '^3.1.4',
             'vimeo/psalm' => '^4.10',
             'rector/rector' => '0.12.18',
             'symplify/easy-coding-standard' => '10.1.2',

@@ -19,9 +19,9 @@
         "snicco/better-wp-api": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "9.5.13",
-        "codeception/codeception": "4.1.29",
-        "lucatume/wp-browser": "~3.1.4",
+        "phpunit/phpunit": "^9.5.13",
+        "codeception/codeception": "^4.1.29",
+        "lucatume/wp-browser": "^3.1.4",
         "snicco/str-arr": "^1.0",
         "illuminate/events": "^8.81",
         "fakerphp/faker": "^1.0.0-stable"

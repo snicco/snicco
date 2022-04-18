@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "snicco/event-dispatcher": "^1.0"
     },
     "autoload": {
