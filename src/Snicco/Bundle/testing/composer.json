@@ -8,9 +8,9 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "phpunit/phpunit": "9.5.13",
-        "lucatume/wp-browser": "~3.1.4",
-        "codeception/codeception": "4.1.29",
+        "phpunit/phpunit": "^9.5.13",
+        "lucatume/wp-browser": "^3.1.4",
+        "codeception/codeception": "^4.1.29",
         "snicco/kernel": "^1.0",
         "snicco/psr7-error-handler": "^1.0",
         "snicco/session": "^1.0",

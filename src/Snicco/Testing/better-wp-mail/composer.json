@@ -10,9 +10,9 @@
     "require": {
         "php": "^7.4|^8.0",
         "snicco/better-wp-mail": "^1.0",
-        "phpunit/phpunit": "9.5.13",
-        "codeception/codeception": "4.1.29",
-        "lucatume/wp-browser": "~3.1.4"
+        "phpunit/phpunit": "^9.5.13",
+        "codeception/codeception": "^4.1.29",
+        "lucatume/wp-browser": "^3.1.4"
     },
     "autoload": {
         "psr-4": {

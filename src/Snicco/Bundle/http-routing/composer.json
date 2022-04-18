@@ -22,9 +22,9 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
-        "phpunit/phpunit": "9.5.13",
-        "lucatume/wp-browser": "~3.1.4",
-        "codeception/codeception": "4.1.29",
+        "phpunit/phpunit": "^9.5.13",
+        "lucatume/wp-browser": "^3.1.4",
+        "codeception/codeception": "^4.1.29",
         "snicco/testing-bundle": "^1.0",
         "snicco/http-routing-testing": "^1.0",
         "snicco/pimple-bridge": "^1.0",

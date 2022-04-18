@@ -15,7 +15,7 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "snicco/pimple-bridge": "^1.0"
     },
     "autoload": {

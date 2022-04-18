@@ -79,9 +79,9 @@
         "snicco/event-dispatcher-testing": "<1.0.0"
     },
     "require-dev": {
-        "codeception/codeception": "4.1.29",
-        "lucatume/wp-browser": "~3.1.4",
-        "phpunit/phpunit": "9.5.13"
+        "codeception/codeception": "^4.1.29",
+        "lucatume/wp-browser": "^3.1.4",
+        "phpunit/phpunit": "^9.5.13"
     },
     "license": "LGPL-3.0-only",
     "minimum-stability": "dev",

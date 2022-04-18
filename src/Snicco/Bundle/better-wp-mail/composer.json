@@ -14,12 +14,12 @@
         "snicco/event-dispatcher": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "snicco/testing-bundle": "^1.0",
         "snicco/better-wp-hooks-bundle": "^1.0",
         "snicco/templating-bundle": "^1.0",
-        "codeception/codeception": "4.1.29",
-        "lucatume/wp-browser": "~3.1.4",
+        "codeception/codeception": "^4.1.29",
+        "lucatume/wp-browser": "^3.1.4",
         "snicco/better-wp-mail-testing": "^1.0"
     },
     "autoload": {

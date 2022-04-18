@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "snicco/kernel": "^1.0"
     },
     "autoload": {

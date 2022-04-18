@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "nyholm/psr7": "^1.0.0",
-        "phpunit/phpunit": "9.5.13",
+        "phpunit/phpunit": "^9.5.13",
         "pimple/pimple": "^3.5",
         "snicco/http-routing": "^1.0"
     },
