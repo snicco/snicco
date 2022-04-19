@@ -28,9 +28,6 @@
             "Snicco\\Component\\Psr7ErrorHandler\\Tests\\": "tests"
         }
     },
-    "bin": [
-        "bin/generate-signed-url-secret"
-    ],
     "conflict": {
         "snicco/http-routing": "<1.0.1",
         "snicco/testable-clock": "<1.0.1",
