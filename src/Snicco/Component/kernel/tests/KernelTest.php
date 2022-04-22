@@ -17,6 +17,9 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
+use function Clue\StreamFilter\fun;
+use function func;
+
 /**
  * @internal
  */
@@ -245,6 +248,30 @@ final class KernelTest extends TestCase
 
         $this->assertSame('testing', $kernel->config()->get('foo'));
     }
+
+    /**
+     * @test
+     */
+    public function that_calling_after_configuration_loaded_to_late_throws_an_exception(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->afterConfigurationLoaded(function (WritableConfig $config, Kernel $kernel): void {
+                $config->set('foo', $kernel->env()->asString());
+            });
+        });
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('::afterConfigurationLoaded can not be called from inside a bundle or bootstrapper.');
+
+        $kernel->boot();
+    }
+
 
     /**
      * @test
