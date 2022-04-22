@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/snicco/snicco/compare/v1.0.1...v1.0.2) (2022-04-22)
+
+
+### Bug Fixes
+
+* **http-routing-bundle:** resolve exception transformer from container ([fec8baf](https://github.com/snicco/snicco/commit/fec8baf42143494b63487274a8abe5e2fbf1d9ef)), closes [#132](https://github.com/snicco/snicco/issues/132)
+* **kernel:** throw logic exception for incorrect use of kernel callbacks ([4c188a7](https://github.com/snicco/snicco/commit/4c188a7b5547483fb831602436e9ec7247aea4e2)), closes [#128](https://github.com/snicco/snicco/issues/128)
+
 ## [1.0.1](https://github.com/snicco/snicco/compare/v1.0.0...v1.0.1) (2022-04-18)
 
 
