@@ -29,6 +29,7 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformation;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionInformationProvider;
 use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
+use stdClass;
 use Throwable;
 use TypeError;
 
@@ -128,8 +129,18 @@ final class ErrorHandlingTest extends TestCase
                 HttpErrorHandlingOption::REQUEST_LOG_CONTEXT => [
                     PathLogContext::class,
                     QueryStringLogContext::class,
+                    LogContextWithDependency::class,
                 ],
             ]);
+        });
+        $kernel->afterRegister(function (Kernel $kernel): void {
+            $kernel->container()
+                ->shared(
+                    LogContextWithDependency::class,
+                    fn (): \Snicco\Bundle\HttpRouting\Tests\unit\LogContextWithDependency => new LogContextWithDependency(
+                        new stdClass()
+                    )
+                );
         });
 
         $kernel->boot();
@@ -166,8 +177,21 @@ final class ErrorHandlingTest extends TestCase
         $kernel = new Kernel($this->newContainer(), Environment::prod(), $this->directories);
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('http_error_handling', [
-                HttpErrorHandlingOption::TRANSFORMERS => [Transformer2::class, Transformer1::class],
+                HttpErrorHandlingOption::TRANSFORMERS => [
+                    Transformer2::class,
+                    Transformer1::class,
+                    TransformerWithDependency::class,
+                ],
             ]);
+        });
+        $kernel->afterRegister(function (Kernel $kernel): void {
+            $kernel->container()
+                ->shared(
+                    TransformerWithDependency::class,
+                    fn (): \Snicco\Bundle\HttpRouting\Tests\unit\TransformerWithDependency => new TransformerWithDependency(
+                        new stdClass()
+                    )
+                );
         });
 
         $kernel->boot();
@@ -292,7 +316,8 @@ final class ErrorHandlingTest extends TestCase
     public function a_custom_exception_information_provider_can_be_used(): void
     {
         $container = $this->newContainer();
-        $container[ExceptionInformationProvider::class] = fn (): ExceptionInformationProvider => new class() implements ExceptionInformationProvider {
+        $container[ExceptionInformationProvider::class] = fn (): ExceptionInformationProvider => new class() implements
+            ExceptionInformationProvider {
             public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
             {
                 return new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request,);
@@ -468,6 +493,21 @@ final class Transformer2 implements ExceptionTransformer
     }
 }
 
+final class TransformerWithDependency implements ExceptionTransformer
+{
+    public stdClass $class;
+
+    public function __construct(stdClass $class)
+    {
+        $this->class = $class;
+    }
+
+    public function transform(Throwable $e): Throwable
+    {
+        return $e;
+    }
+}
+
 final class PathLogContext implements RequestLogContext
 {
     public function add(array $context, ExceptionInformation $information): array
@@ -484,6 +524,21 @@ final class QueryStringLogContext implements RequestLogContext
     {
         $context['query_string'] = $information->serverRequest()->getUri()->getQuery();
 
+        return $context;
+    }
+}
+
+final class LogContextWithDependency implements RequestLogContext
+{
+    public stdClass $class;
+
+    public function __construct(stdClass $class)
+    {
+        $this->class = $class;
+    }
+
+    public function add(array $context, ExceptionInformation $information): array
+    {
         return $context;
     }
 }

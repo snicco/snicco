@@ -212,7 +212,10 @@ final class HttpRoutingBundle implements Bundle
                 'http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
             );
 
-            $log_context = array_map(fn ($class): RequestLogContext => new $class(), $log_context_classes);
+            $log_context = array_map(
+                fn ($class): RequestLogContext => $container[$class] ?? new $class(),
+                $log_context_classes
+            );
 
             /** @var array<class-string<Throwable>,string> $log_levels */
             $log_levels = $config->getArray('http_error_handling.' . HttpErrorHandlingOption::LOG_LEVELS);
@@ -377,7 +380,10 @@ final class HttpRoutingBundle implements Bundle
             'http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS
         );
 
-        $transformers = array_map(fn (string $class): ExceptionTransformer => new $class(), $transformer_classes);
+        $transformers = array_map(
+            fn (string $class): ExceptionTransformer => $container[$class] ?? new $class(),
+            $transformer_classes
+        );
 
         return InformationProviderWithTransformation::fromDefaultData($identifier, ...$transformers);
     }

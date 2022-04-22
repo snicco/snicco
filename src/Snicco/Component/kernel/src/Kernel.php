@@ -156,8 +156,8 @@ final class Kernel
      * Adds a callback that will be run after all configuration files have been
      * loaded from disk but BEFORE all bundles are configured.
      *
-     * Callbacks will NOT be run if the configuration is cached.
-     * This method can not be called from inside a bundle or bootstrapper.
+     * Callbacks will NOT be run if the configuration is cached. This method can
+     * not be called from inside a bundle or bootstrapper.
      *
      * @param callable(WritableConfig, Kernel):void $callback
      */
@@ -166,9 +166,11 @@ final class Kernel
         if ($this->booted) {
             throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
         }
-        if($this->after_config_loaded_is_locked) {
-            throw new LogicException(__METHOD__. ' can not be called from inside a bundle or bootstrapper.');
+
+        if ($this->after_config_loaded_is_locked) {
+            throw new LogicException(__METHOD__ . ' can not be called from inside a bundle or bootstrapper.');
         }
+
         $this->after_config_loaded_callbacks[] = $callback;
     }
 
@@ -183,6 +185,7 @@ final class Kernel
         foreach ($this->after_config_loaded_callbacks as $callback) {
             $callback($writable_config, $this);
         }
+
         $this->after_config_loaded_is_locked = true;
 
         $this->setBundlesAndBootstrappers(
