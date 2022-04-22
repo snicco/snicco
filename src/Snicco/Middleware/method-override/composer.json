@@ -9,7 +9,6 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "middlewares/negotiation": "^2.1.0",
         "snicco/http-routing": "^1.0.1"
     },
     "require-dev": {
