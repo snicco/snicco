@@ -249,6 +249,31 @@ final class KernelTest extends TestCase
     /**
      * @test
      */
+    public function that_calling_after_configuration_loaded_to_late_throws_an_exception(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->afterRegister(function (Kernel $kernel): void {
+            $kernel->afterConfigurationLoaded(function (WritableConfig $config, Kernel $kernel): void {
+                $config->set('foo', $kernel->env()->asString());
+            });
+        });
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            '::afterConfigurationLoaded can not be called from inside a bundle or bootstrapper.'
+        );
+
+        $kernel->boot();
+    }
+
+    /**
+     * @test
+     */
     public function test_exception_if_after_register_callback_is_added_after_kernel_is_booted(): void
     {
         $kernel = new Kernel(
