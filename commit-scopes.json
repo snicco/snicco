@@ -3,6 +3,7 @@
     "*",
     "better-wp-api",
     "better-wp-cache",
+    "better-wp-cli",
     "better-wp-hooks",
     "better-wp-mail",
     "better-wpdb",

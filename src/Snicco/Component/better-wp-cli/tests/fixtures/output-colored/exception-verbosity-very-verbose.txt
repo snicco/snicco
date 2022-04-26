@@ -1,0 +1,8 @@
+
+[33mIn WPCLIApplicationTest.php line 1:[0m
+[41m                              [0m
+[41m[37m  [InvalidArgumentException]  [0m
+[41m[37m  foobar                      [0m
+[41m                              [0m
+
+[33mException trace:[0m

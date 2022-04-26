@@ -44,10 +44,7 @@
     "PHPMailer\\PHPMailer\\Exception",
     "WP_UnitTest_Factory",
     "WP_UnitTest_Factory_For_User",
-    "_________TESTING_CLASSES_TEMPORARY__________",
-    "Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
-    "Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
-    "Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
+    "WP_CLI",
     "_________ONLY_AS_STRINGS__________",
     "GuzzleHttp\\Psr7\\HttpFactory",
     "Nyholm\\Psr7\\Factory\\Psr17Factory",
@@ -68,6 +65,7 @@
     "void",
     "object",
     "mixed",
-    "never"
+    "never",
+    "sapi_windows_vt100_support"
   ]
 }
