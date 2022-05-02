@@ -1,0 +1,16 @@
+namespace: Snicco\Component\BetterWPCLI\Tests
+actor: CliTester
+
+modules:
+  enabled:
+    - WPCLI
+  config:
+    WPCLI:
+      path: "%WP_ROOT_FOLDER%"
+      throw: false
+      timeout: 60
+      env:
+        disable-auto-update: true
+#        php-args: 'foo=bar some=23'
+
+bootstrap: bootstrap.php

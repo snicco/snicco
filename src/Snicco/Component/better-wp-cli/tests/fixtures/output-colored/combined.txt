@@ -1,0 +1,43 @@
+foo
+[33mTitle[0m
+[33m=====[0m
+
+[33mSection[0m
+[33m-------[0m
+
+[41m                                                                                                                     [0m
+[41m[37m [ERROR] Error                                                                                                       [0m
+[41m                                                                                                                     [0m
+
+[41m                                                                                                                     [0m
+[41m[37m [ERROR] Error1                                                                                                      [0m
+[41m                                                                                                                     [0m
+[41m[37m         Error2                                                                                                      [0m
+[41m                                                                                                                     [0m
+
+[43m                                                                                                                     [0m
+[43m[30m [WARNING] Warning                                                                                                   [0m
+[43m                                                                                                                     [0m
+
+[43m                                                                                                                     [0m
+[43m[30m [WARNING] Warning1                                                                                                  [0m
+[43m                                                                                                                     [0m
+[43m[30m           Warning2                                                                                                  [0m
+[43m                                                                                                                     [0m
+
+[42m                                                                                                                     [0m
+[42m[30m [OK] Success                                                                                                        [0m
+[42m                                                                                                                     [0m
+
+[42m                                                                                                                     [0m
+[42m[30m [OK] Success1                                                                                                       [0m
+[42m                                                                                                                     [0m
+[42m[30m      Success2                                                                                                       [0m
+[42m                                                                                                                     [0m
+
+1
+2
+3
+4
+5
+6

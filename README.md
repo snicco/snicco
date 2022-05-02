@@ -44,6 +44,7 @@ This directory contains completely decoupled PHP components that you can use in 
   in distributed **WordPress** packages.
 - [BetterWPCache](https://github.com/snicco/better-wp-cache): A PSR6/PSR16 implementation using
   the [`WP_Object_Cache`](https://developer.wordpress.org/reference/classes/wp_object_cache/). Supports cache tagging.
+- [BetterWPCLI](https://github.com/snicco/better-wp-cli): The missing parts to the already awesome [WP-CLI](https://wp-cli.org/).
 - [BetterWPHooks](https://github.com/snicco/better-wp-hooks): The **WordPress** hook system redesign in 2022. (PSR-14
   compliant)
 - [BetterWPMail](https://github.com/snicco/better-wp-mail): The long overdue upgrade to

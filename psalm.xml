@@ -28,6 +28,9 @@
             <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr6IntegrationTest.php"/>
             <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr16IntegrationTest.php"/>
             <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/TaggingIntegrationTest.php"/>
+<!--            This file is part of symfony/console -->
+            <file name="src/Snicco/Component/better-wp-cli/src/Style/Terminal.php"/>
+            <directory name="src/Snicco/Component/better-wp-cli/tests/_support"/>
         </ignoreFiles>
     </projectFiles>
 
@@ -60,6 +63,13 @@
                 <file name="src/Snicco/Component/str-arr/tests/ArrTest.php"/>
             </errorLevel>
         </MixedAssignment>
+
+        <UndefinedMagicMethod>
+            <errorLevel type="suppress">
+                <!--                This issue occurs in CI if we don't build codeception modules before running psalm -->
+                <file name="src/Snicco/Component/better-wp-cli/tests/wordpress/WPCLICest.php"/>
+            </errorLevel>
+        </UndefinedMagicMethod>
 
     </issueHandlers>
 

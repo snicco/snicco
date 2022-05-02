@@ -56,20 +56,22 @@
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
+        "ext-curl": "*",
         "cache/array-adapter": "^1.0.0",
         "cache/integration-tests": "0.17.0",
+        "codeception/module-cli": "^1.1.1",
         "fakerphp/faker": "^1.0.0-stable",
         "guzzlehttp/guzzle": "^7.0.1",
         "guzzlehttp/psr7": "^2.1",
         "knplabs/github-api": "^3.0",
         "laminas/laminas-diactoros": "^2.8",
         "php-stubs/wordpress-stubs": "^5.9.0",
-        "rector/rector": "0.12.18",
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "10.1.2",
         "symplify/monorepo-builder": "9.4.70",
-        "vimeo/psalm": "^4.10",
-        "vlucas/phpdotenv": "5.4.1"
+        "vimeo/psalm": "4.22.0",
+        "vlucas/phpdotenv": "5.4.1",
+        "wp-cli/wp-cli": "^2.6"
     },
     "autoload": {
         "psr-4": {
@@ -92,6 +94,7 @@
             "Snicco\\Bundle\\Templating\\": "src/Snicco/Bundle/templating/src",
             "Snicco\\Bundle\\Testing\\": "src/Snicco/Bundle/testing/src",
             "Snicco\\Component\\BetterWPAPI\\": "src/Snicco/Component/better-wp-api/src",
+            "Snicco\\Component\\BetterWPCLI\\": "src/Snicco/Component/better-wp-cli/src",
             "Snicco\\Component\\BetterWPCache\\": "src/Snicco/Component/better-wp-cache/src",
             "Snicco\\Component\\BetterWPDB\\": "src/Snicco/Component/better-wpdb/src",
             "Snicco\\Component\\BetterWPHooks\\": "src/Snicco/Component/better-wp-hooks/src",
@@ -150,6 +153,10 @@
             "Snicco\\Bundle\\Templating\\Tests\\": "src/Snicco/Bundle/templating/tests",
             "Snicco\\Bundle\\Testing\\Tests\\": "src/Snicco/Bundle/testing/tests",
             "Snicco\\Component\\BetterWPAPI\\Tests\\": "src/Snicco/Component/better-wp-api/tests",
+            "Snicco\\Component\\BetterWPCLI\\Tests\\": [
+                "src/Snicco/Component/better-wp-cli/tests",
+                "src/Snicco/Component/better-wp-cli/tests/_support"
+            ],
             "Snicco\\Component\\BetterWPCache\\Tests\\": "src/Snicco/Component/better-wp-cache/tests",
             "Snicco\\Component\\BetterWPDB\\Tests\\": "src/Snicco/Component/better-wpdb/tests",
             "Snicco\\Component\\BetterWPHooks\\Tests\\": "src/Snicco/Component/better-wp-hooks/tests",
@@ -238,11 +245,9 @@
             "@psalm --update-baseline"
         ],
         "lint:fix": [
-            "vendor/bin/rector process",
             "vendor/bin/ecs --fix"
         ],
         "lint": [
-            "vendor/bin/rector process --dry-run",
             "vendor/bin/ecs check"
         ]
     },
@@ -250,6 +255,7 @@
         "snicco/better-wp-api": "self.version",
         "snicco/better-wp-cache": "self.version",
         "snicco/better-wp-cache-bundle": "self.version",
+        "snicco/better-wp-cli": "self.version",
         "snicco/better-wp-hooks": "self.version",
         "snicco/better-wp-hooks-bundle": "self.version",
         "snicco/better-wp-mail": "self.version",

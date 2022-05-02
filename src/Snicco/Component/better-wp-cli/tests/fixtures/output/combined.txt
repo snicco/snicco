@@ -1,0 +1,43 @@
+foo
+Title
+=====
+
+Section
+-------
+
+                                                                                                                     
+ [ERROR] Error                                                                                                       
+                                                                                                                     
+
+                                                                                                                     
+ [ERROR] Error1                                                                                                      
+                                                                                                                     
+         Error2                                                                                                      
+                                                                                                                     
+
+                                                                                                                     
+ [WARNING] Warning                                                                                                   
+                                                                                                                     
+
+                                                                                                                     
+ [WARNING] Warning1                                                                                                  
+                                                                                                                     
+           Warning2                                                                                                  
+                                                                                                                     
+
+                                                                                                                     
+ [OK] Success                                                                                                        
+                                                                                                                     
+
+                                                                                                                     
+ [OK] Success1                                                                                                       
+                                                                                                                     
+      Success2                                                                                                       
+                                                                                                                     
+
+1
+2
+3
+4
+5
+6

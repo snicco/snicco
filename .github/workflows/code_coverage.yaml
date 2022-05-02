@@ -97,6 +97,7 @@ jobs:
 
       - name: 'Collect codeception coverage'
         run: |
+          vendor/bin/codecept build
           composer codeception:all -- --coverage-xml codeception-coverage.xml
 
       - name: 'Archive code coverage results'

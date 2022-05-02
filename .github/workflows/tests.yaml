@@ -119,7 +119,9 @@ jobs:
         working-directory: /tmp
 
       - name: 'Run codeception tests'
-        run: composer codeception:all
+        run: |
+          vendor/bin/codecept build
+          composer codeception:all
 
   check_matrix:
     name: 'Tests'

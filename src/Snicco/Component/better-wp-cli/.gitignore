@@ -1,0 +1,5 @@
+/.phpunit.cache/
+/vendor
+composer.lock
+codception.yml
+/tests/_support/_generated/

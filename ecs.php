@@ -41,6 +41,7 @@ return static function (ContainerConfigurator $configurator): void {
             // Intentionally keep the execDebug statements on two lines.
             __DIR__ . '/bin/php/split-package.php',
         ],
+        __DIR__ . '/src/Snicco/Component/better-wp-cli/tests/_support',
     ]);
 
     $parameters->set(Option::PARALLEL, true);
