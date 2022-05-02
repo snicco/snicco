@@ -59,22 +59,22 @@ final class ArrayInput implements Input
         $this->flags = $flags;
     }
 
-    public function getArgument(string $name, string $default = null): ?string
+    public function getArgument(string $name, ?string $default = null): ?string
     {
         return $this->arguments[$name] ?? $default;
     }
 
-    public function getRepeatingArgument(string $name, array $default = null): ?array
+    public function getRepeatingArgument(string $name, ?array $default = null): ?array
     {
         return $this->repeating_arguments[$name] ?? $default;
     }
 
-    public function getOption(string $name, string $default = null): ?string
+    public function getOption(string $name, ?string $default = null): ?string
     {
         return $this->options[$name] ?? $default;
     }
 
-    public function getFlag(string $name, bool $default = null): ?bool
+    public function getFlag(string $name, ?bool $default = null): ?bool
     {
         return $this->flags[$name] ?? $default;
     }
@@ -87,5 +87,25 @@ final class ArrayInput implements Input
     public function getStream()
     {
         return $this->stream;
+    }
+
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
+
+    public function getRepeatingArguments(): array
+    {
+        return $this->repeating_arguments;
+    }
+
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    public function getFlags(): array
+    {
+        return $this->flags;
     }
 }

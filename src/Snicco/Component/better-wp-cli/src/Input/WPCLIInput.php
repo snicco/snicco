@@ -9,11 +9,13 @@ use InvalidArgumentException;
 use Snicco\Component\BetterWPCLI\Check;
 use Snicco\Component\BetterWPCLI\Synopsis\Synopsis;
 
+use function array_filter;
 use function array_shift;
 use function count;
 use function is_bool;
 use function is_numeric;
 use function is_string;
+
 use function sprintf;
 
 use const STDIN;
@@ -29,7 +31,7 @@ final class WPCLIInput implements Input
     private array $named_args = [];
 
     /**
-     * @var array<string,string[]|null>
+     * @var array<string,string[]>
      */
     private array $named_args_repeating = [];
 
@@ -94,7 +96,7 @@ final class WPCLIInput implements Input
         if (count($wp_cli_positional_args) > count($positional) && ! $synopsis->hasRepeatingPositionalArgument()) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Received [%s] positional arguments from wp-cli but synopsis only has [%s] positional argument.',
+                    'Received [%s] positional arguments from wp-cli but synopsis only has [%s] positional arguments.',
                     count($wp_cli_positional_args),
                     count($positional)
                 )
@@ -120,7 +122,7 @@ final class WPCLIInput implements Input
         $this->interactive = $interactive;
     }
 
-    public function getArgument(string $name, string $default = null): ?string
+    public function getArgument(string $name, ?string $default = null): ?string
     {
         if (isset($this->named_args_repeating[$name])) {
             throw new BadMethodCallException(
@@ -135,7 +137,7 @@ final class WPCLIInput implements Input
         return $this->named_args[$name] ?? $default;
     }
 
-    public function getRepeatingArgument(string $name, array $default = null): ?array
+    public function getRepeatingArgument(string $name, ?array $default = null): ?array
     {
         if (isset($this->named_args[$name])) {
             throw new BadMethodCallException(
@@ -150,12 +152,12 @@ final class WPCLIInput implements Input
         return $this->named_args_repeating[$name] ?? $default;
     }
 
-    public function getOption(string $name, string $default = null): ?string
+    public function getOption(string $name, ?string $default = null): ?string
     {
         return $this->wp_cli_options[$name] ?? $default;
     }
 
-    public function getFlag(string $name, bool $default = null): ?bool
+    public function getFlag(string $name, ?bool $default = null): ?bool
     {
         return $this->wp_cli_flags[$name] ?? $default;
     }
@@ -168,5 +170,25 @@ final class WPCLIInput implements Input
     public function getStream()
     {
         return $this->stream;
+    }
+
+    public function getArguments(): array
+    {
+        return array_filter($this->named_args, fn ($value) => null !== $value);
+    }
+
+    public function getRepeatingArguments(): array
+    {
+        return $this->named_args_repeating;
+    }
+
+    public function getOptions(): array
+    {
+        return $this->wp_cli_options;
+    }
+
+    public function getFlags(): array
+    {
+        return $this->wp_cli_flags;
     }
 }

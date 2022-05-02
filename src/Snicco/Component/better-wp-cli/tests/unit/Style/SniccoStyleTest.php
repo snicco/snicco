@@ -283,22 +283,22 @@ final class TestMultiStreamOutput extends OutputWithVerbosity implements Console
  */
 final class DummyInput implements Input
 {
-    public function getArgument(string $name, string $default = null): ?string
+    public function getArgument(string $name, ?string $default = null): ?string
     {
         throw new BadMethodCallException(__METHOD__);
     }
 
-    public function getRepeatingArgument(string $name, array $default = null): ?array
+    public function getRepeatingArgument(string $name, ?array $default = null): ?array
     {
         throw new BadMethodCallException(__METHOD__);
     }
 
-    public function getOption(string $name, string $default = null): ?string
+    public function getOption(string $name, ?string $default = null): ?string
     {
         throw new BadMethodCallException(__METHOD__);
     }
 
-    public function getFlag(string $name, bool $default = null): ?bool
+    public function getFlag(string $name, ?bool $default = null): ?bool
     {
         throw new BadMethodCallException(__METHOD__);
     }
@@ -309,6 +309,26 @@ final class DummyInput implements Input
     }
 
     public function getStream(): void
+    {
+        throw new BadMethodCallException(__METHOD__);
+    }
+
+    public function getArguments(): array
+    {
+        throw new BadMethodCallException(__METHOD__);
+    }
+
+    public function getRepeatingArguments(): array
+    {
+        throw new BadMethodCallException(__METHOD__);
+    }
+
+    public function getOptions(): array
+    {
+        throw new BadMethodCallException(__METHOD__);
+    }
+
+    public function getFlags(): array
     {
         throw new BadMethodCallException(__METHOD__);
     }

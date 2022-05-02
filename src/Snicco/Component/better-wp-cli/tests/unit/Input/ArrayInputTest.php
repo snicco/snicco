@@ -76,5 +76,21 @@ final class ArrayInputTest extends TestCase
 
         $this->assertTrue($input->getFlag('foo_flag'));
         $this->assertTrue($input->getFlag('foo_flag', false));
+
+        $this->assertSame([
+            'foo_arg' => 'FOO_ARG',
+        ], $input->getArguments());
+
+        $this->assertSame([
+            'foo_repeating_arg' => ['FOO_REPEATING_ARG'],
+        ], $input->getRepeatingArguments());
+
+        $this->assertSame([
+            'foo_option' => 'FOO_OPTION',
+        ], $input->getOptions());
+
+        $this->assertSame([
+            'foo_flag' => true,
+        ], $input->getFlags());
     }
 }

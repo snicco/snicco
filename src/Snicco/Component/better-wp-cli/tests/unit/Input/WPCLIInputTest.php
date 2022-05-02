@@ -77,7 +77,7 @@ final class WPCLIInputTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Received [2] positional arguments from wp-cli but synopsis only has [1] positional argument.'
+            'Received [2] positional arguments from wp-cli but synopsis only has [1] positional arguments.'
         );
 
         new WPCLIInput($synopsis, ['FOO', 'BAR']);
@@ -319,6 +319,74 @@ final class WPCLIInputTest extends TestCase
         $this->assertTrue($input->getFlag('flag'));
         $this->assertNull($input->getFlag('other-flag'));
         $this->assertFalse($input->getFlag('other-flag', false));
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_arguments(): void
+    {
+        $synopsis = new Synopsis(new InputArgument('foo'), new InputArgument('baz', '', InputArgument::OPTIONAL));
+
+        $input = new WPCLIInput($synopsis, ['bar'],);
+
+        $this->assertSame([
+            'foo' => 'bar',
+        ], $input->getArguments());
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_repeating_arguments(): void
+    {
+        $synopsis = new Synopsis(new InputArgument('foo', '', InputArgument::REPEATING | InputArgument::REQUIRED));
+
+        $input = new WPCLIInput($synopsis, ['bar', 'baz'],);
+
+        $this->assertSame([
+            'foo' => ['bar', 'baz'],
+        ], $input->getRepeatingArguments());
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_options(): void
+    {
+        $synopsis = new Synopsis(new InputOption('foo'), new InputOption('bar', '', InputOption::OPTIONAL));
+
+        $input = new WPCLIInput(
+            $synopsis,
+            [],
+            [
+                'foo' => 'FOO',
+            ],
+        );
+
+        $this->assertSame([
+            'foo' => 'FOO',
+        ], $input->getOptions());
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_flags(): void
+    {
+        $synopsis = new Synopsis(new InputFlag('foo'), new InputFlag('bar'));
+
+        $input = new WPCLIInput(
+            $synopsis,
+            [],
+            [
+                'foo' => true,
+            ],
+        );
+
+        $this->assertSame([
+            'foo' => true,
+        ], $input->getFlags());
     }
 
     // https://make.wordpress.org/cli/handbook/guides/commands-cookbook/#wp_cliadd_commands-third-args-parameter
