@@ -40,6 +40,9 @@ use function trim;
 
 use const E_ALL;
 
+/**
+ * @codeCoverageIgnore This can be removed once we have a clarification on: https://github.com/Codeception/Codeception/issues/6450
+ */
 final class WPCLIApplication
 {
     private bool $auto_exit = true;
@@ -206,6 +209,7 @@ final class WPCLIApplication
         $verbosity = Verbosity::NORMAL;
         $verbosity_level = 'normal';
 
+        // @todo Test this when https://github.com/lucatume/wp-browser/issues/576 resolves.
         switch ((int) getenv('SHELL_VERBOSITY')) {
             case -1:
                 $verbosity = Verbosity::QUIET;

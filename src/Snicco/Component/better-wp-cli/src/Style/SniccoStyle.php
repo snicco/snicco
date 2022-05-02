@@ -49,7 +49,7 @@ final class SniccoStyle
 
     private bool $is_windows;
 
-    private bool $tty_available;
+    private bool $stty_available;
 
     public function __construct(
         Input $input,
@@ -67,7 +67,7 @@ final class SniccoStyle
 
         $this->colors = new AnsiColors($this->output->supportsDecoration());
         $this->is_windows = $is_windows ?? '\\' === DIRECTORY_SEPARATOR;
-        $this->tty_available = $tty_available ?? Terminal::hasSttyAvailable();
+        $this->stty_available = $tty_available ?? Terminal::hasSttyAvailable();
         $this->full_width = Terminal::width();
         $this->buffer = new BufferedOutput(DIRECTORY_SEPARATOR === '\\' ? 4 : 2, $output->verbosity(), false);
     }
@@ -412,7 +412,7 @@ final class SniccoStyle
             throw CouldNotReadHiddenInput::becauseOSisWindows();
         }
 
-        if (! $this->tty_available) {
+        if (! $this->stty_available) {
             throw CouldNotReadHiddenInput::becauseSttyIsNotAvailable();
         }
 

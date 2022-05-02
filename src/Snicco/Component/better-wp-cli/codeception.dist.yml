@@ -19,7 +19,4 @@ settings:
   report_useless_tests: true
 
 coverage:
-  enabled: true
-  include:
-    - src/*
-  show_uncovered: true
+  enabled: false

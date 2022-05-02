@@ -64,6 +64,13 @@
             </errorLevel>
         </MixedAssignment>
 
+        <UndefinedMagicMethod>
+            <errorLevel type="suppress">
+                <!--                This issue occurs in CI if we don't build codeception modules before running psalm -->
+                <file name="src/Snicco/Component/better-wp-cli/tests/wordpress/WPCLICest.php"/>
+            </errorLevel>
+        </UndefinedMagicMethod>
+
     </issueHandlers>
 
     <globals>

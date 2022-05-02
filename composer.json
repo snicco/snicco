@@ -66,7 +66,6 @@
         "knplabs/github-api": "^3.0",
         "laminas/laminas-diactoros": "^2.8",
         "php-stubs/wordpress-stubs": "^5.9.0",
-        "rector/rector": "0.12.18",
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "10.1.2",
         "symplify/monorepo-builder": "9.4.70",
@@ -246,11 +245,9 @@
             "@psalm --update-baseline"
         ],
         "lint:fix": [
-            "vendor/bin/rector process",
             "vendor/bin/ecs --fix"
         ],
         "lint": [
-            "vendor/bin/rector process --dry-run",
             "vendor/bin/ecs check"
         ]
     },
