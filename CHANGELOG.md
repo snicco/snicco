@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/snicco/snicco/compare/v1.0.2...v1.1.0) (2022-05-02)
+
+
+### Features
+
+* **better-wp-cli:** allow retrieval of all input values ([9687a99](https://github.com/snicco/snicco/commit/9687a99867c17723df430832a407b53684e79405))
+* **better-wp-cli:** initial release ([4a51b17](https://github.com/snicco/snicco/commit/4a51b17127b098fa09a1e60024e8b14376e0e24a))
+
 ## [1.0.2](https://github.com/snicco/snicco/compare/v1.0.1...v1.0.2) (2022-04-22)
 
 
