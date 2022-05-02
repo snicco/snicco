@@ -160,7 +160,9 @@ jobs:
           echo ${{github.env}}
 
       - name: 'Run codeception tests of package ${{ matrix.packages.full_name }}'
-        run: vendor/bin/codecept run wordpress
+        run: |
+          vendor/bin/codecept build
+          vendor/bin/codecept run wordpress
         working-directory: ${{ matrix.packages.absolute_path }}
 
   check_matrix:
