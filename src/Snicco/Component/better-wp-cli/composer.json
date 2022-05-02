@@ -1,6 +1,6 @@
 {
     "name": "snicco/better-wp-cli",
-    "description": "A dependency injection layer around WP_CLI commands.",
+    "description": "The missing parts to the already awesome WP-CLI",
     "license": "LGPL-3.0-only",
     "authors": [
         {
