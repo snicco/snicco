@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-22 12:12:27        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-02 20:39:43        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,32 +390,16 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\Templating",
+        "name": "Snicco\\Component\\Templating\\Exception",
         "size": 3000,
         "relations": [
-            "global",
-            "Snicco\\Component\\Templating\\ViewFactory",
-            "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\Templating\\Exception"
+            "global"
         ]
     },
     {
         "name": "global",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\ViewFactory",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\Templating\\Exception",
-            "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\Templating\\Context",
-            "Snicco\\Component\\Templating",
-            "global"
-        ]
     },
     {
         "name": "Snicco\\Component\\Templating\\ValueObject",
@@ -425,25 +409,41 @@
         ]
     },
     {
+        "name": "Snicco\\Component\\Templating\\ViewFactory",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Templating\\ValueObject",
+            "Snicco\\Component\\Templating\\Exception",
+            "Snicco\\Component\\StrArr",
+            "global",
+            "Snicco\\Component\\Templating",
+            "Snicco\\Component\\Templating\\Context"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\StrArr",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Templating\\Exception",
+        "name": "Snicco\\Component\\Templating",
         "size": 3000,
         "relations": [
-            "global"
+            "Snicco\\Component\\Templating\\ViewFactory",
+            "global",
+            "Snicco\\Component\\Templating\\ValueObject",
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\Templating\\Exception"
         ]
     },
     {
         "name": "Snicco\\Component\\Templating\\Context",
         "size": 3000,
         "relations": [
-            "global",
-            "Snicco\\Component\\Templating\\Exception",
             "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\Templating\\ValueObject"
+            "Snicco\\Component\\Templating\\ValueObject",
+            "global",
+            "Snicco\\Component\\Templating\\Exception"
         ]
     }
 ];

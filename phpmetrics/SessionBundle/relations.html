@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-22 12:12:27        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-02 20:39:43        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,13 +390,44 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SessionNoCache",
+        "name": "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Option\\SessionOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\SessionEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\AllowMutableSessionForReadVerbs",
         "size": 3000,
         "relations": [
             "\\Psr\\Http\\Server\\MiddlewareInterface",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Psr\\Http\\Server\\RequestHandlerInterface"
+            "\\Psr\\Http\\Server\\RequestHandlerInterface",
+            "\\LogicException"
         ]
     },
     {
@@ -420,15 +451,19 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\ShareSessionWithViews",
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SaveResponseAttributes",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
             "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\LogicException",
-            "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors"
+            "\\LogicException"
         ]
     },
     {
@@ -447,37 +482,25 @@
         "relations": []
     },
     {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors",
-        "size": 3000,
-        "relations": [
-            "\\InvalidArgumentException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\AllowMutableSessionForReadVerbs",
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SessionNoCache",
         "size": 3000,
         "relations": [
             "\\Psr\\Http\\Server\\MiddlewareInterface",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Psr\\Http\\Server\\RequestHandlerInterface",
-            "\\LogicException"
+            "\\Psr\\Http\\Server\\RequestHandlerInterface"
         ]
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SaveResponseAttributes",
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\ShareSessionWithViews",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
             "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\LogicException"
+            "\\LogicException",
+            "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors"
         ]
     },
     {
@@ -524,17 +547,29 @@
         "relations": []
     },
     {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Http\\Cookie",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogout",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\WP_User",
         "size": 3000,
         "relations": []
     },
@@ -588,14 +623,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\SessionEncryptor",
-            "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor"
-        ]
-    },
-    {
         "name": "\\Snicco\\Component\\Session\\Driver\\EncryptedDriver",
         "size": 3000,
         "relations": []
@@ -644,38 +671,6 @@
         "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\SessionEncryptor",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Option\\SessionOption",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\WP_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogout",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
-        ]
     }
 ];
 

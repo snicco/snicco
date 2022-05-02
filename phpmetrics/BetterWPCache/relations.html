@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-04-22 12:12:27        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-02 20:39:43        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -405,9 +405,31 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheItem",
+        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Cache\\CacheItemPoolInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheItem",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPCache\\WPCacheItem"
+        ]
     },
     {
         "name": "\\Psr\\Cache\\CacheItemInterface",
@@ -432,17 +454,6 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
-        "size": 3000,
-        "relations": [
-            "\\Psr\\Cache\\CacheItemPoolInterface",
-            "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
-            "\\Snicco\\Component\\BetterWPCache\\WPCacheItem",
-            "\\Psr\\Cache\\CacheItemInterface",
-            "\\Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException"
-        ]
-    },
-    {
         "name": "\\Psr\\SimpleCache\\CacheInterface",
         "size": 3000,
         "relations": []
@@ -458,22 +469,7 @@
         "relations": []
     },
     {
-        "name": "\\Psr\\Cache\\CacheItemPoolInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Cache\\Taggable\\TaggablePSR6PoolAdapter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
     }
