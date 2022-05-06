@@ -219,6 +219,10 @@ final class MiddlewareResolver
         ];
 
         foreach (array_keys($request_map) as $type) {
+            if (! $this->always_run_if_no_route_matches[$type]) {
+                continue;
+            }
+
             foreach ($this->resolve([$type]) as $blueprint) {
                 $request_map[$type][] = $blueprint->asArray();
             }

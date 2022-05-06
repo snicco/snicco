@@ -200,6 +200,60 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
     /**
      * @test
      */
+    public function creating_the_middleware_cache_takes_settings_for_always_run_into_account(): void
+    {
+        $resolver = new MiddlewareResolver(
+            [RoutingConfigurator::FRONTEND_MIDDLEWARE],
+            [
+                'foo' => FooMiddleware::class,
+                'bar' => BarMiddleware::class,
+                'baz' => BazMiddleware::class,
+            ],
+            [
+                'frontend' => ['foo'],
+                'admin' => ['bar'],
+                'api' => ['baz'],
+                'global' => ['foo', 'bar'],
+            ],
+            [BarMiddleware::class]
+        );
+
+        $pimple = new Container();
+        $psr = new \Pimple\Psr11\Container($pimple);
+
+        $cache = $resolver->createMiddlewareCache(new RouteCollection(), $psr);
+
+        $request_map = $cache['request_map'];
+
+        $this->assertTrue(isset($request_map['frontend']), 'Frontend middleware should be in request_map cache');
+        $this->assertTrue(isset($request_map['api']), 'API middleware should have been in request_map cache');
+        $this->assertTrue(isset($request_map['admin']), 'Admin middleware should have been in request_map cache');
+        $this->assertTrue(isset($request_map['global']), 'Global middleware should have been in request_map cache');
+
+        $this->assertSame([
+            [
+                'class' => FooMiddleware::class,
+                'args' => [],
+            ],
+        ], $request_map['frontend']);
+
+        $this->assertSame([], $request_map['api']);
+        $this->assertSame([], $request_map['admin']);
+        $this->assertSame([], $request_map['global']);
+
+        $resolver = MiddlewareResolver::fromCache($cache['route_map'], $cache['request_map']);
+
+        $this->assertEquals([
+            new MiddlewareBlueprint(FooMiddleware::class, []),
+        ], $resolver->resolveForRequestWithoutRoute($this->frontendRequest()));
+
+        $this->assertEquals([], $resolver->resolveForRequestWithoutRoute($this->adminRequest('/wp-admin')));
+        $this->assertEquals([], $resolver->resolveForRequestWithoutRoute($this->apiRequest()));
+    }
+
+    /**
+     * @test
+     */
     public function middleware_caching_detects_recursion(): void
     {
         $this->expectException(MiddlewareRecursion::class);
