@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/snicco/snicco/compare/v1.1.0...v1.1.1) (2022-05-06)
+
+
+### Bug Fixes
+
+* **http-routing:** dont include non-global middleware in cache ([b7a8751](https://github.com/snicco/snicco/commit/b7a875183935ca8e835e636fd334248762f896b2)), closes [#135](https://github.com/snicco/snicco/issues/135)
+
 # [1.1.0](https://github.com/snicco/snicco/compare/v1.0.2...v1.1.0) (2022-05-02)
 
 
