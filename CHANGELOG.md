@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/snicco/snicco/compare/v1.1.1...v1.1.2) (2022-05-16)
+
+
+### Bug Fixes
+
+* **signed-url:** fix issues with existing query strings ([7e53ce7](https://github.com/snicco/snicco/commit/7e53ce71d9caf42fafe7f1e8a73ab9200fa01f8b))
+
 ## [1.1.1](https://github.com/snicco/snicco/compare/v1.1.0...v1.1.1) (2022-05-06)
 
 
