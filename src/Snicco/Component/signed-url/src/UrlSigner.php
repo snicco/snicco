@@ -178,7 +178,7 @@ final class UrlSigner
             return $path . '?' . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
         }
 
-        return rtrim($path, '&') . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
+        return rtrim($path, '&') . '&' . SignedUrl::EXPIRE_KEY . '=' . (string) $expires_at;
     }
 
     /**

@@ -160,7 +160,7 @@ final class UrlSignerTest extends TestCase
     public function test_can_be_created_with_existing_query_params(): void
     {
         $magic_link = $this->url_signer->sign('/web?foo=bar&baz=biz', 10);
-        $this->assertStringStartsWith('/web?foo=bar&baz=biz', $magic_link->asString());
+        $this->assertStringStartsWith('/web?foo=bar&baz=biz&expires=', $magic_link->asString());
         $this->assertStringContainsString('expires=', $magic_link->asString());
         $this->assertStringContainsString('signature=', $magic_link->asString());
         $this->assertSame('/web?foo=bar&baz=biz', $magic_link->protects());
