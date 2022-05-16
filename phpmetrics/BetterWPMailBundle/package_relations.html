@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-06 12:09:47        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,9 +390,16 @@
 
     var relations = [
     {
+        "name": "Snicco\\Bundle\\BetterWPMail\\Option",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Bundle\\BetterWPMail",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\BetterWPMail\\Event",
+            "Snicco\\Component\\EventDispatcher",
             "Snicco\\Component\\BetterWPMail\\Renderer",
             "Snicco\\Component\\Templating",
             "Snicco\\Component\\BetterWPMail\\Exception",
@@ -404,10 +411,18 @@
             "Snicco\\Component\\BetterWPMail",
             "Snicco\\Component\\BetterWPMail\\Testing",
             "Snicco\\Component\\BetterWPMail\\Transport",
-            "global",
-            "Snicco\\Component\\BetterWPMail\\Event",
-            "Snicco\\Component\\EventDispatcher"
+            "global"
         ]
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Event",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\EventDispatcher",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\BetterWPMail\\Renderer",
@@ -466,21 +481,6 @@
     },
     {
         "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Event",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\EventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\BetterWPMail\\Option",
         "size": 3000,
         "relations": []
     }

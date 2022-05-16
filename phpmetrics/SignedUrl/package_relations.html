@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-06 12:09:47        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,22 +390,14 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\SignedUrl\\Testing",
+        "name": "Snicco\\Component\\SignedUrl\\Exception",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\TestableClock",
-            "PHPUnit\\Framework",
-            "Snicco\\Component\\SignedUrl",
-            "Snicco\\Component\\SignedUrl\\Storage"
+            "global"
         ]
     },
     {
-        "name": "Snicco\\Component\\TestableClock",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework",
+        "name": "global",
         "size": 3000,
         "relations": []
     },
@@ -413,8 +405,8 @@
         "name": "Snicco\\Component\\SignedUrl",
         "size": 3000,
         "relations": [
-            "Webmozart\\Assert",
             "Snicco\\Component\\SignedUrl\\Storage",
+            "Webmozart\\Assert",
             "ParagonIE\\ConstantTime",
             "global",
             "Snicco\\Component\\TestableClock",
@@ -432,24 +424,32 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\SignedUrl\\Exception",
-        "size": 3000,
-        "relations": [
-            "global"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Webmozart\\Assert",
         "size": 3000,
         "relations": []
     },
     {
         "name": "ParagonIE\\ConstantTime",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\TestableClock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl\\Testing",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\TestableClock",
+            "PHPUnit\\Framework",
+            "Snicco\\Component\\SignedUrl",
+            "Snicco\\Component\\SignedUrl\\Storage"
+        ]
+    },
+    {
+        "name": "PHPUnit\\Framework",
         "size": 3000,
         "relations": []
     }

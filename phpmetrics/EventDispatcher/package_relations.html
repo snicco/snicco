@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-06 12:09:47        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,46 +390,14 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\EventDispatcher\\Testing",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\EventDispatcher",
-            "global",
-            "PHPUnit\\Framework"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\EventDispatcher",
         "size": 3000,
         "relations": [
-            "global",
+            "Snicco\\Component\\EventDispatcher\\ListenerFactory",
             "Snicco\\Component\\EventDispatcher\\Exception",
-            "Psr\\EventDispatcher",
-            "Snicco\\Component\\EventDispatcher\\ListenerFactory"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\EventDispatcher\\Exception",
-        "size": 3000,
-        "relations": [
             "global",
-            "Psr\\Container"
+            "Psr\\EventDispatcher"
         ]
-    },
-    {
-        "name": "Psr\\EventDispatcher",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Snicco\\Component\\EventDispatcher\\ListenerFactory",
@@ -441,7 +409,39 @@
         ]
     },
     {
+        "name": "Snicco\\Component\\EventDispatcher\\Exception",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Psr\\Container"
+        ]
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Psr\\Container",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\EventDispatcher\\Testing",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\EventDispatcher",
+            "global",
+            "PHPUnit\\Framework"
+        ]
+    },
+    {
+        "name": "PHPUnit\\Framework",
         "size": 3000,
         "relations": []
     }

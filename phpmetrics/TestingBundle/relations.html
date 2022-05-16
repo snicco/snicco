@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-06 12:09:47        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,98 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Kernel",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RecursiveDirectoryIterator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RecursiveIteratorIterator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTestHelpers",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
+            "\\Snicco\\Component\\Kernel\\DIContainer",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\CreateWordPressUsers",
+        "size": 3000,
+        "relations": [
+            "\\WP_UnitTest_Factory_For_User",
+            "\\WP_User",
+            "\\Webmozart\\Assert\\Assert",
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\WP_UnitTest_Factory_For_User",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\WP_User",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webmozart\\Assert\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\AuthenticateWithWordPress",
+        "size": 3000,
+        "relations": [
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
         "name": "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
         "size": 3000,
         "relations": []
@@ -459,11 +551,6 @@
         "relations": []
     },
     {
-        "name": "\\Webmozart\\Assert\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
         "size": 3000,
         "relations": []
@@ -480,6 +567,41 @@
     },
     {
         "name": "\\Symfony\\Component\\BrowserKit\\Request",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Crawler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame",
         "size": 3000,
         "relations": []
     },
@@ -533,11 +655,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
         "size": 3000,
         "relations": []
@@ -548,129 +665,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\Kernel",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\WP_UnitTest_Factory_For_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Symfony\\Component\\BrowserKit\\Cookie",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Crawler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\CreateWordPressUsers",
-        "size": 3000,
-        "relations": [
-            "\\WP_UnitTest_Factory_For_User",
-            "\\WP_User",
-            "\\Webmozart\\Assert\\Assert",
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\WP_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\AuthenticateWithWordPress",
-        "size": 3000,
-        "relations": [
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RecursiveDirectoryIterator",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RecursiveIteratorIterator",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTestHelpers",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
-            "\\Snicco\\Component\\Kernel\\DIContainer",
-            "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
         "size": 3000,
         "relations": []
     }

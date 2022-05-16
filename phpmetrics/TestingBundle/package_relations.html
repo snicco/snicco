@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-06 12:09:47        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,62 @@
 
     var relations = [
     {
+        "name": "Snicco\\Bundle\\Testing\\Bundle",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Bridge\\Pimple",
+            "Snicco\\Component\\Kernel",
+            "Snicco\\Component\\Psr7ErrorHandler",
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "global",
+            "PHPUnit\\Framework"
+        ]
+    },
+    {
+        "name": "Snicco\\Bridge\\Pimple",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Kernel",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\ValueObject",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "PHPUnit\\Framework",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Webmozart\\Assert",
+            "PHPUnit\\Framework"
+        ]
+    },
+    {
+        "name": "Webmozart\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Bundle\\Testing\\Functional",
         "size": 3000,
         "relations": [
@@ -401,6 +457,10 @@
             "global",
             "Webmozart\\Assert",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Symfony\\Component\\DomCrawler",
+            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+            "PHPUnit\\Framework",
+            "PHPUnit\\Framework\\Constraint",
             "Snicco\\Component\\HttpRouting\\Middleware",
             "Psr\\Http\\Message",
             "Codeception\\TestCase",
@@ -409,11 +469,7 @@
             "Snicco\\Component\\EventDispatcher\\Testing",
             "Snicco\\Component\\BetterWPMail\\Testing",
             "Snicco\\Component\\Kernel",
-            "Snicco\\Component\\Kernel\\ValueObject",
-            "Symfony\\Component\\DomCrawler",
-            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
-            "PHPUnit\\Framework",
-            "PHPUnit\\Framework\\Constraint"
+            "Snicco\\Component\\Kernel\\ValueObject"
         ]
     },
     {
@@ -442,17 +498,22 @@
         "relations": []
     },
     {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Webmozart\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "PHPUnit\\Framework\\Constraint",
         "size": 3000,
         "relations": []
     },
@@ -477,73 +538,12 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\EventDispatcher\\Testing",
         "size": 3000,
         "relations": []
     },
     {
         "name": "Snicco\\Component\\BetterWPMail\\Testing",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Kernel",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\ValueObject",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Symfony\\Component\\DomCrawler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework\\Constraint",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Webmozart\\Assert",
-            "PHPUnit\\Framework"
-        ]
-    },
-    {
-        "name": "Snicco\\Bundle\\Testing\\Bundle",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Bridge\\Pimple",
-            "Snicco\\Component\\Kernel",
-            "Snicco\\Component\\Psr7ErrorHandler",
-            "Snicco\\Component\\Kernel\\ValueObject",
-            "global",
-            "PHPUnit\\Framework"
-        ]
-    },
-    {
-        "name": "Snicco\\Bridge\\Pimple",
         "size": 3000,
         "relations": []
     }

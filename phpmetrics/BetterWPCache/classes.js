@@ -1,5 +1,87 @@
 var classes = [
     {
+        "name": "Snicco\\Component\\BetterWPCache\\CacheFactory",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "psr6",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "psr16",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "taggable",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 3,
+        "nbMethods": 3,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 3,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 3,
+        "ccn": 1,
+        "ccnMethodMax": 1,
+        "externals": [
+            "Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
+            "Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
+            "Psr\\SimpleCache\\CacheInterface",
+            "Cache\\Bridge\\SimpleCache\\SimpleCacheBridge",
+            "Cache\\TagInterop\\TaggableCacheItemPoolInterface",
+            "Psr\\Cache\\CacheItemPoolInterface",
+            "Cache\\Taggable\\TaggablePSR6PoolAdapter"
+        ],
+        "parents": [],
+        "implements": [],
+        "lcom": 3,
+        "length": 9,
+        "vocabulary": 3,
+        "volume": 14.26,
+        "difficulty": 1.5,
+        "effort": 21.4,
+        "level": 0.67,
+        "bugs": 0,
+        "time": 1,
+        "intelligentContent": 9.51,
+        "number_operators": 3,
+        "number_operands": 6,
+        "number_operators_unique": 1,
+        "number_operands_unique": 2,
+        "cloc": 6,
+        "loc": 22,
+        "lloc": 16,
+        "mi": 101.7,
+        "mIwoC": 65.52,
+        "commentWeight": 36.18,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 4,
+        "relativeDataComplexity": 1.33,
+        "relativeSystemComplexity": 5.33,
+        "totalStructuralComplexity": 12,
+        "totalDataComplexity": 4,
+        "totalSystemComplexity": 16,
+        "package": "Snicco\\Component\\BetterWPCache\\",
+        "pageRank": 0,
+        "afferentCoupling": 2,
+        "efferentCoupling": 6,
+        "instability": 0.75,
+        "violations": {}
+    },
+    {
         "name": "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
         "interface": false,
         "abstract": false,
@@ -128,6 +210,122 @@ var classes = [
         "afferentCoupling": 1,
         "efferentCoupling": 2,
         "instability": 0.67,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPCache\\WPCacheItem",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getKey",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "get",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "isHit",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "set",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "expiresAt",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "expiresAfter",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "expirationTimestamp",
+                "role": "getter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "miss",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 9,
+        "nbMethods": 5,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 5,
+        "nbMethodsGetter": 4,
+        "nbMethodsSetters": 0,
+        "wmc": 10,
+        "ccn": 6,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Psr\\Cache\\CacheItemInterface",
+            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
+            "DateTime",
+            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
+            "Snicco\\Component\\BetterWPCache\\WPCacheItem"
+        ],
+        "parents": [],
+        "implements": [
+            "Psr\\Cache\\CacheItemInterface"
+        ],
+        "lcom": 2,
+        "length": 69,
+        "vocabulary": 14,
+        "volume": 262.71,
+        "difficulty": 12.5,
+        "effort": 3283.84,
+        "level": 0.08,
+        "bugs": 0.09,
+        "time": 182,
+        "intelligentContent": 21.02,
+        "number_operators": 24,
+        "number_operands": 45,
+        "number_operators_unique": 5,
+        "number_operands_unique": 9,
+        "cloc": 21,
+        "loc": 87,
+        "lloc": 66,
+        "mi": 77.05,
+        "mIwoC": 42.56,
+        "commentWeight": 34.49,
+        "kanDefect": 0.29,
+        "relativeStructuralComplexity": 4,
+        "relativeDataComplexity": 2.93,
+        "relativeSystemComplexity": 6.93,
+        "totalStructuralComplexity": 36,
+        "totalDataComplexity": 26.33,
+        "totalSystemComplexity": 62.33,
+        "package": "Snicco\\Component\\BetterWPCache\\",
+        "pageRank": 0,
+        "afferentCoupling": 3,
+        "efferentCoupling": 5,
+        "instability": 0.63,
         "violations": {}
     },
     {
@@ -327,204 +525,6 @@ var classes = [
         "afferentCoupling": 1,
         "efferentCoupling": 5,
         "instability": 0.83,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPCache\\WPCacheItem",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getKey",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "get",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "isHit",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "set",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "expiresAt",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "expiresAfter",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "expirationTimestamp",
-                "role": "getter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "miss",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 9,
-        "nbMethods": 5,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 5,
-        "nbMethodsGetter": 4,
-        "nbMethodsSetters": 0,
-        "wmc": 10,
-        "ccn": 6,
-        "ccnMethodMax": 4,
-        "externals": [
-            "Psr\\Cache\\CacheItemInterface",
-            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
-            "DateTime",
-            "Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
-            "Snicco\\Component\\BetterWPCache\\WPCacheItem"
-        ],
-        "parents": [],
-        "implements": [
-            "Psr\\Cache\\CacheItemInterface"
-        ],
-        "lcom": 2,
-        "length": 69,
-        "vocabulary": 14,
-        "volume": 262.71,
-        "difficulty": 12.5,
-        "effort": 3283.84,
-        "level": 0.08,
-        "bugs": 0.09,
-        "time": 182,
-        "intelligentContent": 21.02,
-        "number_operators": 24,
-        "number_operands": 45,
-        "number_operators_unique": 5,
-        "number_operands_unique": 9,
-        "cloc": 21,
-        "loc": 87,
-        "lloc": 66,
-        "mi": 77.05,
-        "mIwoC": 42.56,
-        "commentWeight": 34.49,
-        "kanDefect": 0.29,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 2.93,
-        "relativeSystemComplexity": 6.93,
-        "totalStructuralComplexity": 36,
-        "totalDataComplexity": 26.33,
-        "totalSystemComplexity": 62.33,
-        "package": "Snicco\\Component\\BetterWPCache\\",
-        "pageRank": 0,
-        "afferentCoupling": 3,
-        "efferentCoupling": 5,
-        "instability": 0.63,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPCache\\CacheFactory",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "psr6",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "psr16",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "taggable",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 3,
-        "nbMethods": 3,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 3,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 3,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
-            "Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
-            "Psr\\SimpleCache\\CacheInterface",
-            "Cache\\Bridge\\SimpleCache\\SimpleCacheBridge",
-            "Cache\\TagInterop\\TaggableCacheItemPoolInterface",
-            "Psr\\Cache\\CacheItemPoolInterface",
-            "Cache\\Taggable\\TaggablePSR6PoolAdapter"
-        ],
-        "parents": [],
-        "implements": [],
-        "lcom": 3,
-        "length": 9,
-        "vocabulary": 3,
-        "volume": 14.26,
-        "difficulty": 1.5,
-        "effort": 21.4,
-        "level": 0.67,
-        "bugs": 0,
-        "time": 1,
-        "intelligentContent": 9.51,
-        "number_operators": 3,
-        "number_operands": 6,
-        "number_operators_unique": 1,
-        "number_operands_unique": 2,
-        "cloc": 6,
-        "loc": 22,
-        "lloc": 16,
-        "mi": 101.7,
-        "mIwoC": 65.52,
-        "commentWeight": 36.18,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 1.33,
-        "relativeSystemComplexity": 5.33,
-        "totalStructuralComplexity": 12,
-        "totalDataComplexity": 4,
-        "totalSystemComplexity": 16,
-        "package": "Snicco\\Component\\BetterWPCache\\",
-        "pageRank": 0,
-        "afferentCoupling": 2,
-        "efferentCoupling": 6,
-        "instability": 0.75,
         "violations": {}
     }
 ]
