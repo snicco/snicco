@@ -1,5 +1,346 @@
 var classes = [
     {
+        "name": "Snicco\\Component\\BetterWPDB\\BetterWPDB",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "fromWpdb",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "preparedQuery",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "unprepared",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "transactional",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "updateByPrimary",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "update",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "delete",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "select",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "selectAll",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "selectRow",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "selectValue",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "exists",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "selectLazy",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "insert",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "bulkInsert",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "restoreErrorHandling",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "runWithErrorHandling",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "queryOriginalSqlMode",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "buildInsertSql",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createPreparedStatement",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "escIdentifier",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "paramTypes",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "log",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "convertBindings",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "validateTableName",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "validateProvidedColumnNames",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "buildWhereArray",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 28,
+        "nbMethods": 28,
+        "nbMethodsPrivate": 11,
+        "nbMethodsPublic": 17,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 79,
+        "ccn": 52,
+        "ccnMethodMax": 6,
+        "externals": [
+            "mysqli",
+            "",
+            "Snicco\\Component\\BetterWPDB\\MysqliFactory",
+            "mysqli_stmt",
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
+            "Snicco\\Component\\BetterWPDB\\QueryInfo",
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
+            "Snicco\\Component\\BetterWPDB\\QueryInfo",
+            "Closure",
+            "LogicException",
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
+            "Snicco\\Component\\BetterWPDB\\QueryInfo",
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
+            "Snicco\\Component\\BetterWPDB\\QueryInfo",
+            "InvalidArgumentException",
+            "mysqli_result",
+            "Snicco\\Component\\BetterWPDB\\Exception\\NoMatchingRowFound",
+            "Generator",
+            "mysqli_stmt",
+            "InvalidArgumentException",
+            "InvalidArgumentException",
+            "Snicco\\Component\\BetterWPDB\\QueryInfo",
+            "Closure",
+            "RuntimeException",
+            "RuntimeException",
+            "RuntimeException",
+            "mysqli_stmt",
+            "Snicco\\Component\\BetterWPDB\\QueryInfo",
+            "InvalidArgumentException",
+            "InvalidArgumentException",
+            "InvalidArgumentException",
+            "InvalidArgumentException",
+            "InvalidArgumentException",
+            "InvalidArgumentException"
+        ],
+        "parents": [],
+        "implements": [],
+        "lcom": 2,
+        "length": 688,
+        "vocabulary": 108,
+        "volume": 4647.36,
+        "difficulty": 50.9,
+        "effort": 236550.76,
+        "level": 0.02,
+        "bugs": 1.55,
+        "time": 13142,
+        "intelligentContent": 91.3,
+        "number_operators": 179,
+        "number_operands": 509,
+        "number_operators_unique": 18,
+        "number_operands_unique": 90,
+        "cloc": 195,
+        "loc": 563,
+        "lloc": 368,
+        "mi": 50.89,
+        "mIwoC": 11.36,
+        "commentWeight": 39.53,
+        "kanDefect": 3.81,
+        "relativeStructuralComplexity": 1156,
+        "relativeDataComplexity": 0.85,
+        "relativeSystemComplexity": 1156.85,
+        "totalStructuralComplexity": 32368,
+        "totalDataComplexity": 23.71,
+        "totalSystemComplexity": 32391.71,
+        "package": "Snicco\\Component\\BetterWPDB\\",
+        "pageRank": 0,
+        "afferentCoupling": 2,
+        "efferentCoupling": 13,
+        "instability": 0.87,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPDB\\Exception\\NoMatchingRowFound",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [],
+        "nbMethodsIncludingGettersSetters": 0,
+        "nbMethods": 0,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 0,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 0,
+        "ccn": 1,
+        "ccnMethodMax": 0,
+        "externals": [
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
+        ],
+        "parents": [
+            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
+        ],
+        "implements": [],
+        "lcom": 0,
+        "length": 0,
+        "vocabulary": 0,
+        "volume": 0,
+        "difficulty": 0,
+        "effort": 0,
+        "level": 0,
+        "bugs": 0,
+        "time": 0,
+        "intelligentContent": 0,
+        "number_operators": 0,
+        "number_operands": 0,
+        "number_operators_unique": 0,
+        "number_operands_unique": 0,
+        "cloc": 0,
+        "loc": 4,
+        "lloc": 4,
+        "mi": 171,
+        "mIwoC": 171,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 0,
+        "relativeSystemComplexity": 0,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 0,
+        "totalSystemComplexity": 0,
+        "package": "Snicco\\Component\\BetterWPDB\\Exception\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 1,
+        "instability": 0.5,
+        "violations": {}
+    },
+    {
         "name": "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
         "interface": false,
         "abstract": false,
@@ -68,62 +409,6 @@ var classes = [
         "pageRank": 0,
         "afferentCoupling": 2,
         "efferentCoupling": 2,
-        "instability": 0.5,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPDB\\Exception\\NoMatchingRowFound",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [],
-        "nbMethodsIncludingGettersSetters": 0,
-        "nbMethods": 0,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 0,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 0,
-        "ccn": 1,
-        "ccnMethodMax": 0,
-        "externals": [
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
-        ],
-        "parents": [
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
-        ],
-        "implements": [],
-        "lcom": 0,
-        "length": 0,
-        "vocabulary": 0,
-        "volume": 0,
-        "difficulty": 0,
-        "effort": 0,
-        "level": 0,
-        "bugs": 0,
-        "time": 0,
-        "intelligentContent": 0,
-        "number_operators": 0,
-        "number_operands": 0,
-        "number_operators_unique": 0,
-        "number_operands_unique": 0,
-        "cloc": 0,
-        "loc": 4,
-        "lloc": 4,
-        "mi": 171,
-        "mIwoC": 171,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 0,
-        "relativeSystemComplexity": 0,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 0,
-        "totalSystemComplexity": 0,
-        "package": "Snicco\\Component\\BetterWPDB\\Exception\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 1,
         "instability": 0.5,
         "violations": {}
     },
@@ -255,284 +540,6 @@ var classes = [
         "afferentCoupling": 3,
         "efferentCoupling": 0,
         "instability": 0,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPDB\\BetterWPDB",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "fromWpdb",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "preparedQuery",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "unprepared",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "transactional",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "updateByPrimary",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "update",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "delete",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "select",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "selectAll",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "selectRow",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "selectValue",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "exists",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "selectLazy",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "insert",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "bulkInsert",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "runWithErrorHandling",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "queryOriginalSqlMode",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "buildInsertSql",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "createPreparedStatement",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "escIdentifier",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "paramTypes",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "log",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "convertBindings",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "validateTableName",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "validateProvidedColumnNames",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "buildWhereArray",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 27,
-        "nbMethods": 27,
-        "nbMethodsPrivate": 11,
-        "nbMethodsPublic": 16,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 74,
-        "ccn": 48,
-        "ccnMethodMax": 6,
-        "externals": [
-            "mysqli",
-            "",
-            "Snicco\\Component\\BetterWPDB\\MysqliFactory",
-            "mysqli_stmt",
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
-            "Snicco\\Component\\BetterWPDB\\QueryInfo",
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
-            "Snicco\\Component\\BetterWPDB\\QueryInfo",
-            "Closure",
-            "LogicException",
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
-            "Snicco\\Component\\BetterWPDB\\QueryInfo",
-            "Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
-            "Snicco\\Component\\BetterWPDB\\QueryInfo",
-            "InvalidArgumentException",
-            "mysqli_result",
-            "Snicco\\Component\\BetterWPDB\\Exception\\NoMatchingRowFound",
-            "Generator",
-            "mysqli_stmt",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "Snicco\\Component\\BetterWPDB\\QueryInfo",
-            "Closure",
-            "RuntimeException",
-            "RuntimeException",
-            "RuntimeException",
-            "mysqli_stmt",
-            "Snicco\\Component\\BetterWPDB\\QueryInfo",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "InvalidArgumentException"
-        ],
-        "parents": [],
-        "implements": [],
-        "lcom": 2,
-        "length": 658,
-        "vocabulary": 105,
-        "volume": 4417.97,
-        "difficulty": 50.48,
-        "effort": 223031.49,
-        "level": 0.02,
-        "bugs": 1.47,
-        "time": 12391,
-        "intelligentContent": 87.51,
-        "number_operators": 170,
-        "number_operands": 488,
-        "number_operators_unique": 18,
-        "number_operands_unique": 87,
-        "cloc": 195,
-        "loc": 543,
-        "lloc": 348,
-        "mi": 52.61,
-        "mIwoC": 12.58,
-        "commentWeight": 40.03,
-        "kanDefect": 3.53,
-        "relativeStructuralComplexity": 1024,
-        "relativeDataComplexity": 0.87,
-        "relativeSystemComplexity": 1024.87,
-        "totalStructuralComplexity": 27648,
-        "totalDataComplexity": 23.39,
-        "totalSystemComplexity": 27671.39,
-        "package": "Snicco\\Component\\BetterWPDB\\",
-        "pageRank": 0,
-        "afferentCoupling": 2,
-        "efferentCoupling": 13,
-        "instability": 0.87,
         "violations": {}
     }
 ]

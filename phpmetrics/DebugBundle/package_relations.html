@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,7 +390,26 @@
 
     var relations = [
     {
-        "name": "Snicco\\Bundle\\Debug\\Option",
+        "name": "Snicco\\Bundle\\Debug\\Displayer",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+            "Whoops",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Whoops",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
         "size": 3000,
         "relations": []
     },
@@ -424,20 +443,6 @@
         "relations": []
     },
     {
-        "name": "Whoops",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\Debug\\Displayer",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-            "Whoops",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information"
-        ]
-    },
-    {
         "name": "Whoops\\Handler",
         "size": 3000,
         "relations": []
@@ -453,12 +458,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
+        "name": "Snicco\\Bundle\\Debug\\Option",
         "size": 3000,
         "relations": []
     }

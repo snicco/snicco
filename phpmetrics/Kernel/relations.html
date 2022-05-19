@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,22 +390,7 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ArrayAccess",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Container\\ContainerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Webmozart\\Assert\\Assert",
+        "name": "\\Snicco\\Component\\Kernel\\KernelOption",
         "size": 3000,
         "relations": []
     },
@@ -430,6 +415,11 @@
             "\\Snicco\\Component\\Kernel\\Configuration\\PHPFileCache",
             "\\Snicco\\Component\\Kernel\\Configuration\\NullCache"
         ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
@@ -528,7 +518,49 @@
         ]
     },
     {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\FilesystemIterator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webimpress\\SafeWriter\\FileWriter",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Configuration\\Config",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webmozart\\Assert\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\StrArr\\Arr",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Kernel\\Exception\\MissingConfigKey",
+        "size": 3000,
+        "relations": [
+            "\\RuntimeException"
+        ]
+    },
+    {
+        "name": "\\ArrayAccess",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Container\\ContainerInterface",
         "size": 3000,
         "relations": []
     },
@@ -550,38 +582,6 @@
         "relations": [
             "\\Snicco\\Component\\Kernel\\Exception\\FrozenService"
         ]
-    },
-    {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\KernelOption",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Webimpress\\SafeWriter\\FileWriter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Configuration\\Config",
-        "size": 3000,
-        "relations": [
-            "\\Webmozart\\Assert\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\StrArr\\Arr",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\FilesystemIterator",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Kernel\\Testing\\DIContainerContractTests",

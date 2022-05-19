@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,123 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
+            "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+            "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
+            "\\Snicco\\Component\\Templating\\ValueObject\\View",
+            "\\Snicco\\Component\\Templating\\OutputBuffer",
+            "\\Snicco\\Component\\Templating\\ViewFactory\\ChildContent",
+            "\\Throwable",
+            "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
+            "\\RuntimeException",
+            "\\Snicco\\Component\\StrArr\\Str"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext",
+            "\\Snicco\\Component\\Templating\\Context\\NewableInstanceViewComposerFactory",
+            "\\Snicco\\Component\\StrArr\\Arr",
+            "\\Snicco\\Component\\Templating\\ValueObject\\View",
+            "\\Snicco\\Component\\StrArr\\Str",
+            "\\Snicco\\Component\\Templating\\Context\\ClosureViewComposer"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
+            "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound",
+            "\\Snicco\\Component\\StrArr\\Str"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\OutputBuffer",
+        "size": 3000,
+        "relations": [
+            "\\RuntimeException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\ChildContent",
+        "size": 3000,
+        "relations": [
+            "\\Closure",
+            "\\Snicco\\Component\\Templating\\OutputBuffer"
+        ]
+    },
+    {
+        "name": "\\Throwable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
+            "\\Throwable"
+        ]
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\StrArr\\Str",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Closure",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ValueObject\\FilePath"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Exception\\InvalidFile",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext",
         "size": 3000,
         "relations": []
@@ -415,7 +532,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+        "name": "\\Snicco\\Component\\Templating\\Context\\ClosureViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
         "size": 3000,
         "relations": []
     },
@@ -430,35 +552,6 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\StrArr\\Str",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ClosureViewComposer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
-            "\\Closure",
-            "\\Snicco\\Component\\Templating\\ValueObject\\View"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Closure",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
         "size": 3000,
         "relations": []
@@ -467,87 +560,6 @@
         "name": "\\composer",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
-        "size": 3000,
-        "relations": [
-            "\\InvalidArgumentException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\OutputBuffer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Throwable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\InvalidFile",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
-            "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
-            "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
-            "\\Snicco\\Component\\Templating\\ValueObject\\View",
-            "\\Snicco\\Component\\Templating\\OutputBuffer",
-            "\\Snicco\\Component\\Templating\\ViewFactory\\ChildContent",
-            "\\Throwable",
-            "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
-            "\\RuntimeException",
-            "\\Snicco\\Component\\StrArr\\Str"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ViewFactory\\ChildContent",
-        "size": 3000,
-        "relations": [
-            "\\Closure",
-            "\\Snicco\\Component\\Templating\\OutputBuffer"
-        ]
     },
     {
         "name": "\\Snicco\\Component\\Templating\\TemplateEngine",

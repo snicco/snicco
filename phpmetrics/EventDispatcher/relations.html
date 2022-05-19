@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,9 +390,24 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
+        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Event",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\PsrListenerFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
+            "\\Psr\\Container\\ContainerInterface",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
@@ -400,7 +415,12 @@
         "relations": []
     },
     {
-        "name": "\\listener_class",
+        "name": "\\Psr\\Container\\ContainerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
         "size": 3000,
         "relations": []
     },
@@ -414,27 +434,42 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\PsrListenerFactory",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
-            "\\Psr\\Container\\ContainerInterface",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
-        ]
-    },
-    {
-        "name": "\\Psr\\Container\\ContainerInterface",
+        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\InvalidArgumentException",
+        "name": "\\listener_class",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Throwable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Container\\ContainerExceptionInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\LogicException",
         "size": 3000,
         "relations": []
     },
@@ -459,59 +494,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
-        "size": 3000,
-        "relations": [
-            "\\LogicException"
-        ]
-    },
-    {
         "name": "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Event",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\ReflectionClass",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Throwable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Container\\ContainerExceptionInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsName",
         "size": 3000,
         "relations": []
     },
@@ -522,6 +510,16 @@
     },
     {
         "name": "\\ReflectionFunction",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsName",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
         "size": 3000,
         "relations": []
     },

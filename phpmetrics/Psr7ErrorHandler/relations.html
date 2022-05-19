@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -408,49 +408,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Verbosity",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\RequestInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\CanDisplay",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Delegating",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
         "size": 3000,
         "relations": []
     },
@@ -494,17 +452,59 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Verbosity",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+            "\\Psr\\Http\\Message\\RequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+        "name": "\\Psr\\Http\\Message\\RequestInterface",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\CanDisplay",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+            "\\Psr\\Http\\Message\\RequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Delegating",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+            "\\Psr\\Http\\Message\\RequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Log\\LoggerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
         "size": 3000,
         "relations": []
     },
@@ -515,6 +515,21 @@
             "\\RuntimeException",
             "\\Throwable"
         ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\ProductionErrorHandler",
@@ -546,16 +561,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
-        "size": 3000,
-        "relations": [
-            "\\Psr\\Log\\LoggerInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "\\Throwable"
-        ]
-    },
-    {
         "name": "\\Psr\\Http\\Message\\ResponseInterface",
         "size": 3000,
         "relations": []
@@ -569,16 +574,6 @@
             "\\Throwable",
             "\\Psr\\Http\\Message\\ServerRequestInterface"
         ]
-    },
-    {
-        "name": "\\Psr\\Log\\LoggerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
-        "size": 3000,
-        "relations": []
     }
 ];
 

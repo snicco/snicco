@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -224,17 +224,6 @@
                     </tr>
                     </thead>
                                             <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler</span></td>
-                            <td>5</td>
-                            <td>0.4</td>
-                            <td>0.52</td>
-                            <td>0.08</td>
-                            <td>13</td>
-                            <td>6</td>
-                            <td>12</td>
-                            <td>12</td>
-                        </tr>
-                                            <tr>
                             <td><span class="path">Snicco\Component\Psr7ErrorHandler\Identifier</span></td>
                             <td>2</td>
                             <td>0.5</td>
@@ -242,17 +231,6 @@
                             <td>0.167</td>
                             <td>1</td>
                             <td>1</td>
-                            <td>2</td>
-                            <td>2</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\DisplayerFilter</span></td>
-                            <td>5</td>
-                            <td>0.2</td>
-                            <td>0.5</td>
-                            <td>0.3</td>
-                            <td>2</td>
-                            <td>2</td>
                             <td>2</td>
                             <td>2</td>
                         </tr>
@@ -268,15 +246,26 @@
                             <td>7</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Displayer</span></td>
-                            <td>3</td>
-                            <td>0.333</td>
-                            <td>0.333</td>
-                            <td>0.333</td>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\DisplayerFilter</span></td>
+                            <td>5</td>
+                            <td>0.2</td>
+                            <td>0.5</td>
+                            <td>0.3</td>
                             <td>2</td>
                             <td>2</td>
-                            <td>4</td>
-                            <td>3</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler</span></td>
+                            <td>5</td>
+                            <td>0.4</td>
+                            <td>0.52</td>
+                            <td>0.08</td>
+                            <td>13</td>
+                            <td>6</td>
+                            <td>12</td>
+                            <td>12</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Psr7ErrorHandler\Log</span></td>
@@ -288,6 +277,17 @@
                             <td>3</td>
                             <td>2</td>
                             <td>2</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Psr7ErrorHandler\Displayer</span></td>
+                            <td>3</td>
+                            <td>0.333</td>
+                            <td>0.333</td>
+                            <td>0.333</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>3</td>
                         </tr>
                                     </table>
             </div>
@@ -473,28 +473,12 @@
 
     var spots = [
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler",
-        "abstraction": 0.4,
-        "instability": 0.52,
-        "distance": 0.05656854249492377,
-        "normalizedDistance": 0.07999999999999996,
-        "classCount": 5
-    },
-    {
         "name": "Snicco\\Component\\Psr7ErrorHandler\\Identifier",
         "abstraction": 0.5,
         "instability": 0.3333333333333333,
         "distance": 0.11785113019775796,
         "normalizedDistance": 0.16666666666666674,
         "classCount": 2
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
-        "abstraction": 0.2,
-        "instability": 0.5,
-        "distance": 0.21213203435596428,
-        "normalizedDistance": 0.30000000000000004,
-        "classCount": 5
     },
     {
         "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
@@ -505,12 +489,20 @@
         "classCount": 4
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-        "abstraction": 0.3333333333333333,
-        "instability": 0.3333333333333333,
-        "distance": 0.23570226039551584,
-        "normalizedDistance": 0.33333333333333337,
-        "classCount": 3
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
+        "abstraction": 0.2,
+        "instability": 0.5,
+        "distance": 0.21213203435596428,
+        "normalizedDistance": 0.30000000000000004,
+        "classCount": 5
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler",
+        "abstraction": 0.4,
+        "instability": 0.52,
+        "distance": 0.05656854249492377,
+        "normalizedDistance": 0.07999999999999996,
+        "classCount": 5
     },
     {
         "name": "Snicco\\Component\\Psr7ErrorHandler\\Log",
@@ -519,6 +511,14 @@
         "distance": 0.07071067811865481,
         "normalizedDistance": 0.10000000000000009,
         "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "abstraction": 0.3333333333333333,
+        "instability": 0.3333333333333333,
+        "distance": 0.23570226039551584,
+        "normalizedDistance": 0.33333333333333337,
+        "classCount": 3
     }
 ];
 

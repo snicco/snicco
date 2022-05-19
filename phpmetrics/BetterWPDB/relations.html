@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-16 11:13:40        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-05-19 19:44:31        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,46 +390,6 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_sql_exception",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\Exception\\NoMatchingRowFound",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\MysqliFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ReflectionProperty",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\QueryInfo",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\BetterWPDB\\BetterWPDB",
         "size": 3000,
         "relations": [
@@ -449,12 +409,38 @@
         ]
     },
     {
+        "name": "\\mysqli",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\",
         "size": 3000,
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\BetterWPDB\\MysqliFactory",
+        "size": 3000,
+        "relations": [
+            "\\mysqli",
+            "\\ReflectionProperty"
+        ]
+    },
+    {
         "name": "\\mysqli_stmt",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
+        "size": 3000,
+        "relations": [
+            "\\RuntimeException",
+            "\\mysqli_sql_exception"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPDB\\QueryInfo",
         "size": 3000,
         "relations": []
     },
@@ -479,7 +465,29 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\BetterWPDB\\Exception\\NoMatchingRowFound",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPDB\\Exception\\QueryException"
+        ]
+    },
+    {
         "name": "\\Generator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_sql_exception",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionProperty",
         "size": 3000,
         "relations": []
     }
