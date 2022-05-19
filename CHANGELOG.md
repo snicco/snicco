@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/snicco/snicco/compare/v1.1.2...v1.1.3) (2022-05-19)
+
+
+### Bug Fixes
+
+* **better-wpdb:** fix error handling reset with unbuffered queries ([5aa3ff8](https://github.com/snicco/snicco/commit/5aa3ff8e06fdd3213c03807c8cc7fa179084320c))
+
 ## [1.1.2](https://github.com/snicco/snicco/compare/v1.1.1...v1.1.2) (2022-05-16)
 
 
