@@ -36,8 +36,12 @@ use function sprintf;
 use function str_repeat;
 use function strtr;
 
+use function trigger_error;
+
+use const E_USER_NOTICE;
 use const MYSQLI_ASSOC;
 use const MYSQLI_OPT_INT_AND_FLOAT_NATIVE;
+use const MYSQLI_REPORT_OFF;
 
 final class BetterWPDB
 {
@@ -54,12 +58,13 @@ final class BetterWPDB
     public function __construct(mysqli $mysqli, ?QueryLogger $logger = null)
     {
         $this->mysqli = $mysqli;
-        $this->logger = $logger ?: new class() implements QueryLogger {
-            public function log(QueryInfo $info): void
-            {
-                // do nothing
-            }
-        };
+        $this->logger = $logger
+            ?: new class() implements QueryLogger {
+                public function log(QueryInfo $info): void
+                {
+                    // do nothing
+                }
+            };
     }
 
     /**
@@ -77,8 +82,11 @@ final class BetterWPDB
      * @throws InvalidArgumentException
      * @throws QueryException
      */
-    public function preparedQuery(string $sql, array $bindings = []): mysqli_stmt
-    {
+    public function preparedQuery(
+        string $sql,
+        array $bindings = [],
+        bool $auto_reset_error_handling = true
+    ): mysqli_stmt {
         return $this->runWithErrorHandling(function () use ($sql, $bindings): mysqli_stmt {
             $bindings = $this->convertBindings($bindings);
 
@@ -100,7 +108,7 @@ final class BetterWPDB
             $this->log(new QueryInfo($start, $end, $sql, $bindings));
 
             return $stmt;
-        });
+        }, $auto_reset_error_handling);
     }
 
     /**
@@ -110,7 +118,7 @@ final class BetterWPDB
      *
      * @return mysqli_result|true {@see mysqli::query()}
      */
-    public function unprepared(string $sql)
+    public function unprepared(string $sql, bool $auto_reset_error_handling = true)
     {
         return $this->runWithErrorHandling(function () use ($sql) {
             $start = microtime(true);
@@ -126,7 +134,7 @@ final class BetterWPDB
             $this->log(new QueryInfo($start, $end, $sql, []));
 
             return $res;
-        });
+        }, $auto_reset_error_handling);
     }
 
     /**
@@ -139,7 +147,6 @@ final class BetterWPDB
      *
      * @throws InvalidArgumentException
      * @throws QueryException
-     *
      * @psalm-return  T
      */
     public function transactional(Closure $callback)
@@ -198,7 +205,8 @@ final class BetterWPDB
      * @param non-empty-string                                                             $table
      * @param int|non-empty-array<non-empty-string, int|non-empty-string>|non-empty-string $primary_key
      * @param non-empty-array<non-empty-string, scalar|null>                               $changes     !!! IMPORTANT !!!
-     *                                                                                                  Keys of $data MUST never be user provided
+     *                                                                                                  Keys of $data
+     *                                                                                                  MUST never be user provided
      *
      * @throws InvalidArgumentException
      * @throws QueryException
@@ -210,9 +218,11 @@ final class BetterWPDB
             throw new InvalidArgumentException('$primary_key can not be an empty-string.');
         }
 
-        $primary_key = is_array($primary_key) ? $primary_key : [
-            'id' => $primary_key,
-        ];
+        $primary_key = is_array($primary_key)
+            ? $primary_key
+            : [
+                'id' => $primary_key,
+            ];
 
         return $this->update($table, $primary_key, $changes);
     }
@@ -287,8 +297,13 @@ final class BetterWPDB
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
-        return $this->preparedQuery($sql, $bindings)
-            ->get_result();
+        $stmt = $this->preparedQuery($sql, $bindings, false);
+
+        $result = $stmt->get_result();
+
+        $this->restoreErrorHandling();
+
+        return $result;
     }
 
     /**
@@ -389,10 +404,14 @@ final class BetterWPDB
 
         $sql .= implode(' and ', $wheres) . ' limit 1';
 
-        $result = $this->preparedQuery($sql, $bindings);
+        $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        $result->bind_result($found);
-        $result->fetch();
+        $stmt->bind_result($found);
+        $stmt->fetch();
+
+        $stmt->close();
+
+        $this->restoreErrorHandling();
 
         return (int) $found > 0;
     }
@@ -521,6 +540,31 @@ final class BetterWPDB
         });
     }
 
+    public function restoreErrorHandling(): void
+    {
+        if (! $this->is_handling_errors) {
+            return;
+        }
+
+        if (! isset($this->original_sql_mode)) {
+            $this->original_sql_mode = $this->queryOriginalSqlMode();
+        }
+
+        // Turn back to previous error reporting so that shitty wpdb doesn't break.
+        $this->mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 0);
+        mysqli_report(MYSQLI_REPORT_OFF);
+        $this->mysqli->query(sprintf("SET SESSION sql_mode='%s'", $this->original_sql_mode),);
+
+        if ($this->mysqli->error) {
+            trigger_error(
+                "Could not restore error handling. This probably happened because you used preparedQuery() with a select statement.\nError: " . $this->mysqli->error,
+                E_USER_NOTICE
+            );
+        }
+
+        $this->is_handling_errors = false;
+    }
+
     /**
      * @template T
      *
@@ -528,7 +572,7 @@ final class BetterWPDB
      *
      * @psalm-return  T
      */
-    private function runWithErrorHandling(Closure $run_query)
+    private function runWithErrorHandling(Closure $run_query, bool $auto_restore_error_handling = true)
     {
         if ($this->is_handling_errors) {
             return $run_query();
@@ -553,11 +597,9 @@ final class BetterWPDB
         try {
             return $run_query();
         } finally {
-            // Turn back to previous error reporting so that shitty wpdb doesn't break.
-            $this->mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 0);
-            mysqli_report(MYSQLI_REPORT_OFF);
-            $this->mysqli->query(sprintf("SET SESSION sql_mode='%s'", $this->original_sql_mode));
-            $this->is_handling_errors = false;
+            if ($auto_restore_error_handling) {
+                $this->restoreErrorHandling();
+            }
         }
     }
 
@@ -577,7 +619,7 @@ final class BetterWPDB
             // @codeCoverageIgnoreEnd
         }
 
-        return$res[0];
+        return $res[0];
     }
 
     /**

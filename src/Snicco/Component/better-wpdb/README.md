@@ -376,6 +376,10 @@ If you need full control of your sql query or have a complex use case you can di
 method. This method will return an instance of [`mysqli_stmt`](https://www.php.net/manual/de/class.mysqli-stmt.php). For
 most use cases there are more high level methods available.
 
+**!Important:** If you are using the `preparedQuery` **AND** your query is a `SELECT` query, you need to manually restore the default error handling.
+
+All other methods take care of this automatically.
+
 ```php
 
 use Snicco\Component\BetterWPDB\BetterWPDB;
@@ -384,11 +388,20 @@ $mysqli = /* ... */
 
 $better_wpdb = new BetterWPDB($mysqli);
 
+// Only for select queries.
+$auto_restore_error_handling = false;
+
 // stmt is an instance of mysqli_stmt
-$stmt = $better_wpdb->preparedQuery('select * from test_table where test_string = ? or test_int = ?', ['foo', 1]);
+$stmt = $better_wpdb->preparedQuery(
+    'select * from test_table where test_string = ? or test_int = ?', 
+    ['foo', 1],
+    $auto_restore_error_handling
+);
 
 var_dump($stmt->num_rows);
 var_dump($stmt->affected_rows);
+
+$better_wpdb->restoreErrorHandling();
 ```
 
 ❌ Never pass **ANY** user input into the first argument of `preparedQuery`
