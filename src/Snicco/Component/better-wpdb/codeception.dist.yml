@@ -8,6 +8,9 @@ paths:
 params:
   - env
 
+reporters:
+  report: "PhpStorm_Codeception_ReportPrinter"
+
 settings:
   colors: true
   disallow_test_output: true

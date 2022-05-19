@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPDB\Tests\wordpress;
 
+use PHPUnit\Framework\Exception;
 use Snicco\Component\BetterWPDB\Exception\QueryException;
 use Snicco\Component\BetterWPDB\Tests\BetterWPDBTestCase;
 use wpdb;
 
+use function ob_end_clean;
+use function ob_get_clean;
+use function ob_start;
 use function str_repeat;
 
 /**
@@ -136,5 +140,170 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         // invalid data, wpdb no exception, money is clamped to 0.
         // The insert went through with invalid data.
         $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function the_sql_mode_is_reset_to_normal_after_select(): void
+    {
+        $this->better_wpdb->select('select * from test_table', []);
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function the_sql_mode_is_reset_to_normal_after_select_all(): void
+    {
+        $this->better_wpdb->selectAll('select * from test_table', []);
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     *
+     * @psalm-suppress UnusedForeachValue
+     */
+    public function the_sql_mode_is_reset_to_normal_after_select_lazy(): void
+    {
+        $iterator = $this->better_wpdb->selectLazy('select * from test_table', []);
+
+        foreach ($iterator as $row) {
+        }
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function the_sql_mode_is_reset_to_normal_after_select_value(): void
+    {
+        $this->better_wpdb->insert('test_table', [
+            'test_string' => 'foo',
+            'test_int' => 10,
+        ]);
+        $this->better_wpdb->selectValue('select * from test_table', []);
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function the_sql_mode_is_reset_to_normal_after_select_row(): void
+    {
+        $this->better_wpdb->selectRow('select count(*) from test_table', []);
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function the_sql_mode_is_reset_to_normal_after_exists(): void
+    {
+        $this->better_wpdb->exists('test_table', [
+            'test_string' => 'foo',
+        ]);
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function that_a_warning_is_triggered_if_prepared_selects_are_used_with_auto_disabled_error_handling(): void
+    {
+        $this->better_wpdb->preparedQuery('select * from test_table', [], false);
+
+        // This can be changed once https://github.com/Codeception/Codeception/pull/6461 is merged.
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Could not restore error handling');
+
+        $this->better_wpdb->restoreErrorHandling();
+
+        $this->better_wpdb->preparedQuery('select * from test_table');
     }
 }

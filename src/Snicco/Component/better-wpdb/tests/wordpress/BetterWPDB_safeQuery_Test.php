@@ -29,7 +29,7 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
      */
     public function prepared_queries_can_be_run_without_placeholders(): void
     {
-        $this->better_wpdb->preparedQuery('insert into test_table (test_string) values (?)', ['foo']);
+        $this->better_wpdb->preparedQuery('insert into test_table (test_string) values (?)', ['foo'], false);
 
         $stmt = $this->better_wpdb->preparedQuery('select count(*) as record_count from test_table');
         $res = $stmt->get_result();
@@ -46,7 +46,8 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
     {
         $stmt = $this->better_wpdb->preparedQuery(
             'insert into test_table (test_string, test_int) values (?,?)',
-            ['foo', null]
+            ['foo', null],
+            false
         );
         $this->assertSame(1, $stmt->affected_rows);
 
@@ -70,7 +71,7 @@ final class BetterWPDB_safeQuery_Test extends BetterWPDBTestCase
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);
 
-        $db->preparedQuery('select * from test_table where test_string = ?', ['foo']);
+        $db->preparedQuery('select * from test_table where test_string = ?', ['foo'], false);
 
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);
