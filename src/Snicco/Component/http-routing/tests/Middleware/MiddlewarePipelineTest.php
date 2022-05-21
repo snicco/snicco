@@ -60,7 +60,7 @@ final class MiddlewarePipelineTest extends TestCase
 
         $this->pimple[ResponseFactory::class] = fn (): ResponseFactory => $this->response_factory;
 
-        $this->pipeline = new MiddlewarePipeline($this->pimple_psr, new NullErrorHandler(),);
+        $this->pipeline = new MiddlewarePipeline($this->pimple_psr, new NullErrorHandler(), );
         $this->request = new Request(
             $this->psrServerRequestFactory()
                 ->createServerRequest('GET', 'https://foobar.com')

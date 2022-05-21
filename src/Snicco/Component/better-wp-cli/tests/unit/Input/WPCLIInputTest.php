@@ -27,7 +27,7 @@ final class WPCLIInputTest extends TestCase
      */
     public function test_stream_returns_stdin_by_default(): void
     {
-        $input = new WPCLIInput(new Synopsis(),);
+        $input = new WPCLIInput(new Synopsis(), );
 
         $this->assertSame(STDIN, $input->getStream());
     }
@@ -49,7 +49,7 @@ final class WPCLIInputTest extends TestCase
      */
     public function test_is_interactive(): void
     {
-        $input = new WPCLIInput(new Synopsis(), [], [],);
+        $input = new WPCLIInput(new Synopsis(), [], [], );
         $this->assertTrue($input->isInteractive());
 
         $input = new WPCLIInput(new Synopsis(), [], [], null, false);
@@ -73,7 +73,7 @@ final class WPCLIInputTest extends TestCase
      */
     public function test_exception_if_positional_args_count_is_greater_than_positional_args_in_synopsis(): void
     {
-        $synopsis = new Synopsis(new InputArgument('foo'),);
+        $synopsis = new Synopsis(new InputArgument('foo'), );
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -122,7 +122,7 @@ final class WPCLIInputTest extends TestCase
     {
         $synopsis = new Synopsis(new InputArgument('foo'), new InputArgument('bar'), new InputArgument('baz'));
 
-        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [],);
+        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [], );
 
         $this->assertSame('FOO', $input->getArgument('foo'));
         $this->assertSame('BAR', $input->getArgument('bar'));
@@ -140,7 +140,7 @@ final class WPCLIInputTest extends TestCase
             new InputArgument('baz', '', InputArgument::OPTIONAL)
         );
 
-        $input = new WPCLIInput($synopsis, ['FOO', 'BAR'], [],);
+        $input = new WPCLIInput($synopsis, ['FOO', 'BAR'], [], );
 
         $this->assertSame('FOO', $input->getArgument('foo'));
         $this->assertSame('BAR', $input->getArgument('bar'));
@@ -159,7 +159,7 @@ final class WPCLIInputTest extends TestCase
             new InputArgument('bar', '', InputArgument::REPEATING | InputArgument::REQUIRED),
         );
 
-        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [],);
+        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [], );
 
         $this->assertSame('FOO', $input->getArgument('foo'));
         $this->assertSame(['BAR', 'BAZ'], $input->getRepeatingArgument('bar'));
@@ -175,7 +175,7 @@ final class WPCLIInputTest extends TestCase
             new InputArgument('bar', '', InputArgument::REPEATING | InputArgument::REQUIRED),
         );
 
-        $input = new WPCLIInput($synopsis, ['FOO', 'BAR'], [],);
+        $input = new WPCLIInput($synopsis, ['FOO', 'BAR'], [], );
 
         $this->assertSame('FOO', $input->getArgument('foo'));
         $this->assertSame(['BAR'], $input->getRepeatingArgument('bar'));
@@ -191,7 +191,7 @@ final class WPCLIInputTest extends TestCase
             new InputArgument('bar', '', InputArgument::REPEATING | InputArgument::REQUIRED),
         );
 
-        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [],);
+        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [], );
 
         $this->assertSame('FOO', $input->getArgument('foo'));
 
@@ -212,7 +212,7 @@ final class WPCLIInputTest extends TestCase
             new InputArgument('bar', '', InputArgument::REPEATING | InputArgument::REQUIRED),
         );
 
-        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [],);
+        $input = new WPCLIInput($synopsis, ['FOO', 'BAR', 'BAZ'], [], );
 
         $this->assertSame('FOO', $input->getArgument('foo'));
 
@@ -233,7 +233,7 @@ final class WPCLIInputTest extends TestCase
             new InputArgument('bar', '', InputArgument::OPTIONAL),
         );
 
-        $input = new WPCLIInput($synopsis, ['foo_default'], [],);
+        $input = new WPCLIInput($synopsis, ['foo_default'], [], );
 
         $this->assertSame('foo_default', $input->getArgument('foo'));
         $this->assertNull($input->getArgument('bar'));
@@ -245,7 +245,7 @@ final class WPCLIInputTest extends TestCase
      */
     public function test_get_option(): void
     {
-        $synopsis = new Synopsis(new InputOption('foo'),);
+        $synopsis = new Synopsis(new InputOption('foo'), );
 
         $input = new WPCLIInput(
             $synopsis,
@@ -304,7 +304,7 @@ final class WPCLIInputTest extends TestCase
      */
     public function test_get_flag(): void
     {
-        $synopsis = new Synopsis(new InputOption('foo'),);
+        $synopsis = new Synopsis(new InputOption('foo'), );
 
         $input = new WPCLIInput(
             $synopsis,
@@ -328,7 +328,7 @@ final class WPCLIInputTest extends TestCase
     {
         $synopsis = new Synopsis(new InputArgument('foo'), new InputArgument('baz', '', InputArgument::OPTIONAL));
 
-        $input = new WPCLIInput($synopsis, ['bar'],);
+        $input = new WPCLIInput($synopsis, ['bar'], );
 
         $this->assertSame([
             'foo' => 'bar',
@@ -342,7 +342,7 @@ final class WPCLIInputTest extends TestCase
     {
         $synopsis = new Synopsis(new InputArgument('foo', '', InputArgument::REPEATING | InputArgument::REQUIRED));
 
-        $input = new WPCLIInput($synopsis, ['bar', 'baz'],);
+        $input = new WPCLIInput($synopsis, ['bar', 'baz'], );
 
         $this->assertSame([
             'foo' => ['bar', 'baz'],

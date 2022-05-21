@@ -19,7 +19,7 @@ final class InputOptionTest extends TestCase
      */
     public function with_basic_configuration(): void
     {
-        $option = new InputOption('name',);
+        $option = new InputOption('name', );
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
@@ -58,7 +58,7 @@ final class InputOptionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Input option can not be required and optional.');
 
-        new InputOption('name', 'description', InputOption::REQUIRED | InputOption::OPTIONAL,);
+        new InputOption('name', 'description', InputOption::REQUIRED | InputOption::OPTIONAL, );
     }
 
     /**
@@ -69,7 +69,7 @@ final class InputOptionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Input option must be either required or optional');
 
-        new InputOption('name', 'description', InputOption::COMMA_SEPERATED,);
+        new InputOption('name', 'description', InputOption::COMMA_SEPERATED, );
     }
 
     /**
@@ -93,7 +93,7 @@ final class InputOptionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Flag [8] is not valid');
-        new InputOption('name', 'description', 8,);
+        new InputOption('name', 'description', 8, );
     }
 
     /**
@@ -103,7 +103,7 @@ final class InputOptionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Flag [0] is not valid');
-        new InputOption('name', 'description', 0,);
+        new InputOption('name', 'description', 0, );
     }
 
     /**
@@ -130,7 +130,7 @@ final class InputOptionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('name can not be empty');
-        new InputOption('',);
+        new InputOption('', );
     }
 
     /**
@@ -172,7 +172,7 @@ final class InputOptionTest extends TestCase
      */
     public function is_comma_seperated_and_required(): void
     {
-        $option = new InputOption('name', 'description', InputOption::COMMA_SEPERATED | InputOption::REQUIRED,);
+        $option = new InputOption('name', 'description', InputOption::COMMA_SEPERATED | InputOption::REQUIRED, );
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
@@ -187,7 +187,7 @@ final class InputOptionTest extends TestCase
      */
     public function is_optional_and_comma_separated(): void
     {
-        $option = new InputOption('name', 'description', InputOption::OPTIONAL | InputOption::COMMA_SEPERATED,);
+        $option = new InputOption('name', 'description', InputOption::OPTIONAL | InputOption::COMMA_SEPERATED, );
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
@@ -202,7 +202,7 @@ final class InputOptionTest extends TestCase
      */
     public function with_allowed_values(): void
     {
-        $option = new InputOption('name', 'description', InputOption::OPTIONAL, null, ['foo', 'bar'],);
+        $option = new InputOption('name', 'description', InputOption::OPTIONAL, null, ['foo', 'bar'], );
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
@@ -241,7 +241,7 @@ final class InputOptionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('allowed values must not be empty.');
-        new InputOption('name', 'description', InputOption::OPTIONAL, null, [],);
+        new InputOption('name', 'description', InputOption::OPTIONAL, null, [], );
     }
 
     /**
@@ -251,6 +251,6 @@ final class InputOptionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Default value [baz] is not in list of allowed values.');
-        new InputOption('name', 'description', InputOption::OPTIONAL, 'baz', ['foo', 'bar'],);
+        new InputOption('name', 'description', InputOption::OPTIONAL, 'baz', ['foo', 'bar'], );
     }
 }

@@ -186,7 +186,7 @@ final class DatabaseFactoriesTest extends WPTestCase
                 'continent' => 'Narnia',
             ], [
                 'continent' => 'Westeros',
-            ],))
+            ], ))
             ->create();
 
         $table = $this->assertDbTable('wp_countries');

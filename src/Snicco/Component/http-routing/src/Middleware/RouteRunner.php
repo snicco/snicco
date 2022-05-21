@@ -49,7 +49,7 @@ final class RouteRunner extends Middleware
             return $this->delegate($request);
         }
 
-        $action = new ControllerAction($route->getController(), $this->container,);
+        $action = new ControllerAction($route->getController(), $this->container, );
 
         $middleware = $this->middleware_resolver->resolveForRoute($route, $action);
 

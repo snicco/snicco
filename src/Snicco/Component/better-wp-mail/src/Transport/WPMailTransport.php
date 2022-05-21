@@ -60,7 +60,7 @@ final class WPMailTransport implements Transport
             $message = '';
         }
 
-        $headers = array_merge($ccs, $bcc, $reply_to, $from, [$content_type],);
+        $headers = array_merge($ccs, $bcc, $reply_to, $from, [$content_type], );
 
         try {
             // Don't set attachments here since WordPress only adds attachments by file path. Really?
@@ -149,7 +149,7 @@ final class WPMailTransport implements Transport
             }
         };
 
-        $this->wp->addAction('phpmailer_init', $closure, 99999, 1,);
+        $this->wp->addAction('phpmailer_init', $closure, 99999, 1, );
 
         return $closure;
     }

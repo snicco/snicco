@@ -197,7 +197,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $e = new Exception('Secret message here.');
 
         $response = $this->createErrorHandler([new PlainTextExceptionDisplayer(false)])
-            ->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
+            ->handle($e, $this->base_request->withHeader('Accept', 'text/plain'), );
 
         // default handler handles this.
         $this->assertSame(500, $response->getStatusCode());
@@ -218,7 +218,7 @@ final class ProductionErrorHandlerTest extends TestCase
             new JsonExceptionDisplayer(),
         ]);
 
-        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
+        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'text/plain'), );
 
         $body = (string) $response->getBody();
 
@@ -232,7 +232,7 @@ final class ProductionErrorHandlerTest extends TestCase
             new JsonExceptionDisplayer(),
         ]);
 
-        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'text/plain'),);
+        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'text/plain'), );
 
         $body = (string) $response->getBody();
 
@@ -244,7 +244,7 @@ final class ProductionErrorHandlerTest extends TestCase
         $handler = $this->createErrorHandler(
             [new PlainTextExceptionDisplayer(), new PlainTextExceptionDisplayer2(), new JsonExceptionDisplayer()]
         );
-        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'application/json'),);
+        $response = $handler->handle($e, $this->base_request->withHeader('Accept', 'application/json'), );
 
         $body = (string) $response->getBody();
 
@@ -348,7 +348,7 @@ final class ProductionErrorHandlerTest extends TestCase
      */
     public function an_exception_during_displaying_will_be_converted_into_a_minimal_500_error(): void
     {
-        $logger = new RequestAwareLogger($test_logger = new TestLogger(),);
+        $logger = new RequestAwareLogger($test_logger = new TestLogger(), );
 
         $handler = new ProductionErrorHandler(
             $this->response_factory,

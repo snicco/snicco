@@ -499,7 +499,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $configurator->page('admin1', 'admin.php/foo', RoutingTestController::class, [],);
+            $configurator->page('admin1', 'admin.php/foo', RoutingTestController::class, [], );
         });
 
         $response = $this->runNewPipeline($this->adminRequest('/wp-admin/admin.php?page=foo'));
@@ -522,7 +522,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $configurator->page('r1', 'admin.php/foo', RoutingTestController::class,);
+            $configurator->page('r1', 'admin.php/foo', RoutingTestController::class, );
         });
 
         $response = $this->runNewPipeline($this->adminRequest('/bar'));
@@ -563,7 +563,7 @@ final class RouteMiddlewareTest extends HttpRunnerTestCase
         );
 
         $this->webRouting(function (WebRoutingConfigurator $configurator): void {
-            $configurator->get('r1', 'foo', RoutingTestController::class,);
+            $configurator->get('r1', 'foo', RoutingTestController::class, );
         });
 
         $response = $this->runNewPipeline($this->apiRequest('/bar'));

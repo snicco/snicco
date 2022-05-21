@@ -50,9 +50,9 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_select(): void
     {
-        $this->better_wpdb->preparedQuery("insert into test_table (test_string) values('foo')",);
-        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_int) values('foobar', 1)",);
-        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_bool) values('baz', true)",);
+        $this->better_wpdb->preparedQuery("insert into test_table (test_string) values('foo')", );
+        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_int) values('foobar', 1)", );
+        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_bool) values('baz', true)", );
 
         $stmt = $this->better_wpdb->select('select * from test_table where id = ?', [1]);
         $this->assertSame(1, $stmt->num_rows);
@@ -79,8 +79,8 @@ final class BetterWPDB_reads_Test extends WPTestCase
      */
     public function test_select_all(): void
     {
-        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_int) values('foo', 1)",);
-        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_int) values('bar', 2)",);
+        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_int) values('foo', 1)", );
+        $this->better_wpdb->preparedQuery("insert into test_table (test_string, test_int) values('bar', 2)", );
         $this->better_wpdb->preparedQuery(
             "insert into test_table (test_string, test_bool, test_float, test_int) values('baz', true, 20.20, 3)",
         );

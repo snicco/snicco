@@ -175,7 +175,7 @@ final class SignedUrlValidatorTest extends TestCase
     public function invalid_after_max_usage(): void
     {
         $signed_url = $this->url_signer->sign('/foo', 10, 2);
-        $validator = new SignedUrlValidator($this->storage, $this->hmac,);
+        $validator = new SignedUrlValidator($this->storage, $this->hmac, );
 
         $validator->validate($signed_url->asString());
         $validator->validate($signed_url->asString());

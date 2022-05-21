@@ -64,9 +64,9 @@ final class AdminMenuTest extends HttpRunnerTestCase
     public function an_admin_menu_will_be_preconfigured_based_on_the_route(): void
     {
         $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $configurator->page('admin.my_route', 'admin.php/foo', RoutingTestController::class,);
+            $configurator->page('admin.my_route', 'admin.php/foo', RoutingTestController::class, );
 
-            $configurator->page('admin.my.second_route', 'admin.php/bar', RoutingTestController::class,);
+            $configurator->page('admin.my.second_route', 'admin.php/bar', RoutingTestController::class, );
         });
 
         $items = $routing->adminMenu()
@@ -127,7 +127,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
     public function admin_menus_will_not_be_added_if_null_is_passed_explicitly_even_tho_a_controller_is_defined(): void
     {
         $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $configurator->page('admin.redirect', 'admin.php/foo', RoutingTestController::class, null,);
+            $configurator->page('admin.redirect', 'admin.php/foo', RoutingTestController::class, null, );
         });
 
         $item = $routing->adminMenu()
@@ -142,7 +142,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
     public function sub_menu_items_can_be_added_by_passing_in_another_route(): void
     {
         $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $route1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class,);
+            $route1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, );
 
             $configurator->page(
                 'admin_sub',
@@ -172,7 +172,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
     public function sub_menu_items_can_be_added_in_a_parent_scope_closure(): void
     {
         $routing = $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $parent = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class,);
+            $parent = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, );
 
             $configurator->subPages($parent, function (AdminRoutingConfigurator $configurator): void {
                 $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
@@ -201,7 +201,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         $this->expectExceptionMessage('Nested calls');
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, [],);
+            $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, [], );
             $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator): void {
                 $r2 = $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
 
@@ -222,7 +222,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, [],);
+            $r1 = $configurator->page('admin_parent', '/admin.php/parent', RoutingTestController::class, [], );
 
             $configurator->subPages($r1, function (AdminRoutingConfigurator $configurator): void {
                 $r2 = $configurator->page('admin_sub_1', '/admin.php/sub1', RoutingTestController::class);
@@ -369,7 +369,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $r1 = $configurator->page('options.redirect', '/options.php',);
+            $r1 = $configurator->page('options.redirect', '/options.php', );
 
             $configurator->page('options.sub', '/options.php/sub', RoutingTestController::class, [], $r1);
         });
@@ -425,7 +425,7 @@ final class AdminMenuTest extends HttpRunnerTestCase
         );
 
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
-            $r1 = $configurator->page('admin.parent', '/admin.php/parent', RoutingTestController::class,);
+            $r1 = $configurator->page('admin.parent', '/admin.php/parent', RoutingTestController::class, );
             $r2 = $configurator->page('admin.sub1', '/admin.php/sub1', RoutingTestController::class, [], $r1);
 
             $configurator->page('admin.sub2', '/admin.php/sub2', RoutingTestController::class, [], $r2);

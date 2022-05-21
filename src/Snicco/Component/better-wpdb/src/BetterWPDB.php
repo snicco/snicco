@@ -553,7 +553,7 @@ final class BetterWPDB
         // Turn back to previous error reporting so that shitty wpdb doesn't break.
         $this->mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 0);
         mysqli_report(MYSQLI_REPORT_OFF);
-        $this->mysqli->query(sprintf("SET SESSION sql_mode='%s'", $this->original_sql_mode),);
+        $this->mysqli->query(sprintf("SET SESSION sql_mode='%s'", $this->original_sql_mode), );
 
         if ($this->mysqli->error) {
             trigger_error(

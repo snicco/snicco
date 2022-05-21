@@ -37,7 +37,7 @@ final class MailDefaults
         $email = $wp->adminEmail();
         $name = $wp->siteName();
 
-        return new MailDefaults($email, $name, $email, $name,);
+        return new MailDefaults($email, $name, $email, $name, );
     }
 
     public function getFrom(): Mailbox

@@ -151,7 +151,8 @@ final class ResponseFactoryTest extends TestCase
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode([
             'foo' => 'bar',
-        ]), $response->getBody()->__toString());
+        ]), $response->getBody()
+            ->__toString());
     }
 
     /**

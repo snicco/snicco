@@ -19,7 +19,7 @@ final class InputArgumentTest extends TestCase
      */
     public function with_basic_configuration(): void
     {
-        $argument = new InputArgument('name',);
+        $argument = new InputArgument('name', );
         $this->assertSame([
             'type' => 'positional',
             'name' => 'name',
@@ -70,7 +70,7 @@ final class InputArgumentTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Input argument can not be required and optional.');
 
-        new InputArgument('name', 'description', InputArgument::REQUIRED | InputArgument::OPTIONAL,);
+        new InputArgument('name', 'description', InputArgument::REQUIRED | InputArgument::OPTIONAL, );
     }
 
     /**
@@ -81,7 +81,7 @@ final class InputArgumentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('name can not be empty');
-        new InputArgument('',);
+        new InputArgument('', );
     }
 
     /**
@@ -125,7 +125,7 @@ final class InputArgumentTest extends TestCase
      */
     public function is_repeating_and_required(): void
     {
-        $argument = new InputArgument('name', 'description', InputArgument::REPEATING | InputArgument::REQUIRED,);
+        $argument = new InputArgument('name', 'description', InputArgument::REPEATING | InputArgument::REQUIRED, );
         $this->assertSame([
             'type' => 'positional',
             'name' => 'name',
@@ -140,7 +140,7 @@ final class InputArgumentTest extends TestCase
      */
     public function is_optional_and_repeating(): void
     {
-        $argument = new InputArgument('name', 'description', InputArgument::OPTIONAL | InputArgument::REPEATING,);
+        $argument = new InputArgument('name', 'description', InputArgument::OPTIONAL | InputArgument::REPEATING, );
         $this->assertSame([
             'type' => 'positional',
             'name' => 'name',
@@ -158,7 +158,7 @@ final class InputArgumentTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Input argument must be either required or optional');
 
-        new InputArgument('name', 'description', InputArgument::REPEATING,);
+        new InputArgument('name', 'description', InputArgument::REPEATING, );
     }
 
     /**
@@ -182,7 +182,7 @@ final class InputArgumentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument flag [8] is not valid');
-        new InputArgument('name', 'description', 8,);
+        new InputArgument('name', 'description', 8, );
     }
 
     /**
@@ -192,7 +192,7 @@ final class InputArgumentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument flag [0] is not valid');
-        new InputArgument('name', 'description', 0,);
+        new InputArgument('name', 'description', 0, );
     }
 
     /**
@@ -200,7 +200,7 @@ final class InputArgumentTest extends TestCase
      */
     public function with_allowed_values(): void
     {
-        $argument = new InputArgument('name', 'description', InputArgument::OPTIONAL, null, ['foo', 'bar'],);
+        $argument = new InputArgument('name', 'description', InputArgument::OPTIONAL, null, ['foo', 'bar'], );
         $this->assertSame([
             'type' => 'positional',
             'name' => 'name',
@@ -238,7 +238,7 @@ final class InputArgumentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('allowed values must not be empty.');
-        new InputArgument('name', 'description', InputArgument::OPTIONAL, null, [],);
+        new InputArgument('name', 'description', InputArgument::OPTIONAL, null, [], );
     }
 
     /**
@@ -248,6 +248,6 @@ final class InputArgumentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Default value [baz] is not in list of allowed values.');
-        new InputArgument('name', 'description', InputArgument::OPTIONAL, 'baz', ['foo', 'bar'],);
+        new InputArgument('name', 'description', InputArgument::OPTIONAL, 'baz', ['foo', 'bar'], );
     }
 }

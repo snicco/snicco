@@ -398,7 +398,7 @@ final class StrTest extends TestCase
         $this->assertSame('foo', Str::pregReplace($str, '/^\.+|\.+$/', ''));
 
         $this->assertSame('Malmo', Str::pregReplace('Malmööö', '/[ö].+/', 'o'));
-        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o',));
+        $this->assertSame('Malmooo', Str::pregReplace('Malmööö', '/[ö]/', 'o', ));
     }
 
     /**

@@ -1,0 +1,27 @@
+namespace: Snicco\Bridge\SignedUrlWP
+paths:
+  tests: tests
+  output: tests/_output
+  data: tests/_data
+  support: tests/_support
+
+bootstrap: bootstrap.php
+
+params:
+  - env
+
+settings:
+  colors: true
+  disallow_test_output: true
+  error_level: E_ALL
+  log_incomplete_skipped: true
+  report_useless_tests: true
+
+reporters:
+  report: "PhpStorm_Codeception_ReportPrinter"
+
+coverage:
+  enabled: true
+  include:
+    - src/*
+  show_uncovered: true

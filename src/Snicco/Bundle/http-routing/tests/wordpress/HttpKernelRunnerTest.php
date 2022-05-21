@@ -55,7 +55,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_server = $_SERVER;
         $this->_get = $_get;
         $this->_server = $_server;
-        $this->kernel = new Kernel(new PimpleContainerAdapter(), Environment::testing(), $this->directories,);
+        $this->kernel = new Kernel(new PimpleContainerAdapter(), Environment::testing(), $this->directories, );
         $this->kernel->boot();
 
         $this->http_dispatcher = $this->kernel->container()
@@ -79,7 +79,7 @@ final class HttpKernelRunnerTest extends WPTestCase
      */
     public function test_http_runner_can_be_resolved_in_production(): void
     {
-        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories,);
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories, );
         $kernel->boot();
         $this->assertInstanceOf(HttpKernelRunner::class, $kernel->container()->make(HttpKernelRunner::class));
     }
@@ -570,7 +570,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/frontend';
 
-        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories,);
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories, );
         $kernel->boot();
 
         $http_runner = $kernel->container()

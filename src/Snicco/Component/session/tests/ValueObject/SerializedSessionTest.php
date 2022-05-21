@@ -58,7 +58,7 @@ final class SerializedSessionTest extends TestCase
      */
     public function test_user_id(): void
     {
-        $session = SerializedSession::fromString('foo', 'foobar', time(),);
+        $session = SerializedSession::fromString('foo', 'foobar', time(), );
 
         $this->assertNull($session->userId());
 

@@ -7,6 +7,7 @@
     "wp_cache_delete",
     "wp_cache_flush",
     "wp_cache_get",
+    "wp_cache_decr",
     "wp_cache_get_multiple",
     "wp_cache_set",
     "wp_get_current_user",

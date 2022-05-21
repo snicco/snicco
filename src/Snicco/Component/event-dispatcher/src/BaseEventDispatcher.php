@@ -55,7 +55,7 @@ final class BaseEventDispatcher implements EventDispatcher
                 break;
             }
 
-            $this->callListener($listener, $event,);
+            $this->callListener($listener, $event, );
         }
 
         return $original_event;

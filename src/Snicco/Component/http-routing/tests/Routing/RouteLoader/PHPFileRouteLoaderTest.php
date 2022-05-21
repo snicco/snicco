@@ -445,7 +445,7 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     public function test_exception_if_argument_not_supported(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The option [bogus] is not supported.',);
+        $this->expectExceptionMessage('The option [bogus] is not supported.', );
 
         $loader = new PHPFileRouteLoader(
             [],
