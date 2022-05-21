@@ -44,11 +44,11 @@ final class ContentTypeTest extends TestCase
         $info = new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $this->request);
         $request = new ServerRequest('GET', '/foo');
 
-        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info,);
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'text/plain'), $info, );
 
         $this->assertSame([$d1, $d2], array_values($filtered));
 
-        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'application/json'), $info,);
+        $filtered = $filter->filter($displayers, $request->withHeader('Accept', 'application/json'), $info, );
 
         $this->assertSame([$d3, $d4], array_values($filtered));
     }

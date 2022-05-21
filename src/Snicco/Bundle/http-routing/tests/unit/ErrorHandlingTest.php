@@ -320,7 +320,7 @@ final class ErrorHandlingTest extends TestCase
             ExceptionInformationProvider {
             public function createFor(Throwable $e, ServerRequestInterface $request): ExceptionInformation
             {
-                return new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request,);
+                return new ExceptionInformation(500, 'foo_id', 'foo_title', 'foo_details', $e, $e, $request, );
             }
         };
 

@@ -156,7 +156,7 @@ abstract class MiddlewareTestCase extends TestCase
 
     private function newResponseFactory(): ResponseFactory
     {
-        return new ResponseFactory($this->psrResponseFactory(), $this->psrStreamFactory(),);
+        return new ResponseFactory($this->psrResponseFactory(), $this->psrStreamFactory(), );
     }
 
     private function next(): NextMiddleware

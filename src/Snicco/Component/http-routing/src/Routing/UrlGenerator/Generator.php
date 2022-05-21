@@ -108,7 +108,7 @@ final class Generator implements UrlGenerator
         $extra = array_diff_key($arguments, array_flip($route->getSegmentNames()));
 
         // Replace required segments
-        $route_path = $this->replaceSegments($required_segments, $requirements, $arguments, $route_path, $name,);
+        $route_path = $this->replaceSegments($required_segments, $requirements, $arguments, $route_path, $name, );
 
         // Replace optional segments
         $route_path = $this->replaceSegments(

@@ -23,7 +23,7 @@ final class MysqliFactory
 
         $reconnect = new MysqliReconnect($this->getReconnect($wp));
 
-        return new MysqliConnection(new MysqliDriver($wp->mysqli(), $reconnect), $wp,);
+        return new MysqliConnection(new MysqliDriver($wp->mysqli(), $reconnect), $wp, );
     }
 
     /**

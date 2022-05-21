@@ -134,7 +134,7 @@ final class Router
     private function routingConfigurator(): Configurator
     {
         if (! isset($this->routing_configurator)) {
-            $this->routing_configurator = new Configurator($this->admin_area->urlPrefix(),);
+            $this->routing_configurator = new Configurator($this->admin_area->urlPrefix(), );
         }
 
         return $this->routing_configurator;

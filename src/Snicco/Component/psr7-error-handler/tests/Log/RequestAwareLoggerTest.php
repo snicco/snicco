@@ -164,7 +164,7 @@ final class RequestAwareLoggerTest extends TestCase
      */
     public function request_context_can_be_added_to_the_log_entry(): void
     {
-        $logger = new RequestAwareLogger($this->test_logger, [], new PathLogContext(), new MethodLogContext(),);
+        $logger = new RequestAwareLogger($this->test_logger, [], new PathLogContext(), new MethodLogContext(), );
 
         $info = new ExceptionInformation(
             403,

@@ -18,6 +18,7 @@ use WP_User;
 
 use function dirname;
 use function do_action;
+use function remove_all_filters;
 use function serialize;
 use function wp_set_current_user;
 
@@ -65,6 +66,8 @@ final class WPAdminMenuTest extends WPTestCase
         $menu = [];
         $submenu = [];
 
+        remove_all_filters('admin_menu');
+
         /** @var WPAdminMenu $wp_admin_menu */
         $wp_admin_menu = $this->kernel->container()
             ->make(WPAdminMenu::class);
@@ -74,7 +77,25 @@ final class WPAdminMenuTest extends WPTestCase
         do_action('admin_menu');
 
         $this->assertCount(4, $menu);
-        $this->assertCount(1, $submenu);
+
+        /** @psalm-suppress TypeDoesNotContainType */
+        $this->assertSame([
+            'server_error' => [
+                [
+                    0 => 'Server Error',
+                    1 => 'manage_options',
+                    2 => 'server_error',
+                    3 => 'Server Error',
+                ],
+
+                [
+                    0 => 'Do Nothing',
+                    1 => 'manage_options',
+                    2 => 'do_nothing',
+                    3 => 'Do Nothing',
+                ],
+            ],
+        ], $submenu);
     }
 
     /**
@@ -87,6 +108,8 @@ final class WPAdminMenuTest extends WPTestCase
         $menu = [];
         $submenu = [];
 
+        remove_all_filters('admin_menu');
+
         /** @var WPAdminMenu $wp_admin_menu */
         $wp_admin_menu = $this->kernel->container()
             ->make(WPAdminMenu::class);
@@ -96,7 +119,24 @@ final class WPAdminMenuTest extends WPTestCase
         do_action('admin_menu');
 
         $this->assertCount(4, $menu);
-        $this->assertCount(1, $submenu);
+        /** @psalm-suppress TypeDoesNotContainType */
+        $this->assertSame([
+            'server_error' => [
+                [
+                    0 => 'Server Error',
+                    1 => 'manage_options',
+                    2 => 'server_error',
+                    3 => 'Server Error',
+                ],
+
+                [
+                    0 => 'Do Nothing',
+                    1 => 'manage_options',
+                    2 => 'do_nothing',
+                    3 => 'Do Nothing',
+                ],
+            ],
+        ], $submenu);
 
         $this->assertTrue(isset($menu[-10]));
         $this->assertTrue(isset($menu[0]));

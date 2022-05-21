@@ -28,7 +28,6 @@ use Throwable;
 use function dirname;
 use function file_get_contents;
 use function rewind;
-
 use function stream_get_contents;
 use function trigger_error;
 

@@ -178,7 +178,7 @@ return static function (ContainerConfigurator $configurator): void {
         [
             LineLengthFixer::LINE_LENGTH => 120,
             LineLengthFixer::BREAK_LONG_LINES => true,
-            LineLengthFixer::INLINE_SHORT_LINES => true,
+            LineLengthFixer::INLINE_SHORT_LINES => false,
         ],
     ]);
 

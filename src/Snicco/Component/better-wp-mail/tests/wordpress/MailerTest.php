@@ -110,7 +110,7 @@ final class MailerTest extends WPTestCase
      */
     public function default_headers_are_added_if_not_configured_on_the_sending_mail(): void
     {
-        $config = new MailDefaults('no-reply@inc.de', 'Calvin INC', 'office@inc.de', 'Office Calvin INC',);
+        $config = new MailDefaults('no-reply@inc.de', 'Calvin INC', 'office@inc.de', 'Office Calvin INC', );
 
         $mailer = new Mailer(new WPMailTransport(), new FilesystemRenderer(), null, $config);
 
@@ -400,7 +400,7 @@ final class MailerTest extends WPTestCase
      */
     public function test_with_custom_renderer_chain(): void
     {
-        $chain = new AggregateRenderer(new FilesystemRenderer(), new NamedViewRenderer(),);
+        $chain = new AggregateRenderer(new FilesystemRenderer(), new NamedViewRenderer(), );
 
         $mailer = new Mailer(new WPMailTransport(), $chain);
 
@@ -418,7 +418,7 @@ final class MailerTest extends WPTestCase
      */
     public function test_with_custom_renderer_does_work_with_multiple_calls(): void
     {
-        $chain = new AggregateRenderer(new FilesystemRenderer(), new NamedViewRenderer(),);
+        $chain = new AggregateRenderer(new FilesystemRenderer(), new NamedViewRenderer(), );
 
         $mailer = new Mailer(new WPMailTransport(), $chain);
 

@@ -31,7 +31,7 @@ final class StreamOutput extends OutputWithVerbosity
     {
         /** @psalm-suppress DocblockTypeContradiction */
         if (! Check::isStream($stream)) {
-            throw new InvalidArgumentException(sprintf('%s needs a stream as its first argument.', self::class,));
+            throw new InvalidArgumentException(sprintf('%s needs a stream as its first argument.', self::class, ));
         }
 
         $this->stream = $stream;

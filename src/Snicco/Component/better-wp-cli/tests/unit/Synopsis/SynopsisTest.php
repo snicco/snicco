@@ -23,7 +23,7 @@ final class SynopsisTest extends TestCase
     public function that_all_values_are_returned(): void
     {
         $synopsis = new Synopsis(
-            $argument = new InputArgument('foo', 'foo description',),
+            $argument = new InputArgument('foo', 'foo description', ),
             $option = new InputOption('bar', 'bar description'),
             $flag = new InputFlag('baz', 'baz description')
         );
@@ -41,7 +41,7 @@ final class SynopsisTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Duplicate input name [foo] is not allowed in synopsis.');
 
-        new Synopsis(new InputArgument('foo', 'foo description',), new InputOption('foo', 'foo description'),);
+        new Synopsis(new InputArgument('foo', 'foo description', ), new InputOption('foo', 'foo description'), );
     }
 
     /**
@@ -80,7 +80,7 @@ final class SynopsisTest extends TestCase
     public function test_with(): void
     {
         $synopsis = new Synopsis(
-            $argument = new InputArgument('foo', 'foo description',),
+            $argument = new InputArgument('foo', 'foo description', ),
             $option = new InputOption('bar', 'bar description'),
             $flag = new InputFlag('baz', 'baz description')
         );

@@ -218,7 +218,7 @@ final class AdminMenuItemTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $route = $this->getRoute();
-        $item = AdminMenuItem::fromRoute($route, [],);
+        $item = AdminMenuItem::fromRoute($route, [], );
         $item->parentSlug();
     }
 

@@ -169,7 +169,7 @@ final class HttpRoutingBundle implements Bundle
                     $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH)
                 );
 
-                return new Router($context, $loader, $cache, $admin_area, null, null,);
+                return new Router($context, $loader, $cache, $admin_area, null, null, );
             });
     }
 
@@ -274,7 +274,7 @@ final class HttpRoutingBundle implements Bundle
         $container->shared(ResponseFactory::class, function () use ($container): ResponseFactory {
             $discovery = $container->make(Psr17FactoryDiscovery::class);
 
-            return new ResponseFactory($discovery->createResponseFactory(), $discovery->createStreamFactory(),);
+            return new ResponseFactory($discovery->createResponseFactory(), $discovery->createStreamFactory(), );
         });
         $container->shared(
             ResponseFactoryInterface::class,

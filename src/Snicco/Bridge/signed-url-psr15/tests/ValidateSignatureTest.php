@@ -39,7 +39,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
      */
     public function next_is_called_for_valid_signature(): void
     {
-        $m = new ValidateSignature($this->validator,);
+        $m = new ValidateSignature($this->validator, );
 
         $link = $this->signer->sign('/foo', 10);
 
@@ -57,7 +57,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
      */
     public function next_is_not_called_for_invalid_signature(): void
     {
-        $m = new ValidateSignature($this->validator,);
+        $m = new ValidateSignature($this->validator, );
 
         $link = $this->signer->sign('/foo', 10);
 
@@ -72,7 +72,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
      */
     public function next_not_called_for_expired(): void
     {
-        $m = new ValidateSignature($this->validator,);
+        $m = new ValidateSignature($this->validator, );
 
         $link = $this->signer->sign('/foo', 1);
 
@@ -89,7 +89,7 @@ final class ValidateSignatureTest extends MiddlewareTestCase
      */
     public function next_not_called_for_used(): void
     {
-        $m = new ValidateSignature($this->validator,);
+        $m = new ValidateSignature($this->validator, );
 
         $link = $this->signer->sign('/foo', 1, 2);
 

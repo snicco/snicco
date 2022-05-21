@@ -26,7 +26,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver(new TestClock());
 
-        $driver->write('id1', SerializedSession::fromString('foo', 'validator', time()),);
+        $driver->write('id1', SerializedSession::fromString('foo', 'validator', time()), );
 
         try {
             $driver->read('id2');
@@ -43,7 +43,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver($clock = new TestClock(new DateTimeImmutable('2000-01-01')));
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()), );
 
         $serialized_session = $driver->read('session1');
 
@@ -57,7 +57,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver(new TestClock());
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time(), 1),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time(), 1), );
 
         $session = $driver->read('session1');
 
@@ -73,9 +73,9 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver(new TestClock());
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time()),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time()), );
 
-        $driver->write('session1', SerializedSession::fromString('bar', 'validator', time()),);
+        $driver->write('session1', SerializedSession::fromString('bar', 'validator', time()), );
 
         PHPUnit::assertSame('bar', $driver->read('session1')->data());
     }
@@ -87,7 +87,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver(new TestClock());
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time()),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', time()), );
 
         $driver->destroy('session1');
 
@@ -106,7 +106,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver($clock = new TestClock());
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()), );
 
         $driver->gc($this->idleTimeout());
 
@@ -142,7 +142,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver($clock = new TestClock());
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()), );
 
         PHPUnit::assertSame($clock->currentTimestamp(), $driver->read('session1')->lastActivity());
 
@@ -166,7 +166,7 @@ trait SessionDriverTests
     {
         $driver = $this->createDriver($clock = new TestClock());
 
-        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()),);
+        $driver->write('session1', SerializedSession::fromString('foo', 'validator', $clock->currentTimestamp()), );
 
         $driver->touch('session1', $clock->currentTimestamp() + 1);
 

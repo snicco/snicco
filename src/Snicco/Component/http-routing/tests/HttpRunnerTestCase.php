@@ -294,7 +294,7 @@ abstract class HttpRunnerTestCase extends TestCase
         );
 
         $this->pimple[RouteRunner::class] = fn (): RouteRunner => new RouteRunner(
-            new MiddlewarePipeline($this->psr_container, $error_handler,),
+            new MiddlewarePipeline($this->psr_container, $error_handler, ),
             new MiddlewareResolver(
                 $this->always_run,
                 $this->middleware_aliases,

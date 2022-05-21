@@ -24,6 +24,7 @@
     "session-wp-bridge",
     "signed-url-psr15-bridge",
     "signed-url-psr16-bridge",
+    "signed-url-wp-bridge",
     "better-wp-cache-bundle",
     "better-wp-hooks-bundle",
     "better-wp-mail-bundle",
