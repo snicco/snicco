@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/snicco/snicco/compare/v1.1.3...v1.2.0) (2022-05-21)
+
+
+### Features
+
+* **signed-url-wp-bridge:** initial implementation ([637f228](https://github.com/snicco/snicco/commit/637f2289c1658487f1d16028b1bddce0e7f193d5))
+
 ## [1.1.3](https://github.com/snicco/snicco/compare/v1.1.2...v1.1.3) (2022-05-19)
 
 
