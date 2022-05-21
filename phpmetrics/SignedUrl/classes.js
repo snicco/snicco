@@ -304,9 +304,9 @@ var classes = [
         "totalSystemComplexity": 41,
         "package": "Snicco\\Component\\SignedUrl\\",
         "pageRank": 0,
-        "afferentCoupling": 9,
+        "afferentCoupling": 11,
         "efferentCoupling": 3,
-        "instability": 0.25,
+        "instability": 0.21,
         "violations": {}
     },
     {
@@ -649,9 +649,9 @@ var classes = [
         "totalSystemComplexity": 0,
         "package": "Snicco\\Component\\SignedUrl\\Exception\\",
         "pageRank": 0,
-        "afferentCoupling": 1,
+        "afferentCoupling": 3,
         "efferentCoupling": 1,
-        "instability": 0.5,
+        "instability": 0.25,
         "violations": {}
     },
     {
@@ -827,9 +827,9 @@ var classes = [
         "totalSystemComplexity": 2.5,
         "package": "Snicco\\Component\\SignedUrl\\Exception\\",
         "pageRank": 0,
-        "afferentCoupling": 5,
+        "afferentCoupling": 7,
         "efferentCoupling": 4,
-        "instability": 0.44,
+        "instability": 0.36,
         "violations": {}
     },
     {

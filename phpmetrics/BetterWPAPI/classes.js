@@ -156,9 +156,9 @@ var classes = [
         "totalSystemComplexity": 137,
         "package": "Snicco\\Component\\BetterWPAPI\\",
         "pageRank": 0,
-        "afferentCoupling": 11,
+        "afferentCoupling": 12,
         "efferentCoupling": 2,
-        "instability": 0.15,
+        "instability": 0.14,
         "violations": {}
     }
 ]

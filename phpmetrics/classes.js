@@ -3874,9 +3874,9 @@ var classes = [
         "totalSystemComplexity": 41,
         "package": "Snicco\\Component\\SignedUrl\\",
         "pageRank": 0,
-        "afferentCoupling": 9,
+        "afferentCoupling": 11,
         "efferentCoupling": 3,
-        "instability": 0.25,
+        "instability": 0.21,
         "violations": {}
     },
     {
@@ -4219,9 +4219,9 @@ var classes = [
         "totalSystemComplexity": 0,
         "package": "Snicco\\Component\\SignedUrl\\Exception\\",
         "pageRank": 0,
-        "afferentCoupling": 1,
+        "afferentCoupling": 3,
         "efferentCoupling": 1,
-        "instability": 0.5,
+        "instability": 0.25,
         "violations": {}
     },
     {
@@ -4397,9 +4397,9 @@ var classes = [
         "totalSystemComplexity": 2.5,
         "package": "Snicco\\Component\\SignedUrl\\Exception\\",
         "pageRank": 0,
-        "afferentCoupling": 5,
+        "afferentCoupling": 7,
         "efferentCoupling": 4,
-        "instability": 0.44,
+        "instability": 0.36,
         "violations": {}
     },
     {
@@ -7994,9 +7994,9 @@ var classes = [
         "totalSystemComplexity": 20.33,
         "package": "Snicco\\Component\\TestableClock\\",
         "pageRank": 0,
-        "afferentCoupling": 8,
+        "afferentCoupling": 9,
         "efferentCoupling": 5,
-        "instability": 0.38,
+        "instability": 0.36,
         "violations": {}
     },
     {
@@ -10091,9 +10091,9 @@ var classes = [
         "totalSystemComplexity": 137,
         "package": "Snicco\\Component\\BetterWPAPI\\",
         "pageRank": 0,
-        "afferentCoupling": 11,
+        "afferentCoupling": 12,
         "efferentCoupling": 2,
-        "instability": 0.15,
+        "instability": 0.14,
         "violations": {}
     },
     {
@@ -10879,7 +10879,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000000aa16c230000000003af23f2",
+        "name": "anonymous@000000001d5dbfd1000000003761fadd",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -22326,7 +22326,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000000aa176770000000003af23f2",
+        "name": "anonymous@000000001d5da805000000003761fadd",
         "interface": false,
         "abstract": false,
         "final": false,
@@ -22670,9 +22670,9 @@ var classes = [
         "totalSystemComplexity": 32391.71,
         "package": "Snicco\\Component\\BetterWPDB\\",
         "pageRank": 0,
-        "afferentCoupling": 2,
+        "afferentCoupling": 3,
         "efferentCoupling": 13,
-        "instability": 0.87,
+        "instability": 0.81,
         "violations": {}
     },
     {
@@ -24498,6 +24498,259 @@ var classes = [
         "totalDataComplexity": 4.58,
         "totalSystemComplexity": 1093.58,
         "package": "Snicco\\Bridge\\IlluminateContainer\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 5,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlWP\\CacheAPI",
+        "interface": false,
+        "abstract": false,
+        "final": false,
+        "methods": [
+            {
+                "name": "cacheDecr",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 1,
+        "nbMethods": 1,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 1,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 2,
+        "ccn": 2,
+        "ccnMethodMax": 2,
+        "externals": [
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "Snicco\\Component\\SignedUrl\\Exception\\UnavailableStorage"
+        ],
+        "parents": [
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
+        ],
+        "implements": [],
+        "lcom": 1,
+        "length": 14,
+        "vocabulary": 9,
+        "volume": 44.38,
+        "difficulty": 2.75,
+        "effort": 122.04,
+        "level": 0.36,
+        "bugs": 0.01,
+        "time": 7,
+        "intelligentContent": 16.14,
+        "number_operators": 3,
+        "number_operands": 11,
+        "number_operators_unique": 3,
+        "number_operands_unique": 6,
+        "cloc": 5,
+        "loc": 17,
+        "lloc": 12,
+        "mi": 101.89,
+        "mIwoC": 64.66,
+        "commentWeight": 37.24,
+        "kanDefect": 0.22,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 4,
+        "relativeSystemComplexity": 4,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 4,
+        "totalSystemComplexity": 4,
+        "package": "Snicco\\Bridge\\SignedUrlWP\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 2,
+        "instability": 0.67,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlWP\\WPDBSignedUrlStorage",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "consume",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "store",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "gc",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "createTable",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 5,
+        "nbMethods": 5,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 5,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 8,
+        "ccn": 4,
+        "ccnMethodMax": 3,
+        "externals": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "Snicco\\Component\\BetterWPDB\\BetterWPDB",
+            "Snicco\\Component\\TestableClock\\Clock",
+            "Snicco\\Component\\TestableClock\\SystemClock",
+            "Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
+            "Snicco\\Component\\SignedUrl\\SignedUrl"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
+        "lcom": 1,
+        "length": 65,
+        "vocabulary": 25,
+        "volume": 301.85,
+        "difficulty": 5.43,
+        "effort": 1638.62,
+        "level": 0.18,
+        "bugs": 0.1,
+        "time": 91,
+        "intelligentContent": 55.6,
+        "number_operators": 8,
+        "number_operands": 57,
+        "number_operators_unique": 4,
+        "number_operands_unique": 21,
+        "cloc": 6,
+        "loc": 46,
+        "lloc": 40,
+        "mi": 73.69,
+        "mIwoC": 47.15,
+        "commentWeight": 26.54,
+        "kanDefect": 0.22,
+        "relativeStructuralComplexity": 169,
+        "relativeDataComplexity": 0.07,
+        "relativeSystemComplexity": 169.07,
+        "totalStructuralComplexity": 845,
+        "totalDataComplexity": 0.36,
+        "totalSystemComplexity": 845.36,
+        "package": "Snicco\\Bridge\\SignedUrlWP\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 6,
+        "instability": 1,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bridge\\SignedUrlWP\\WPObjectCacheSignedUrlStorage",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "consume",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "store",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "gc",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 4,
+        "nbMethods": 4,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 4,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 9,
+        "ccn": 6,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "Snicco\\Bridge\\SignedUrlWP\\CacheAPI",
+            "Snicco\\Bridge\\SignedUrlWP\\CacheAPI",
+            "Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
+            "Snicco\\Component\\SignedUrl\\Exception\\UnavailableStorage",
+            "Snicco\\Component\\SignedUrl\\SignedUrl",
+            "Snicco\\Component\\SignedUrl\\Exception\\UnavailableStorage"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage"
+        ],
+        "lcom": 2,
+        "length": 56,
+        "vocabulary": 22,
+        "volume": 249.73,
+        "difficulty": 7.69,
+        "effort": 1919.79,
+        "level": 0.13,
+        "bugs": 0.08,
+        "time": 107,
+        "intelligentContent": 32.48,
+        "number_operators": 15,
+        "number_operands": 41,
+        "number_operators_unique": 6,
+        "number_operands_unique": 16,
+        "cloc": 5,
+        "loc": 40,
+        "lloc": 35,
+        "mi": 74.76,
+        "mIwoC": 48.72,
+        "commentWeight": 26.04,
+        "kanDefect": 0.43,
+        "relativeStructuralComplexity": 64,
+        "relativeDataComplexity": 0.11,
+        "relativeSystemComplexity": 64.11,
+        "totalStructuralComplexity": 256,
+        "totalDataComplexity": 0.44,
+        "totalSystemComplexity": 256.44,
+        "package": "Snicco\\Bridge\\SignedUrlWP\\",
         "pageRank": 0,
         "afferentCoupling": 0,
         "efferentCoupling": 5,
@@ -28033,7 +28286,7 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "anonymous@000000000aa164de0000000003af23f2",
+        "name": "anonymous@000000001d5db797000000003761fadd",
         "interface": false,
         "abstract": false,
         "final": false,
