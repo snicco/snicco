@@ -7,6 +7,7 @@ namespace Snicco\Bundle\Testing\Tests\wordpress\Functional;
 use BadMethodCallException;
 use Closure;
 use Codeception\TestCase\WPTestCase;
+use LogicException;
 use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 use Snicco\Bundle\Testing\Functional\Browser;
@@ -237,6 +238,108 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
+    public function that_api_requests_are_not_created_if_the_api_prefix_is_empty(): void
+    {
+        $browser = $this->getBrowser([], null, '');
+
+        $browser->request('GET', '/api/test/check-api');
+
+        $browser->getResponse()
+            ->assertSeeText('false')
+            ->assertOk()
+            ->assertNotDelegated();
+    }
+
+    /**
+     * @test
+     */
+    public function that_http_and_content_server_params_are_converted_to_response_headers(): void
+    {
+        $browser = $this->getBrowser([
+            'HTTP_ACCEPT' => ['application/json', 'text/html'],
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_HOST' => 'snicco.test',
+            'HTTP_USER_AGENT' => 'snicco.test framework',
+            'HTTP_REFERER' => '/foo/bar',
+        ]);
+
+        $browser->request('GET', '/headers-as-json');
+
+        $response = $browser->getResponse();
+        $response->assertStatus(200);
+        $response->assertNotDelegated()
+            ->assertIsJson();
+
+        $body = (array) json_decode($response->body(), true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
+
+        $this->assertEquals([
+            'accept' => [
+                'application/json',
+                'text/html',
+            ],
+            'content-type' => [
+                'application/json',
+            ],
+            'host' => [
+                'snicco.test',
+            ],
+            'user-agent' => [
+                'snicco.test framework',
+            ],
+            'referer' => [
+                '/foo/bar',
+            ],
+        ], $body);
+    }
+
+    /**
+     * @test
+     */
+    public function that_the_raw_content_can_not_be_used_together_with_params(): void
+    {
+        $browser = $this->getBrowser();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('not possible');
+
+        $browser->request('POST', '/raw-body', [
+            'foo' => 'bar',
+        ], [], [], 'foo_raw');
+    }
+
+    /**
+     * @test
+     */
+    public function that_the_raw_content_is_transformed_and_used_in_the_psr7_request(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->request('POST', '/raw-body', [], [], [], 'foo_raw');
+
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('foo_raw')
+            ->assertNotDelegated();
+    }
+
+    /**
+     * @test
+     */
+    public function that_the_json_request_method_works(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->jsonRequest('POST', '/raw-body', ['foo_raw']);
+
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('foo_raw')
+            ->assertNotDelegated();
+    }
+
+    /**
+     * @test
+     */
     public function test_assertable_dom(): void
     {
         $browser = $this->getBrowser();
@@ -251,7 +354,7 @@ final class BrowserTest extends WPTestCase
     /**
      * @param array<string,mixed> $server
      */
-    private function getBrowser(array $server = [], CookieJar $cookies = null): Browser
+    private function getBrowser(array $server = [], CookieJar $cookies = null, string $api_prefix = '/api'): Browser
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
         $kernel->afterRegister(function (Kernel $kernel): void {
@@ -266,7 +369,7 @@ final class BrowserTest extends WPTestCase
             $kernel->container()
                 ->make(Psr17FactoryDiscovery::class),
             AdminAreaPrefix::fromString('/wp-admin'),
-            UrlPath::fromString('/api'),
+            UrlPath::fromString($api_prefix),
             $server,
             null,
             $cookies

@@ -42,6 +42,12 @@ final class WebTestCaseController extends Controller
             ->json($request->getCookieParams());
     }
 
+    public function headersAsJson(Request $request): Response
+    {
+        return $this->respondWith()
+            ->json($request->getHeaders());
+    }
+
     public function bodyAsJson(Request $request): Response
     {
         return $this->respondWith()
@@ -64,6 +70,12 @@ final class WebTestCaseController extends Controller
 
         return $this->respondWith()
             ->json($info);
+    }
+
+    public function rawBody(Request $request): Response
+    {
+        return $this->respondWith()
+            ->html((string) $request->getBody());
     }
 
     public function admin(): Response

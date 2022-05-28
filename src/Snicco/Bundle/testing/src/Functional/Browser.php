@@ -7,6 +7,7 @@ namespace Snicco\Bundle\Testing\Functional;
 use BadMethodCallException;
 use LogicException;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface as Psr7Request;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Snicco\Bundle\HttpRouting\HttpKernel;
@@ -17,14 +18,19 @@ use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
 use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
+use Snicco\Component\StrArr\Str;
 use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\BrowserKit\History;
+use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Webmozart\Assert\Assert;
 
 use function array_keys;
+use function in_array;
+use function is_array;
 use function parse_str;
-use function strpos;
+
+use function strtolower;
 
 use const UPLOAD_ERR_OK;
 
@@ -120,7 +126,7 @@ final class Browser extends AbstractBrowser
         );
     }
 
-    protected function filterRequest(\Symfony\Component\BrowserKit\Request $request): Request
+    protected function filterRequest(BrowserKitRequest $request): Request
     {
         $psr_server_request = $this->request_factory->createServerRequest(
             $request->getMethod(),
@@ -128,13 +134,101 @@ final class Browser extends AbstractBrowser
             $request->getServer(),
         );
 
+        $psr_server_request = $this->addHeadersFromServer($request, $psr_server_request);
+        $psr_server_request = $this->addCookies($request, $psr_server_request);
+        $psr_server_request = $this->addRequestBody($request, $psr_server_request);
+        $psr_server_request = $this->addFiles($request, $psr_server_request);
+
+        parse_str($psr_server_request->getUri()->getQuery(), $query);
+
+        $path = $psr_server_request->getUri()
+            ->getPath();
+
+        $api_prefix = $this->api_prefix->asString();
+
+        if (Str::startsWith($path, $this->admin_area_prefix->asString())) {
+            $type = Request::TYPE_ADMIN_AREA;
+        } elseif ('/' !== $api_prefix && Str::startsWith($path, $api_prefix)) {
+            $type = Request::TYPE_API;
+        } else {
+            $type = Request::TYPE_FRONTEND;
+        }
+
+        return Request::fromPsr($psr_server_request->withQueryParams($query), $type);
+    }
+
+    private function addHeadersFromServer(BrowserKitRequest $browser_kit_request, Psr7Request $request): Psr7Request
+    {
+        foreach ($browser_kit_request->getServer() as $key => $value) {
+            Assert::stringNotEmpty($key);
+
+            $http_header = Str::startsWith($key, 'HTTP_');
+            $content_header = Str::startsWith($key, 'CONTENT_');
+
+            if (! $http_header && ! $content_header) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                Assert::allStringNotEmpty($value);
+            } else {
+                Assert::stringNotEmpty($value);
+            }
+
+            if (Str::startsWith($key, 'HTTP_')) {
+                $header_name = Str::afterFirst($key, 'HTTP_');
+
+                $header_name = strtolower(Str::replaceAll($header_name, '_', '-'));
+
+                // These are already added by symfony.
+                if (in_array($header_name, ['host', 'referer'], true)) {
+                    $request = $request->withHeader($header_name, $value);
+                } else {
+                    $request = $request->withAddedHeader($header_name, $value);
+                }
+
+                continue;
+            }
+
+            if (Str::startsWith($key, 'CONTENT_')) {
+                $header_name = 'content-' . strtolower(Str::afterFirst($key, 'CONTENT_'));
+                $request = $request->withAddedHeader($header_name, $value);
+            }
+        }
+
+        return $request;
+    }
+
+    private function addCookies(BrowserKitRequest $request, Psr7Request $psr_server_request): Psr7Request
+    {
         $cookies = $request->getCookies();
         Assert::allString($cookies);
         Assert::allString(array_keys($cookies));
 
-        $psr_server_request = $psr_server_request->withCookieParams($cookies);
-        $psr_server_request = $psr_server_request->withParsedBody($request->getParameters());
+        return $psr_server_request->withCookieParams($cookies);
+    }
 
+    private function addRequestBody(BrowserKitRequest $request, Psr7Request $psr_server_request): Psr7Request
+    {
+        $params = $request->getParameters();
+        $raw_body = $request->getContent();
+
+        if ($params && $raw_body) {
+            throw new LogicException('Its not possible to pass a raw request body and an array of parameters.');
+        }
+        if ([] !== $params) {
+            $psr_server_request = $psr_server_request->withParsedBody($request->getParameters());
+        } elseif (null !== $raw_body) {
+            $psr_server_request = $psr_server_request->withBody(
+                $this->stream_factory->createStream($raw_body)
+            );
+        }
+
+        return $psr_server_request;
+    }
+
+    private function addFiles(BrowserKitRequest $request, Psr7Request $psr_server_request): Psr7Request
+    {
         $files = [];
 
         foreach ($request->getFiles() as $name => $path) {
@@ -148,19 +242,6 @@ final class Browser extends AbstractBrowser
             );
         }
 
-        $psr_server_request = $psr_server_request->withUploadedFiles($files);
-        $psr_server_request = $psr_server_request->withParsedBody($request->getParameters());
-
-        parse_str($psr_server_request->getUri()->getQuery(), $query);
-
-        if (0 === strpos($psr_server_request->getUri()->getPath(), $this->admin_area_prefix->asString())) {
-            $type = Request::TYPE_ADMIN_AREA;
-        } elseif (0 === strpos($psr_server_request->getUri()->getPath(), $this->api_prefix->asString())) {
-            $type = Request::TYPE_API;
-        } else {
-            $type = Request::TYPE_FRONTEND;
-        }
-
-        return Request::fromPsr($psr_server_request->withQueryParams($query), $type);
+        return $psr_server_request->withUploadedFiles($files);
     }
 }
