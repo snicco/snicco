@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/snicco/snicco/compare/v1.2.0...v1.2.1) (2022-05-28)
+
+
+### Bug Fixes
+
+* **testing-bundle:** fix request generation of test browser ([37806c2](https://github.com/snicco/snicco/commit/37806c29ed72e9a90265b3374088b43a97b6ed6f)), closes [#140](https://github.com/snicco/snicco/issues/140) [#141](https://github.com/snicco/snicco/issues/141)
+
 # [1.2.0](https://github.com/snicco/snicco/compare/v1.1.3...v1.2.0) (2022-05-21)
 
 
