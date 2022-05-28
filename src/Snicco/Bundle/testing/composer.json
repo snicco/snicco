@@ -23,6 +23,7 @@
         "snicco/better-wp-mail-testing": "^1.2",
         "snicco/http-routing-testing": "^1.2",
         "snicco/http-routing-bundle": "^1.2",
+        "snicco/str-arr": "^1.2",
         "snicco/pimple-bridge": "^1.2",
         "symfony/browser-kit": "^5.4",
         "symfony/dom-crawler": "^5.4.6",
@@ -31,7 +32,6 @@
     },
     "require-dev": {
         "snicco/better-wpdb-bundle": "^1.2",
-        "snicco/str-arr": "^1.2",
         "nyholm/psr7": "^1.0.0"
     },
     "autoload": {

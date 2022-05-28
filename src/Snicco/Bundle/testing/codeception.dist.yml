@@ -15,6 +15,9 @@ settings:
   log_incomplete_skipped: true
   report_useless_tests: true
 
+reporters:
+  report: "PhpStorm_Codeception_ReportPrinter"
+
 coverage:
   enabled: true
   include:
