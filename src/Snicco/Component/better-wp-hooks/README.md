@@ -108,7 +108,7 @@ $dispatcher->listen(OrderCreated::class, OrderListener::class);
 // String names work for events
 $dispatcher->listen('order_created', OrderListener::class);
 
-// Any public static method works
+// Any public method works
 $dispatcher->listen(OrderCreated::class, [OrderListener::class, 'someMethod']);
 
 // A simple closure listener
