@@ -21,8 +21,8 @@ complex **WordPress** projects.
     4. [Event subscribers](#event-subscribers)
     5. [Removing listeners](#removing-event-listeners)
     6. [Mapping events to core/third-party hooks](#mapping-core-and-third-party-actions)
-       1. [Ensuring your event fires first](#ensuring-your-mapped-event-fires-first)
-       2. [Ensuring your event fires last](#ensuring-your-mapped-event-fires-last)
+        1. [Ensuring your event fires first](#ensuring-your-mapped-event-fires-first)
+        2. [Ensuring your event fires last](#ensuring-your-mapped-event-fires-last)
     7. [Exposing (some of) your events to WordPress](#exposing-some-of-your-events-to-the-wordpress-hook-system)
     8. [A better alternative to apply_filters](#a-better-alternative-to-apply_filters)
     9. [Stopping event flow/propagation](#stopping-event-flowpropagation)
@@ -534,7 +534,7 @@ Most of the time using [`apply_filters`](https://developer.wordpress.org/referen
 to customize the behaviour of your code. (**Object enhancement**)
 
 [`apply_filters`](https://developer.wordpress.org/reference/functions/apply_filters/) is not ideal for this as its return type is `mixed`.
-There is nothing stopping a third-party developer mistakenly returning `(int) 0` when you are expecting `(int) false`.
+There is nothing stopping a third-party developer mistakenly returning `(int) 0` when you are expecting `(bool) false`.
 
 Event objects allow you to enforce [type-safety](https://psalm.dev) so that you don't have to manually type-check the 
 end-result of every filter.
