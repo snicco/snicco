@@ -102,13 +102,13 @@ use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 
 $dispatcher = WPEventDispatcher::fromDefaults();
 
-// Assumes MyListener has an __invoke method
+// Assumes OrderListener has an __invoke method
 $dispatcher->listen(OrderCreated::class, OrderListener::class);
 
-// string names work for events
+// String names work for events
 $dispatcher->listen('order_created', OrderListener::class);
 
-// Any public method works
+// Any public static method works
 $dispatcher->listen(OrderCreated::class, [OrderListener::class, 'someMethod']);
 
 // A simple closure listener
