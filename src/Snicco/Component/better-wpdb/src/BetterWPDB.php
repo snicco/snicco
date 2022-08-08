@@ -21,6 +21,7 @@ use Throwable;
 use function array_keys;
 use function array_map;
 use function array_values;
+use function call_user_func_array;
 use function count;
 use function implode;
 use function is_array;
@@ -34,10 +35,10 @@ use function mysqli_report;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
+
 use function strtr;
 
 use function trigger_error;
-
 use const E_USER_NOTICE;
 use const MYSQLI_ASSOC;
 use const MYSQLI_OPT_INT_AND_FLOAT_NATIVE;
@@ -78,6 +79,10 @@ final class BetterWPDB
     /**
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
+     * @param bool               $auto_reset_error_handling This needs to be set to false ONLY if you are running SELECT queries.
+     *                                                      In that case error handling needs to be reset by manually calling
+     *                                                      {@see BetterWPDB::restoreErrorHandling()}. All other methods handle
+     *                                                      this automatically, so unless you have a good reason not to you should stick to one of the many select methods.
      *
      * @throws InvalidArgumentException
      * @throws QueryException
@@ -430,11 +435,39 @@ final class BetterWPDB
      */
     public function selectLazy(string $sql, array $bindings): Generator
     {
-        $res = $this->select($sql, $bindings);
+        $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        while ($row = $res->fetch_assoc()) {
-            yield $row;
+        $meta = $stmt->result_metadata();
+
+        $refs = [];
+
+        foreach ($meta->fetch_fields() as $field) {
+            /**
+             * {@see mysqli_stmt::bind_result()} Can only accept variables
+             * passed by reference. But since we don't know which columns
+             * are selected at runtime the only way we can achieve
+             * this is by using the trick below:.
+             *
+             * @see https://www.php.net/manual/en/mysqli-stmt.fetch.php
+             *
+             * @psalm-suppress MixedAssignment
+             * @psalm-suppress MixedArrayOffset
+             */
+            $refs[$field->name] = &$field->name;
         }
+
+        call_user_func_array([$stmt, 'bind_result'], $refs);
+
+        /**
+         * @var array<string,bool|float|int|string|null> $refs
+         */
+        while ($stmt->fetch()) {
+            yield $refs;
+        }
+
+        // This will run once all rows have been iterated over.
+        $stmt->close();
+        $this->restoreErrorHandling();
     }
 
     /**
