@@ -96,6 +96,7 @@
             "Snicco\\Bundle\\Testing\\": "src/Snicco/Bundle/testing/src",
             "Snicco\\Component\\BetterWPAPI\\": "src/Snicco/Component/better-wp-api/src",
             "Snicco\\Component\\BetterWPCLI\\": "src/Snicco/Component/better-wp-cli/src",
+            "Snicco\\Component\\BetterWPCLI\\Testing\\": "src/Snicco/Testing/better-wp-cli/src",
             "Snicco\\Component\\BetterWPCache\\": "src/Snicco/Component/better-wp-cache/src",
             "Snicco\\Component\\BetterWPDB\\": "src/Snicco/Component/better-wpdb/src",
             "Snicco\\Component\\BetterWPHooks\\": "src/Snicco/Component/better-wp-hooks/src",
@@ -159,6 +160,7 @@
                 "src/Snicco/Component/better-wp-cli/tests",
                 "src/Snicco/Component/better-wp-cli/tests/_support"
             ],
+            "Snicco\\Component\\BetterWPCLI\\Tests\\Testing\\": "src/Snicco/Testing/better-wp-cli/tests",
             "Snicco\\Component\\BetterWPCache\\Tests\\": "src/Snicco/Component/better-wp-cache/tests",
             "Snicco\\Component\\BetterWPDB\\Tests\\": "src/Snicco/Component/better-wpdb/tests",
             "Snicco\\Component\\BetterWPHooks\\Tests\\": "src/Snicco/Component/better-wp-hooks/tests",
@@ -258,6 +260,7 @@
         "snicco/better-wp-cache": "self.version",
         "snicco/better-wp-cache-bundle": "self.version",
         "snicco/better-wp-cli": "self.version",
+        "snicco/better-wp-cli-testing": "self.version",
         "snicco/better-wp-hooks": "self.version",
         "snicco/better-wp-hooks-bundle": "self.version",
         "snicco/better-wp-mail": "self.version",

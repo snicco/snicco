@@ -70,6 +70,7 @@ body:
         - wp-capability-middleware
         - wp-guests-only-middleware
         - wp-nonce-middleware
+        - better-wp-cli-testing
         - better-wp-mail-testing
         - event-dispatcher-testing
         - http-routing-testing
