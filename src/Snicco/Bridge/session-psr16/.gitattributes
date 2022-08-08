@@ -1,5 +1,7 @@
 .gitattributes export-ignore
 .gitignore export-ignore
 phpunit.dist.xml export-ignore
-*.md export-ignore
+README.md export-ignore
 /tests export-ignore
+.github export-ignore
+codeception.dist.yml export-ignore

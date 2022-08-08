@@ -2,7 +2,7 @@
 .gitignore export-ignore
 phpunit.xml.dist export-ignore
 codeception.dist.yml export-ignore
-*.md export-ignore
+README.md export-ignore
 /tests export-ignore
 /.github export-ignore
 /examples export-ignore
