@@ -1,3 +1,19 @@
+# [1.3.0](https://github.com/snicco/snicco/compare/v1.2.1...v1.3.0) (2022-08-09)
+
+
+### Bug Fixes
+
+* **better-wpdb:** fix select lazy on php8+ ([caf21ef](https://github.com/snicco/snicco/commit/caf21efa58c44abc99c74a64aa9d5ba3bf271e54))
+* **better-wpdb:** use unbuffered queries for lazy selects ([af829ef](https://github.com/snicco/snicco/commit/af829ef7d87880d9808bd4137d61196e2512b01c))
+* **signed-url:** split identifier and selector at specific byte-length ([873f685](https://github.com/snicco/snicco/commit/873f68503680c3be9b4317a1eb90b5596fae1fcb))
+
+
+### Features
+
+* **better-wp-cli-testing:** initial implementation ([5c1e035](https://github.com/snicco/snicco/commit/5c1e035ab28be3d39b99043dcbcd38bb3ee4c254))
+* **better-wp-cli:** add psr3 support ([fa72925](https://github.com/snicco/snicco/commit/fa72925663c694e7c0ead477c082128c07cdca56))
+* **minimal-logger:** initial implementation ([95491f8](https://github.com/snicco/snicco/commit/95491f8dd4b956460043c8dcfd977d5ab3fab3af))
+
 ## [1.2.1](https://github.com/snicco/snicco/compare/v1.2.0...v1.2.1) (2022-05-28)
 
 
