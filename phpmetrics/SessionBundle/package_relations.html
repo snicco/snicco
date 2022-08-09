@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-28 10:08:34        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-08-09 21:00:45        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -476,6 +476,8 @@
         "name": "Snicco\\Bundle\\Session",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\Session",
+            "Snicco\\Bundle\\Encryption",
             "Snicco\\Component\\Kernel",
             "Snicco\\Component\\Kernel\\ValueObject",
             "Snicco\\Component\\Kernel\\Configuration",
@@ -485,10 +487,13 @@
             "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Bridge\\SessionWP",
             "Snicco\\Component\\Session\\Serializer",
-            "Snicco\\Bundle\\Session\\Middleware",
-            "Snicco\\Component\\Session",
-            "Snicco\\Bundle\\Encryption"
+            "Snicco\\Bundle\\Session\\Middleware"
         ]
+    },
+    {
+        "name": "Snicco\\Bundle\\Encryption",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\Kernel",
@@ -517,11 +522,6 @@
     },
     {
         "name": "Snicco\\Component\\Session\\Serializer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\Encryption",
         "size": 3000,
         "relations": []
     },

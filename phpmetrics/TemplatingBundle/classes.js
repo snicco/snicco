@@ -1,5 +1,108 @@
 var classes = [
     {
+        "name": "Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": "setter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "display",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "supportedContentType",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "isVerbose",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "canDisplay",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getView",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 6,
+        "nbMethods": 5,
+        "nbMethodsPrivate": 1,
+        "nbMethodsPublic": 4,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 1,
+        "wmc": 12,
+        "ccn": 8,
+        "ccnMethodMax": 7,
+        "externals": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+            "Snicco\\Component\\Templating\\TemplateEngine",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "Snicco\\Component\\Templating\\ValueObject\\View",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
+        "lcom": 3,
+        "length": 77,
+        "vocabulary": 28,
+        "volume": 370.17,
+        "difficulty": 5.08,
+        "effort": 1881.68,
+        "level": 0.2,
+        "bugs": 0.12,
+        "time": 105,
+        "intelligentContent": 72.82,
+        "number_operators": 16,
+        "number_operands": 61,
+        "number_operators_unique": 4,
+        "number_operands_unique": 24,
+        "cloc": 6,
+        "loc": 50,
+        "lloc": 44,
+        "mi": 70.65,
+        "mIwoC": 45.09,
+        "commentWeight": 25.56,
+        "kanDefect": 0.22,
+        "relativeStructuralComplexity": 121,
+        "relativeDataComplexity": 0.56,
+        "relativeSystemComplexity": 121.56,
+        "totalStructuralComplexity": 726,
+        "totalDataComplexity": 3.33,
+        "totalSystemComplexity": 729.33,
+        "package": "Snicco\\Bundle\\Templating\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 5,
+        "instability": 0.83,
+        "violations": {}
+    },
+    {
         "name": "Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
         "interface": false,
         "abstract": false,
@@ -233,109 +336,6 @@ var classes = [
         "afferentCoupling": 0,
         "efferentCoupling": 13,
         "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": "setter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "display",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "supportedContentType",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "isVerbose",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "canDisplay",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getView",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 6,
-        "nbMethods": 5,
-        "nbMethodsPrivate": 1,
-        "nbMethodsPublic": 4,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 1,
-        "wmc": 12,
-        "ccn": 8,
-        "ccnMethodMax": 7,
-        "externals": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "Snicco\\Component\\Templating\\TemplateEngine",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "Snicco\\Component\\Templating\\ValueObject\\View",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
-        ],
-        "parents": [],
-        "implements": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
-        ],
-        "lcom": 3,
-        "length": 77,
-        "vocabulary": 28,
-        "volume": 370.17,
-        "difficulty": 5.08,
-        "effort": 1881.68,
-        "level": 0.2,
-        "bugs": 0.12,
-        "time": 105,
-        "intelligentContent": 72.82,
-        "number_operators": 16,
-        "number_operands": 61,
-        "number_operators_unique": 4,
-        "number_operands_unique": 24,
-        "cloc": 6,
-        "loc": 50,
-        "lloc": 44,
-        "mi": 70.65,
-        "mIwoC": 45.09,
-        "commentWeight": 25.56,
-        "kanDefect": 0.22,
-        "relativeStructuralComplexity": 121,
-        "relativeDataComplexity": 0.56,
-        "relativeSystemComplexity": 121.56,
-        "totalStructuralComplexity": 726,
-        "totalDataComplexity": 3.33,
-        "totalSystemComplexity": 729.33,
-        "package": "Snicco\\Bundle\\Templating\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 5,
-        "instability": 0.83,
         "violations": {}
     },
     {

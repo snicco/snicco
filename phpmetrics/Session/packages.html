@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-28 10:08:34        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-08-09 21:00:45        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -235,15 +235,15 @@
                             <td>7</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\Session\Driver</span></td>
-                            <td>4</td>
-                            <td>0.5</td>
-                            <td>0.438</td>
-                            <td>0.063</td>
-                            <td>7</td>
+                            <td><span class="path">Snicco\Component\Session\Exception</span></td>
                             <td>5</td>
-                            <td>9</td>
-                            <td>6</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>4</td>
+                            <td>1</td>
+                            <td>4</td>
+                            <td>4</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Session\Serializer</span></td>
@@ -257,15 +257,15 @@
                             <td>4</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Component\Session\Exception</span></td>
-                            <td>5</td>
+                            <td><span class="path">Snicco\Component\Session\Event</span></td>
+                            <td>1</td>
                             <td>0</td>
                             <td>0.5</td>
                             <td>0.5</td>
-                            <td>4</td>
                             <td>1</td>
-                            <td>4</td>
-                            <td>4</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Session\ValueObject</span></td>
@@ -277,17 +277,6 @@
                             <td>3</td>
                             <td>15</td>
                             <td>9</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Component\Session\Event</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Session\SessionManager</span></td>
@@ -310,6 +299,17 @@
                             <td>0</td>
                             <td>1</td>
                             <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Component\Session\Driver</span></td>
+                            <td>4</td>
+                            <td>0.5</td>
+                            <td>0.438</td>
+                            <td>0.063</td>
+                            <td>7</td>
+                            <td>5</td>
+                            <td>9</td>
+                            <td>6</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Component\Session\Testing</span></td>
@@ -514,12 +514,12 @@
         "classCount": 5
     },
     {
-        "name": "Snicco\\Component\\Session\\Driver",
-        "abstraction": 0.5,
-        "instability": 0.4375,
-        "distance": 0.044194173824159216,
-        "normalizedDistance": 0.0625,
-        "classCount": 4
+        "name": "Snicco\\Component\\Session\\Exception",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 5
     },
     {
         "name": "Snicco\\Component\\Session\\Serializer",
@@ -530,12 +530,12 @@
         "classCount": 3
     },
     {
-        "name": "Snicco\\Component\\Session\\Exception",
+        "name": "Snicco\\Component\\Session\\Event",
         "abstraction": 0,
         "instability": 0.5,
         "distance": 0.35355339059327373,
         "normalizedDistance": 0.5,
-        "classCount": 5
+        "classCount": 1
     },
     {
         "name": "Snicco\\Component\\Session\\ValueObject",
@@ -544,14 +544,6 @@
         "distance": 0.5050762722761053,
         "normalizedDistance": 0.7142857142857143,
         "classCount": 7
-    },
-    {
-        "name": "Snicco\\Component\\Session\\Event",
-        "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 1
     },
     {
         "name": "Snicco\\Component\\Session\\SessionManager",
@@ -568,6 +560,14 @@
         "distance": 0.35355339059327373,
         "normalizedDistance": 0.5,
         "classCount": 2
+    },
+    {
+        "name": "Snicco\\Component\\Session\\Driver",
+        "abstraction": 0.5,
+        "instability": 0.4375,
+        "distance": 0.044194173824159216,
+        "normalizedDistance": 0.0625,
+        "classCount": 4
     },
     {
         "name": "Snicco\\Component\\Session\\Testing",

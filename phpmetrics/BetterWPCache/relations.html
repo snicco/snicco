@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-05-28 10:08:34        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-08-09 21:00:45        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,12 +390,50 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Component\\BetterWPCache\\CacheFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
+            "\\Psr\\SimpleCache\\CacheInterface",
+            "\\Cache\\Bridge\\SimpleCache\\SimpleCacheBridge",
+            "\\Cache\\TagInterop\\TaggableCacheItemPoolInterface",
+            "\\Psr\\Cache\\CacheItemPoolInterface",
+            "\\Cache\\Taggable\\TaggablePSR6PoolAdapter"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
+        "size": 3000,
+        "relations": [
+            "\\Psr\\Cache\\CacheItemPoolInterface",
+            "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
+            "\\Snicco\\Component\\BetterWPCache\\WPCacheItem",
+            "\\Psr\\Cache\\CacheItemInterface",
+            "\\Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Psr\\SimpleCache\\CacheInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Cache\\Bridge\\SimpleCache\\SimpleCacheBridge",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Cache\\TagInterop\\TaggableCacheItemPoolInterface",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Psr\\Cache\\CacheItemPoolInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Cache\\Taggable\\TaggablePSR6PoolAdapter",
         "size": 3000,
         "relations": []
     },
@@ -422,41 +460,6 @@
     {
         "name": "\\Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
         "size": 3000,
-        "relations": [
-            "\\InvalidArgumentException",
-            "\\Psr\\Cache\\InvalidArgumentException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPCache\\CacheFactory",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPCache\\WPObjectCachePsr6",
-            "\\Psr\\SimpleCache\\CacheInterface",
-            "\\Cache\\Bridge\\SimpleCache\\SimpleCacheBridge",
-            "\\Cache\\TagInterop\\TaggableCacheItemPoolInterface",
-            "\\Psr\\Cache\\CacheItemPoolInterface",
-            "\\Cache\\Taggable\\TaggablePSR6PoolAdapter"
-        ]
-    },
-    {
-        "name": "\\Psr\\SimpleCache\\CacheInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Cache\\Bridge\\SimpleCache\\SimpleCacheBridge",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Cache\\TagInterop\\TaggableCacheItemPoolInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Cache\\Taggable\\TaggablePSR6PoolAdapter",
-        "size": 3000,
         "relations": []
     },
     {
@@ -470,12 +473,12 @@
         "relations": []
     },
     {
-        "name": "\\DateTime",
+        "name": "\\Psr\\Cache\\InvalidArgumentException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Psr\\Cache\\InvalidArgumentException",
+        "name": "\\DateTime",
         "size": 3000,
         "relations": []
     }
