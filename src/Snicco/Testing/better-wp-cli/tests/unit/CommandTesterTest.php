@@ -385,6 +385,18 @@ final class CommandTesterTest extends TestCase
         $tester->assertStatusCode(2);
     }
 
+    /**
+     * @test
+     */
+    public function that_exceptions_are_thrown_for_premature_assertions_of_status_codes(): void
+    {
+        $this->expectException(CommandTesterException::class);
+
+        $tester = new CommandTester(new VerboseCommand());
+
+        $tester->assertCommandIsSuccessful();
+    }
+
     private function expectFailure(string $message, Closure $test): void
     {
         $fail = false;

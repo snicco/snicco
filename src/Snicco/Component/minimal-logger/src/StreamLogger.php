@@ -53,9 +53,9 @@ final class StreamLogger extends AbstractLogger
         if (! $this->stream) {
             if (! is_file($this->log_file)) {
                 $log_dir = dirname($this->log_file);
-                if (! is_dir($log_dir) && ! mkdir($log_dir, 0777, true)) {
+                if (! is_dir($log_dir) && ! @mkdir($log_dir, 0777, true)) {
                     $this->throwWithMessage(
-                        "Log file [{$this->log_file}] does not exists and the parent directory could not be created.",
+                        "Log file [{$this->log_file}] does not exists and the parent directory [{$log_dir}] could not be created.",
                         $message
                     );
                 }
@@ -63,14 +63,12 @@ final class StreamLogger extends AbstractLogger
 
             $stream = @fopen($this->log_file, 'a');
 
-            // @codeCoverageIgnoreStart
             if (false === $stream) {
                 $this->throwWithMessage(
                     "Could not open stream for log file [{$this->log_file}].",
                     $message
                 );
             }
-            // @codeCoverageIgnoreStart
             $this->stream = $stream;
         }
 
