@@ -79,7 +79,6 @@ final class UrlSigner
             . SignedUrl::SIGNATURE_KEY
             . '='
             . $identifier
-            . '|'
             . $signature;
 
         $url = ($domain_and_scheme = $this->getDomainAndSchema($parts))

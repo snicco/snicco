@@ -102,10 +102,10 @@ use Snicco\Component\BetterWPHooks\WPEventDispatcher;
 
 $dispatcher = WPEventDispatcher::fromDefaults();
 
-// Assumes MyListener has an __invoke method
+// Assumes OrderListener has an __invoke method
 $dispatcher->listen(OrderCreated::class, OrderListener::class);
 
-// string names work for events
+// String names work for events
 $dispatcher->listen('order_created', OrderListener::class);
 
 // Any public method works
@@ -534,7 +534,7 @@ Most of the time using [`apply_filters`](https://developer.wordpress.org/referen
 to customize the behaviour of your code. (**Object enhancement**)
 
 [`apply_filters`](https://developer.wordpress.org/reference/functions/apply_filters/) is not ideal for this as its return type is `mixed`.
-There is nothing stopping a third-party developer mistakenly returning `(int) 0` when you are expecting `(int) false`.
+There is nothing stopping a third-party developer mistakenly returning `(int) 0` when you are expecting `(bool) false`.
 
 Event objects allow you to enforce [type-safety](https://psalm.dev) so that you don't have to manually type-check the 
 end-result of every filter.

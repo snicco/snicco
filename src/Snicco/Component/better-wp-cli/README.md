@@ -43,6 +43,7 @@ Instead, it sits between [WP-CLI](https://wp-cli.org/) and your custom commands.
        1. [Uncaught exceptions](#uncaught-exceptions)
        2. [Logging](#logging)
        3. [Converting errors to exceptions](#converting-errors-to-exceptions)
+    8. [Testing](#testing)
 4. [Contributing](#contributing)
 5. [Issues and PR's](#reporting-issues-and-sending-pull-requests)
 6. [Security](#security)
@@ -890,6 +891,26 @@ $application->registerCommands();
 ```
 
 ---
+
+### Testing
+
+This package comes with dedicated testing utilities which are in a separate package [`snicco/better-wp-cli-testing`](https://github.com/snicco/better-wp-cli-testing).
+
+```php
+use Snicco\Component\BetterWPCLI\Testing\CommandTester;
+
+$tester = new CommandTester(new CreateUserCommand());
+
+$tester->run(['calvin', 'calvin@snicco.io'], ['send-email' => true]);
+
+$tester->assertCommandIsSuccessful();
+
+$tester->assertStatusCode(0);
+
+$tester->seeInStdout('User created!');
+
+$tester->dontSeeInStderr('Fail');
+```
 
 ## Contributing
 

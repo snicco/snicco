@@ -22,13 +22,13 @@
         <directory name="bin/php"/>
         <ignoreFiles>
             <directory name="vendor"/>
-            <!--            Only references global WP constants -->
+            <!-- Only references global WP constants -->
             <file name="src/Snicco/Component/eloquent/src/WPDatabaseSettingsAPI.php"/>
-            <!--            These two files are not our code. @see https://github.com/php-cache/integration-tests/issues/117 -->
+            <!-- These two files are not our code. @see https://github.com/php-cache/integration-tests/issues/117 -->
             <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr6IntegrationTest.php"/>
             <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/WPObjectCachePsr16IntegrationTest.php"/>
             <file name="src/Snicco/Component/better-wp-cache/tests/wordpress/TaggingIntegrationTest.php"/>
-<!--            This file is part of symfony/console -->
+            <!-- This file is part of symfony/console -->
             <file name="src/Snicco/Component/better-wp-cli/src/Style/Terminal.php"/>
             <directory name="src/Snicco/Component/better-wp-cli/tests/_support"/>
         </ignoreFiles>
@@ -41,7 +41,7 @@
 
         <MoreSpecificReturnType>
             <errorLevel type="suppress">
-                <!--                This is a final class and @return static makes no sense. https://github.com/vimeo/psalm/issues/5802 -->
+                <!-- This is a final class and @return static makes no sense. https://github.com/vimeo/psalm/issues/5802 -->
                 <file name="src/Snicco/Component/http-routing/src/Http/Psr7/Request.php"/>
                 <file name="src/Snicco/Component/http-routing/src/Routing/RoutingConfigurator/Configurator.php"/>
                 <file name="src/Snicco/Component/better-wp-cache/src/WPCacheItem.php"/>
@@ -49,7 +49,7 @@
         </MoreSpecificReturnType>
         <LessSpecificReturnStatement>
             <errorLevel type="suppress">
-                <!--                This is a final class and @return static makes no sense. https://github.com/vimeo/psalm/issues/5802 -->
+                <!-- This is a final class and @return static makes no sense. https://github.com/vimeo/psalm/issues/5802 -->
                 <file name="src/Snicco/Component/http-routing/src/Http/Psr7/Request.php"/>
                 <file name="src/Snicco/Component/http-routing/src/Routing/RoutingConfigurator/Configurator.php"/>
                 <file name="src/Snicco/Component/better-wp-cache/src/WPCacheItem.php"/>
@@ -59,14 +59,14 @@
 
         <MixedAssignment>
             <errorLevel type="suppress">
-                <!--                Deals with mixed arguments by design -->
+                <!-- Deals with mixed arguments by design -->
                 <file name="src/Snicco/Component/str-arr/tests/ArrTest.php"/>
             </errorLevel>
         </MixedAssignment>
 
         <UndefinedMagicMethod>
             <errorLevel type="suppress">
-                <!--                This issue occurs in CI if we don't build codeception modules before running psalm -->
+                <!-- This issue occurs in CI if we don't build codeception modules before running psalm -->
                 <file name="src/Snicco/Component/better-wp-cli/tests/wordpress/WPCLICest.php"/>
             </errorLevel>
         </UndefinedMagicMethod>

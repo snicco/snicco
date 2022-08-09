@@ -17,6 +17,7 @@ use Snicco\Component\SignedUrl\Storage\InMemoryStorage;
 use Snicco\Component\SignedUrl\UrlSigner;
 use Snicco\Component\TestableClock\TestClock;
 
+use function preg_match_all;
 use function str_replace;
 
 /**
@@ -194,8 +195,6 @@ final class SignedUrlValidatorTest extends TestCase
 
         $validator = new SignedUrlValidator($this->storage, $this->hmac);
 
-        $this->expectException(InvalidSignature::class);
-
         $wrong_identifier = Base64UrlSafe::encode(random_bytes(16));
 
         $string = $signed_url->asString();
@@ -209,6 +208,7 @@ final class SignedUrlValidatorTest extends TestCase
 
         $string = str_replace($correct_identifier, $wrong_identifier, $string);
 
+        $this->expectException(InvalidSignature::class);
         $validator->validate($string);
     }
 

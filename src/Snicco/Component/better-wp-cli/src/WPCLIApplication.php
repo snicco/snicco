@@ -63,7 +63,7 @@ final class WPCLIApplication
     {
         $this->name = str_replace(' ', '-', $name);
         $this->command_loader = $command_loader;
-        $this->logger = $logger ?: new StdErrLogger($this->name);
+        $this->logger = $logger ?: new StdErrLogger($name);
     }
 
     public function catchException(bool $catch_exceptions): void

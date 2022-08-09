@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\Component\BetterWPDB\BetterWPDB;
 
 use function array_key_exists;
+use function sprintf;
 
 /**
  * @internal
@@ -31,13 +32,14 @@ abstract class BetterWPDBTestCase extends WPTestCase
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;',
             []
         );
-
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
         $this->better_wpdb->preparedQuery('DROP TABLE IF EXISTS test_table');
+        // This will change the mysql session back to normal.
+        $this->better_wpdb->restoreErrorHandling();
     }
 
     protected function assertRecordCount(int $expected): void

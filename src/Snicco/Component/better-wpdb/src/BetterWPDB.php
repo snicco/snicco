@@ -21,6 +21,7 @@ use Throwable;
 use function array_keys;
 use function array_map;
 use function array_values;
+use function call_user_func_array;
 use function count;
 use function implode;
 use function is_array;
@@ -34,10 +35,10 @@ use function mysqli_report;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
+
 use function strtr;
 
 use function trigger_error;
-
 use const E_USER_NOTICE;
 use const MYSQLI_ASSOC;
 use const MYSQLI_OPT_INT_AND_FLOAT_NATIVE;
@@ -78,6 +79,10 @@ final class BetterWPDB
     /**
      * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
+     * @param bool               $auto_reset_error_handling This needs to be set to false ONLY if you are running SELECT queries.
+     *                                                      In that case error handling needs to be reset by manually calling
+     *                                                      {@see BetterWPDB::restoreErrorHandling()}. All other methods handle
+     *                                                      this automatically, so unless you have a good reason not to you should stick to one of the many select methods.
      *
      * @throws InvalidArgumentException
      * @throws QueryException
@@ -297,13 +302,13 @@ final class BetterWPDB
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
-        $stmt = $this->preparedQuery($sql, $bindings, false);
+        try {
+            $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        $result = $stmt->get_result();
-
-        $this->restoreErrorHandling();
-
-        return $result;
+            return $stmt->get_result();
+        } finally {
+            $this->restoreErrorHandling();
+        }
     }
 
     /**
@@ -404,14 +409,17 @@ final class BetterWPDB
 
         $sql .= implode(' and ', $wheres) . ' limit 1';
 
-        $stmt = $this->preparedQuery($sql, $bindings, false);
+        try {
+            $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        $stmt->bind_result($found);
-        $stmt->fetch();
-
-        $stmt->close();
-
-        $this->restoreErrorHandling();
+            $stmt->bind_result($found);
+            $stmt->fetch();
+        } finally {
+            if (isset($stmt)) {
+                $stmt->close();
+            }
+            $this->restoreErrorHandling();
+        }
 
         return (int) $found > 0;
     }
@@ -430,10 +438,50 @@ final class BetterWPDB
      */
     public function selectLazy(string $sql, array $bindings): Generator
     {
-        $res = $this->select($sql, $bindings);
+        try {
+            $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        while ($row = $res->fetch_assoc()) {
-            yield $row;
+            $meta = $stmt->result_metadata();
+
+            $row = [];
+            $references = [];
+
+            foreach ($meta->fetch_fields() as $field) {
+                /**
+                 * {@see mysqli_stmt::bind_result()} Can only accept variables
+                 * passed by reference. But since we don't know which columns
+                 * are selected at runtime the only way we can achieve
+                 * this is by using the trick below:.
+                 *
+                 * We need two arrays. One for storing the columns and one
+                 * to bind the values by reference. We cant use one array that
+                 * both holds the column names as keys and the values by reference
+                 * since that will not work on PHP8+ where bind_result will
+                 * fail because it interprets array keys as named arguments
+                 * in combination with call_user_func_array.
+                 *
+                 * @see https://www.php.net/manual/en/mysqli-stmt.fetch.php
+                 *
+                 * @psalm-suppress MixedArrayOffset
+                 */
+                $row[$field->name] = null;
+                $references[] = &$row[$field->name];
+            }
+
+            call_user_func_array([$stmt, 'bind_result'], $references);
+
+            /**
+             * @var array<string,bool|float|int|string|null> $row
+             */
+            while ($stmt->fetch()) {
+                yield $row;
+            }
+        } finally {
+            // This will run once all rows have been iterated over.
+            if (isset($stmt)) {
+                $stmt->close();
+            }
+            $this->restoreErrorHandling();
         }
     }
 

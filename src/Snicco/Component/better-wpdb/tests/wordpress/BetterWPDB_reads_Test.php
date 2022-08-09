@@ -134,6 +134,24 @@ final class BetterWPDB_reads_Test extends WPTestCase
         }
 
         $this->assertSame(2, $count);
+
+        $count = 0;
+
+        $all = $this->better_wpdb->selectLazy(
+            'select test_int, test_string from test_table where test_int = ?',
+            [1]
+        );
+        $this->assertInstanceOf(Generator::class, $all);
+
+        foreach ($all as $row) {
+            $this->assertSame([
+                'test_int' => 1,
+                'test_string' => 'foo',
+            ], $row);
+            ++$count;
+        }
+
+        $this->assertSame(1, $count);
     }
 
     /**
@@ -375,7 +393,7 @@ final class BetterWPDB_reads_Test extends WPTestCase
     /**
      * @test
      */
-    public function test_select_value_is_logged(): void
+    public function that_select_value_is_logged(): void
     {
         $logger = new TestLogger();
         $db = BetterWPDB::fromWpdb($logger);

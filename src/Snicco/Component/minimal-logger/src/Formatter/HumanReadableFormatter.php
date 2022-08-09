@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Bundle\HttpRouting;
+namespace Snicco\Component\MinimalLogger\Formatter;
 
 use DateTimeInterface;
-use Psr\Log\AbstractLogger;
 use Throwable;
 
-use function error_log;
 use function explode;
 use function get_class;
 use function gettype;
@@ -21,30 +19,11 @@ use function rtrim;
 use function sprintf;
 use function strpos;
 use function strtoupper;
-use function strtr;
 
-use const PHP_EOL;
-
-/**
- * A minimal PSR-3 Logger that will log all messages to stderr (error_log).
- *
- * @psalm-internal Snicco\Bundle\HttpRouting
- *
- * @internal
- */
-final class StdErrLogger extends AbstractLogger
+final class HumanReadableFormatter implements Formatter
 {
-    private string $channel;
-
-    public function __construct(string $channel = 'request')
+    public function format(string $level, string $message, array $context = [], string $line_prefix = ''): string
     {
-        $this->channel = $channel;
-    }
-
-    public function log($level, $message, array $context = []): void
-    {
-        $level = (string) $level;
-
         /** @var array<string> $additional */
         $additional = [];
 
@@ -94,15 +73,12 @@ final class StdErrLogger extends AbstractLogger
                 $message .= ', ';
             }
 
-            $message = rtrim($message, ', ');
-            $message .= ']';
+            $message = rtrim($message, ', ') . ']';
         }
 
         $exception_string = null !== $exception ? $this->formatException($exception) : '';
 
-        $entry = sprintf('%s %s %s', $this->channel . '.' . strtoupper($level), $message, $exception_string);
-
-        error_log($entry . PHP_EOL);
+        return sprintf('%s %s %s', $line_prefix . strtoupper($level), $message, $exception_string);
     }
 
     /**
@@ -129,33 +105,31 @@ final class StdErrLogger extends AbstractLogger
         return gettype($value);
     }
 
-    private function formatException(Throwable $exception): string
+    private function formatException(Throwable $e): string
     {
-        $previous = $exception->getPrevious();
+        $message = $this->exceptionToString($e);
 
-        $message = $this->exceptionToString($exception, ! $previous instanceof Throwable);
-
-        if ($previous instanceof Throwable) {
-            $message .= "\n\tCaused by: " . $this->exceptionToString($previous, true);
+        if ($previous = $e->getPrevious()) {
+            do {
+                $message .= "\n\tCaused by: " . $this->exceptionToString($previous);
+            } while ($previous = $previous->getPrevious());
         }
 
         return "\n\t" . $message;
     }
 
-    private function exceptionToString(Throwable $e, bool $include_trace): string
+    private function exceptionToString(Throwable $e): string
     {
-        $message = get_class($e) .
-            ' "' . $e->getMessage() . '"' .
-            ' in ' . $e->getFile() .
-            ':' . (string) ($e->getLine());
+        $message = sprintf(
+            '%s "%s" in %s:%d',
+            get_class($e),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine()
+        );
 
-        if ($include_trace) {
-            $exploded = explode('#', $e->getTraceAsString());
-
-            $trace = implode("\t#", $exploded);
-
-            $message .= "\n\tStack trace: \n" . $trace;
-        }
+        $message .= "\n\tStack trace:\n\t";
+        $message .= implode("\n\t", explode("\n", $e->getTraceAsString()));
 
         return $message;
     }

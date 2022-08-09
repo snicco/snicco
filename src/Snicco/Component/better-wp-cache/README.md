@@ -15,7 +15,7 @@ Additionally, **BetterWPCache** supports **cache tagging**.
 
 This library is 100% integration tested against the
 official [php-cache/integration-tests](https://github.com/php-cache/integration-tests) using
-the [wp-redis cache](https://github.com/rhubarbgroup/redis-cache) by [Till Krüss](https://github.com/tillkruss).
+the [Redis Object Cache](https://github.com/rhubarbgroup/redis-cache) plugin by [Till Krüss](https://github.com/tillkruss).
 
 ## Table of contents
 
