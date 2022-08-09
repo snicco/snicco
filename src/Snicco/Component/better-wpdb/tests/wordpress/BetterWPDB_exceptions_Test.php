@@ -168,6 +168,33 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
     /**
      * @test
      */
+    public function the_sql_mode_is_reset_to_normal_after_a_faulty_select(): void
+    {
+        try {
+            $this->better_wpdb->select('invalid sql', []);
+            $this->fail('No exception was thrown for invalid sql.');
+        } catch (QueryException $e) {
+        }
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
     public function the_sql_mode_is_reset_to_normal_after_select_all(): void
     {
         $this->better_wpdb->selectAll('select * from test_table', []);
@@ -198,6 +225,38 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         $iterator = $this->better_wpdb->selectLazy('select * from test_table', []);
 
         foreach ($iterator as $row) {
+        }
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     *
+     * @psalm-suppress UnusedForeachValue
+     */
+    public function the_sql_mode_is_reset_to_normal_after_a_faulty_select_lazy(): void
+    {
+        try {
+            $iterator = $this->better_wpdb->selectLazy('bad_sql', []);
+
+            foreach ($iterator as $row) {
+            }
+            $this->fail('No exception thrown for invalid sql');
+        } catch (QueryException $e) {
         }
 
         ob_start();
@@ -274,6 +333,35 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
         $this->better_wpdb->exists('test_table', [
             'test_string' => 'foo',
         ]);
+
+        ob_start();
+
+        // wpdb is still wrong.
+        $result = $this->wpdb->insert('test_table', [
+            'test_string' => 'baz',
+            'test_int' => -10,
+        ]);
+
+        // No errors should be reported here:
+        $this->assertSame('', ob_get_clean());
+
+        // invalid data, wpdb no exception, money is clamped to 0.
+        // The insert went through with invalid data.
+        $this->assertSame(1, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function the_sql_mode_is_reset_to_normal_after_a_faulty_exists(): void
+    {
+        try {
+            $this->better_wpdb->exists('bogus_table', [
+                'test_string' => 'foo',
+            ]);
+            $this->fail('faulty sql did not throw exception');
+        } catch (QueryException $e) {
+        }
 
         ob_start();
 

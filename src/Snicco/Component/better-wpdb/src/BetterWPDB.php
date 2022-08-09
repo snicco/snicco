@@ -302,13 +302,13 @@ final class BetterWPDB
      */
     public function select(string $sql, array $bindings): mysqli_result
     {
-        $stmt = $this->preparedQuery($sql, $bindings, false);
+        try {
+            $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        $result = $stmt->get_result();
-
-        $this->restoreErrorHandling();
-
-        return $result;
+            return $stmt->get_result();
+        } finally {
+            $this->restoreErrorHandling();
+        }
     }
 
     /**
@@ -409,14 +409,17 @@ final class BetterWPDB
 
         $sql .= implode(' and ', $wheres) . ' limit 1';
 
-        $stmt = $this->preparedQuery($sql, $bindings, false);
+        try {
+            $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        $stmt->bind_result($found);
-        $stmt->fetch();
-
-        $stmt->close();
-
-        $this->restoreErrorHandling();
+            $stmt->bind_result($found);
+            $stmt->fetch();
+        } finally {
+            if (isset($stmt)) {
+                $stmt->close();
+            }
+            $this->restoreErrorHandling();
+        }
 
         return (int) $found > 0;
     }
@@ -435,39 +438,51 @@ final class BetterWPDB
      */
     public function selectLazy(string $sql, array $bindings): Generator
     {
-        $stmt = $this->preparedQuery($sql, $bindings, false);
+        try {
+            $stmt = $this->preparedQuery($sql, $bindings, false);
 
-        $meta = $stmt->result_metadata();
+            $meta = $stmt->result_metadata();
 
-        $refs = [];
+            $row = [];
+            $references = [];
 
-        foreach ($meta->fetch_fields() as $field) {
+            foreach ($meta->fetch_fields() as $field) {
+                /**
+                 * {@see mysqli_stmt::bind_result()} Can only accept variables
+                 * passed by reference. But since we don't know which columns
+                 * are selected at runtime the only way we can achieve
+                 * this is by using the trick below:.
+                 *
+                 * We need two arrays. One for storing the columns and one
+                 * to bind the values by reference. We cant use one array that
+                 * both holds the column names as keys and the values by reference
+                 * since that will not work on PHP8+ where bind_result will
+                 * fail because it interprets array keys as named arguments
+                 * in combination with call_user_func_array.
+                 *
+                 * @see https://www.php.net/manual/en/mysqli-stmt.fetch.php
+                 *
+                 * @psalm-suppress MixedArrayOffset
+                 */
+                $row[$field->name] = null;
+                $references[] = &$row[$field->name];
+            }
+
+            call_user_func_array([$stmt, 'bind_result'], $references);
+
             /**
-             * {@see mysqli_stmt::bind_result()} Can only accept variables
-             * passed by reference. But since we don't know which columns
-             * are selected at runtime the only way we can achieve
-             * this is by using the trick below:.
-             *
-             * @see https://www.php.net/manual/en/mysqli-stmt.fetch.php
-             *
-             * @psalm-suppress MixedAssignment
-             * @psalm-suppress MixedArrayOffset
+             * @var array<string,bool|float|int|string|null> $row
              */
-            $refs[$field->name] = &$field->name;
+            while ($stmt->fetch()) {
+                yield $row;
+            }
+        } finally {
+            // This will run once all rows have been iterated over.
+            if (isset($stmt)) {
+                $stmt->close();
+            }
+            $this->restoreErrorHandling();
         }
-
-        call_user_func_array([$stmt, 'bind_result'], $refs);
-
-        /**
-         * @var array<string,bool|float|int|string|null> $refs
-         */
-        while ($stmt->fetch()) {
-            yield $refs;
-        }
-
-        // This will run once all rows have been iterated over.
-        $stmt->close();
-        $this->restoreErrorHandling();
     }
 
     /**
