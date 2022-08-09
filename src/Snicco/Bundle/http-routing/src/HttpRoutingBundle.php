@@ -50,6 +50,7 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
+use Snicco\Component\MinimalLogger\StdErrLogger;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\CanDisplay;
 use Snicco\Component\Psr7ErrorHandler\DisplayerFilter\ContentType;

@@ -12,7 +12,6 @@ use Rector\Core\Configuration\Option;
 use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector;
-use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
 use Rector\PHPUnit\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
@@ -25,7 +24,6 @@ use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Snicco\Bridge\SessionWP\WPDBSessionDriver;
-use Snicco\Bundle\HttpRouting\StdErrLogger;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\BetterWPCache\Tests\wordpress\TaggingIntegrationTest;
 use Snicco\Component\BetterWPCache\Tests\wordpress\WPObjectCachePsr16IntegrationTest;
@@ -63,7 +61,6 @@ return static function (ContainerConfigurator $configurator): void {
     $parameters->set(Option::AUTO_IMPORT_NAMES, true);
     $parameters->set(Option::IMPORT_SHORT_CLASSES, true);
     $parameters->set(Option::SKIP, [
-        StringifyStrNeedlesRector::class => [_classFile(StdErrLogger::class)],
         EncapsedStringsToSprintfRector::class => [_classFile(WPDBSessionDriver::class)],
         // This is not our code
         _classFile(WPObjectCachePsr16IntegrationTest::class),

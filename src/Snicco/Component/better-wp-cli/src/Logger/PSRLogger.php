@@ -10,23 +10,22 @@ use Throwable;
 
 final class PSRLogger implements Logger
 {
-    
     private LoggerInterface $logger;
-    
-    public function __construct(LoggerInterface $logger) {
+
+    public function __construct(LoggerInterface $logger)
+    {
         $this->logger = $logger;
     }
-    
-    public function logError(Throwable $e, string $command_name, Input $input) :void
+
+    public function logError(Throwable $e, string $command_name, Input $input): void
     {
-        $this->logger->critical("Uncaught exception while running command [$command_name]", [
+        $this->logger->critical("Uncaught exception while running command [{$command_name}]", [
             'exception' => $e,
         ]);
     }
-    
-    public function logCommandFailure(int $exit_code, string $command_name, Input $input) :void
+
+    public function logCommandFailure(int $exit_code, string $command_name, Input $input): void
     {
-        $this->logger->warning("Command [$command_name] exited with status code [$exit_code]");
+        $this->logger->warning("Command [{$command_name}] exited with status code [{$exit_code}]");
     }
-    
 }

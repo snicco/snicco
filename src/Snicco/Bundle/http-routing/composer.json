@@ -11,6 +11,7 @@
         "snicco/kernel": "^1.2.1",
         "snicco/http-routing": "^1.2.1",
         "snicco/better-wp-hooks-bundle": "^1.2.1",
+        "snicco/minimal-logger": "^1.2.1",
         "snicco/event-dispatcher": "^1.2.1",
         "snicco/psr7-error-handler": "^1.2.1",
         "snicco/str-arr": "^1.2.1",
