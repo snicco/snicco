@@ -29,7 +29,7 @@ final class ConditionalLogger extends AbstractLogger
 
     private int $min_level_index;
 
-    public function __construct(LoggerInterface $logger, $min_level = LogLevel::DEBUG)
+    public function __construct(LoggerInterface $logger, string $min_level = LogLevel::DEBUG)
     {
         $this->logger = $logger;
         $this->ensureValidLogLevel($min_level);

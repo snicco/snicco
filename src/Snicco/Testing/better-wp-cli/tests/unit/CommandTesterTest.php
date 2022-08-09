@@ -368,7 +368,11 @@ final class CommandTesterTest extends TestCase
     {
         $count = 0;
         $tester = new CommandTester(function () use (&$count) {
-            /** @var int $count */
+            /**
+             * @psalm-suppress UnnecessaryVarAnnotation
+             *
+             * @var int $count
+             */
             ++$count;
 
             return new FooCommand($count);

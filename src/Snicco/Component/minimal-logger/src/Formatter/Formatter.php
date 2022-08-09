@@ -11,8 +11,5 @@ use Psr\Log\LoggerInterface;
  */
 interface Formatter
 {
-    /**
-     * @return non-empty-string
-     */
     public function format(string $level, string $message, array $context = [], string $line_prefix = ''): string;
 }

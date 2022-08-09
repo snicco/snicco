@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPCLI\Testing;
 
-use Symfony\Component\Console\Exception\LogicException;
+use LogicException;
 
 final class CommandTesterException extends LogicException
 {

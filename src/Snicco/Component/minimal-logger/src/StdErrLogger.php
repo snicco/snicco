@@ -14,7 +14,7 @@ use const PHP_EOL;
 
 final class StdErrLogger extends AbstractLogger
 {
-    private HumanReadableFormatter $formatter;
+    private Formatter $formatter;
 
     private string $channel;
 
@@ -27,7 +27,7 @@ final class StdErrLogger extends AbstractLogger
     public function log($level, $message, array $context = []): void
     {
         $formatted = $this->formatter->format(
-            $level,
+            (string) $level,
             $message,
             $context,
             "{$this->channel}."

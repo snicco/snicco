@@ -27,12 +27,17 @@ use Throwable;
 
 use function dirname;
 use function file_get_contents;
+use function ini_get;
+use function ob_get_clean;
+use function ob_get_contents;
+use function ob_start;
 use function rewind;
 use function stream_get_contents;
 use function trigger_error;
+use function trim;
 
 use const E_ALL;
-use const E_USER_NOTICE;
+use const E_USER_WARNING;
 use const PHP_EOL;
 
 /**
@@ -68,7 +73,10 @@ final class WPCLIApplicationTest extends TestCase
 
         $application->registerCommands($add_command);
 
-        $this->assertTrue(isset($registered_commands['snicco foo_command_custom']), 'FooCommand not registered');
+        $this->assertTrue(
+            isset($registered_commands['snicco foo_command_custom']),
+            'FooCommand not registered'
+        );
         $this->assertTrue(isset($registered_commands['snicco bar']), 'BarCommand not registered');
 
         $this->assertSame([
@@ -258,25 +266,33 @@ final class WPCLIApplicationTest extends TestCase
         $application = new WPCLIApplication('snicco', new ArrayCommandLoader([]));
         $application->autoExit(false);
 
+        $this->iniSet('display_errors', 'STDOUT');
+        ob_start();
+
         $code = $application->runCommand(
             new ArrayInput($this->getInMemoryStream()),
             new TestOutput(),
             new TriggerErrorCommand(function (): void {
-                trigger_error('some error', E_USER_NOTICE);
+                trigger_error('some warning', E_USER_WARNING);
             })
         );
         $this->assertSame(1, $code);
+        $this->assertSame('', ob_get_contents());
 
-        $application->throwExceptionsAt(E_ALL - E_USER_NOTICE);
+        $application->throwExceptionsAt(E_ALL - E_USER_WARNING);
 
         $code = $application->runCommand(
             new ArrayInput($this->getInMemoryStream()),
             new TestOutput(),
             new TriggerErrorCommand(function (): void {
-                trigger_error('some error', E_USER_NOTICE);
+                trigger_error('some warning', E_USER_WARNING);
             })
         );
+
+        // We need to use output buffering here instead of expectWarning because the error
+        // did not go to PHPUnit's test error handler.
         $this->assertSame(0, $code);
+        $this->assertStringStartsWith('Warning: some warning', trim((string) ob_get_clean()));
     }
 
     /**
@@ -287,19 +303,22 @@ final class WPCLIApplicationTest extends TestCase
         $application = new WPCLIApplication('snicco', new ArrayCommandLoader([]));
         $application->autoExit(false);
 
+        ob_start();
+
         $code = $application->runCommand(
             new ArrayInput($this->getInMemoryStream()),
             new TestOutput(),
             new TriggerErrorCommand(function (): void {
-                trigger_error('some notice', E_USER_NOTICE);
+                trigger_error('some warning', E_USER_WARNING);
             })
         );
         $this->assertSame(1, $code);
+        $this->assertSame('', ob_get_clean());
 
-        $this->expectNotice();
-        $this->expectNoticeMessage('some other notice');
+        $this->expectWarning();
+        $this->expectWarningMessage('some warning');
 
-        trigger_error('some other notice', E_USER_NOTICE);
+        trigger_error('some warning', E_USER_WARNING);
     }
 
     /**
@@ -474,6 +493,16 @@ final class WPCLIApplicationTest extends TestCase
         }
 
         return $contents;
+    }
+
+    private function iniGet(string $key): string
+    {
+        $res = ini_get($key);
+        if (false === $res) {
+            throw new RuntimeException("Could not get PHP ini value for {$key}");
+        }
+
+        return $res;
     }
 }
 

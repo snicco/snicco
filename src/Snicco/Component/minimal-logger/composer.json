@@ -16,7 +16,7 @@
         "phpunit/phpunit": "^9.5.13"
     },
     "provide": {
-        "psr/log": "^1.1.1"
+        "psr/log-implementation": "^1.1.1"
     },
     "autoload": {
         "psr-4": {

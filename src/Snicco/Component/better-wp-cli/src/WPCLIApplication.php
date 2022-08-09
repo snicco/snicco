@@ -10,6 +10,7 @@ use Snicco\Component\BetterWPCLI\CommandLoader\CommandLoader;
 use Snicco\Component\BetterWPCLI\Input\Input;
 use Snicco\Component\BetterWPCLI\Input\WPCLIInput;
 use Snicco\Component\BetterWPCLI\Logger\Logger;
+use Snicco\Component\BetterWPCLI\Logger\StdErrLogger;
 use Snicco\Component\BetterWPCLI\Output\ConsoleOutput;
 use Snicco\Component\BetterWPCLI\Output\ConsoleOutputInterface;
 use Snicco\Component\BetterWPCLI\Output\Output;
@@ -62,7 +63,7 @@ final class WPCLIApplication
     {
         $this->name = str_replace(' ', '-', $name);
         $this->command_loader = $command_loader;
-        $this->logger = $logger ?: new \Snicco\Component\MinimalLogger\StdErrLogger($name);
+        $this->logger = $logger ?: new StdErrLogger($name);
     }
 
     public function catchException(bool $catch_exceptions): void

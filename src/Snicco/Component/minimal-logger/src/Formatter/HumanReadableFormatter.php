@@ -7,8 +7,6 @@ namespace Snicco\Component\MinimalLogger\Formatter;
 use DateTimeInterface;
 use Throwable;
 
-use function array_replace;
-use function count;
 use function explode;
 use function get_class;
 use function gettype;
@@ -24,27 +22,6 @@ use function strtoupper;
 
 final class HumanReadableFormatter implements Formatter
 {
-    public const HIDE_STACK_TRACE_ARGS = 'hide_stack_trace_args';
-
-    /**
-     * @var array{
-     *     self::HIDE_STACK_TRACE_ARGS: bool,
-     * }
-     */
-    private array $options;
-
-    /**
-     * @param  array{
-     *     self::HIDE_STACK_TRACE_ARGS?: bool,
-     * }  $options
-     */
-    public function __construct(array $options = [])
-    {
-        $this->options = array_replace([
-            self::HIDE_STACK_TRACE_ARGS => true,
-        ], $options);
-    }
-
     public function format(string $level, string $message, array $context = [], string $line_prefix = ''): string
     {
         /** @var array<string> $additional */
@@ -130,18 +107,18 @@ final class HumanReadableFormatter implements Formatter
 
     private function formatException(Throwable $e): string
     {
-        $message = $this->exceptionToString($e, true);
+        $message = $this->exceptionToString($e);
 
         if ($previous = $e->getPrevious()) {
             do {
-                $message .= "\n\tCaused by: " . $this->exceptionToString($previous, true);
+                $message .= "\n\tCaused by: " . $this->exceptionToString($previous);
             } while ($previous = $previous->getPrevious());
         }
 
         return "\n\t" . $message;
     }
 
-    private function exceptionToString(Throwable $e, bool $include_trace): string
+    private function exceptionToString(Throwable $e): string
     {
         $message = sprintf(
             '%s "%s" in %s:%d',
@@ -151,41 +128,9 @@ final class HumanReadableFormatter implements Formatter
             $e->getLine()
         );
 
-        if ($include_trace) {
-            $message .= "\n\tStack trace:\n\t";
-            $message .= implode("\n\t", $this->formatTrace($e));
-        }
+        $message .= "\n\tStack trace:\n\t";
+        $message .= implode("\n\t", explode("\n", $e->getTraceAsString()));
 
         return $message;
-    }
-
-    private function formatTrace(Throwable $e): array
-    {
-        if (! $this->options[self::HIDE_STACK_TRACE_ARGS]) {
-            $string_trace = $e->getTraceAsString();
-
-            return explode("\n", $string_trace);
-        }
-
-        $traces = [];
-
-        foreach ($e->getTrace() as $index => $frame) {
-            $trace = sprintf('#%d %s(%s):', $index, $frame['file'], $frame['line']);
-
-            if (isset($frame['class'], $frame['type'], $frame['function'])) {
-                $trace .= $frame['class'] . $frame['type'] . $frame['function'];
-            } else {
-                $trace .= $frame['function'];
-            }
-
-            if (isset($frame['args']) && count($frame['args'])) {
-                $trace .= '(REDACTED)';
-            } else {
-                $trace .= '()';
-            }
-            $traces[] = $trace;
-        }
-
-        return $traces;
     }
 }

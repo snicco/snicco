@@ -9,7 +9,6 @@ use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use RuntimeException;
-use Snicco\Component\MinimalLogger\Formatter\HumanReadableFormatter;
 use Snicco\Component\MinimalLogger\StdErrLogger;
 use stdClass;
 
@@ -25,8 +24,6 @@ use function unlink;
  */
 final class StdErrLoggerTest extends TestCase
 {
-    private string $prev_error_log;
-
     private string $log_file;
 
     protected function setUp(): void
@@ -34,12 +31,7 @@ final class StdErrLoggerTest extends TestCase
         parent::setUp();
 
         $this->log_file = dirname(__DIR__) . '/fixtures/.log/error.log';
-        $prev = ini_set('error_log', $this->log_file);
-        if (false === $prev) {
-            throw new RuntimeException('Could not set php ini setting for error_log.');
-        }
-
-        $this->prev_error_log = $prev;
+        $this->iniSet('error_log', $this->log_file);
         if (is_file($this->log_file)) {
             unlink($this->log_file);
         }
@@ -48,11 +40,9 @@ final class StdErrLoggerTest extends TestCase
 
     protected function tearDown(): void
     {
-        ini_set('error_log', $this->prev_error_log);
         if (is_file($this->log_file)) {
             unlink($this->log_file);
         }
-
         parent::tearDown();
     }
 
@@ -232,9 +222,9 @@ final class StdErrLoggerTest extends TestCase
     {
         $logger = new StdErrLogger('my_plugin.request');
 
-        $first_e = fn () => new RuntimeException('first');
+        $first_e = fn (): RuntimeException => new RuntimeException('first');
 
-        $second_e = fn () => new LogicException('second', 0, ($first_e)());
+        $second_e = fn (): LogicException => new LogicException('second', 0, ($first_e)());
 
         $e = new RuntimeException('secret stuff', 0, ($second_e)());
 
@@ -285,73 +275,6 @@ final class StdErrLoggerTest extends TestCase
             'snicco.CRITICAL here LogicException: message',
             $this->getLogContent()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function that_method_args_are_not_in_the_stack_trace(): void
-    {
-        $logger = new StdErrLogger('snicco');
-
-        $return_e = function (string $message) {
-            return new LogicException($message);
-        };
-
-        $exception = ($return_e)('message');
-
-        $logger->log(LogLevel::CRITICAL, 'Message', [
-            'exception' => $exception,
-        ]);
-
-        $content = $this->getLogContent();
-        $this->assertStringContainsString('snicco.CRITICAL Message', $content);
-        $this->assertStringContainsString('{closure}(REDACTED)', $content);
-        $this->assertStringNotContainsString("{closure}('message')", $content);
-    }
-
-    /**
-     * @test
-     */
-    public function that_function_args_are_not_in_the_stack_trace(): void
-    {
-        $logger = new StdErrLogger('snicco');
-
-        require_once dirname(__DIR__) . '/fixtures/require_function.php';
-
-        $exception = snicco_get_exception('message');
-
-        $logger->log(LogLevel::CRITICAL, 'Message', [
-            'exception' => $exception,
-        ]);
-
-        $content = $this->getLogContent();
-        $this->assertStringContainsString('snicco.CRITICAL Message', $content);
-        $this->assertStringContainsString('snicco_get_exception(REDACTED)', $content);
-        $this->assertStringNotContainsString("snicco_get_exception('message')", $content);
-    }
-
-    /**
-     * @test
-     */
-    public function that_function_backtrace_args_can_be_enabled(): void
-    {
-        $logger = new StdErrLogger('snicco', new HumanReadableFormatter([
-            'hide_stack_trace_args' => false,
-        ]));
-
-        require_once dirname(__DIR__) . '/fixtures/require_function.php';
-
-        $exception = snicco_get_exception('message');
-
-        $logger->log(LogLevel::CRITICAL, 'Message', [
-            'exception' => $exception,
-        ]);
-
-        $content = $this->getLogContent();
-        $this->assertStringContainsString('snicco.CRITICAL Message', $content);
-        $this->assertStringContainsString("snicco_get_exception('message')", $content);
-        $this->assertStringNotContainsString('snicco_get_exception(REDACTED)', $content);
     }
 
     private function getLogContent(): string

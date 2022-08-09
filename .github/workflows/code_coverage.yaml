@@ -19,7 +19,8 @@ jobs:
           fetch-depth: 0
 
       - name: 'Setup PHP'
-        uses: shivammathur/setup-php@v2
+        # v2.21.1
+        uses: shivammathur/setup-php@16011a795d747d5f45038f96371c3b98aec5669d
         with:
           php-version: 7.4
           coverage: xdebug3
@@ -71,7 +72,8 @@ jobs:
           fetch-depth: 0
 
       - name: 'Setup PHP'
-        uses: shivammathur/setup-php@v2
+        # v2.21.1
+        uses: shivammathur/setup-php@16011a795d747d5f45038f96371c3b98aec5669d
         with:
           php-version: 7.4
           tools: wp-cli

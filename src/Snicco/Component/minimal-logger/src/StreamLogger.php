@@ -43,7 +43,7 @@ final class StreamLogger extends AbstractLogger
     {
         $prefix = $this->linePrefix();
 
-        $message = $this->formatter->format($level, $message, $context, $prefix);
+        $message = $this->formatter->format((string) $level, $message, $context, $prefix);
 
         $this->writeStream($message . PHP_EOL . PHP_EOL);
     }

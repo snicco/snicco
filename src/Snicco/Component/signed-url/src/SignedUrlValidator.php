@@ -74,7 +74,7 @@ final class SignedUrlValidator
 
         $expected_validator = Base64UrlSafe::encode($this->hmac->create($plaint_text_signature));
 
-        $this->validateSignature($expected_validator, $provided_validator, $identifier, $path);
+        $this->validateSignature($expected_validator, $provided_validator, $path);
         $this->validateExpiration((int) ($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
         $this->validateUsage($identifier, $path);
     }
@@ -123,7 +123,6 @@ final class SignedUrlValidator
     private function validateSignature(
         string $expected_signature,
         string $provided_signature,
-        string $identifier,
         string $path
     ): void {
         if (! hash_equals($expected_signature, $provided_signature)) {
