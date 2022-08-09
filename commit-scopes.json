@@ -11,6 +11,7 @@
     "event-dispatcher",
     "http-routing",
     "kernel",
+    "minimal-logger",
     "psr7-error-handler",
     "session",
     "signed-url",
