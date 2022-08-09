@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\SignedUrl;
 
 use ParagonIE\ConstantTime\Base64UrlSafe;
+use ParagonIE\ConstantTime\Binary;
 use RuntimeException;
 use Snicco\Component\SignedUrl\Exception\BadIdentifier;
 use Snicco\Component\SignedUrl\Exception\InvalidSignature;
@@ -57,9 +58,9 @@ final class SignedUrlValidator
             throw new InvalidSignature(sprintf('Missing expires parameter for path [%s].', $path));
         }
 
-        $arr = explode('|', $query_as_array[SignedUrl::SIGNATURE_KEY]);
-        $identifier = $arr[0] ?? '';
-        $provided_signature = $arr[1] ?? '';
+        $signature = $query_as_array[SignedUrl::SIGNATURE_KEY];
+        $identifier = Binary::safeSubstr($signature, 0, 24);
+        $provided_validator = Binary::safeSubstr($signature, 24);
 
         // Rebuild the parts from the provided url
         // if anything has been changed at all the resulting signature will not match the
@@ -71,9 +72,9 @@ final class SignedUrlValidator
             '?' .
             $this->queryStringWithoutSignature($query_string);
 
-        $expected_signature = Base64UrlSafe::encode($this->hmac->create($plaint_text_signature));
+        $expected_validator = Base64UrlSafe::encode($this->hmac->create($plaint_text_signature));
 
-        $this->validateSignature($expected_signature, $provided_signature, $path);
+        $this->validateSignature($expected_validator, $provided_validator, $identifier, $path);
         $this->validateExpiration((int) ($query_as_array[SignedUrl::EXPIRE_KEY] ?? 0), $path);
         $this->validateUsage($identifier, $path);
     }
@@ -119,8 +120,12 @@ final class SignedUrlValidator
         }
     }
 
-    private function validateSignature(string $expected_signature, string $provided_signature, string $path): void
-    {
+    private function validateSignature(
+        string $expected_signature,
+        string $provided_signature,
+        string $identifier,
+        string $path
+    ): void {
         if (! hash_equals($expected_signature, $provided_signature)) {
             throw new InvalidSignature(sprintf('Invalid signature for path [%s].', $path));
         }
