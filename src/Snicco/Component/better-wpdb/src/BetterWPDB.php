@@ -12,10 +12,15 @@ use mysqli;
 use mysqli_result;
 use mysqli_sql_exception;
 use mysqli_stmt;
+use phpDocumentor\Reflection\Types\Scalar;
 use ReflectionException;
 use RuntimeException;
 use Snicco\Component\BetterWPDB\Exception\NoMatchingRowFound;
 use Snicco\Component\BetterWPDB\Exception\QueryException;
+use Snicco\Component\BetterWPDB\KeysetPagination\LeftOff;
+use Snicco\Component\BetterWPDB\KeysetPagination\Lock;
+use Snicco\Component\BetterWPDB\KeysetPagination\Query;
+use Snicco\Component\BetterWPDB\KeysetPagination\ResultSet;
 use Throwable;
 
 use function array_keys;
@@ -35,11 +40,9 @@ use function mysqli_report;
 use function rtrim;
 use function sprintf;
 use function str_repeat;
-
 use function strtr;
-
 use function trigger_error;
-use const E_USER_NOTICE;
+
 use const MYSQLI_ASSOC;
 use const MYSQLI_OPT_INT_AND_FLOAT_NATIVE;
 use const MYSQLI_REPORT_OFF;
@@ -77,12 +80,13 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      * @param bool               $auto_reset_error_handling This needs to be set to false ONLY if you are running SELECT queries.
-     *                                                      In that case error handling needs to be reset by manually calling
-     *                                                      {@see BetterWPDB::restoreErrorHandling()}. All other methods handle
-     *                                                      this automatically, so unless you have a good reason not to you should stick to one of the many select methods.
+     *                                                      In that case error handling needs to be reset by manually
+     *                                                      calling
+     *                                                      {@see BetterWPDB::restoreErrorHandling()}. All other
+     *                                                      methods handle this automatically, so unless you have a
+     *                                                      good reason not to you should stick to one of the many select methods.
      *
      * @throws InvalidArgumentException
      * @throws QueryException
@@ -92,6 +96,8 @@ final class BetterWPDB
         array $bindings = [],
         bool $auto_reset_error_handling = true
     ): mysqli_stmt {
+        $this->assertStringNotEmpty($sql);
+
         return $this->runWithErrorHandling(function () use ($sql, $bindings): mysqli_stmt {
             $bindings = $this->convertBindings($bindings);
 
@@ -117,14 +123,14 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string $sql
-     *
      * @throws QueryException
      *
      * @return mysqli_result|true {@see mysqli::query()}
      */
     public function unprepared(string $sql, bool $auto_reset_error_handling = true)
     {
+        $this->assertStringNotEmpty($sql);
+
         return $this->runWithErrorHandling(function () use ($sql) {
             $start = microtime(true);
 
@@ -150,8 +156,8 @@ final class BetterWPDB
      *
      * @param Closure(BetterWPDB):T $callback
      *
-     * @throws InvalidArgumentException
      * @throws QueryException
+     *
      * @psalm-return  T
      */
     public function transactional(Closure $callback)
@@ -172,7 +178,6 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('START TRANSACTION', [], $e);
                 }
-
                 /** @codeCoverageIgnoreEnd */
                 $end = microtime(true);
 
@@ -188,7 +193,6 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('COMMIT', [], $e);
                 }
-
                 /** @codeCoverageIgnoreEnd */
                 $end = microtime(true);
 
@@ -207,11 +211,11 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string                                                             $table
      * @param int|non-empty-array<non-empty-string, int|non-empty-string>|non-empty-string $primary_key
      * @param non-empty-array<non-empty-string, scalar|null>                               $changes     !!! IMPORTANT !!!
      *                                                                                                  Keys of $data
-     *                                                                                                  MUST never be user provided
+     *                                                                                                  MUST never be
+     *                                                                                                  user provided
      *
      * @throws InvalidArgumentException
      * @throws QueryException
@@ -233,7 +237,6 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string                               $table
      * @param non-empty-array<non-empty-string, scalar|null> $conditions
      * @param non-empty-array<non-empty-string, scalar|null> $changes    !!! IMPORTANT !!!
      *                                                                   Keys of $data MUST never be user provided
@@ -243,7 +246,8 @@ final class BetterWPDB
      */
     public function update(string $table, array $conditions, array $changes): int
     {
-        $this->validateTableName($table);
+        $this->assertStringNotEmpty($table);
+
         $this->validateProvidedColumnNames(array_keys($conditions));
         $this->validateProvidedColumnNames(array_keys($changes));
 
@@ -269,7 +273,6 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string                               $table
      * @param non-empty-array<non-empty-string, scalar|null> $conditions
      *
      * @throws InvalidArgumentException
@@ -279,7 +282,7 @@ final class BetterWPDB
      */
     public function delete(string $table, array $conditions): int
     {
-        $this->validateTableName($table);
+        $this->assertStringNotEmpty($table);
 
         $table = $this->escIdentifier($table);
         $sql = sprintf('delete from %s where ', $table);
@@ -294,7 +297,6 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
      * @throws InvalidArgumentException
@@ -318,7 +320,6 @@ final class BetterWPDB
      *
      * {@see BetterWPDB::selectAll()}.
      *
-     * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
      * @throws InvalidArgumentException
@@ -337,7 +338,6 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
      * @throws InvalidArgumentException
@@ -363,7 +363,6 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string   $sql
      * @param array<scalar|null> $bindings
      *
      * @throws InvalidArgumentException
@@ -380,7 +379,6 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string                              $table
      * @param non-empty-array<non-empty-string,scalar|null> $conditions
      *
      * @throws InvalidArgumentException
@@ -388,7 +386,8 @@ final class BetterWPDB
      */
     public function exists(string $table, array $conditions): bool
     {
-        $this->validateTableName($table);
+        $this->assertStringNotEmpty($table);
+
         $this->validateProvidedColumnNames(array_keys($conditions));
 
         $table = $this->escIdentifier($table);
@@ -428,7 +427,6 @@ final class BetterWPDB
      * This method should be used if you want to iterate over a big number of
      * records.
      *
-     * @param non-empty-string       $sql
      * @param array<int,scalar|null> $bindings
      *
      * @throws InvalidArgumentException
@@ -454,7 +452,7 @@ final class BetterWPDB
                  * this is by using the trick below:.
                  *
                  * We need two arrays. One for storing the columns and one
-                 * to bind the values by reference. We cant use one array that
+                 * to bind the values by reference. We can't use one array that
                  * both holds the column names as keys and the values by reference
                  * since that will not work on PHP8+ where bind_result will
                  * fail because it interprets array keys as named arguments
@@ -486,16 +484,80 @@ final class BetterWPDB
     }
 
     /**
-     * @param non-empty-string                               $table
-     * @param non-empty-array<non-empty-string, scalar|null> $data  !!! IMPORTANT !!!
-     *                                                              Keys of $data MUST never be user provided
+     * This method allows batch processing of a large number of records. Each
+     * batch of records is passed to the provided callable for processing.
+     * Optionally, each batch can be executed inside a database transaction if
+     * a.
+     *
+     * {@see Lock} object is provided.
+     *
+     * A typical scenario for using this method is fetching records from the
+     * database and updating them based on logic that can only be performed in
+     * PHP.
+     *
+     * @template T
+     *
+     * @param callable(list<array<string,?scalar>>):T $process_batch
+     *
+     * @psalm-return list<T>
+     */
+    public function batchProcess(Query $query, callable $process_batch, ?Lock $lock = null): array
+    {
+        /*
+         * We create a wrapping closure around our "unit of work"
+         * so that we can fetch batches inside transactions if needed.
+         */
+        $wrapper = (null === $lock)
+            ? static fn (Closure $do): array => (array) $do()
+            : [$this, 'transactional'];
+
+        $left_off = null;
+
+        $fetch_batch = function () use ($query, $process_batch, $lock, &$left_off): array {
+            /** @var LeftOff|null $left_off */
+            $result_set = $this->internalPaginate($query, $left_off, $lock);
+
+            if (! count($result_set)) {
+                return [false, null];
+            }
+
+            // Pass the batch of records to the user defined callback.
+            $user_return_value = ($process_batch)($result_set->records);
+
+            $left_off = $result_set->left_off;
+
+            return [true, $user_return_value];
+        };
+
+        $return_values = [];
+
+        do {
+            [$has_more, $user_return_value] = ($wrapper)($fetch_batch);
+
+            if ($has_more) {
+                /** @var T $user_return_value */
+                $return_values[] = $user_return_value;
+            }
+        } while ($has_more);
+
+        return $return_values;
+    }
+
+    public function keysetPaginate(Query $cursor, ?LeftOff $left_off = null): ResultSet
+    {
+        return $this->internalPaginate($cursor, $left_off);
+    }
+
+    /**
+     * @param non-empty-array<non-empty-string, scalar|null> $data !!! IMPORTANT !!!
+     *                                                             Keys of $data MUST never be user provided
      *
      * @throws InvalidArgumentException
      * @throws QueryException
      */
     public function insert(string $table, array $data): mysqli_stmt
     {
-        $this->validateTableName($table);
+        $this->assertStringNotEmpty($table);
 
         $column_names = array_keys($data);
         $this->validateProvidedColumnNames($column_names);
@@ -509,7 +571,6 @@ final class BetterWPDB
      * Runs a bulk insert of records in a transaction. If any record can't be
      * inserted the entire transaction will be rolled back.
      *
-     * @param non-empty-string                              $table
      * @param iterable<array<non-empty-string,scalar|null>> $records !!! IMPORTANT !!!
      *                                                               Keys of $data MUST never be user provided
      *
@@ -520,7 +581,7 @@ final class BetterWPDB
      */
     public function bulkInsert(string $table, iterable $records): int
     {
-        $this->validateTableName($table);
+        $this->assertStringNotEmpty($table);
 
         return $this->transactional(function () use ($table, $records): int {
             $stmt = null;
@@ -528,63 +589,70 @@ final class BetterWPDB
             $expected_types = null;
             $inserted = 0;
 
-            foreach ($records as $record) {
-                if (empty($record)) {
-                    throw new InvalidArgumentException('Each record has to be a non-empty-array.');
+            try {
+                foreach ($records as $record) {
+                    if (empty($record)) {
+                        throw new InvalidArgumentException('Each record has to be a non-empty-array.');
+                    }
+
+                    $col_names = array_keys($record);
+                    $this->validateProvidedColumnNames($col_names);
+
+                    // only create the insert sql once.
+                    $sql ??= $this->buildInsertSql($table, $col_names);
+
+                    // only create one prepared statement
+                    $stmt ??= $this->mysqli->prepare($sql);
+
+                    $bindings = $this->convertBindings($record);
+
+                    // Retrieve the expected types from the first record.
+                    if (null === $expected_types) {
+                        $expected_types = (string) $this->paramTypes($bindings);
+                    }
+
+                    $record_types = (string) $this->paramTypes($bindings);
+                    if ($expected_types !== $record_types) {
+                        throw new InvalidArgumentException(
+                            sprintf(
+                                "Records are not of consistent type.\nExpected: [%s] and got [%s] for record %d.",
+                                rtrim(
+                                    strtr($expected_types, [
+                                        's' => 'string,',
+                                        'd' => 'double,',
+                                        'i' => 'integer,',
+                                    ]),
+                                    ','
+                                ),
+                                rtrim(
+                                    strtr($record_types, [
+                                        's' => 'string,',
+                                        'd' => 'double,',
+                                        'i' => 'integer,',
+                                    ]),
+                                    ','
+                                ),
+                                $inserted + 1
+                            )
+                        );
+                    }
+
+                    $stmt->bind_param($record_types, ...$bindings);
+
+                    $start = microtime(true);
+                    $stmt->execute();
+                    $end = microtime(true);
+
+                    /** @var array<scalar|null> $bindings */
+                    $this->log(new QueryInfo($start, $end, $sql, $bindings));
+
+                    $inserted += $stmt->affected_rows;
                 }
 
-                // only create the insert sql once.
-                $sql ??= $this->buildInsertSql($table, array_keys($record));
-
-                // only create one prepared statement
-                $stmt ??= $this->mysqli->prepare($sql);
-
-                $bindings = $this->convertBindings($record);
-
-                // Retrieve the expected types from the first record.
-                if (null === $expected_types) {
-                    $expected_types = (string) $this->paramTypes($bindings);
-                }
-
-                $record_types = (string) $this->paramTypes($bindings);
-                if ($expected_types !== $record_types) {
-                    throw new InvalidArgumentException(
-                        sprintf(
-                            "Records are not of consistent type.\nExpected: [%s] and got [%s] for record %d.",
-                            rtrim(
-                                strtr($expected_types, [
-                                    's' => 'string,',
-                                    'd' => 'double,',
-                                    'i' => 'integer,',
-                                ]),
-                                ','
-                            ),
-                            rtrim(
-                                strtr($record_types, [
-                                    's' => 'string,',
-                                    'd' => 'double,',
-                                    'i' => 'integer,',
-                                ]),
-                                ','
-                            ),
-                            $inserted + 1
-                        )
-                    );
-                }
-
-                $stmt->bind_param($record_types, ...$bindings);
-
-                $start = microtime(true);
-                $stmt->execute();
-                $end = microtime(true);
-
-                /** @var array<scalar|null> $bindings */
-                $this->log(new QueryInfo($start, $end, $sql, $bindings));
-
-                $inserted += $stmt->affected_rows;
+                return $inserted;
+            } catch (mysqli_sql_exception $e) {
+                throw QueryException::fromMysqliE($sql ?? '', [], $e);
             }
-
-            return $inserted;
         });
     }
 
@@ -605,12 +673,31 @@ final class BetterWPDB
 
         if ($this->mysqli->error) {
             trigger_error(
-                "Could not restore error handling. This probably happened because you used preparedQuery() with a select statement.\nError: " . $this->mysqli->error,
-                E_USER_NOTICE
+                "Could not restore error handling. This probably happened because you used preparedQuery() with a select statement.\nError: "
+                . $this->mysqli->error,
             );
         }
 
         $this->is_handling_errors = false;
+    }
+
+    private function internalPaginate(
+        Query $query,
+        ?LeftOff $left_off = null,
+        ?Lock $lock = null
+    ): ResultSet {
+        [$sql, $bindings] = $query->buildPlaceholderSQLAndBindings($left_off);
+
+        // If a lock type is defined we need to
+        // append it to the SQL query.
+        // Transaction control is the responsibility of the caller.
+        if ($lock) {
+            $sql .= $lock->type;
+        }
+
+        $batch = $this->selectAll($sql, $bindings);
+
+        return $query->createResult($batch);
     }
 
     /**
@@ -633,8 +720,7 @@ final class BetterWPDB
         // Turn on error reporting
         $this->mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-        $res = $this->mysqli->query("SET SESSION sql_mode='TRADITIONAL'");
-        if (true !== $res) {
+        if (! $this->mysqli->query("SET SESSION sql_mode='TRADITIONAL'")) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Could not set mysql error reporting to traditional.');
             // @codeCoverageIgnoreEnd
@@ -689,6 +775,7 @@ final class BetterWPDB
     }
 
     /**
+     * @param non-empty-string            $sql
      * @param list<float|int|string|null> $bindings
      */
     private function createPreparedStatement(string $sql, array $bindings): mysqli_stmt
@@ -759,26 +846,6 @@ final class BetterWPDB
         return $b;
     }
 
-    private function validateTableName(string $table): void
-    {
-        if ('' === $table) {
-            throw new InvalidArgumentException('A table name must be a non-empty-string.');
-        }
-    }
-
-    private function validateProvidedColumnNames(array $data): void
-    {
-        if (empty($data)) {
-            throw new InvalidArgumentException('Column names can not be an empty array.');
-        }
-
-        foreach ($data as $name) {
-            if (! is_string($name) || '' === $name) {
-                throw new InvalidArgumentException('All column names must be a non-empty-strings.');
-            }
-        }
-    }
-
     /**
      * @param array<scalar|null> $conditions
      *
@@ -807,5 +874,31 @@ final class BetterWPDB
         }
 
         return [$wheres, $bindings];
+    }
+
+    /**
+     * @psalm-assert non-empty-string[] $data
+     */
+    private function validateProvidedColumnNames(array $data): void
+    {
+        if (empty($data)) {
+            throw new InvalidArgumentException('Column names can not be an empty array.');
+        }
+
+        foreach ($data as $name) {
+            if (! is_string($name) || '' === $name) {
+                throw new InvalidArgumentException('All column names must be a non-empty-strings.');
+            }
+        }
+    }
+
+    /**
+     * @psalm-assert non-empty-string $string
+     */
+    private function assertStringNotEmpty(string $string): void
+    {
+        if ('' === $string) {
+            throw new InvalidArgumentException('Expected a non-empty-string.');
+        }
     }
 }

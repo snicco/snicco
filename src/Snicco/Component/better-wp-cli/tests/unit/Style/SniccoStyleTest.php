@@ -187,29 +187,28 @@ final class SniccoStyleTest extends TestCase
             sprintf('Incorrect output for %s', $name)
         );
     }
-    
+
     /**
      * @test
      */
-    public function that_it_does_not_fail_for_small_windows_sizes_and_long_messages() :void
+    public function that_it_does_not_fail_for_small_windows_sizes_and_long_messages(): void
     {
         try {
             putenv('COLUMNS=10');
-            
+
             $style = new SniccoStyle(
                 new DummyInput(),
                 $output = new TestOutput()
             );
-            
+
             $style->success(str_repeat('x', 100));
-            
+
             $this->assertNotEmpty($output->lines);
-            
-        }finally {
+        } finally {
             putenv("COLUMNS={$this->initial_col_size}");
         }
     }
-    
+
     /**
      * @psalm-suppress UnresolvableInclude
      */

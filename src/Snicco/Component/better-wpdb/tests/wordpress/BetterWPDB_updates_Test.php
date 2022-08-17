@@ -18,14 +18,10 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
 {
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function test_update_by_primary_with_empty_table_name_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('non-empty-string');
-
         $this->better_wpdb->updateByPrimary('', 1, [
             'test_string' => 'foo',
         ]);
@@ -198,13 +194,10 @@ final class BetterWPDB_updates_Test extends BetterWPDBTestCase
 
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function test_update_with_empty_table_name_throws_exception(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('non-empty-string');
 
         $this->better_wpdb->update('', [
             'test_string' => 'foo',

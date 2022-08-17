@@ -267,13 +267,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
 
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function test_exists_throws_exception_for_empty_table_name(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('non-empty-string');
 
         $this->better_wpdb->exists('', [
             'test_string' => 'foo',
@@ -344,7 +341,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
+        $this->assertSame(
+            'select * from test_table where test_string = ?',
+            $logger->queries[0]->sql_with_placeholders
+        );
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
@@ -362,7 +362,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[0]));
         $this->assertCount(1, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[0]->sql_with_placeholders);
+        $this->assertSame(
+            'select * from test_table where test_string = ?',
+            $logger->queries[0]->sql_with_placeholders
+        );
         $this->assertSame(['foo'], $logger->queries[0]->bindings);
         $this->assertGreaterThan($logger->queries[0]->start, $logger->queries[0]->end);
     }
@@ -385,7 +388,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[1]));
         $this->assertCount(2, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql_with_placeholders);
+        $this->assertSame(
+            'select * from test_table where test_string = ?',
+            $logger->queries[1]->sql_with_placeholders
+        );
         $this->assertSame(['foo'], $logger->queries[1]->bindings);
         $this->assertGreaterThan($logger->queries[1]->start, $logger->queries[1]->end);
     }
@@ -408,7 +414,10 @@ final class BetterWPDB_reads_Test extends WPTestCase
         $this->assertTrue(isset($logger->queries[1]));
         $this->assertCount(2, $logger->queries);
 
-        $this->assertSame('select * from test_table where test_string = ?', $logger->queries[1]->sql_with_placeholders);
+        $this->assertSame(
+            'select * from test_table where test_string = ?',
+            $logger->queries[1]->sql_with_placeholders
+        );
         $this->assertSame(['foo'], $logger->queries[1]->bindings);
         $this->assertGreaterThan($logger->queries[1]->start, $logger->queries[1]->end);
     }

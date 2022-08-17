@@ -285,7 +285,7 @@ final class SniccoStyle
             $line_prefix_length = strlen($line_prefix);
 
             $right_padding_length = max($this->full_width - $line_prefix_length - $message_length, 0);
-            
+
             $right_padding = str_repeat(' ', $right_padding_length);
 
             $line = $this->colorize($line_prefix . $message . $right_padding, $text_color, $bg_color);
