@@ -29,7 +29,8 @@
         3. [selectRow](#selectRow)
         4. [selectValue](#selectvalue)
         5. [selectLazy](#selectlazy)
-        6. [exists](#exists)
+        6. [batchProcess](#batchprocess)
+        7. [exists](#exists)
     3. [Inserts](#inserts)
         1. [insert](#insert)
         2. [bulkInsert](#bulkinsert)
@@ -512,6 +513,94 @@ foreach ($orders as $order) {
     // process order
 }
 
+```
+
+#### batchProcess
+
+The `batchProcess` method can be used if you need to select a large amount of records that you need to update depending
+on logic that can only be performed in PHP code.
+
+This method will perform **highly performant** keyset pagination.
+
+It is essential that the sorting columns of the query ensure a deterministic sorting order. 
+Furthermore, the sorting column values should not be updated inside the batch process callback. 
+
+Read more about the underlying keyset pagination [here](
+http://mysql.rjweb.org/doc.php/pagination) and [here](http://mysql.rjweb.org/doc.php/deletebig#iterating_through_a_compound_key) (**Highly recommended read for this method effectively**)
+
+The below code showcases how all users' password can be reset. For more examples, [have a look at the test cases here](tests/wordpress/BetterWPDB_keyset_pagination_Test.php).
+
+```php
+use Snicco\Component\BetterWPDB\BetterWPDB;
+use Snicco\Component\BetterWPDB\KeysetPagination\Lock;
+use Snicco\Component\BetterWPDB\KeysetPagination\Query;
+
+// This should be a simple SQL query. It can contain where clauses with placeholder ("?"). 
+// But make sure that the (static) conditions have the proper indexes, otherwise this method will not perform well.
+// DON'T add any LIMIT or ORDER BY clauses.
+$sql = 'select ID from wp_users';
+
+// With a (static) condition:
+// $sql = 'select ID form wp_posts where post_type = ?'
+
+// The combination of the sorting columns must be a unique record. 
+// This is typically done by using the tables primary key. However, compound primary keys are supported.
+// (http://mysql.rjweb.org/doc.php/deletebig#iterating_through_a_compound_key)
+$deterministic_sorting_columns = ['ID' => 'asc'];
+
+// The batch size is the number of records that are passed to the callback function at once.
+$batch_size = 500;
+
+// Optional: The values for static conditions (if any are used).
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+// THIS IS THE ONLY PLACE WHERE USER INPUT IS ALLOWED.
+$static_column_bindings = [];
+//$static_column_bindings = ['some-post-type']
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+$query = new Query($sql, ['ID' => 'asc'], $deterministic_sorting_columns, $batch_size, $static_column_bindings);
+
+// (Optional) database lock. If a lock is passed as a third argument to the batchProcess method
+// each batch of records will be executed in a database transaction using the provided lock type.
+$lock = Lock::forReadWrite();
+
+// Your user-defined callback function.
+// $records is an array containing $batch_size database records.
+// You can return arbitrary values from this method, they will be returned as an array. 
+$callback = function(array $records) :array {
+      
+    $failed = [];
+        
+    foreach ($records as $record) {
+        
+      $id = $record['ID'];
+            
+      try {
+        
+        $user_login = get_user_by('id', $ID)->user_login;
+        
+        retrieve_password($user_login);
+        
+      } catch (Throwable $e) {
+         $failed[] = $id;
+      } 
+    
+    }
+    
+    return $failed;
+}
+
+/** @var BetterWPDB $db */
+$db = /* */
+
+/** @var array<int[]> $failed_records */
+$failed_records = $db->batchProcess($query, $callback, $lock); 
 ```
 
 ---

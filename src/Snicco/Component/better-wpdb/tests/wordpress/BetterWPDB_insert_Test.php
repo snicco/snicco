@@ -85,14 +85,10 @@ final class BetterWPDB_insert_Test extends BetterWPDBTestCase
 
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function test_insert_throws_exception_for_empty_table_name(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('non-empty-string');
-
         $this->better_wpdb->insert('', [
             'test_string' => 'foo',
         ]);

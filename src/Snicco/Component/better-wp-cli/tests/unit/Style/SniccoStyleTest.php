@@ -29,6 +29,7 @@ use function file_get_contents;
 use function fopen;
 use function putenv;
 use function rewind;
+use function str_repeat;
 use function stream_get_contents;
 
 use const PHP_EOL;
@@ -185,6 +186,27 @@ final class SniccoStyleTest extends TestCase
             $this->getStreamContent($this->stream),
             sprintf('Incorrect output for %s', $name)
         );
+    }
+
+    /**
+     * @test
+     */
+    public function that_it_does_not_fail_for_small_windows_sizes_and_long_messages(): void
+    {
+        try {
+            putenv('COLUMNS=10');
+
+            $style = new SniccoStyle(
+                new DummyInput(),
+                $output = new TestOutput()
+            );
+
+            $style->success(str_repeat('x', 100));
+
+            $this->assertNotEmpty($output->lines);
+        } finally {
+            putenv("COLUMNS={$this->initial_col_size}");
+        }
     }
 
     /**

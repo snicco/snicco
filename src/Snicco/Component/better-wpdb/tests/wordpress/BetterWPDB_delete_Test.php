@@ -78,13 +78,10 @@ final class BetterWPDB_delete_Test extends BetterWPDBTestCase
 
     /**
      * @test
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function test_delete_throws_exception_for_empty_table_name(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('non-empty-string');
         $this->better_wpdb->delete('', [
             'test_string' => 'foo',
         ]);

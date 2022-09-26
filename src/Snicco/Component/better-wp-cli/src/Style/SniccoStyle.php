@@ -15,6 +15,7 @@ use Snicco\Component\BetterWPCLI\Question\Question;
 
 use function fgets;
 use function is_iterable;
+use function max;
 use function shell_exec;
 use function sprintf;
 use function str_repeat;
@@ -283,7 +284,9 @@ final class SniccoStyle
 
             $line_prefix_length = strlen($line_prefix);
 
-            $right_padding = str_repeat(' ', $this->full_width - $line_prefix_length - $message_length);
+            $right_padding_length = max($this->full_width - $line_prefix_length - $message_length, 0);
+
+            $right_padding = str_repeat(' ', $right_padding_length);
 
             $line = $this->colorize($line_prefix . $message . $right_padding, $text_color, $bg_color);
 
