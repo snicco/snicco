@@ -1,3 +1,16 @@
+# [1.4.0](https://github.com/snicco/snicco/compare/v1.3.0...v1.4.0) (2022-09-26)
+
+
+### Bug Fixes
+
+* **better-wp-cli:** fix negative count passed to str_repeat ([5f6e7a0](https://github.com/snicco/snicco/commit/5f6e7a0258b6f6c8c95c068aaf42c31ed057f53d)), closes [#152](https://github.com/snicco/snicco/issues/152)
+
+
+### Features
+
+* **better-wpdb:** add batch processing and keyset pagination ([db3f13e](https://github.com/snicco/snicco/commit/db3f13e395deabb1694b2a1cd63f9136db2acc70))
+* **kernel:** add after configuration callbacks ([2794c59](https://github.com/snicco/snicco/commit/2794c59de8671f14a6640ac6192e29b84206223e)), closes [#128](https://github.com/snicco/snicco/issues/128)
+
 # [1.3.0](https://github.com/snicco/snicco/compare/v1.2.1...v1.3.0) (2022-08-09)
 
 
