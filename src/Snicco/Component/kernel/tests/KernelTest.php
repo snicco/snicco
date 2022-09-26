@@ -7,12 +7,15 @@ namespace Snicco\Component\Kernel\Tests;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\Tests\fixtures\bundles\BundleAfterConfiguration;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
+use Snicco\Component\Kernel\Tests\helpers\FixedConfigCache;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
@@ -224,6 +227,93 @@ final class KernelTest extends TestCase
         $kernel->boot();
 
         $this->assertTrue($kernel->container()->has(stdClass::class));
+    }
+
+    /**
+     * @test
+     */
+    public function after_configuration_callbacks_can_be_added(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->afterConfiguration(function (WritableConfig $config, Kernel $kernel): void {
+            $config->set('custom-config.foo', 'CUSTOM_FOO');
+            unset($kernel);
+        });
+
+        $kernel->boot();
+
+        $this->assertSame('CUSTOM_FOO', $kernel->config()->getString('custom-config.foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function after_configuration_callbacks_can_not_be_added_to_late(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir)
+        );
+
+        $kernel->afterRegister(function (Kernel $kernel): void {
+            $kernel->afterConfiguration(function () {
+                throw new RuntimeException('This should not be called.');
+            });
+        });
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('afterConfiguration');
+
+        $kernel->boot();
+    }
+
+    /**
+     * @test
+     */
+    public function after_configuration_callbacks_can_not_be_added_after_booted_kernel(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir),
+            new FixedConfigCache([
+                'kernel' => [
+                    'bootstrappers' => [],
+                    'bundles' => [],
+                ],
+            ])
+        );
+
+        $kernel->boot();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('afterConfiguration');
+
+        $kernel->afterConfiguration(function () {
+            throw new RuntimeException('This should not be called.');
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function after_configuration_callbacks_can_be_called_from_inside_bundles(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir . '/base_dir_with_bundles')
+        );
+
+        $kernel->boot();
+
+        $this->assertSame('it-worked', $kernel->config()->getString(BundleAfterConfiguration::class));
     }
 
     /**

@@ -61,7 +61,14 @@ final class Kernel
      */
     private array $after_config_loaded_callbacks = [];
 
-    private bool $after_config_loaded_is_locked = false;
+    /**
+     * @var array<callable(WritableConfig,Kernel):void>
+     */
+    private array $after_configuration_callbacks = [];
+
+    private bool $configuration_loaded = false;
+
+    private bool $configuration_configured = false;
 
     public function __construct(
         DIContainer $container,
@@ -137,6 +144,50 @@ final class Kernel
     }
 
     /**
+     * Adds a callback that will be run after all configuration files have been
+     * loaded from disk but BEFORE all bundles are configured.
+     *
+     * Callbacks will NOT be run if the configuration is cached. This method can
+     * not be called from inside a bundle or bootstrapper.
+     *
+     * @param callable(WritableConfig, Kernel):void $callback
+     */
+    public function afterConfigurationLoaded(callable $callback): void
+    {
+        if ($this->booted) {
+            throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
+        }
+
+        if ($this->configuration_loaded) {
+            throw new LogicException(__METHOD__ . ' can not be called from inside a bundle or bootstrapper.');
+        }
+
+        $this->after_config_loaded_callbacks[] = $callback;
+    }
+
+    /**
+     * Adds a callback that will be run after all bundles and bootstrappers have
+     * been configured.
+     *
+     * This is the last chance to change the configuration before it gets
+     * cached. Callbacks will NOT be called if the configuration is cached.
+     *
+     * @param callable(WritableConfig, Kernel):void $callback
+     */
+    public function afterConfiguration(callable $callback): void
+    {
+        if ($this->booted) {
+            throw new LogicException(__METHOD__ . ' can not be called after the kernel was been booted.');
+        }
+
+        if ($this->configuration_configured) {
+            throw new LogicException(__METHOD__ . ' can not be called after bundles have been configured.');
+        }
+
+        $this->after_configuration_callbacks[] = $callback;
+    }
+
+    /**
      * Adds a callback that will be run after all bundles and bootstrappers have
      * been registered, but BEFORE they are bootstrapped. This is the last
      * opportunity to modify services in the container before it gets locked.
@@ -152,28 +203,6 @@ final class Kernel
         $this->after_register_callbacks[] = $callback;
     }
 
-    /**
-     * Adds a callback that will be run after all configuration files have been
-     * loaded from disk but BEFORE all bundles are configured.
-     *
-     * Callbacks will NOT be run if the configuration is cached. This method can
-     * not be called from inside a bundle or bootstrapper.
-     *
-     * @param callable(WritableConfig, Kernel):void $callback
-     */
-    public function afterConfigurationLoaded(callable $callback): void
-    {
-        if ($this->booted) {
-            throw new LogicException('configuration callbacks can not be added after the kernel was booted.');
-        }
-
-        if ($this->after_config_loaded_is_locked) {
-            throw new LogicException(__METHOD__ . ' can not be called from inside a bundle or bootstrapper.');
-        }
-
-        $this->after_config_loaded_callbacks[] = $callback;
-    }
-
     private function loadConfiguration(): array
     {
         $loaded_config = (new ConfigLoader())($this->dirs->configDir());
@@ -186,7 +215,7 @@ final class Kernel
             $callback($writable_config, $this);
         }
 
-        $this->after_config_loaded_is_locked = true;
+        $this->configuration_loaded = true;
 
         $this->setBundlesAndBootstrappers(
             $writable_config->getArray('kernel.bundles'),
@@ -197,8 +226,14 @@ final class Kernel
             $bundle->configure($writable_config, $this);
         }
 
+        $this->configuration_configured = true;
+
         foreach ($this->bootstrappers as $bootstrapper) {
             $bootstrapper->configure($writable_config, $this);
+        }
+
+        foreach ($this->after_configuration_callbacks as $callback) {
+            $callback($writable_config, $this);
         }
 
         $this->loaded_from_cache = false;
