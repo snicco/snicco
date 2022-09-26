@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-08-09 21:01:49        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-09-26 21:51:26        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,27 +390,43 @@
 
     var relations = [
     {
+        "name": "Snicco\\Component\\Session\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Session"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\Session",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\Session\\Driver",
             "Snicco\\Component\\Session\\Serializer",
-            "global",
-            "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\StrArr",
+            "global",
             "Snicco\\Component\\Session\\Event",
             "Snicco\\Component\\Session\\Exception"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "ParagonIE\\ConstantTime",
+            "global",
+            "Snicco\\Component\\Session"
         ]
     },
     {
         "name": "Snicco\\Component\\Session\\Driver",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\TestableClock",
-            "Snicco\\Component\\Session\\Exception",
-            "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\Session",
-            "global"
+            "Snicco\\Component\\Session\\ValueObject",
+            "global",
+            "Snicco\\Component\\TestableClock",
+            "Snicco\\Component\\Session\\Exception"
         ]
     },
     {
@@ -421,30 +437,14 @@
         ]
     },
     {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Session\\ValueObject",
-        "size": 3000,
-        "relations": [
-            "global",
-            "ParagonIE\\ConstantTime",
-            "Snicco\\Component\\Session"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\StrArr",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Session\\Event",
+        "name": "global",
         "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Session"
-        ]
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\Session\\Exception",
@@ -454,7 +454,7 @@
         ]
     },
     {
-        "name": "ParagonIE\\ConstantTime",
+        "name": "Snicco\\Component\\Session\\EventDispatcher",
         "size": 3000,
         "relations": []
     },
@@ -462,12 +462,12 @@
         "name": "Snicco\\Component\\Session\\SessionManager",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\Session",
             "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\Session\\Driver",
             "Snicco\\Component\\Session\\Serializer",
             "Snicco\\Component\\TestableClock",
             "Snicco\\Component\\Session\\EventDispatcher",
-            "Snicco\\Component\\Session",
             "global"
         ]
     },
@@ -477,7 +477,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Session\\EventDispatcher",
+        "name": "ParagonIE\\ConstantTime",
         "size": 3000,
         "relations": []
     },
@@ -485,13 +485,13 @@
         "name": "Snicco\\Component\\Session\\Testing",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\TestableClock",
             "Snicco\\Component\\Session\\ValueObject",
             "PHPUnit\\Framework",
-            "Snicco\\Component\\Session\\Driver",
             "global",
+            "Snicco\\Component\\Session\\Driver",
             "Snicco\\Component\\Session\\Serializer",
-            "Snicco\\Component\\Session",
-            "Snicco\\Component\\TestableClock"
+            "Snicco\\Component\\Session"
         ]
     },
     {

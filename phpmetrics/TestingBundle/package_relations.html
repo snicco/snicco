@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-08-09 21:01:49        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-09-26 21:51:26        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,26 +390,44 @@
 
     var relations = [
     {
-        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
+        "name": "Snicco\\Bundle\\Testing\\Bundle",
         "size": 3000,
         "relations": [
-            "global",
-            "Webmozart\\Assert",
-            "PHPUnit\\Framework"
+            "Snicco\\Component\\Kernel",
+            "PHPUnit\\Framework",
+            "Snicco\\Bridge\\Pimple",
+            "Snicco\\Component\\Psr7ErrorHandler",
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "global"
         ]
     },
     {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Webmozart\\Assert",
+        "name": "Snicco\\Component\\Kernel",
         "size": 3000,
         "relations": []
     },
     {
         "name": "PHPUnit\\Framework",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bridge\\Pimple",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\ValueObject",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
         "size": 3000,
         "relations": []
     },
@@ -432,13 +450,13 @@
             "Symfony\\Component\\BrowserKit",
             "Snicco\\Component\\HttpRouting\\Routing\\Admin",
             "Snicco\\Component\\HttpRouting\\Routing",
-            "Snicco\\Bundle\\HttpRouting",
-            "Snicco\\Component\\HttpRouting\\Testing",
-            "Snicco\\Component\\StrArr",
             "Symfony\\Component\\DomCrawler",
             "Symfony\\Component\\DomCrawler\\Test\\Constraint",
             "PHPUnit\\Framework",
-            "PHPUnit\\Framework\\Constraint"
+            "PHPUnit\\Framework\\Constraint",
+            "Snicco\\Bundle\\HttpRouting",
+            "Snicco\\Component\\HttpRouting\\Testing",
+            "Snicco\\Component\\StrArr"
         ]
     },
     {
@@ -467,11 +485,6 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\EventDispatcher\\Testing",
         "size": 3000,
         "relations": []
@@ -482,12 +495,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Kernel",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\ValueObject",
+        "name": "Webmozart\\Assert",
         "size": 3000,
         "relations": []
     },
@@ -507,21 +515,6 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\HttpRouting",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Testing",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\StrArr",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Symfony\\Component\\DomCrawler",
         "size": 3000,
         "relations": []
@@ -537,21 +530,28 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\Testing\\Bundle",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Kernel",
-            "PHPUnit\\Framework",
-            "Snicco\\Bridge\\Pimple",
-            "Snicco\\Component\\Psr7ErrorHandler",
-            "Snicco\\Component\\Kernel\\ValueObject",
-            "global"
-        ]
-    },
-    {
-        "name": "Snicco\\Bridge\\Pimple",
+        "name": "Snicco\\Bundle\\HttpRouting",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Testing",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\StrArr",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Webmozart\\Assert",
+            "PHPUnit\\Framework"
+        ]
     }
 ];
 

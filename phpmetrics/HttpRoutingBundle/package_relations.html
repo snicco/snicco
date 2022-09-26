@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-08-09 21:01:49        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-09-26 21:51:26        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,27 +390,41 @@
 
     var relations = [
     {
+        "name": "Snicco\\Bundle\\HttpRouting\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Bundle\\HttpRouting",
         "size": 3000,
         "relations": [
+            "Psr\\Http\\Message",
+            "Webmozart\\Assert",
+            "global",
             "Snicco\\Component\\EventDispatcher",
             "Snicco\\Component\\Kernel\\ValueObject",
+            "Snicco\\Component\\HttpRouting\\Routing\\Admin",
+            "Snicco\\Component\\StrArr",
             "Snicco\\Component\\HttpRouting\\Middleware",
-            "global",
-            "Webimpress\\SafeWriter",
-            "Nyholm\\Psr7Server",
+            "Snicco\\Component\\HttpRouting\\Http",
             "Psr\\EventDispatcher",
-            "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
-            "Psr\\Http\\Message",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Bundle\\HttpRouting\\Event",
-            "Snicco\\Component\\StrArr",
+            "Webimpress\\SafeWriter",
+            "Nyholm\\Psr7Server",
+            "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
             "Snicco\\Component\\Kernel",
             "Snicco\\Component\\Kernel\\Configuration",
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
             "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader",
             "Snicco\\Component\\HttpRouting\\Routing\\Cache",
-            "Snicco\\Component\\HttpRouting\\Routing\\Admin",
             "Snicco\\Component\\HttpRouting\\Routing",
             "Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter",
             "Snicco\\Component\\Psr7ErrorHandler\\Log",
@@ -420,10 +434,23 @@
             "Snicco\\Component\\MinimalLogger",
             "Snicco\\Component\\Psr7ErrorHandler\\Information",
             "Snicco\\Component\\Psr7ErrorHandler\\Identifier",
-            "Snicco\\Component\\HttpRouting\\Http",
-            "Snicco\\Bundle\\HttpRouting\\Middleware",
-            "Webmozart\\Assert"
+            "Snicco\\Bundle\\HttpRouting\\Middleware"
         ]
+    },
+    {
+        "name": "Psr\\Http\\Message",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Webmozart\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\EventDispatcher",
@@ -436,12 +463,27 @@
         "relations": []
     },
     {
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\Admin",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\StrArr",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\HttpRouting\\Middleware",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "global",
+        "name": "Snicco\\Component\\HttpRouting\\Http",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\EventDispatcher",
         "size": 3000,
         "relations": []
     },
@@ -456,11 +498,6 @@
         "relations": []
     },
     {
-        "name": "Psr\\EventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
         "size": 3000,
         "relations": [
@@ -469,28 +506,6 @@
             "Psr\\Http\\Message",
             "Laminas\\HttpHandlerRunner\\Emitter"
         ]
-    },
-    {
-        "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\Event",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\StrArr",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Snicco\\Component\\Kernel",
@@ -514,11 +529,6 @@
     },
     {
         "name": "Snicco\\Component\\HttpRouting\\Routing\\Cache",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\Admin",
         "size": 3000,
         "relations": []
     },
@@ -568,11 +578,6 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Http",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
         "size": 3000,
         "relations": [
@@ -581,12 +586,12 @@
             "Psr\\Http\\Message",
             "global",
             "Snicco\\Component\\HttpRouting\\Middleware",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Component\\BetterWPAPI"
+            "Snicco\\Component\\BetterWPAPI",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
         ]
     },
     {
-        "name": "Webmozart\\Assert",
+        "name": "Laminas\\HttpHandlerRunner\\Emitter",
         "size": 3000,
         "relations": []
     },
@@ -602,11 +607,6 @@
     },
     {
         "name": "Snicco\\Component\\BetterWPAPI",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Laminas\\HttpHandlerRunner\\Emitter",
         "size": 3000,
         "relations": []
     },

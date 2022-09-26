@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-08-09 21:01:49        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-09-26 21:51:26        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,18 @@
 
     var relations = [
     {
+        "name": "Snicco\\Component\\SignedUrl",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\SignedUrl\\Storage",
+            "Snicco\\Component\\TestableClock",
+            "Snicco\\Component\\SignedUrl\\Exception",
+            "ParagonIE\\ConstantTime",
+            "global",
+            "Webmozart\\Assert"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\SignedUrl\\Storage",
         "size": 3000,
         "relations": [
@@ -405,18 +417,6 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\SignedUrl",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\SignedUrl\\Storage",
-            "Snicco\\Component\\TestableClock",
-            "Snicco\\Component\\SignedUrl\\Exception",
-            "ParagonIE\\ConstantTime",
-            "global",
-            "Webmozart\\Assert"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\SignedUrl\\Exception",
         "size": 3000,
         "relations": [
@@ -424,12 +424,12 @@
         ]
     },
     {
-        "name": "global",
+        "name": "ParagonIE\\ConstantTime",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "ParagonIE\\ConstantTime",
+        "name": "global",
         "size": 3000,
         "relations": []
     },

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-08-09 21:01:49        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-09-26 21:51:26        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,76 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Bundle\\BetterWPMail\\MailEventsUsingBetterWPHooks",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEventsUsingWPHooks",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\NullEvents",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\BetterWPMail\\TemplateEngineMailRenderer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\BetterWPMail\\Option\\MailOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bundle\\BetterWPMail\\BetterWPMailBundle",
         "size": 3000,
         "relations": [
@@ -467,90 +537,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\BetterWPMail\\TemplateEngineMailRenderer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
-            "\\Snicco\\Component\\Templating\\TemplateEngine",
-            "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
-            "\\Snicco\\Component\\Templating\\ValueObject\\View"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\BetterWPMail\\MailEventsUsingBetterWPHooks",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
-            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "\\Snicco\\Component\\BetterWPMail\\Event\\MailEventsUsingWPHooks",
-            "\\Snicco\\Component\\BetterWPMail\\Event\\NullEvents",
-            "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
-            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-            "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEventsUsingWPHooks",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\NullEvents",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\BetterWPMail\\Option\\MailOption",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent",
         "size": 3000,
         "relations": []
     }
