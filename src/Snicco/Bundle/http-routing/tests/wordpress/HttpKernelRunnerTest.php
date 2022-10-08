@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
+use LogicException;
 use ReflectionProperty;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Event\HandledRequest;
@@ -23,6 +24,8 @@ use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use function add_action;
+use function did_action;
 use function dirname;
 use function do_action;
 use function remove_all_filters;
@@ -62,6 +65,13 @@ final class HttpKernelRunnerTest extends WPTestCase
             ->make(HttpKernelRunner::class);
         remove_all_filters('admin_init');
         remove_all_filters('all_admin_notices');
+        if (did_action('plugins_loaded')) {
+            /**
+             * @psalm-suppress MixedArrayAccess
+             * @psalm-suppress InvalidArrayOffset
+             */
+            unset($GLOBALS['wp_actions']['plugins_loaded']);
+        }
     }
 
     protected function tearDown(): void
@@ -111,7 +121,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(
             'test_emitter',
             fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
-                && ! $response instanceof DelegatedResponse
+                                            && ! $response instanceof DelegatedResponse
         );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
@@ -525,7 +535,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertDispatched(
             'test_emitter',
             fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
-                && ! $response instanceof DelegatedResponse
+                                            && ! $response instanceof DelegatedResponse
         );
         $dispatcher->assertDispatched(TerminatedResponse::class);
     }
@@ -582,6 +592,47 @@ final class HttpKernelRunnerTest extends WPTestCase
         $emitter = $property->getValue($http_runner);
 
         $this->assertInstanceOf(LaminasEmitterStack::class, $emitter);
+    }
+
+    /**
+     * @test
+     */
+    public function that_an_exception_is_thrown_if_http_kernel_runner_listens_after_plugins_loaded(): void
+    {
+        $this->expectException(LogicException::class);
+
+        do_action('plugins_loaded');
+
+        $this->http_dispatcher->listen(false);
+    }
+
+    /**
+     * @test
+     */
+    public function that_an_exception_is_thrown_if_http_kernel_runner_runs_after_plugins_loaded(): void
+    {
+        $this->expectException(LogicException::class);
+
+        do_action('plugins_loaded');
+
+        $this->http_dispatcher->run();
+    }
+
+    /**
+     * @test
+     */
+    public function than_no_exception_is_thrown_if_http_kernel_runner_is_used_within_plugins_loaded(): void
+    {
+        $called = false;
+
+        add_action('plugins_loaded', function () use (&$called) {
+            $this->http_dispatcher->listen(false);
+            $called = true;
+        });
+
+        do_action('plugins_loaded');
+
+        $this->assertTrue($called);
     }
 
     protected function fixturesDir(): string

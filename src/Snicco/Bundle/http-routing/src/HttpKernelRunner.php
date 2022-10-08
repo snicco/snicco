@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\HttpRouting;
 
+use LogicException;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,7 +17,10 @@ use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\StrArr\Str;
 
 use function add_action;
+use function did_action;
+use function doing_action;
 use function ltrim;
+use function sprintf;
 
 use const PHP_INT_MIN;
 
@@ -70,6 +74,8 @@ final class HttpKernelRunner
      */
     public function listen(bool $is_admin, string $frontend_hook = 'wp_loaded', string $api_hook = 'init'): void
     {
+        $this->assertNoMagicQuotesAdded();
+
         $psr_request = $this->request_creator->fromGlobals();
 
         if ($this->isApiRequest($psr_request)) {
@@ -94,6 +100,8 @@ final class HttpKernelRunner
      */
     public function run(): void
     {
+        $this->assertNoMagicQuotesAdded();
+
         $psr_request = $this->request_creator->fromGlobals();
 
         $type = $this->isApiRequest($psr_request)
@@ -187,5 +195,27 @@ final class HttpKernelRunner
     private function isApiRequest(ServerRequestInterface $request): bool
     {
         return $this->api_prefix && Str::startsWith($request->getUri()->getPath(), $this->api_prefix);
+    }
+
+    /**
+     * We must create the PSR request before WordPress calls {@see
+     * wp_magic_quotes} and nukes the real server request data.
+     *
+     * {@see wp_magic_quotes} is called in wp-settings.php just after the plugins_loaded hook.
+     *
+     * @see https://core.trac.wordpress.org/ticket/18322
+     */
+    private function assertNoMagicQuotesAdded(): void
+    {
+        if (! did_action('plugins_loaded') || doing_action('plugins_loaded')) {
+            return;
+        }
+
+        throw new LogicException(
+            sprintf(
+                "You must call HttpKernelRunner::listen/run before the plugins_loaded hook. Otherwise WordPress will have nuked the SAPI request variables.\nSee: %s",
+                'https://core.trac.wordpress.org/ticket/18322'
+            )
+        );
     }
 }
