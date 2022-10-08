@@ -55,13 +55,41 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function the_nonce_generator_is_added_for_view_responses(): void
+    public function the_nonce_generator_is_added_for_reading_view_responses(): void
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
         $this->withNextMiddlewareResponse(fn (Response $response): ViewResponse => new ViewResponse('foo', $response));
 
         $request = $this->frontendRequest('/foo');
+
+        $response = $this->runMiddleware($middleware, $request);
+        $response->assertNextMiddlewareCalled();
+
+        $psr = $response->assertableResponse()
+            ->getPsrResponse();
+        $this->assertInstanceOf(ViewResponse::class, $psr);
+
+        $data = $psr->viewData();
+        $this->assertTrue(isset($data['wp_nonce']));
+        $nonce = $data['wp_nonce'];
+        $this->assertInstanceOf(WPNonce::class, $nonce);
+    }
+
+    /**
+     * @test
+     */
+    public function that_the_nonce_generator_is_added_to_valid_view_responses_for_post_requests_with_valid_nonces(): void
+    {
+        $middleware = new VerifyWPNonce($wp = new VerifyNonceTestWPApi());
+
+        $this->withNextMiddlewareResponse(
+            fn (Response $response): ViewResponse => new ViewResponse('foo', $response)
+        );
+
+        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
+            VerifyWPNonce::inputKey() => $wp->createNonce('/foo'),
+        ]);
 
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();
