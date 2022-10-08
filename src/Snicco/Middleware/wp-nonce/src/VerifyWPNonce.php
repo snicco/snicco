@@ -14,6 +14,7 @@ use Snicco\Component\Psr7ErrorHandler\HttpException;
 
 use function date;
 use function sha1;
+use function sprintf;
 
 final class VerifyWPNonce extends Middleware
 {
@@ -35,23 +36,22 @@ final class VerifyWPNonce extends Middleware
     {
         $current_path = $request->path();
 
-        if ($request->isReadVerb()) {
-            $response = $next($request);
-            if (! $response instanceof ViewResponse) {
-                return $response;
+        if (! $request->isReadVerb()) {
+            $nonce = (string) $request->post(self::inputKey(), '');
+
+            if (! $this->wp->verifyNonce($nonce, $current_path)) {
+                throw new HttpException(401, sprintf('Nonce check failed for request path [%s].', $current_path));
             }
-
-            return $response->withViewData([
-                'wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path),
-            ]);
         }
 
-        $nonce = (string) $request->post(self::inputKey(), '');
+        $response = $next($request);
 
-        if (! $this->wp->verifyNonce($nonce, $current_path)) {
-            throw new HttpException(401, sprintf('Nonce check failed for request path [%s].', $current_path));
+        if (! $response instanceof ViewResponse) {
+            return $response;
         }
 
-        return $next($request);
+        return $response->withViewData([
+            'wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path),
+        ]);
     }
 }
