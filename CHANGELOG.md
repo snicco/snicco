@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/snicco/snicco/compare/v1.4.1...v1.4.2) (2022-10-08)
+
+
+### Bug Fixes
+
+* **http-routing-bundle:** enforce request data is not slashed ([6be5136](https://github.com/snicco/snicco/commit/6be5136fb41caf4b0371e20ebaf58d443bd24d12))
+
 ## [1.4.1](https://github.com/snicco/snicco/compare/v1.4.0...v1.4.1) (2022-10-08)
 
 
