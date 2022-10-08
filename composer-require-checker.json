@@ -14,6 +14,8 @@
     "wp_mail",
     "add_action",
     "add_filter",
+    "did_action",
+    "doing_action",
     "apply_filters",
     "apply_filters_ref_array",
     "do_action",
