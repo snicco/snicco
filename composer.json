@@ -65,7 +65,7 @@
         "guzzlehttp/psr7": "^2.1",
         "knplabs/github-api": "^3.0",
         "laminas/laminas-diactoros": "^2.8",
-        "php-stubs/wordpress-stubs": "^5.9.0",
+        "php-stubs/wordpress-stubs": "5.9.3",
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "10.1.2",
         "symplify/monorepo-builder": "9.4.70",
