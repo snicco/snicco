@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/snicco/snicco/compare/v1.4.0...v1.4.1) (2022-10-08)
+
+
+### Bug Fixes
+
+* **wp-nonce-middleware:** add nonce factory to all view responses ([4b67adb](https://github.com/snicco/snicco/commit/4b67adbe1ec611eaa744786fab1fbf0f9206c595)), closes [#155](https://github.com/snicco/snicco/issues/155)
+
 # [1.4.0](https://github.com/snicco/snicco/compare/v1.3.0...v1.4.0) (2022-09-26)
 
 
