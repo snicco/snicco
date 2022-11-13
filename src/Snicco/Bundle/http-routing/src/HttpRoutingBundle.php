@@ -67,6 +67,8 @@ use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use Snicco\Component\Psr7ErrorHandler\ProductionErrorHandler;
 use Throwable;
 
+use Webmozart\Assert\Assert;
+
 use function array_map;
 use function class_exists;
 use function class_implements;
@@ -429,10 +431,10 @@ final class HttpRoutingBundle implements Bundle
         $api_dirs = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
 
         if ([] !== $api_dirs) {
-            $prefix = $config->getString('routing.' . RoutingOption::API_PREFIX);
-            if ('' === $prefix) {
+            $prefixes = $config->getListOfStrings('routing.' . RoutingOption::API_PREFIX);
+            if ([] === $prefixes) {
                 throw new InvalidArgumentException(
-                    'routing.' . RoutingOption::API_PREFIX . ' must be a non-empty-string if API routes are used.'
+                    'routing.' . RoutingOption::API_PREFIX . ' must be array<non-empty-string> if API routes are used.'
                 );
             }
         }

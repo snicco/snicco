@@ -111,6 +111,31 @@ final class PHPFileRouteLoaderTest extends HttpRunnerTestCase
     /**
      * @test
      */
+    public function routes_with_the_same_basename_but_different_path_are_both_loaded(): void
+    {
+        $component_one_routes = $this->routes_dir . '/component-one';
+        $component_two_routes = $this->routes_dir . '/component-two';
+
+        $loader = new PHPFileRouteLoader(
+            [$component_one_routes, $component_two_routes],
+            [],
+            new DefaultRouteLoadingOptions('')
+        );
+
+        $this->newRoutingFacade($loader);
+
+        $response = $this->runNewPipeline($this->frontendRequest('/component-1'));
+        $response->assertOk()
+            ->assertNotDelegated();
+
+        $response = $this->runNewPipeline($this->frontendRequest('/component-2'));
+        $response->assertOk()
+            ->assertNotDelegated();
+    }
+
+    /**
+     * @test
+     */
     public function a_middleware_matching_the_filename_is_added_to_all_routes(): void
     {
         $loader = new PHPFileRouteLoader([$this->routes_dir], [], new DefaultRouteLoadingOptions(''));

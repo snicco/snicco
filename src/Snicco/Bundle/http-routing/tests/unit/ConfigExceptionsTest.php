@@ -146,14 +146,14 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_if_api_routes_are_set_but_no_api_prefix_is_set(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('must be a non-empty-string if API routes are used.');
+        $this->expectExceptionMessage('routing.api_prefix must be array<non-empty-string>');
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
         $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
             $config->set('routing', [
                 RoutingOption::HOST => 'snicco.com',
-                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__, __DIR__ . '/bogus'],
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__],
             ]);
         });
 
