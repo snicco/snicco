@@ -23,7 +23,6 @@ final class UrlGenerationContext
         bool $https_by_default = true
     ) {
         Assert::stringNotEmpty($host, '$host cant be empty.');
-        Assert::contains($host, '.', 'Expected $host to contain a [.].');
         Assert::notContains($host, 'http', '$host must not contain a scheme.');
         Assert::notContains($host, '://', '$host must not contain a scheme.');
         $this->host = $host;
