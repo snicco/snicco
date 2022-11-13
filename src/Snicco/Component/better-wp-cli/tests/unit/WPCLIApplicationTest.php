@@ -80,15 +80,15 @@ final class WPCLIApplicationTest extends TestCase
         $this->assertTrue(isset($registered_commands['snicco bar']), 'BarCommand not registered');
 
         $this->assertSame([
-            'short_desc' => FooCommand::shortDescription(),
-            'long_desc' => FooCommand::longDescription(),
+            'shortdesc' => FooCommand::shortDescription(),
+            'longdesc' => FooCommand::longDescription(),
             'synopsis' => FooCommand::synopsis()->toArray(),
             'when' => FooCommand::when(),
         ], $registered_commands['snicco foo_command_custom']['args']);
 
         $this->assertSame([
-            'short_desc' => BarCommand::shortDescription(),
-            'long_desc' => BarCommand::longDescription(),
+            'shortdesc' => BarCommand::shortDescription(),
+            'longdesc' => BarCommand::longDescription(),
             'synopsis' => BarCommand::synopsis()->toArray(),
             'when' => BarCommand::when(),
         ], $registered_commands['snicco bar']['args']);

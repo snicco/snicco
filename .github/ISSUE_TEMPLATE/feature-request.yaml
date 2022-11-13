@@ -23,6 +23,7 @@ body:
         - other/dont-know
         - better-wp-api
         - better-wp-cache
+        - better-wp-cli
         - better-wp-hooks
         - better-wp-mail
         - better-wpdb
@@ -44,6 +45,7 @@ body:
         - session-wp-bridge
         - signed-url-psr15-bridge
         - signed-url-psr16-bridge
+        - signed-url-wp-bridge
         - better-wp-cache-bundle
         - better-wp-hooks-bundle
         - better-wp-mail-bundle
