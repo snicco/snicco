@@ -107,8 +107,8 @@ final class WPCLIApplication
             };
 
             ($add_command)($name, $callback, [
-                'short_desc' => $command_class::shortDescription(),
-                'long_desc' => $command_class::longDescription(),
+                'shortdesc' => $command_class::shortDescription(),
+                'longdesc' => $command_class::longDescription(),
                 'synopsis' => $synopsis->toArray(),
                 'when' => $command_class::when(),
             ]);
