@@ -48,9 +48,6 @@ final class Environment
 
     private bool $is_debug;
 
-    /**
-     * @param self::DEV|self::PROD|self::STAGING|self::TESTING $environment
-     */
     private function __construct(string $environment, bool $is_debug)
     {
         Assert::stringNotEmpty($environment, 'App environment can not be constructed with an empty string.');
@@ -79,9 +76,6 @@ final class Environment
         return self::PROD === $this->environment;
     }
 
-    /**
-     * @param self::DEV|self::PROD|self::STAGING|self::TESTING $environment
-     */
     public static function fromString(string $environment, bool $debug = false): self
     {
         return new self($environment, $debug);
