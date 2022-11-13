@@ -32,7 +32,7 @@ final class UrlGenerationContextTest extends TestCase
         $this->assertSame(4000, $context->httpsPort());
         $this->assertFalse($context->httpsByDefault());
     }
-    
+
     /**
      * @test
      *
@@ -41,21 +41,20 @@ final class UrlGenerationContextTest extends TestCase
     public function test_host_does_not_need_a_dot(): void
     {
         $context = new UrlGenerationContext('nginx');
-        
+
         $this->assertSame('nginx', $context->host());
         $this->assertSame(80, $context->httpPort());
         $this->assertSame(443, $context->httpsPort());
         $this->assertTrue($context->httpsByDefault());
-        
+
         $context = new UrlGenerationContext('nginx', 4000, 8080, false);
-        
+
         $this->assertSame('nginx', $context->host());
         $this->assertSame(8080, $context->httpPort());
         $this->assertSame(4000, $context->httpsPort());
         $this->assertFalse($context->httpsByDefault());
     }
-    
-    
+
     /**
      * @test
      */

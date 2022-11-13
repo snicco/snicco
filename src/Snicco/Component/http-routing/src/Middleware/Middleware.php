@@ -16,7 +16,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-
 use Webmozart\Assert\Assert;
 
 use function sprintf;
@@ -28,6 +27,8 @@ abstract class Middleware implements MiddlewareInterface
     private ?Request $current_request = null;
 
     /**
+     * @interal
+     *
      * @psalm-internal Snicco\Component\HttpRouting
      */
     final public function setContainer(ContainerInterface $container): void
@@ -35,8 +36,10 @@ abstract class Middleware implements MiddlewareInterface
         $this->container = $container;
     }
 
-    final public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
+    final public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         $request = Request::fromPsr($request);
 
         if (! $handler instanceof NextMiddleware) {
@@ -46,6 +49,21 @@ abstract class Middleware implements MiddlewareInterface
         $this->current_request = $request;
 
         return $this->handle($request, $handler);
+    }
+
+    /**
+     * This method can be used to add the container of the current middleware to
+     * a (private) middleware that is instantiated from within the current one.
+     *
+     * @interal
+     *
+     * @experimental
+     *
+     * @psalm-internal Snicco
+     */
+    final protected function setContainerOnInnerMiddleware(Middleware $other): void
+    {
+        $other->setContainer($this->container);
     }
 
     abstract protected function handle(Request $request, NextMiddleware $next): ResponseInterface;

@@ -176,7 +176,7 @@ final class EventMapper
         return function (...$args_from_wordpress_hooks) use ($event_class) {
             $event = $this->event_factory->make($event_class, $args_from_wordpress_hooks);
 
-            if (! array_key_exists(0,$args_from_wordpress_hooks)) {
+            if (! array_key_exists(0, $args_from_wordpress_hooks)) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
                     sprintf('Event mapper received invalid arguments from WP for mapped hook [%s].', $event_class),
