@@ -45,7 +45,7 @@ final class WPNonce
 
         return $this->createNonce($nonce_action);
     }
-    
+
     /**
      * @psalm-suppress DeprecatedClass
      */

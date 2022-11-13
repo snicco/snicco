@@ -26,6 +26,7 @@ use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Webmozart\Assert\Assert;
 
 use function array_keys;
+use function array_merge;
 use function in_array;
 use function is_array;
 use function parse_str;
@@ -131,7 +132,9 @@ final class Browser extends AbstractBrowser
         $psr_server_request = $this->request_factory->createServerRequest(
             $request->getMethod(),
             $request->getUri(),
-            $request->getServer(),
+            array_merge([
+                'REQUEST_METHOD' => $request->getMethod(),
+            ], $request->getServer())
         );
 
         $psr_server_request = $this->addHeadersFromServer($request, $psr_server_request);

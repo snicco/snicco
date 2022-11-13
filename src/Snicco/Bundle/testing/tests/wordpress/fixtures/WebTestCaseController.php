@@ -78,6 +78,12 @@ final class WebTestCaseController extends Controller
             ->html((string) $request->getBody());
     }
 
+    public function realMethod(Request $request): Response
+    {
+        return $this->respondWith()
+            ->html($request->realMethod());
+    }
+
     public function admin(): Response
     {
         return $this->respondWith()

@@ -325,6 +325,32 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
+    public function that_the_real_request_method_is_added_correctly(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->request('POST', '/real-method');
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('POST')
+            ->assertNotDelegated();
+
+        $browser->request('PUT', '/real-method');
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('PUT')
+            ->assertNotDelegated();
+
+        $browser->request('GET', '/real-method');
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('GET')
+            ->assertNotDelegated();
+    }
+
+    /**
+     * @test
+     */
     public function that_the_json_request_method_works(): void
     {
         $browser = $this->getBrowser();
