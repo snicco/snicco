@@ -109,7 +109,7 @@ This directory contains PSR15-Middleware that can be plugged into the `snicco/ht
 - [TrailingSlash](https://github.com/snicco/trailing-slash-middleware): Redirects `/foo/` to `/foo` or vice-versa.
 - [WPAuthOnly](https://github.com/snicco/wp-auth-only-middleware): Grants access only to authenticated **WordPress**
   users.
-- [WPCapability](https://github.com/snicco/wp-cap-middleware): Grants access only to **WordPress** users with the
+- [WPCapability](https://github.com/snicco/wp-capability-middleware): Grants access only to **WordPress** users with the
   configured capability.
 - [WPGuestsOnly](https://github.com/snicco/wp-guests-only-middleware): Grants access only to guest **WordPress**
   users.
