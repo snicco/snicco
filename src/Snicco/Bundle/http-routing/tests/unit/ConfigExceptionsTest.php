@@ -15,6 +15,7 @@ use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareTwo;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
+use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
@@ -146,7 +147,9 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_if_api_routes_are_set_but_no_api_prefix_is_set(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('routing.api_prefix must be array<non-empty-string>');
+        $this->expectExceptionMessage(
+            'routing.api_prefix must be a non-empty-string if routing.early_routes_prefixes is empty.'
+        );
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
@@ -158,6 +161,26 @@ final class ConfigExceptionsTest extends TestCase
         });
 
         $kernel->boot();
+    }
+
+    /**
+     * @test
+     */
+    public function test_no_exception_if_api_routes_are_set_but_no_api_prefix_is_set_and_early_routes_are_set(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing', [
+                RoutingOption::HOST => 'snicco.com',
+                RoutingOption::API_ROUTE_DIRECTORIES => [__DIR__],
+                RoutingOption::EARLY_ROUTES_PREFIXES => ['/foo'],
+            ]);
+        });
+
+        $kernel->boot();
+
+        $this->assertInstanceOf(Router::class, $kernel->container()->make(Router::class));
     }
 
     /**

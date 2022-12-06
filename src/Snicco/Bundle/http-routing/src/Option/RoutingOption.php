@@ -36,6 +36,8 @@ final class RoutingOption
      */
     public const API_PREFIX = 'api_prefix';
 
+    public const EARLY_ROUTES_PREFIXES = 'early_routes_prefixes';
+
     /**
      * @var string
      */

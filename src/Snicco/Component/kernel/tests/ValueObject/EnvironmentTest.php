@@ -30,7 +30,6 @@ final class EnvironmentTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('App environment can not be constructed with an empty string.');
-        /** @psalm-suppress InvalidArgument */
         Environment::fromString('');
     }
 
@@ -47,7 +46,6 @@ final class EnvironmentTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('App environment has to be one of [testing,prod,dev,staging]. Got: [local]');
 
-        /** @psalm-suppress InvalidArgument */
         Environment::fromString('local');
     }
 

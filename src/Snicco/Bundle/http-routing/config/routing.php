@@ -43,11 +43,25 @@ return [
     ],
 
     /*
-     * The API prefix will be used to configure your API routes correctly and to determine if the current request
-     * goes to an API-endpoint.
-     * This option must be set if you are using api-routing. Feel free to remove it otherwise.
+     * The API_PREFIX is prepended to all routes inside the API_ROUTE_DIRECTORIES IF you are using
+     * the DefaultRouteLoadingOptions class. This is the case by default.
+     *
+     * If you are not using api-routes, or if you have bound a custom RouteLoadingOptions class in the container
+     * you can remove this option.
      */
     RoutingOption::API_PREFIX => '',
+    //RoutingOption::API_PREFIX => '/my-plugin',
+
+    /*
+     * This option determines which request are considered API requests, which consequently
+     * will be run much earlier in the WP loading cycle.
+     *
+     * If you are not using a custom RouteLoadingOption class you can remove this option as the
+     * bundle will take care of adding the value of RoutingOption::API_PREFIX to this configuration
+     * value automatically.
+     */
+    RoutingOption::EARLY_ROUTES_PREFIXES => [],
+    //RoutingOption::EARLY_ROUTES_PREFIXES => ['/my-plugin/foo', '/my-plugin/bar'],
 
     /*
      * The following three values should only be changed if you are developing on different ports locally.
