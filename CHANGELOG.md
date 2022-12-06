@@ -1,3 +1,23 @@
+# [1.5.0](https://github.com/snicco/snicco/compare/v1.4.2...v1.5.0) (2022-12-06)
+
+
+### Bug Fixes
+
+* **better-wp-cli:** use correct array keys during command registration ([febf531](https://github.com/snicco/snicco/commit/febf531c405d99e66c5fb754b9cd29b5d27821a1)), closes [#163](https://github.com/snicco/snicco/issues/163)
+* **better-wp-hooks:** allow null as first arg for mapped filters ([47e505a](https://github.com/snicco/snicco/commit/47e505ab33448948d02debafafda9834a49c1ac8)), closes [#158](https://github.com/snicco/snicco/issues/158)
+* **http-routing:** allow hosts without "." in url generation context ([c8ee18e](https://github.com/snicco/snicco/commit/c8ee18eeb14a54aa522a758ccf6f7d270dece1f1)), closes [#161](https://github.com/snicco/snicco/issues/161)
+* **http-routing:** allow route files with the same name in different dirs ([7a34a60](https://github.com/snicco/snicco/commit/7a34a604439d2bb238505e3847d05572dd893a15))
+* **signed-url:** add non-standard http ports to final url if passed ([1368c80](https://github.com/snicco/snicco/commit/1368c80ba1d08436867bfd85f2b7935c814380e7)), closes [#162](https://github.com/snicco/snicco/issues/162)
+* **testing-bundle:** add "real" request method to test requests ([b063298](https://github.com/snicco/snicco/commit/b06329800e71e667c74359096b5c0306899fbc8c)), closes [#165](https://github.com/snicco/snicco/issues/165)
+
+
+### Features
+
+* **http-routing-bundle,testing-bundle:** multiple url prefixes can trigger early route-loading ([b95f50c](https://github.com/snicco/snicco/commit/b95f50ce6e4f692af8ccda27d4f872b66715c488)), closes [#164](https://github.com/snicco/snicco/issues/164)
+* **templating,templating-bundle:** make parse length for parent views configurable ([7499eef](https://github.com/snicco/snicco/commit/7499eef985b5c7288769ffc9c6bd627781f215a8)), closes [#171](https://github.com/snicco/snicco/issues/171)
+* validate bundle configuration after bootstrappers are configured ([7636cea](https://github.com/snicco/snicco/commit/7636cea897b3acabe353abacb4b20b172fa6b39d)), closes [#160](https://github.com/snicco/snicco/issues/160)
+* **wp-nonce-middleware:** split middleware into two responsibilities ([0aa41b3](https://github.com/snicco/snicco/commit/0aa41b3f5618315e7a92a9d0b26707346a5d1434)), closes [#167](https://github.com/snicco/snicco/issues/167) [#159](https://github.com/snicco/snicco/issues/159)
+
 ## [1.4.2](https://github.com/snicco/snicco/compare/v1.4.1...v1.4.2) (2022-10-08)
 
 
