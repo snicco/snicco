@@ -143,240 +143,253 @@ final class HttpRoutingBundle implements Bundle
     {
         $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/routing.php');
 
-        // quick type checks.
-        $config->getInteger('routing.' . RoutingOption::HTTP_PORT);
-        $config->getInteger('routing.' . RoutingOption::HTTPS_PORT);
-        $config->getBoolean('routing.' . RoutingOption::USE_HTTPS);
+        $this->copyDefaultConfig($kernel, 'routing');
 
-        Assert::stringNotEmpty(
-            $config->getString('routing.' . RoutingOption::HOST),
-            'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
-        );
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            // quick type checks.
+            $config->getInteger('routing.' . RoutingOption::HTTP_PORT);
+            $config->getInteger('routing.' . RoutingOption::HTTPS_PORT);
+            $config->getBoolean('routing.' . RoutingOption::USE_HTTPS);
 
-        Assert::stringNotEmpty(
-            $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
-            'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string.'
-        );
+            Assert::stringNotEmpty(
+                $config->getString('routing.' . RoutingOption::HOST),
+                'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
+            );
 
-        Assert::stringNotEmpty(
-            $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH),
-            'routing.' . RoutingOption::WP_LOGIN_PATH . ' must be a non-empty string.'
-        );
+            Assert::stringNotEmpty(
+                $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
+                'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string.'
+            );
 
-        Assert::allReadable(
-            $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
-            'routing.' . RoutingOption::ROUTE_DIRECTORIES . " must be a list of readable directories.\nThe path %s is not readable.",
-        );
+            Assert::stringNotEmpty(
+                $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH),
+                'routing.' . RoutingOption::WP_LOGIN_PATH . ' must be a non-empty string.'
+            );
 
-        $api_route_dirs = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
-        $early_route_prefixes = $config->getListOfStrings('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES);
+            Assert::allReadable(
+                $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
+                'routing.' . RoutingOption::ROUTE_DIRECTORIES . " must be a list of readable directories.\nThe path %s is not readable.",
+            );
 
-        if (count($api_route_dirs)) {
-            if (empty($early_route_prefixes)) {
-                $api_prefix = $config->getString('routing.' . RoutingOption::API_PREFIX);
+            $api_route_dirs = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
+            $early_route_prefixes = $config->getListOfStrings('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES);
 
-                Assert::stringNotEmpty(
-                    $api_prefix,
-                    'routing.' . RoutingOption::API_PREFIX . ' must be a non-empty-string if routing.' . RoutingOption::EARLY_ROUTES_PREFIXES . ' is empty.'
-                );
+            if (count($api_route_dirs)) {
+                if (empty($early_route_prefixes)) {
+                    $api_prefix = $config->getString('routing.' . RoutingOption::API_PREFIX);
 
-                $config->set('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES, [$api_prefix]);
+                    Assert::stringNotEmpty(
+                        $api_prefix,
+                        'routing.' . RoutingOption::API_PREFIX . ' must be a non-empty-string if routing.' . RoutingOption::EARLY_ROUTES_PREFIXES . ' is empty.'
+                    );
+
+                    $config->set('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES, [$api_prefix]);
+                }
             }
-        }
 
-        Assert::allReadable(
-            $api_route_dirs,
-            'routing.' . RoutingOption::API_ROUTE_DIRECTORIES . " must be a list of readable directories.\nThe path %s is not readable.",
-        );
+            Assert::allStringNotEmpty(
+                $early_route_prefixes,
+                'routing.' . RoutingOption::EARLY_ROUTES_PREFIXES . ' must be an array of non-empty-strings.'
+            );
 
-        $this->copyConfig($kernel, 'routing');
+            Assert::allReadable(
+                $api_route_dirs,
+                'routing.' . RoutingOption::API_ROUTE_DIRECTORIES . " must be a list of readable directories.\nThe path %s is not readable.",
+            );
+        });
     }
 
     private function configureMiddleware(WritableConfig $config, Kernel $kernel): void
     {
+        $this->copyDefaultConfig($kernel, 'middleware');
+
         $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/middleware.php');
 
-        foreach ($config->getArray('middleware.' . MiddlewareOption::GROUPS) as $key => $middleware) {
-            if (! is_string($key)) {
-                throw new InvalidArgumentException(
-                    'middleware.' . MiddlewareOption::GROUPS
-                    . " has to an associative array of string => array pairs.\nGot key [{$key}]."
-                );
-            }
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            foreach ($config->getArray('middleware.' . MiddlewareOption::GROUPS) as $key => $middleware) {
+                if (! is_string($key)) {
+                    throw new InvalidArgumentException(
+                        'middleware.' . MiddlewareOption::GROUPS
+                        . " has to an associative array of string => array pairs.\nGot key [{$key}]."
+                    );
+                }
 
-            if (! is_array($middleware)) {
-                $type = gettype($middleware);
-
-                throw new InvalidArgumentException(
-                    'middleware.' .
-                    MiddlewareOption::GROUPS
-                    . " has to an associative array of string => array pairs.\nGot [{$type}] for key [{$key}]."
-                );
-            }
-
-            /**
-             * @psalm-suppress MixedAssignment
-             */
-            foreach ($middleware as $index => $m) {
-                if (! is_string($m)) {
-                    $type = gettype($m);
+                if (! is_array($middleware)) {
+                    $type = gettype($middleware);
 
                     throw new InvalidArgumentException(
-                        "Middleware group [{$key}] has to contain only strings.\nGot [{$type}] at index [{$index}]."
+                        'middleware.' .
+                        MiddlewareOption::GROUPS
+                        . " has to an associative array of string => array pairs.\nGot [{$type}] for key [{$key}]."
+                    );
+                }
+
+                /**
+                 * @psalm-suppress MixedAssignment
+                 */
+                foreach ($middleware as $index => $m) {
+                    if (! is_string($m)) {
+                        $type = gettype($m);
+
+                        throw new InvalidArgumentException(
+                            "Middleware group [{$key}] has to contain only strings.\nGot [{$type}] at index [{$index}]."
+                        );
+                    }
+                }
+            }
+
+            foreach ($config->getArray('middleware.' . MiddlewareOption::ALIASES) as $alias => $class) {
+                if (! is_string($alias)) {
+                    throw new InvalidArgumentException(
+                        'middleware.' .
+                        MiddlewareOption::ALIASES
+                        . ' has to be an array of string => middleware-class pairs.'
+                    );
+                }
+
+                if (! is_string($class)
+                    || ! class_exists($class)
+                    || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
+                    throw new InvalidArgumentException(
+                        sprintf('Middleware alias [%s] has to resolve to a middleware class.', $alias)
                     );
                 }
             }
-        }
 
-        foreach ($config->getArray('middleware.' . MiddlewareOption::ALIASES) as $alias => $class) {
-            if (! is_string($alias)) {
-                throw new InvalidArgumentException(
-                    'middleware.' .
-                    MiddlewareOption::ALIASES
-                    . ' has to be an array of string => middleware-class pairs.'
-                );
+            foreach ($config->getListOfStrings('middleware.' . MiddlewareOption::PRIORITY_LIST) as $class) {
+                if (
+                    ! class_exists($class)
+                    || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
+                    throw new InvalidArgumentException(
+                        'middleware.' .
+                        MiddlewareOption::PRIORITY_LIST
+                        . " has to be a list of middleware class-strings.\nGot [{$class}]."
+                    );
+                }
             }
 
-            if (! is_string($class)
-                || ! class_exists($class)
-                || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
-                throw new InvalidArgumentException(
-                    sprintf('Middleware alias [%s] has to resolve to a middleware class.', $alias)
-                );
+            foreach ($config->getListOfStrings('middleware.' . MiddlewareOption::KERNEL_MIDDLEWARE) as $class) {
+                if (
+                    ! class_exists($class)
+                    || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
+                    throw new InvalidArgumentException(
+                        'middleware.' .
+                        MiddlewareOption::KERNEL_MIDDLEWARE
+                        . " has to be a list of middleware class-strings.\nGot [{$class}]."
+                    );
+                }
             }
-        }
 
-        foreach ($config->getListOfStrings('middleware.' . MiddlewareOption::PRIORITY_LIST) as $class) {
-            if (
-                ! class_exists($class)
-                || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
-                throw new InvalidArgumentException(
-                    'middleware.' .
-                    MiddlewareOption::PRIORITY_LIST
-                    . " has to be a list of middleware class-strings.\nGot [{$class}]."
-                );
+            $valid = [
+                RoutingConfigurator::FRONTEND_MIDDLEWARE,
+                RoutingConfigurator::ADMIN_MIDDLEWARE,
+                RoutingConfigurator::API_MIDDLEWARE,
+                RoutingConfigurator::GLOBAL_MIDDLEWARE,
+            ];
+
+            foreach ($config->getListOfStrings('middleware.' . MiddlewareOption::ALWAYS_RUN) as $group_name) {
+                if (! in_array($group_name, $valid, true)) {
+                    throw new InvalidArgumentException(
+                        'middleware.' .
+                        MiddlewareOption::ALWAYS_RUN
+                        . " can only contain [frontend,api,admin,global].\nGot [{$group_name}]."
+                    );
+                }
             }
-        }
-
-        foreach ($config->getListOfStrings('middleware.' . MiddlewareOption::KERNEL_MIDDLEWARE) as $class) {
-            if (
-                ! class_exists($class)
-                || ! in_array(MiddlewareInterface::class, (array) class_implements($class), true)) {
-                throw new InvalidArgumentException(
-                    'middleware.' .
-                    MiddlewareOption::KERNEL_MIDDLEWARE
-                    . " has to be a list of middleware class-strings.\nGot [{$class}]."
-                );
-            }
-        }
-
-        $valid = [
-            RoutingConfigurator::FRONTEND_MIDDLEWARE,
-            RoutingConfigurator::ADMIN_MIDDLEWARE,
-            RoutingConfigurator::API_MIDDLEWARE,
-            RoutingConfigurator::GLOBAL_MIDDLEWARE,
-        ];
-
-        foreach ($config->getListOfStrings('middleware.' . MiddlewareOption::ALWAYS_RUN) as $group_name) {
-            if (! in_array($group_name, $valid, true)) {
-                throw new InvalidArgumentException(
-                    'middleware.' .
-                    MiddlewareOption::ALWAYS_RUN
-                    . " can only contain [frontend,api,admin,global].\nGot [{$group_name}]."
-                );
-            }
-        }
-
-        $this->copyConfig($kernel, 'middleware');
+        });
     }
 
     private function configureErrorHandling(WritableConfig $config, Kernel $kernel): void
     {
         $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/http_error_handling.php');
 
-        foreach (
-            $config->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS) as $class
-        ) {
-            if (
-                ! class_exists($class)
-                || ! in_array(ExceptionDisplayer::class, (array) class_implements($class), true)) {
-                throw new InvalidArgumentException(
-                    'http_error_handling.' .
-                    HttpErrorHandlingOption::DISPLAYERS
-                    . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [{$class}]."
-                );
-            }
-        }
+        $this->copyDefaultConfig($kernel, 'http_error_handling');
 
-        foreach (
-            $config->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS) as $class
-        ) {
-            if (
-                ! class_exists($class)
-                || ! in_array(ExceptionTransformer::class, (array) class_implements($class), true)) {
-                throw new InvalidArgumentException(
-                    'http_error_handling.' .
-                    HttpErrorHandlingOption::TRANSFORMERS
-                    . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [{$class}]."
-                );
-            }
-        }
-
-        foreach (
-            $config->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT) as $class
-        ) {
-            if (
-                ! class_exists($class)
-                || ! in_array(RequestLogContext::class, (array) class_implements($class), true)) {
-                throw new InvalidArgumentException(
-                    'http_error_handling.' .
-                    HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
-                    . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [{$class}]."
-                );
-            }
-        }
-
-        $valid_levels = [
-            LogLevel::ERROR,
-            LogLevel::CRITICAL,
-            LogLevel::INFO,
-            LogLevel::WARNING,
-            LogLevel::ALERT,
-            LogLevel::NOTICE,
-            LogLevel::EMERGENCY,
-            LogLevel::DEBUG,
-        ];
-
-        foreach (
-            $config->getArray('http_error_handling.' . HttpErrorHandlingOption::LOG_LEVELS) as $class => $level
-        ) {
-            if (! is_string($class)
-                || ! class_exists($class)
-                || ! in_array(Throwable::class, (array) class_implements($class), true)) {
-                $class = (string) $class;
-
-                throw new InvalidArgumentException(
-                    sprintf('[%s] is not a valid exception class-string for ', $class) . 'http_error_handling.' .
-                    HttpErrorHandlingOption::LOG_LEVELS
-                );
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            foreach (
+                $config->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::DISPLAYERS) as $class
+            ) {
+                if (
+                    ! class_exists($class)
+                    || ! in_array(ExceptionDisplayer::class, (array) class_implements($class), true)) {
+                    throw new InvalidArgumentException(
+                        'http_error_handling.' .
+                        HttpErrorHandlingOption::DISPLAYERS
+                        . ' has to be a list of class-strings implementing ' . ExceptionDisplayer::class . ".\nGot [{$class}]."
+                    );
+                }
             }
 
-            if (! is_string($level) || ! in_array($level, $valid_levels, true)) {
-                $level = (string) $level;
+            foreach (
+                $config->getListOfStrings('http_error_handling.' . HttpErrorHandlingOption::TRANSFORMERS) as $class
+            ) {
+                if (
+                    ! class_exists($class)
+                    || ! in_array(ExceptionTransformer::class, (array) class_implements($class), true)) {
+                    throw new InvalidArgumentException(
+                        'http_error_handling.' .
+                        HttpErrorHandlingOption::TRANSFORMERS
+                        . ' has to be a list of class-strings implementing ' . ExceptionTransformer::class . ".\nGot [{$class}]."
+                    );
+                }
+            }
 
-                throw new InvalidArgumentException(
-                    sprintf(
+            foreach (
+                $config->getListOfStrings(
+                    'http_error_handling.' . HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
+                ) as $class
+            ) {
+                if (
+                    ! class_exists($class)
+                    || ! in_array(RequestLogContext::class, (array) class_implements($class), true)) {
+                    throw new InvalidArgumentException(
+                        'http_error_handling.' .
+                        HttpErrorHandlingOption::REQUEST_LOG_CONTEXT
+                        . ' has to be a list of class-strings implementing ' . RequestLogContext::class . ".\nGot [{$class}]."
+                    );
+                }
+            }
+
+            $valid_levels = [
+                LogLevel::ERROR,
+                LogLevel::CRITICAL,
+                LogLevel::INFO,
+                LogLevel::WARNING,
+                LogLevel::ALERT,
+                LogLevel::NOTICE,
+                LogLevel::EMERGENCY,
+                LogLevel::DEBUG,
+            ];
+
+            foreach (
+                $config->getArray('http_error_handling.' . HttpErrorHandlingOption::LOG_LEVELS) as $class => $level
+            ) {
+                if (! is_string($class)
+                    || ! class_exists($class)
+                    || ! in_array(Throwable::class, (array) class_implements($class), true)) {
+                    $class = (string) $class;
+
+                    throw new InvalidArgumentException(
+                        sprintf('[%s] is not a valid exception class-string for ', $class) . 'http_error_handling.' .
+                        HttpErrorHandlingOption::LOG_LEVELS
+                    );
+                }
+
+                if (! is_string($level) || ! in_array($level, $valid_levels, true)) {
+                    $level = (string) $level;
+
+                    throw new InvalidArgumentException(
                         sprintf(
-                            '[%s] is not a valid PSR-3 log-level for exception class ',
-                            $level
-                        ) . $class . "\nValid levels: [%s]",
-                        implode(',', $valid_levels)
-                    )
-                );
+                            sprintf(
+                                '[%s] is not a valid PSR-3 log-level for exception class ',
+                                $level
+                            ) . $class . "\nValid levels: [%s]",
+                            implode(',', $valid_levels)
+                        )
+                    );
+                }
             }
-        }
-
-        $this->copyConfig($kernel, 'http_error_handling');
+        });
     }
 
     private function bindRouter(Kernel $kernel): void
@@ -587,10 +600,10 @@ final class HttpRoutingBundle implements Bundle
             ->shared(ApiRequestDetector::class, function () use ($kernel): ApiRequestDetector {
                 $config = $kernel->config();
 
+                /** @var non-empty-string[] $early_route_prefixes */
                 $early_route_prefixes = $config->getListOfStrings(
                     'routing.' . RoutingOption::EARLY_ROUTES_PREFIXES
                 );
-                Assert::allStringNotEmpty($early_route_prefixes);
 
                 return new ApiRequestDetector($early_route_prefixes);
             });
@@ -724,7 +737,7 @@ final class HttpRoutingBundle implements Bundle
         return $kernel->container()[ResponseEmitter::class] ?? new LaminasEmitterStack();
     }
 
-    private function copyConfig(Kernel $kernel, string $namespace): void
+    private function copyDefaultConfig(Kernel $kernel, string $namespace): void
     {
         if (! $kernel->env()->isDevelop()) {
             return;

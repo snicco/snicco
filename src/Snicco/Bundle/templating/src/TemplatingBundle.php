@@ -24,6 +24,7 @@ use function copy;
 use function dirname;
 use function is_file;
 use function is_readable;
+use function sprintf;
 
 final class TemplatingBundle implements Bundle
 {
@@ -41,15 +42,17 @@ final class TemplatingBundle implements Bundle
     {
         $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/templating.php');
 
-        foreach ($config->getListOfStrings('templating.directories') as $directory) {
-            if (! is_readable($directory)) {
-                throw new InvalidArgumentException(
-                    sprintf('templating.directories: Directory [%s] is not readable.', $directory)
-                );
-            }
-        }
-
         $this->copyConfiguration($kernel);
+
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            foreach ($config->getListOfStrings('templating.directories') as $directory) {
+                if (! is_readable($directory)) {
+                    throw new InvalidArgumentException(
+                        sprintf('templating.directories: Directory [%s] is not readable.', $directory)
+                    );
+                }
+            }
+        });
     }
 
     public function register(Kernel $kernel): void
