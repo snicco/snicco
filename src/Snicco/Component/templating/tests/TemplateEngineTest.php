@@ -310,6 +310,16 @@ final class TemplateEngineTest extends TestCase
     /**
      * @test
      */
+    public function views_can_extend_parent_views_with_docblock_annotation(): void
+    {
+        $view = $this->template_engine->make('partials.post-title-docblock');
+        $view = $view->with('post_title', 'Foobar');
+        $this->assertSame('You are viewing post: Foobar', $this->template_engine->renderView($view));
+    }
+
+    /**
+     * @test
+     */
     public function views_can_be_extended_multiple_times(): void
     {
         $view = $this->template_engine->make('partials.post-body');

@@ -14,7 +14,7 @@ body:
           required: true
         - label: I have verified that the issue is present when using the most recent version of the affected package(s)
           required: true
-   
+
   - type: dropdown
     id: affected-packages
     attributes:
@@ -24,6 +24,7 @@ body:
         - other/dont-know
         - better-wp-api
         - better-wp-cache
+        - better-wp-cli
         - better-wp-hooks
         - better-wp-mail
         - better-wpdb
@@ -45,6 +46,7 @@ body:
         - session-wp-bridge
         - signed-url-psr15-bridge
         - signed-url-psr16-bridge
+        - signed-url-wp-bridge
         - better-wp-cache-bundle
         - better-wp-hooks-bundle
         - better-wp-mail-bundle
@@ -81,7 +83,7 @@ body:
       multiple: true
     validations:
       required: true
-      
+
   - type: dropdown
     id: is-regression
     attributes:
@@ -91,17 +93,17 @@ body:
         - 'No'
     validations:
       required: true
-  
+
   - type: textarea
     id: composer-deps
     attributes:
       label: Composer dependencies
       description: Please copy and paste the output of running `composer show` here. This will be automatically formatted into code, so no need for backticks.
-      render: shell      
+      render: shell
     validations:
-      required: true       
-      
-  
+      required: true
+
+
   - type: textarea
     id: current-behaviour
     attributes:
@@ -123,14 +125,14 @@ body:
     attributes:
       label: How to reproduce
       description: |
-            ⚠️  This is the most important part of the report ⚠️
-            Without a way to easily reproduce your issue, there is little chance we will be able to help you and work on a fix.
-            Please, take the time to show us some code and/or config that is needed for others to reproduce the problem easily.
-            A code snippet is sufficient. A failing test is ideal.
-      value: | 
-            ```php
-                // Code goes here
-            ```      
+        ⚠️  This is the most important part of the report ⚠️
+        Without a way to easily reproduce your issue, there is little chance we will be able to help you and work on a fix.
+        Please, take the time to show us some code and/or config that is needed for others to reproduce the problem easily.
+        A code snippet is sufficient. A failing test is ideal.
+      value: |
+        ```php
+            // Code goes here
+        ```
     validations:
       required: true
 
@@ -139,17 +141,17 @@ body:
     attributes:
       label: Possible solution
       description: "Optional: only if you have suggestions on a fix/reason for the bug."
-      
+
   - type: textarea
     id: logs
     attributes:
-      label: "Relevant log output"
+      label: Relevant log output
       description: "Optional: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks."
       render: shell
 
   - type: textarea
     id: additional-context
     attributes:
-       label: Additional Context
-       description: "Optional: any other context about the problem: screenshots, etc."
+      label: Additional Context
+      description: "Optional: any other context about the problem: screenshots, etc."
 

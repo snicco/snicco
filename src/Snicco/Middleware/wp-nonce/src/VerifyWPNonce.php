@@ -7,15 +7,15 @@ namespace Snicco\Middleware\WPNonce;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Component\BetterWPAPI\BetterWPAPI;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
-use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
-use Snicco\Component\Psr7ErrorHandler\HttpException;
+use Snicco\Middleware\WPNonce\Middleware\AddWPNonceToView;
+use Snicco\Middleware\WPNonce\Middleware\CheckWPNonce;
 
-use function date;
-use function sha1;
-use function sprintf;
-
+/**
+ * @deprecated This middleware is deprecated in favor of {@see AddWPNonceToView} and {@see CheckWPNonce} as splitting
+ *             these responsibilities into separate middleware has many benefits {@see https://github.com/snicco/snicco/issues/167}.
+ */
 final class VerifyWPNonce extends Middleware
 {
     private BetterWPAPI $wp;
@@ -27,31 +27,20 @@ final class VerifyWPNonce extends Middleware
 
     public static function inputKey(): string
     {
-        $month = date('m');
-
-        return sha1(self::class . $month);
+        return CheckWPNonce::inputKey();
     }
 
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
-        $current_path = $request->path();
+        $check_nonce = new CheckWPNonce($this->wp);
+        $this->setContainerOnInnerMiddleware($check_nonce);
 
-        if (! $request->isReadVerb()) {
-            $nonce = (string) $request->post(self::inputKey(), '');
+        $add_wp_nonce = new AddWPNonceToView($this->wp);
+        $this->setContainerOnInnerMiddleware($add_wp_nonce);
 
-            if (! $this->wp->verifyNonce($nonce, $current_path)) {
-                throw new HttpException(401, sprintf('Nonce check failed for request path [%s].', $current_path));
-            }
-        }
-
-        $response = $next($request);
-
-        if (! $response instanceof ViewResponse) {
-            return $response;
-        }
-
-        return $response->withViewData([
-            'wp_nonce' => new WPNonce($this->url(), $this->wp, $current_path),
-        ]);
+        return $add_wp_nonce->process(
+            $request,
+            new NextMiddleware(fn (Request $request) => $check_nonce->process($request, $next))
+        );
     }
 }

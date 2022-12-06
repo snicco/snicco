@@ -24,6 +24,7 @@ use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader;
 use Snicco\Component\HttpRouting\Routing\Router;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\HttpRouting\Routing\UrlMatcher\UrlMatcher;
@@ -273,6 +274,17 @@ final class HttpRoutingBundleTest extends TestCase
         $p2 = $kernel->container()
             ->make(MiddlewarePipeline::class);
         $this->assertNotSame($p1, $p2);
+    }
+
+    /**
+     * @test
+     */
+    public function test_php_route_file_loader_can_be_resolved(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+        $kernel->boot();
+
+        $this->assertCanBeResolved(PHPFileRouteLoader::class, $kernel);
     }
 
     /**

@@ -8,6 +8,7 @@ use Codeception\TestCase\WPTestCase;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Snicco\Bundle\HttpRouting\ApiRequestDetector;
 use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
@@ -21,7 +22,6 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
-use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
@@ -252,13 +252,13 @@ abstract class WebTestCase extends WPTestCase
                 ->getBoolean('routing.' . RoutingOption::USE_HTTPS),
         ]);
 
+        $container = $kernel->container();
+
         return new Browser(
-            $kernel->container()
-                ->make(HttpKernel::class),
-            $kernel->container()
-                ->make(Psr17FactoryDiscovery::class),
+            $container->make(HttpKernel::class),
+            $container->make(Psr17FactoryDiscovery::class),
             AdminAreaPrefix::fromString($kernel->config()->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX)),
-            UrlPath::fromString($kernel->config()->getString('routing.' . RoutingOption::API_PREFIX)),
+            $container->make(ApiRequestDetector::class),
             $this->server,
             null,
             $cookies

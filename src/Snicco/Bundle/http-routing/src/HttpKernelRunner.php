@@ -14,12 +14,10 @@ use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
 use Snicco\Bundle\HttpRouting\ResponseEmitter\ResponseEmitter;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
-use Snicco\Component\StrArr\Str;
 
 use function add_action;
 use function did_action;
 use function doing_action;
-use function ltrim;
 use function sprintf;
 
 use const PHP_INT_MIN;
@@ -36,13 +34,12 @@ final class HttpKernelRunner
 
     private StreamFactoryInterface $stream_factory;
 
-    /**
-     * @param non-empty-string|null $api_prefix
-     */
-    private ?string $api_prefix;
+    private ApiRequestDetector $api_request_detector;
 
     /**
-     * @param non-empty-string|null $api_prefix
+     * @interal
+     *
+     * @psalm-internal Snicco\Bundle\HttpRouting
      */
     public function __construct(
         HttpKernel $http_kernel,
@@ -50,19 +47,14 @@ final class HttpKernelRunner
         EventDispatcherInterface $event_dispatcher,
         ResponseEmitter $emitter,
         StreamFactoryInterface $stream_factory,
-        ?string $api_prefix
+        ApiRequestDetector $api_request_detector
     ) {
         $this->http_kernel = $http_kernel;
         $this->request_creator = $request_creator;
         $this->event_dispatcher = $event_dispatcher;
         $this->emitter = $emitter;
         $this->stream_factory = $stream_factory;
-
-        if (null !== $api_prefix) {
-            $api_prefix = '/' . ltrim($api_prefix, '/');
-        }
-
-        $this->api_prefix = $api_prefix;
+        $this->api_request_detector = $api_request_detector;
     }
 
     /**
@@ -78,7 +70,7 @@ final class HttpKernelRunner
 
         $psr_request = $this->request_creator->fromGlobals();
 
-        if ($this->isApiRequest($psr_request)) {
+        if ($this->api_request_detector->isAPIRequest($psr_request)) {
             add_action($api_hook, function () use ($psr_request): void {
                 $this->dispatchFrontendRequest(Request::fromPsr($psr_request, Request::TYPE_API));
             }, PHP_INT_MIN);
@@ -104,7 +96,7 @@ final class HttpKernelRunner
 
         $psr_request = $this->request_creator->fromGlobals();
 
-        $type = $this->isApiRequest($psr_request)
+        $type = $this->api_request_detector->isAPIRequest($psr_request)
             ? Request::TYPE_API
             : Request::TYPE_FRONTEND;
 
@@ -190,11 +182,6 @@ final class HttpKernelRunner
         if ($send_body_now) {
             $this->event_dispatcher->dispatch(new TerminatedResponse());
         }
-    }
-
-    private function isApiRequest(ServerRequestInterface $request): bool
-    {
-        return $this->api_prefix && Str::startsWith($request->getUri()->getPath(), $this->api_prefix);
     }
 
     /**

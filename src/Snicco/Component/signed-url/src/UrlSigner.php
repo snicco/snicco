@@ -81,7 +81,7 @@ final class UrlSigner
             . $identifier
             . $signature;
 
-        $url = ($domain_and_scheme = $this->getDomainAndSchema($parts))
+        $url = ($domain_and_scheme = $this->getHostAndScheme($parts))
             ? $domain_and_scheme . $path_with_query
             : $path_with_query;
 
@@ -183,10 +183,16 @@ final class UrlSigner
     /**
      * @psalm-suppress MixedOperand
      */
-    private function getDomainAndSchema(array $parts): ?string
+    private function getHostAndScheme(array $parts): ?string
     {
         if (isset($parts['host'], $parts['scheme'])) {
-            return $parts['scheme'] . '://' . $parts['host'];
+            $scheme_and_domain = $parts['scheme'] . '://' . $parts['host'];
+
+            if (isset($parts['port'])) {
+                $scheme_and_domain .= ':' . $parts['port'];
+            }
+
+            return $scheme_and_domain;
         }
 
         return null;

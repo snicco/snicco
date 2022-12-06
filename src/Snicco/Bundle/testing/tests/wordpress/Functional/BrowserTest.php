@@ -8,13 +8,15 @@ use BadMethodCallException;
 use Closure;
 use Codeception\TestCase\WPTestCase;
 use LogicException;
+use Snicco\Bundle\HttpRouting\ApiRequestDetector;
 use Snicco\Bundle\HttpRouting\HttpKernel;
+use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 use Snicco\Bundle\Testing\Functional\Browser;
 use Snicco\Bundle\Testing\Tests\wordpress\fixtures\WebTestCaseController;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
-use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
@@ -238,11 +240,24 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
-    public function that_api_requests_are_not_created_if_the_api_prefix_is_empty(): void
+    public function test_api_requests_are_created_correctly_if_early_route_prefixes_are_used(): void
     {
-        $browser = $this->getBrowser([], null, '');
+        $kernel = $this->getNewKernel();
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES, [
+                '/api/test',
+            ]);
+        });
 
+        $browser = $this->getBrowser([], null, $kernel);
         $browser->request('GET', '/api/test/check-api');
+
+        $browser->getResponse()
+            ->assertSeeText('true')
+            ->assertOk()
+            ->assertNotDelegated();
+
+        $browser->request('GET', '/check-api');
 
         $browser->getResponse()
             ->assertSeeText('false')
@@ -325,6 +340,32 @@ final class BrowserTest extends WPTestCase
     /**
      * @test
      */
+    public function that_the_real_request_method_is_added_correctly(): void
+    {
+        $browser = $this->getBrowser();
+
+        $browser->request('POST', '/real-method');
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('POST')
+            ->assertNotDelegated();
+
+        $browser->request('PUT', '/real-method');
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('PUT')
+            ->assertNotDelegated();
+
+        $browser->request('GET', '/real-method');
+        $browser->getResponse()
+            ->assertOk()
+            ->assertSeeText('GET')
+            ->assertNotDelegated();
+    }
+
+    /**
+     * @test
+     */
     public function that_the_json_request_method_works(): void
     {
         $browser = $this->getBrowser();
@@ -354,25 +395,32 @@ final class BrowserTest extends WPTestCase
     /**
      * @param array<string,mixed> $server
      */
-    private function getBrowser(array $server = [], CookieJar $cookies = null, string $api_prefix = '/api'): Browser
+    private function getBrowser(array $server = [], CookieJar $cookies = null, ?Kernel $kernel = null): Browser
+    {
+        $kernel = $kernel ?: $this->getNewKernel();
+        $kernel->boot();
+
+        $container = $kernel->container();
+
+        return new Browser(
+            $container->make(HttpKernel::class),
+            $container->make(Psr17FactoryDiscovery::class),
+            AdminAreaPrefix::fromString('/wp-admin'),
+            $container->make(ApiRequestDetector::class),
+            $server,
+            null,
+            $cookies
+        );
+    }
+
+    private function getNewKernel(): Kernel
     {
         $kernel = ($this->boot_kernel_closure)(Environment::testing());
         $kernel->afterRegister(function (Kernel $kernel): void {
             $kernel->container()
                 ->instance(HttpErrorHandler::class, new TestErrorHandler());
         });
-        $kernel->boot();
 
-        return new Browser(
-            $kernel->container()
-                ->make(HttpKernel::class),
-            $kernel->container()
-                ->make(Psr17FactoryDiscovery::class),
-            AdminAreaPrefix::fromString('/wp-admin'),
-            UrlPath::fromString($api_prefix),
-            $server,
-            null,
-            $cookies
-        );
+        return $kernel;
     }
 }

@@ -59,8 +59,11 @@ final class SessionBundle implements Bundle
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
         $config->mergeDefaultsFromFile(dirname(__DIR__) . '/config/session.php');
-        $this->validateConfig($kernel, $config);
         $this->copyConfig($kernel);
+
+        $kernel->afterConfiguration(function (WritableConfig $config) use ($kernel) {
+            $this->validateConfig($kernel, $config);
+        });
     }
 
     public function register(Kernel $kernel): void

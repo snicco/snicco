@@ -10,6 +10,8 @@ use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
 use Snicco\Bundle\HttpRouting\Middleware\SimpleTemplating;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\TestCustomRouteLoader;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\TestCustomRouteLoadingOptions;
 use Snicco\Bundle\Testing\Bundle\BundleTest;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
@@ -19,6 +21,8 @@ use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
 use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoader;
+use Snicco\Component\HttpRouting\Routing\RouteLoader\RouteLoadingOptions;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
@@ -197,6 +201,66 @@ final class RoutingFunctionalityTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('', (string) $response->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function custom_route_loading_options_can_be_used(): void
+    {
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
+
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()
+                ->instance(RouteLoadingOptions::class, new TestCustomRouteLoadingOptions());
+        });
+
+        $kernel->boot();
+
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/custom-prefix/view');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertNotInstanceOf(ViewResponse::class, $response);
+        $this->assertSame('Hello Calvin', (string) $response->getBody());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeaderLine('content-type'));
+    }
+
+    /**
+     * @test
+     */
+    public function a_custom_route_loader_can_be_used(): void
+    {
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
+
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()
+                ->instance(RouteLoader::class, new TestCustomRouteLoader());
+        });
+
+        $kernel->boot();
+
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/foo-custom');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([SimpleTemplating::class, RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertSame(RoutingBundleTestController::class, (string) $response->getBody());
     }
 
     protected function fixturesDir(): string

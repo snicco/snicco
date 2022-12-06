@@ -26,6 +26,8 @@ return function (WebRoutingConfigurator $router): void {
 
     $router->post('raw-body', '/raw-body', [WebTestCaseController::class, 'rawBody']);
 
+    $router->any('real-method', '/real-method', [WebTestCaseController::class, 'realMethod']);
+
     $router->get(
         'force-exception-middleware',
         '/force-exception-middleware',

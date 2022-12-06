@@ -36,21 +36,23 @@ final class EncryptionBundle implements Bundle
     {
         $this->copyConfiguration($kernel);
 
-        if (! $config->has($config_key = 'encryption.' . EncryptionOption::KEY_ASCII)) {
-            throw new InvalidArgumentException(
-                $config_key . " is not set.\nGenerate a new config_key by running 'vendor/bin/generate-defuse-key'"
-            );
-        }
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            if (! $config->has($config_key = 'encryption.' . EncryptionOption::KEY_ASCII)) {
+                throw new InvalidArgumentException(
+                    $config_key . " is not set.\nGenerate a new config_key by running 'vendor/bin/generate-defuse-key'"
+                );
+            }
 
-        try {
-            $this->validateKey($config, $config_key);
-        } catch (BadFormatException $e) {
-            throw new InvalidArgumentException(
-                "Your encryption key is not valid.\nPlease generate a correct key by following the instructions in the encryption.php config file.\nMessage: {$e->getMessage()}",
-                $e->getCode(),
-                $e
-            );
-        }
+            try {
+                $this->validateKey($config, $config_key);
+            } catch (BadFormatException $e) {
+                throw new InvalidArgumentException(
+                    "Your encryption key is not valid.\nPlease generate a correct key by following the instructions in the encryption.php config file.\nMessage: {$e->getMessage()}",
+                    $e->getCode(),
+                    $e
+                );
+            }
+        });
     }
 
     public function register(Kernel $kernel): void

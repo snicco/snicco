@@ -118,6 +118,25 @@ final class EventMapperTest extends WPTestCase
     /**
      * @test
      */
+    public function that_null_can_be_passed_as_arguments(): void
+    {
+        $this->event_mapper->map('null_filter', ActionWithNullArguments::class);
+
+        $run = false;
+        $this->dispatcher->listen(function (ActionWithNullArguments $event) use (&$run): void {
+            $this->assertSame('baz', $event->filterableAttribute());
+            $run = true;
+        });
+
+        $value = apply_filters_ref_array('null_filter', [null, null, 'baz']);
+
+        $this->assertSame('baz', $value);
+        $this->assertTrue($run);
+    }
+
+    /**
+     * @test
+     */
     public function events_mapped_to_a_wordpress_action_are_passed_by_reference_between_listeners(): void
     {
         $this->event_mapper->map('empty', EmptyActionEvent::class);
@@ -845,5 +864,48 @@ final class ActionWithArrayArguments implements MappedHook
     public function shouldDispatch(): bool
     {
         return true;
+    }
+}
+
+final class ActionWithNullArguments implements MappedFilter
+{
+    use ClassAsName;
+    use ClassAsPayload;
+
+    /**
+     * @var null
+     */
+    private $foo;
+
+    /**
+     * @var null
+     */
+    private $bar;
+
+    private string $baz;
+
+    /**
+     * @param mixed $foo
+     * @param mixed $bar
+     */
+    public function __construct($foo, $bar, string $baz)
+    {
+        if (null !== $foo || null !== $bar) {
+            throw new InvalidArgumentException('Passed args should be NULL');
+        }
+
+        $this->foo = $foo;
+        $this->bar = $bar;
+        $this->baz = $baz;
+    }
+
+    public function shouldDispatch(): bool
+    {
+        return true;
+    }
+
+    public function filterableAttribute()
+    {
+        return $this->baz;
     }
 }

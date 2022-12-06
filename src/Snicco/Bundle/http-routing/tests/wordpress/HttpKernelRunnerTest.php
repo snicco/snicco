@@ -13,6 +13,7 @@ use Snicco\Bundle\HttpRouting\Event\HandlingRequest;
 use Snicco\Bundle\HttpRouting\Event\ResponseSent;
 use Snicco\Bundle\HttpRouting\Event\TerminatedResponse;
 use Snicco\Bundle\HttpRouting\HttpKernelRunner;
+use Snicco\Bundle\HttpRouting\Option\RoutingOption;
 use Snicco\Bundle\HttpRouting\ResponseEmitter\LaminasEmitterStack;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\Controller\HttpRunnerTestController;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
@@ -21,6 +22,7 @@ use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
+use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
@@ -41,8 +43,6 @@ final class HttpKernelRunnerTest extends WPTestCase
 
     private Kernel $kernel;
 
-    private HttpKernelRunner $http_dispatcher;
-
     private array $_get;
 
     private array $_server;
@@ -59,10 +59,7 @@ final class HttpKernelRunnerTest extends WPTestCase
         $this->_get = $_get;
         $this->_server = $_server;
         $this->kernel = new Kernel(new PimpleContainerAdapter(), Environment::testing(), $this->directories, );
-        $this->kernel->boot();
 
-        $this->http_dispatcher = $this->kernel->container()
-            ->make(HttpKernelRunner::class);
         remove_all_filters('admin_init');
         remove_all_filters('all_admin_notices');
         if (did_action('plugins_loaded')) {
@@ -102,11 +99,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/frontend';
 
+        $this->httpKernelRunner()
+            ->listen(false);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(false);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -134,11 +132,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/bogus';
 
+        $this->httpKernelRunner()
+            ->listen(false);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(false);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -168,11 +167,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/no-response';
 
+        $this->httpKernelRunner()
+            ->listen(false);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(false);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -196,11 +196,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=foo';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -230,11 +231,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=foo';
         $_GET['page'] = 'foo';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -269,11 +271,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=foo';
         $_GET['page'] = 'foo';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         do_action('admin_init');
 
@@ -310,11 +313,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=do_nothing';
         $_GET['page'] = 'do_nothing';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -339,11 +343,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=admin_redirect';
         $_GET['page'] = 'admin_redirect';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         do_action('admin_init');
 
@@ -374,11 +379,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=client_error';
         $_GET['page'] = 'client_error';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         do_action('admin_init');
 
@@ -410,11 +416,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=server_error';
         $_GET['page'] = 'server_error';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         do_action('admin_init');
 
@@ -446,11 +453,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['QUERY_STRING'] = 'page=foo';
         $_GET['page'] = 'foo';
 
+        $this->httpKernelRunner()
+            ->listen(true);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(true);
 
         do_action('admin_init');
 
@@ -484,11 +492,12 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/snicco/auth/register';
 
+        $this->httpKernelRunner()
+            ->listen(false);
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
-
-        $this->http_dispatcher->listen(false);
 
         $dispatcher->assertNotDispatched(HandlingRequest::class);
         $dispatcher->assertNotDispatched(HandledRequest::class);
@@ -518,6 +527,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/frontend';
 
+        $this->kernel->boot();
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
@@ -526,7 +537,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertNotDispatched(HandledRequest::class);
         $dispatcher->assertNotDispatched(ResponseSent::class);
 
-        $this->http_dispatcher->run();
+        $this->httpKernelRunner()
+            ->run();
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
@@ -548,6 +560,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/snicco/auth/register';
 
+        $this->kernel->boot();
+
         /** @var TestableEventDispatcher $dispatcher */
         $dispatcher = $this->kernel->container()
             ->make(TestableEventDispatcher::class);
@@ -556,7 +570,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertNotDispatched(HandledRequest::class);
         $dispatcher->assertNotDispatched(ResponseSent::class);
 
-        $this->http_dispatcher->run();
+        $this->httpKernelRunner()
+            ->run();
 
         $dispatcher->assertDispatched(HandlingRequest::class);
         $dispatcher->assertDispatched(HandledRequest::class);
@@ -603,7 +618,8 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         do_action('plugins_loaded');
 
-        $this->http_dispatcher->listen(false);
+        $this->httpKernelRunner()
+            ->listen(false);
     }
 
     /**
@@ -615,7 +631,8 @@ final class HttpKernelRunnerTest extends WPTestCase
 
         do_action('plugins_loaded');
 
-        $this->http_dispatcher->run();
+        $this->httpKernelRunner()
+            ->run();
     }
 
     /**
@@ -626,7 +643,8 @@ final class HttpKernelRunnerTest extends WPTestCase
         $called = false;
 
         add_action('plugins_loaded', function () use (&$called) {
-            $this->http_dispatcher->listen(false);
+            $this->httpKernelRunner()
+                ->listen(false);
             $called = true;
         });
 
@@ -635,8 +653,88 @@ final class HttpKernelRunnerTest extends WPTestCase
         $this->assertTrue($called);
     }
 
+    /**
+     * @test
+     */
+    public function that_multiple_early_route_prefixes_can_be_used_and_dispatch_an_api_request(): void
+    {
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::API_PREFIX, '/api-base');
+            $config->set('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES, [
+                '/api-base/auth',
+                '/api-base/totp',
+            ]);
+        });
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/api-base/totp/register';
+
+        $this->httpKernelRunner()
+            ->listen(false, 'wp', 'plugins_loaded');
+
+        do_action('plugins_loaded');
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => ! $event->response instanceof DelegatedResponse);
+
+        $dispatcher->resetDispatchedEvents();
+
+        $_SERVER['REQUEST_URI'] = '/api-base/auth/register';
+
+        do_action('plugins_loaded');
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(fn (ResponseSent $event) => ! $event->response instanceof DelegatedResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function that_multiple_api_prefixes_dont_dispatch_api_request_for_non_matches(): void
+    {
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::API_PREFIX, '/api-base');
+            $config->set('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES, [
+                '/api-base/auth',
+                '/api-base/totp',
+            ]);
+        });
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/api-base/whatever/register';
+
+        $this->httpKernelRunner()
+            ->listen(false, 'wp', 'plugins_loaded');
+
+        do_action('plugins_loaded');
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+    }
+
     protected function fixturesDir(): string
     {
         return dirname(__DIR__) . '/fixtures';
+    }
+
+    private function httpKernelRunner(): HttpKernelRunner
+    {
+        if (! $this->kernel->booted()) {
+            $this->kernel->boot();
+        }
+
+        return $this->kernel->container()
+            ->make(HttpKernelRunner::class);
     }
 }

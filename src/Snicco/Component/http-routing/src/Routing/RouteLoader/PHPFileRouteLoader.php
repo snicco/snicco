@@ -85,19 +85,24 @@ final class PHPFileRouteLoader implements RouteLoader
 
         $frontend_routes = null;
         $files = $this->getFiles($this->route_directories);
-        foreach ($files as $name => $path) {
+        foreach ($files as $path => $basename) {
             // Make sure that the frontend.php file is always loaded last
             // because users are expected to register the fallback route there.
-            if (self::FRONTEND_ROUTE_FILENAME === $name) {
+            if (self::FRONTEND_ROUTE_FILENAME === $basename) {
                 $frontend_routes = $path;
 
                 continue;
             }
 
-            $attributes = $this->options->getRouteAttributes($name);
+            // Admin routes are loaded later in the loadAdminRoutes method.
+            if (self::ADMIN_ROUTE_FILENAME === $basename) {
+                continue;
+            }
+
+            $attributes = $this->options->getRouteAttributes($basename);
 
             /** @psalm-var Closure(WebRoutingConfigurator) $closure */
-            $closure = $this->requireFile($path, $attributes, self::ADMIN_ROUTE_FILENAME === $name);
+            $closure = $this->requireFile($path, $attributes);
 
             $configurator->group($closure, $attributes);
         }
@@ -113,12 +118,12 @@ final class PHPFileRouteLoader implements RouteLoader
     public function loadAdminRoutes(AdminRoutingConfigurator $configurator): void
     {
         $finder = $this->getFiles($this->route_directories);
-        foreach ($finder as $name => $path) {
-            if (self::ADMIN_ROUTE_FILENAME !== $name) {
+        foreach ($finder as $path => $basename) {
+            if (self::ADMIN_ROUTE_FILENAME !== $basename) {
                 continue;
             }
 
-            $attributes = $this->options->getRouteAttributes($name);
+            $attributes = $this->options->getRouteAttributes($basename);
 
             /** @psalm-var Closure(AdminRoutingConfigurator) $closure */
             $closure = $this->requireFile($path, $attributes, true);
@@ -129,7 +134,7 @@ final class PHPFileRouteLoader implements RouteLoader
 
     private function loadApiRoutesIn(WebRoutingConfigurator $configurator): void
     {
-        foreach ($this->getFiles($this->api_route_directories) as $name => $path) {
+        foreach ($this->getFiles($this->api_route_directories) as $path => $name) {
             Assert::notEq(
                 $name,
                 self::FRONTEND_ROUTE_FILENAME,
@@ -214,7 +219,7 @@ final class PHPFileRouteLoader implements RouteLoader
                     continue;
                 }
 
-                $files[pathinfo($file_info->getRealPath(), PATHINFO_FILENAME)] = $file_info->getRealPath();
+                $files[$file_info->getRealPath()] = pathinfo($file_info->getRealPath(), PATHINFO_FILENAME);
             }
         }
 

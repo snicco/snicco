@@ -10,13 +10,13 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface as Psr7Request;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
+use Snicco\Bundle\HttpRouting\ApiRequestDetector;
 use Snicco\Bundle\HttpRouting\HttpKernel;
 use Snicco\Bundle\HttpRouting\Psr17FactoryDiscovery;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminAreaPrefix;
-use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Snicco\Component\HttpRouting\Testing\AssertableResponse;
 use Snicco\Component\StrArr\Str;
 use Symfony\Component\BrowserKit\AbstractBrowser;
@@ -26,10 +26,10 @@ use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Webmozart\Assert\Assert;
 
 use function array_keys;
+use function array_merge;
 use function in_array;
 use function is_array;
 use function parse_str;
-
 use function strtolower;
 
 use const UPLOAD_ERR_OK;
@@ -48,16 +48,18 @@ final class Browser extends AbstractBrowser
 
     private AdminAreaPrefix $admin_area_prefix;
 
-    private UrlPath $api_prefix;
+    private ApiRequestDetector $api_request_detector;
 
     /**
      * @param array<string,mixed> $server
+     *
+     * @psalm-internal Snicco\Bundle\Testing
      */
     public function __construct(
         HttpKernel $http_kernel,
         Psr17FactoryDiscovery $psr17_factories,
         AdminAreaPrefix $admin_area_prefix,
-        UrlPath $api_prefix,
+        ApiRequestDetector $api_request_detector,
         array $server = [],
         History $history = null,
         CookieJar $cookieJar = null
@@ -66,7 +68,7 @@ final class Browser extends AbstractBrowser
         $this->http_kernel = $http_kernel;
         $this->psr17_factories = $psr17_factories;
         $this->admin_area_prefix = $admin_area_prefix;
-        $this->api_prefix = $api_prefix;
+        $this->api_request_detector = $api_request_detector;
         $this->request_factory = $this->psr17_factories->createServerRequestFactory();
         $this->file_factory = $this->psr17_factories->createUploadedFileFactory();
         $this->stream_factory = $this->psr17_factories->createStreamFactory();
@@ -131,7 +133,9 @@ final class Browser extends AbstractBrowser
         $psr_server_request = $this->request_factory->createServerRequest(
             $request->getMethod(),
             $request->getUri(),
-            $request->getServer(),
+            array_merge([
+                'REQUEST_METHOD' => $request->getMethod(),
+            ], $request->getServer())
         );
 
         $psr_server_request = $this->addHeadersFromServer($request, $psr_server_request);
@@ -144,11 +148,9 @@ final class Browser extends AbstractBrowser
         $path = $psr_server_request->getUri()
             ->getPath();
 
-        $api_prefix = $this->api_prefix->asString();
-
         if (Str::startsWith($path, $this->admin_area_prefix->asString())) {
             $type = Request::TYPE_ADMIN_AREA;
-        } elseif ('/' !== $api_prefix && Str::startsWith($path, $api_prefix)) {
+        } elseif ($this->api_request_detector->isAPIRequest($path)) {
             $type = Request::TYPE_API;
         } else {
             $type = Request::TYPE_FRONTEND;

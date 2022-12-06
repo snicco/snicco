@@ -136,6 +136,20 @@ final class UrlSignerTest extends TestCase
     /**
      * @test
      */
+    public function a_signed_url_can_be_created_with_non_standard_ports(): void
+    {
+        $magic_link = $this->url_signer->sign('https://foo.com:8443/foo/', 10);
+        $this->assertInstanceOf(SignedUrl::class, $magic_link);
+
+        $this->assertStringStartsWith('https://foo.com:8443/foo/', $magic_link->asString());
+        $this->assertStringContainsString('expires=', $magic_link->asString());
+        $this->assertStringContainsString('signature=', $magic_link->asString());
+        $this->assertSame('https://foo.com:8443/foo/', $magic_link->protects());
+    }
+
+    /**
+     * @test
+     */
     public function test_can_be_created_for_only_slash(): void
     {
         $magic_link = $this->url_signer->sign('/', 10);

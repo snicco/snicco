@@ -46,6 +46,9 @@ final class WPNonce
         return $this->createNonce($nonce_action);
     }
 
+    /**
+     * @psalm-suppress DeprecatedClass
+     */
     private function createNonce(string $nonce_action): string
     {
         $nonce = $this->noHtml($this->wp->createNonce($nonce_action));

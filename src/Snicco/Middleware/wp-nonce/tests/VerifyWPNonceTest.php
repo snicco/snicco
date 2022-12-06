@@ -10,11 +10,14 @@ use Snicco\Component\HttpRouting\Http\Response\ViewResponse;
 use Snicco\Component\HttpRouting\Routing\Route\Route;
 use Snicco\Component\HttpRouting\Testing\MiddlewareTestCase;
 use Snicco\Component\Psr7ErrorHandler\HttpException;
+use Snicco\Middleware\WPNonce\Exception\InvalidWPNonce;
 use Snicco\Middleware\WPNonce\VerifyWPNonce;
 use Snicco\Middleware\WPNonce\WPNonce;
 
 /**
  * @internal
+ *
+ * @psalm-suppress DeprecatedClass
  */
 final class VerifyWPNonceTest extends MiddlewareTestCase
 {
@@ -46,16 +49,20 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
             VerifyWPNonce::inputKey() => $wp->createNonce('/bar'),
         ]);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Nonce check failed for request path [/foo]');
-
-        $this->runMiddleware($middleware, $request);
+        try {
+            $this->runMiddleware($middleware, $request);
+            $this->fail('Should have thrown exception.');
+        } catch (HttpException $e) {
+            $this->assertSame('Nonce check failed for request path [/foo].', $e->getMessage());
+            $this->assertSame(403, $e->statusCode());
+            $this->assertInstanceOf(InvalidWPNonce::class, $e);
+        }
     }
 
     /**
      * @test
      */
-    public function the_nonce_generator_is_added_for_reading_view_responses(): void
+    public function the_nonce_generator_is_added_for_view_responses(): void
     {
         $middleware = new VerifyWPNonce(new VerifyNonceTestWPApi());
 
@@ -79,7 +86,7 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function that_the_nonce_generator_is_added_to_valid_view_responses_for_post_requests_with_valid_nonces(): void
+    public function the_nonce_generator_is_added_for_post_requests(): void
     {
         $middleware = new VerifyWPNonce($wp = new VerifyNonceTestWPApi());
 
@@ -87,9 +94,11 @@ final class VerifyWPNonceTest extends MiddlewareTestCase
             fn (Response $response): ViewResponse => new ViewResponse('foo', $response)
         );
 
-        $request = $this->frontendRequest('/foo', [], 'POST')->withParsedBody([
-            VerifyWPNonce::inputKey() => $wp->createNonce('/foo'),
-        ]);
+        $request = $this->frontendRequest('/foo')
+            ->withMethod('POST')
+            ->withParsedBody([
+                VerifyWPNonce::inputKey() => $wp->createNonce('/foo'),
+            ]);
 
         $response = $this->runMiddleware($middleware, $request);
         $response->assertNextMiddlewareCalled();

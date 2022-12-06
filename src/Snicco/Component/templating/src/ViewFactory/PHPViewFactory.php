@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Templating\ViewFactory;
 
-use RuntimeException;
 use Snicco\Component\StrArr\Str;
 use Snicco\Component\Templating\Context\ViewContextResolver;
 use Snicco\Component\Templating\Exception\ViewCantBeRendered;
 use Snicco\Component\Templating\OutputBuffer;
 use Snicco\Component\Templating\ValueObject\View;
 use Throwable;
+
+use Webmozart\Assert\Assert;
 
 use function file_get_contents;
 use function ltrim;
@@ -32,13 +33,20 @@ final class PHPViewFactory implements ViewFactory
 
     private ViewContextResolver $composer_collection;
 
+    private int $content_parse_length;
+
     /**
      * @param list<string> $view_directories
+     * @param int          $parent_view_parse_length The length of the view content that will be used to parse a parent view
      */
-    public function __construct(ViewContextResolver $composers, array $view_directories)
-    {
+    public function __construct(
+        ViewContextResolver $composers,
+        array $view_directories,
+        int $parent_view_parse_length = 100
+    ) {
         $this->finder = new PHPViewFinder($view_directories);
         $this->composer_collection = $composers;
+        $this->content_parse_length = $parent_view_parse_length;
     }
 
     public function make(string $view): View
@@ -109,13 +117,9 @@ final class PHPViewFactory implements ViewFactory
     private function parseParentName(View $view): ?string
     {
         $path = (string) $view->path();
-        $data = file_get_contents($path, false, null, 0, 100);
+        $data = file_get_contents($path, false, null, 6, $this->content_parse_length);
 
-        if (false === $data) {
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException(sprintf('Cant read file contents of view [%s].', $path));
-            // @codeCoverageIgnoreEnd
-        }
+        Assert::string($data, sprintf('file_get_contents returned false for path [%s].', $path));
 
         $scope = Str::betweenFirst($data, '/*', '*/');
 
@@ -123,30 +127,14 @@ final class PHPViewFactory implements ViewFactory
 
         $match = preg_match($pattern, $scope, $matches);
 
-        if (false === $match) {
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException(sprintf('preg_match failed on string [%s]', $scope));
-            // @codeCoverageIgnoreEnd
-        }
+        Assert::notFalse($match, sprintf('preg_match failed on string [%s]', $scope));
 
         if (0 === $match) {
             return null;
         }
 
-        if (! isset($matches[1])) {
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
-        }
+        Assert::true(isset($matches[1]), 'preg_match assigned variable is missing key "1". This should never happen.');
 
-        $match = str_replace(' ', '', $matches[1]);
-
-        if ('' === $match) {
-            // @codeCoverageIgnoreStart
-            return null;
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $match;
+        return str_replace(' ', '', $matches[1]);
     }
 }
