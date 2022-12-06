@@ -42,6 +42,8 @@ return static function (ContainerConfigurator $configurator): void {
             __DIR__ . '/bin/php/split-package.php',
         ],
         __DIR__ . '/src/Snicco/Component/better-wp-cli/tests/_support',
+        __DIR__ . '/src/Snicco/Component/templating/tests/fixtures/views',
+        __DIR__ . '/src/Snicco/Component/templating/tests/fixtures/views2',
     ]);
 
     $parameters->set(Option::PARALLEL, true);

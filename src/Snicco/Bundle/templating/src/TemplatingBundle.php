@@ -116,12 +116,14 @@ final class TemplatingBundle implements Bundle
 
     private function bindPHPViewFactory(Kernel $kernel): void
     {
+        $config = $kernel->config();
+
         $kernel->container()
             ->shared(PHPViewFactory::class, fn (): PHPViewFactory => new PHPViewFactory(
                 $kernel->container()
                     ->make(ViewContextResolver::class),
-                $kernel->config()
-                    ->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)
+                $config->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES),
+                $config->getInteger('templating.' . TemplatingOption::PARENT_VIEW_PARSE_LENGTH)
             ));
     }
 

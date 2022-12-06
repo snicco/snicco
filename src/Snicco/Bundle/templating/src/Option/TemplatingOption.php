@@ -20,4 +20,9 @@ final class TemplatingOption
      * @var string
      */
     public const VIEW_COMPOSERS = 'composers';
+
+    /**
+     * @var string
+     */
+    public const PARENT_VIEW_PARSE_LENGTH = 'parent_view_parse_length';
 }

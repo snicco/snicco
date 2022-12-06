@@ -22,6 +22,13 @@ return [
     TemplatingOption::VIEW_FACTORIES => [PHPViewFactory::class],
 
     /*
+     * @see PHPViewFactory::__construct
+     *
+     * You can remove this option if you are not using the {@see PHPViewFactory}
+     */
+    TemplatingOption::PARENT_VIEW_PARSE_LENGTH => 100,
+
+    /*
      * View composers can be used to add variables to certain views without needing to
      * pass them explicitly every time the view is created.
      *
