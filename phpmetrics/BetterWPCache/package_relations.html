@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-10-08 12:42:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-12-06 17:15:28        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,18 +390,41 @@
 
     var relations = [
     {
+        "name": "Snicco\\Component\\BetterWPCache\\Exception",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Psr\\Cache"
+        ]
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\Cache",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\BetterWPCache",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\BetterWPAPI",
+            "global",
+            "Psr\\Cache",
+            "Snicco\\Component\\BetterWPCache\\Exception",
             "Psr\\SimpleCache",
             "Cache\\Bridge\\SimpleCache",
             "Cache\\TagInterop",
-            "Psr\\Cache",
-            "Cache\\Taggable",
-            "Snicco\\Component\\BetterWPCache\\Exception",
-            "global",
-            "Snicco\\Component\\BetterWPAPI"
+            "Cache\\Taggable"
         ]
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Psr\\SimpleCache",
@@ -419,30 +442,7 @@
         "relations": []
     },
     {
-        "name": "Psr\\Cache",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Cache\\Taggable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPCache\\Exception",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Psr\\Cache"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     }

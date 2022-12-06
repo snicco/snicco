@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-10-08 12:42:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-12-06 17:15:28        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,15 +390,10 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\Kernel\\KernelOption",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Exception\\ContainerIsLocked",
+        "name": "\\Snicco\\Component\\Kernel\\Exception\\FrozenService",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Kernel\\Exception\\ContainerIsLocked"
+            "\\Snicco\\Component\\Kernel\\Exception\\FrozenService"
         ]
     },
     {
@@ -417,58 +412,11 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\Exception\\FrozenService",
+        "name": "\\Snicco\\Component\\Kernel\\Exception\\ContainerIsLocked",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Kernel\\Exception\\FrozenService"
+            "\\Snicco\\Component\\Kernel\\Exception\\ContainerIsLocked"
         ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ArrayAccess",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Container\\ContainerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Webmozart\\Assert\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Configuration\\Config",
-        "size": 3000,
-        "relations": [
-            "\\Webmozart\\Assert\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\StrArr\\Arr",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Configuration\\ReadOnlyConfig",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Kernel\\Configuration\\PHPFileCache",
@@ -486,7 +434,37 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Configuration\\Config",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webmozart\\Assert\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\StrArr\\Arr",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Kernel\\Configuration\\NullCache",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Configuration\\ReadOnlyConfig",
         "size": 3000,
         "relations": []
     },
@@ -502,6 +480,26 @@
     },
     {
         "name": "\\FilesystemIterator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\KernelOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ArrayAccess",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Container\\ContainerInterface",
         "size": 3000,
         "relations": []
     },

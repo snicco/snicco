@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-10-08 12:42:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-12-06 17:15:28        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,17 +390,14 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
+        "name": "Snicco\\Component\\BetterWPHooks\\Exception",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\EventDispatcher",
-            "Snicco\\Component\\BetterWPHooks",
-            "Snicco\\Component\\BetterWPHooks\\EventFactory",
             "global"
         ]
     },
     {
-        "name": "Snicco\\Component\\EventDispatcher",
+        "name": "global",
         "size": 3000,
         "relations": []
     },
@@ -414,16 +411,7 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\BetterWPHooks\\EventFactory",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\BetterWPHooks\\EventMapping",
-            "global",
-            "Snicco\\Component\\BetterWPHooks\\Exception"
-        ]
-    },
-    {
-        "name": "global",
+        "name": "Snicco\\Component\\EventDispatcher",
         "size": 3000,
         "relations": []
     },
@@ -433,10 +421,22 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\BetterWPHooks\\Exception",
+        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\EventDispatcher",
+            "Snicco\\Component\\BetterWPHooks",
+            "Snicco\\Component\\BetterWPHooks\\EventFactory",
             "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPHooks\\EventFactory",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\BetterWPHooks\\EventMapping",
+            "global",
+            "Snicco\\Component\\BetterWPHooks\\Exception"
         ]
     }
 ];

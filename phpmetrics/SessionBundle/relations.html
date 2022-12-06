@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-10-08 12:42:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-12-06 17:15:29        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,43 +390,6 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogout",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogin",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\WP_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\SessionEncryptor",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Bundle\\Session\\SessionBundle",
         "size": 3000,
         "relations": [
@@ -479,6 +442,14 @@
         "name": "\\Snicco\\Component\\Session\\Driver\\InMemoryDriver",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\SessionEncryptor",
+            "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\Session\\Driver\\EncryptedDriver",
@@ -551,24 +522,63 @@
         ]
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\ShareSessionWithViews",
+        "name": "\\Snicco\\Component\\Session\\SessionEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Option\\SessionOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SessionNoCache",
+        "size": 3000,
+        "relations": [
+            "\\Psr\\Http\\Server\\MiddlewareInterface",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Psr\\Http\\Message\\ServerRequestInterface",
+            "\\Psr\\Http\\Server\\RequestHandlerInterface"
+        ]
+    },
+    {
+        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ResponseInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ServerRequestInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SaveResponseAttributes",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
             "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\LogicException",
-            "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors"
+            "\\LogicException"
         ]
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ResponseInterface",
         "size": 3000,
         "relations": []
     },
@@ -588,49 +598,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors",
-        "size": 3000,
-        "relations": [
-            "\\InvalidArgumentException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SessionNoCache",
-        "size": 3000,
-        "relations": [
-            "\\Psr\\Http\\Server\\MiddlewareInterface",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Psr\\Http\\Server\\RequestHandlerInterface"
-        ]
-    },
-    {
-        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ServerRequestInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\AllowMutableSessionForReadVerbs",
-        "size": 3000,
-        "relations": [
-            "\\Psr\\Http\\Server\\MiddlewareInterface",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Psr\\Http\\Server\\RequestHandlerInterface",
-            "\\LogicException"
-        ]
-    },
-    {
         "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
         "size": 3000,
         "relations": []
@@ -644,6 +611,14 @@
         "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogin",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
+            "\\WP_User"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\Session\\Session",
@@ -671,18 +646,49 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SaveResponseAttributes",
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\AllowMutableSessionForReadVerbs",
+        "size": 3000,
+        "relations": [
+            "\\Psr\\Http\\Server\\MiddlewareInterface",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Psr\\Http\\Message\\ServerRequestInterface",
+            "\\Psr\\Http\\Server\\RequestHandlerInterface",
+            "\\LogicException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\ShareSessionWithViews",
         "size": 3000,
         "relations": [
             "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
             "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
             "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\LogicException"
+            "\\LogicException",
+            "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors"
         ]
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Option\\SessionOption",
+        "name": "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors",
+        "size": 3000,
+        "relations": [
+            "\\InvalidArgumentException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogout",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\WP_User",
         "size": 3000,
         "relations": []
     }

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-10-08 12:42:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-12-06 17:15:29        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -393,13 +393,23 @@
         "name": "Snicco\\Middleware\\Payload",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\Psr7ErrorHandler",
+            "global",
             "Snicco\\Component\\HttpRouting\\Middleware",
             "Webmozart\\Assert",
             "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "global",
-            "Snicco\\Component\\Psr7ErrorHandler"
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
         ]
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\HttpRouting\\Middleware",
@@ -418,16 +428,6 @@
     },
     {
         "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler",
         "size": 3000,
         "relations": []
     }

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-10-08 12:42:01        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2022-12-06 17:15:28        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,19 +390,31 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\BetterWPMail\\Event",
+        "name": "Snicco\\Component\\BetterWPMail\\Exception",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\BetterWPMail\\ValueObject",
-            "Snicco\\Component\\BetterWPMail"
+            "global"
         ]
     },
     {
-        "name": "Snicco\\Component\\BetterWPMail\\ValueObject",
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Renderer",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\BetterWPMail\\Exception"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPMail\\Transport",
         "size": 3000,
         "relations": [
             "Snicco\\Component\\BetterWPMail",
-            "global"
+            "Snicco\\Component\\BetterWPMail\\ValueObject",
+            "Snicco\\Component\\BetterWPMail\\Exception"
         ]
     },
     {
@@ -418,45 +430,33 @@
         ]
     },
     {
+        "name": "Snicco\\Component\\BetterWPMail\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\BetterWPMail",
+            "global"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\BetterWPMail\\Transport",
+        "name": "Snicco\\Component\\BetterWPMail\\Event",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\BetterWPMail\\ValueObject",
             "Snicco\\Component\\BetterWPMail",
-            "Snicco\\Component\\BetterWPMail\\Exception"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Renderer",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\BetterWPMail\\Exception"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPMail\\Exception",
-        "size": 3000,
-        "relations": [
-            "global"
+            "Snicco\\Component\\BetterWPMail\\ValueObject"
         ]
     },
     {
         "name": "Snicco\\Component\\BetterWPMail\\Testing",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\BetterWPMail\\ValueObject",
             "Snicco\\Component\\BetterWPMail\\Transport",
             "Snicco\\Component\\BetterWPMail",
+            "Snicco\\Component\\BetterWPMail\\ValueObject",
             "global",
             "PHPUnit\\Framework"
         ]
