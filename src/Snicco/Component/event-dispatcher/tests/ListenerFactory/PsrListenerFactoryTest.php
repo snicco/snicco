@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\EventDispatcher\Tests\ListenerFactory;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Snicco\Component\EventDispatcher\Exception\CantCreateListener;
@@ -43,6 +44,25 @@ final class PsrListenerFactoryTest extends TestCase
 
         $this->expectException(CantCreateListener::class);
         $this->expectExceptionMessage('Cant create listener class [stdClass] for event [foo_event]');
+        $factory->create(stdClass::class, 'foo_event');
+    }
+
+    /**
+     * @test
+     */
+    public function exception_if_non_object_is_stored(): void
+    {
+        $pimple = new Container();
+        $pimple[stdClass::class] = 'foo';
+
+        $pimple_psr = new \Pimple\Psr11\Container($pimple);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            '$this->psr_container->get($listener_class) should return an object. Got [string]'
+        );
+
+        $factory = new PsrListenerFactory($pimple_psr);
         $factory->create(stdClass::class, 'foo_event');
     }
 }

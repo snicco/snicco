@@ -178,7 +178,7 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('START TRANSACTION', [], $e);
                 }
-                /** @codeCoverageIgnoreEnd */
+                // @codeCoverageIgnoreEnd
                 $end = microtime(true);
 
                 $this->log(new QueryInfo($start, $end, 'START TRANSACTION', []));
@@ -193,7 +193,7 @@ final class BetterWPDB
                 catch (mysqli_sql_exception $e) {
                     throw QueryException::fromMysqliE('COMMIT', [], $e);
                 }
-                /** @codeCoverageIgnoreEnd */
+                // @codeCoverageIgnoreEnd
                 $end = microtime(true);
 
                 $this->log(new QueryInfo($start, $end, 'COMMIT', []));

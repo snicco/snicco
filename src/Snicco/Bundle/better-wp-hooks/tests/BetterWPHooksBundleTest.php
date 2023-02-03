@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Bundle\BetterWPHooks\Tests;
 
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
 use Snicco\Component\BetterWPHooks\EventMapping\EventMapper;
 use Snicco\Component\BetterWPHooks\WPEventDispatcher;
+use Snicco\Component\EventDispatcher\BaseEventDispatcher;
 use Snicco\Component\EventDispatcher\EventDispatcher;
 use Snicco\Component\EventDispatcher\Testing\TestableEventDispatcher;
 use Snicco\Component\Kernel\Kernel;
@@ -119,6 +121,29 @@ final class BetterWPHooksBundleTest extends TestCase
         $kernel->boot();
 
         $this->assertInstanceOf(WPEventDispatcher::class, $kernel->container()->make(EventDispatcher::class));
+    }
+
+    /**
+     * @test
+     */
+    public function exception_if_in_testing_no_testable_dispatcher_is_bound(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+
+        $kernel->afterRegister(function (Kernel $kernel) {
+            $kernel->container()
+                ->instance(EventDispatcher::class, new BaseEventDispatcher());
+        });
+
+        $kernel->boot();
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            'The testable event dispatcher did not get bound correctly. This should never happen.'
+        );
+
+        $kernel->container()
+            ->make(TestableEventDispatcher::class);
     }
 
     protected function fixturesDir(): string
