@@ -181,6 +181,9 @@ final class Bootstrap2 implements Bootstrapper
 
     public function configure(WritableConfig $config, Kernel $kernel): void
     {
+        $kernel->afterConfiguration(function (WritableConfig $config) {
+            $config->set('abc', 'def');
+        });
     }
 
     public function register(Kernel $kernel): void

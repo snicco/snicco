@@ -319,6 +319,22 @@ final class KernelTest extends TestCase
     /**
      * @test
      */
+    public function after_configuration_callbacks_can_be_called_from_inside_bootstrapper(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::testing(),
+            Directories::fromDefaults($this->base_dir . '/bundle_and_bootstrapper')
+        );
+
+        $kernel->boot();
+
+        $this->assertSame('def', $kernel->config()->getString('abc'));
+    }
+
+    /**
+     * @test
+     */
     public function test_before_configuration_callbacks_can_be_added(): void
     {
         $kernel = new Kernel(

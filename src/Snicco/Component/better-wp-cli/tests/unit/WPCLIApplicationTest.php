@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPCLI\Tests\unit;
 
+use ErrorException;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,7 @@ use function ob_get_clean;
 use function ob_get_contents;
 use function ob_start;
 use function rewind;
+use function set_error_handler;
 use function stream_get_contents;
 use function trigger_error;
 use function trim;
@@ -298,8 +300,40 @@ final class WPCLIApplicationTest extends TestCase
     /**
      * @test
      */
+    public function that_a_custom_error_handler_can_be_used(): void
+    {
+        $application = new WPCLIApplication('snicco', new ArrayCommandLoader([]));
+        $application->autoExit(false);
+        $application->catchException(false);
+
+        $application->useErrorHandler(function (int $severity, string $message, string $file, int $line) {
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        });
+
+        $this->expectException(ErrorException::class);
+        $this->expectExceptionMessage('custom error handler warning');
+
+        $application->runCommand(
+            new ArrayInput($this->getInMemoryStream()),
+            new TestOutput(),
+            new TriggerErrorCommand(function (): void {
+                trigger_error('custom error handler warning', E_USER_WARNING);
+            })
+        );
+    }
+
+    /**
+     * @test
+     */
     public function that_error_converting_does_not_apply_globally(): void
     {
+        $called = false;
+        set_error_handler(function () use (&$called) {
+            $called = true;
+
+            return true;
+        }, E_USER_WARNING);
+
         $application = new WPCLIApplication('snicco', new ArrayCommandLoader([]));
         $application->autoExit(false);
 
@@ -315,10 +349,9 @@ final class WPCLIApplicationTest extends TestCase
         $this->assertSame(1, $code);
         $this->assertSame('', ob_get_clean());
 
-        $this->expectWarning();
-        $this->expectWarningMessage('some warning');
-
         trigger_error('some warning', E_USER_WARNING);
+
+        $this->assertTrue($called);
     }
 
     /**

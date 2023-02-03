@@ -79,7 +79,7 @@ final class StreamLogger extends AbstractLogger
                 $message
             );
         }
-        // @codeCoverageIgnoreStart
+        // @codeCoverageIgnoreEnd
     }
 
     private function linePrefix(): string

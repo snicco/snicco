@@ -226,11 +226,11 @@ final class Kernel
             $bundle->configure($writable_config, $this);
         }
 
-        $this->configuration_configured = true;
-
         foreach ($this->bootstrappers as $bootstrapper) {
             $bootstrapper->configure($writable_config, $this);
         }
+
+        $this->configuration_configured = true;
 
         foreach ($this->after_configuration_callbacks as $callback) {
             $callback($writable_config, $this);

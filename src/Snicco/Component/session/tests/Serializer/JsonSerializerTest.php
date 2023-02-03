@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Session\Tests\Serializer;
 
+use InvalidArgumentException;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 use Snicco\Component\Session\Serializer\JsonSerializer;
@@ -53,5 +54,16 @@ final class JsonSerializerTest extends TestCase
         $this->expectException(JsonException::class);
         $s = new JsonSerializer();
         $s->deserialize("\xB1\x31");
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_for_non_array(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must return an array');
+        $s = new JsonSerializer();
+        $s->deserialize((string) json_encode('foo'));
     }
 }

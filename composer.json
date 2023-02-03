@@ -204,7 +204,7 @@
         "allow-plugins": false
     },
     "scripts": {
-        "phpunit:all": "vendor/bin/phpunit --testsuite unit",
+        "phpunit:all": "vendor/bin/phpunit",
         "phpunit:component": "vendor/bin/phpunit --testsuite component",
         "phpunit:middleware": "vendor/bin/phpunit --testsuite middleware",
         "phpunit:bridge": "vendor/bin/phpunit --testsuite bridge",

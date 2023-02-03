@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\BetterWPCLI;
 
+use Closure;
 use ErrorException;
 use LogicException;
 use Snicco\Component\BetterWPCLI\CommandLoader\CommandLoader;
@@ -20,8 +21,8 @@ use Snicco\Component\BetterWPCLI\Style\Terminal;
 use Snicco\Component\BetterWPCLI\Style\Text;
 use Snicco\Component\BetterWPCLI\Synopsis\Synopsis;
 use Throwable;
-use WP_CLI;
 
+use WP_CLI;
 use function array_map;
 use function array_unshift;
 use function basename;
@@ -36,8 +37,8 @@ use function str_pad;
 use function str_repeat;
 use function str_replace;
 use function strlen;
-use function trim;
 
+use function trim;
 use const E_ALL;
 
 /**
@@ -59,11 +60,17 @@ final class WPCLIApplication
 
     private Logger $logger;
 
+    /**
+     * @var callable(int, string, string=, int=, array<array-key, mixed>=):?bool
+     */
+    private $error_handler;
+
     public function __construct(string $name, CommandLoader $command_loader, Logger $logger = null)
     {
         $this->name = str_replace(' ', '-', $name);
         $this->command_loader = $command_loader;
         $this->logger = $logger ?: new StdErrLogger($name);
+        $this->error_handler = $this->defaultErrorHandler();
     }
 
     public function catchException(bool $catch_exceptions): void
@@ -71,9 +78,25 @@ final class WPCLIApplication
         $this->catch_exceptions = $catch_exceptions;
     }
 
+    /**
+     * The error level is only used in combination with the default error
+     * handler that just throws exceptions.
+     *
+     * If more fine-grained control is needed, you can use the
+     *
+     * {@see self::useErrorHandler()} method.
+     */
     public function throwExceptionsAt(int $error_level): void
     {
         $this->error_level = $error_level;
+    }
+
+    /**
+     * @param callable(int, string, string=, int=, array<array-key, mixed>=):?bool $error_handler
+     */
+    public function useErrorHandler(callable $error_handler): void
+    {
+        $this->error_handler = $error_handler;
     }
 
     public function autoExit(bool $auto_exit): void
@@ -279,13 +302,12 @@ final class WPCLIApplication
 
     private function doRunCommand(Command $command, Input $input, Output $output): int
     {
-        set_error_handler(function (int $severity, string $message, string $file, int $line): bool {
-            if (($this->error_level & $severity) === 0) {
-                return false;
-            }
-
-            throw new ErrorException($message, 0, $severity, $file, $line);
-        });
+        /**
+         * This is a false positive.
+         *
+         * @psalm-suppress InvalidArgument
+         */
+        set_error_handler($this->error_handler);
 
         try {
             return $command->execute($input, $output);
@@ -449,5 +471,19 @@ final class WPCLIApplication
     private function prefixedCommandName(string $command_class): string
     {
         return $this->name . ' ' . $command_class::name();
+    }
+
+    /**
+     * @return Closure(int, string, string, int):bool
+     */
+    private function defaultErrorHandler(): Closure
+    {
+        return function (int $severity, string $message, string $file, int $line): bool {
+            if (($this->error_level & $severity) === 0) {
+                return false;
+            }
+
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        };
     }
 }
