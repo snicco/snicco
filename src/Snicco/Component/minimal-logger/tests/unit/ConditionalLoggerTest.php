@@ -12,6 +12,8 @@ use Snicco\Component\MinimalLogger\ConditionalLogger;
 
 /**
  * @internal
+ *
+ * @psalm-suppress DeprecatedMethod @todo Remove for PHPUnit 10, expectDeprecation is deprecated.
  */
 final class ConditionalLoggerTest extends TestCase
 {
@@ -65,7 +67,7 @@ final class ConditionalLoggerTest extends TestCase
     public function that_exceptions_are_thrown_for_minimum_invalid_level(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectDeprecationMessage('bogus');
+        $this->expectExceptionMessage('bogus');
         new ConditionalLogger(new TestLogger(), 'bogus');
     }
 
@@ -75,7 +77,7 @@ final class ConditionalLoggerTest extends TestCase
     public function that_exceptions_are_thrown_for_invalid_level(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectDeprecationMessage('bogus');
+        $this->expectExceptionMessage('bogus');
         $logger = new ConditionalLogger(new TestLogger());
         $logger->log('bogus', 'foo');
     }

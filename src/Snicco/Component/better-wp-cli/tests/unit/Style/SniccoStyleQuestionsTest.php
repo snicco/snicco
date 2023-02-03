@@ -124,7 +124,7 @@ final class SniccoStyleQuestionsTest extends TestCase
         $style = new SniccoStyle($this->createStreamableInputInterfaceMock($input), $output, true, false, false);
 
         $this->expectException(CouldNotReadHiddenInput::class);
-        $this->expectDeprecationMessage('stty');
+        $this->expectExceptionMessage('stty');
 
         $style->askHidden('What is your password?');
     }
@@ -140,7 +140,7 @@ final class SniccoStyleQuestionsTest extends TestCase
         $style = new SniccoStyle($this->createStreamableInputInterfaceMock($input), $output, true, true, );
 
         $this->expectException(CouldNotReadHiddenInput::class);
-        $this->expectDeprecationMessage('Windows');
+        $this->expectExceptionMessage('Windows');
 
         $style->askHidden('What is your password?');
     }
