@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/snicco/snicco/compare/v1.5.0...v1.6.0) (2023-02-03)
+
+
+### Bug Fixes
+
+* **kernel:** allow after_configuration callbacks from bootstrappers ([d17fc62](https://github.com/snicco/snicco/commit/d17fc620e398520c382ceb22a31936a4ca8ab1a1)), closes [#175](https://github.com/snicco/snicco/issues/175)
+
+
+### Features
+
+* **better-wp-cli:** allow to set custom set_error_handler function ([b94b1ea](https://github.com/snicco/snicco/commit/b94b1eae51d3098c72a2ad0145b3b70d3774fd2c)), closes [#176](https://github.com/snicco/snicco/issues/176)
+
 # [1.5.0](https://github.com/snicco/snicco/compare/v1.4.2...v1.5.0) (2022-12-06)
 
 
