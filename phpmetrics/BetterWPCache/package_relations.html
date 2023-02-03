@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,25 @@
 
     var relations = [
     {
+        "name": "Snicco\\Component\\BetterWPCache",
+        "size": 3000,
+        "relations": [
+            "Psr\\Cache",
+            "Snicco\\Component\\BetterWPCache\\Exception",
+            "global",
+            "Psr\\SimpleCache",
+            "Cache\\Bridge\\SimpleCache",
+            "Cache\\TagInterop",
+            "Cache\\Taggable",
+            "Snicco\\Component\\BetterWPAPI"
+        ]
+    },
+    {
+        "name": "Psr\\Cache",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\BetterWPCache\\Exception",
         "size": 3000,
         "relations": [
@@ -399,30 +418,6 @@
     },
     {
         "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Psr\\Cache",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPCache",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\BetterWPAPI",
-            "global",
-            "Psr\\Cache",
-            "Snicco\\Component\\BetterWPCache\\Exception",
-            "Psr\\SimpleCache",
-            "Cache\\Bridge\\SimpleCache",
-            "Cache\\TagInterop",
-            "Cache\\Taggable"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
@@ -443,6 +438,11 @@
     },
     {
         "name": "Cache\\Taggable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     }

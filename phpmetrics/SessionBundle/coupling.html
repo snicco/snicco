@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -224,6 +224,25 @@
                 </thead>
                 <tbody>
                                     <tr>
+                        <td><span class="path">Snicco\Bundle\Session\ValueObject\SessionErrors</span></td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                1                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                1                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.5);">
+                                0.5                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                            </tr>
+                                    <tr>
                         <td><span class="path">Snicco\Bundle\Session\SessionBundle</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
@@ -243,7 +262,7 @@
                             </td>
                                             </tr>
                                     <tr>
-                        <td><span class="path">Snicco\Bundle\Session\DefuseSessionEncryptor</span></td>
+                        <td><span class="path">Snicco\Bundle\Session\Event\WPLogin</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
                                 1                                </span>
@@ -262,18 +281,18 @@
                             </td>
                                             </tr>
                                     <tr>
-                        <td><span class="path">Snicco\Bundle\Session\Option\SessionOption</span></td>
+                        <td><span class="path">Snicco\Bundle\Session\Event\WPLogout</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
                                 0                                </span>
                             </td>
                                                     <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
+                                1                                </span>
                             </td>
                                                     <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 1);">
+                                1                                </span>
                             </td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
@@ -300,7 +319,7 @@
                             </td>
                                             </tr>
                                     <tr>
-                        <td><span class="path">Snicco\Bundle\Session\Middleware\SaveResponseAttributes</span></td>
+                        <td><span class="path">Snicco\Bundle\Session\Middleware\AllowMutableSessionForReadVerbs</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
                                 0                                </span>
@@ -338,25 +357,6 @@
                             </td>
                                             </tr>
                                     <tr>
-                        <td><span class="path">Snicco\Bundle\Session\Middleware\AllowMutableSessionForReadVerbs</span></td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
-                                5                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 1);">
-                                1                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
-                            </td>
-                                            </tr>
-                                    <tr>
                         <td><span class="path">Snicco\Bundle\Session\Middleware\ShareSessionWithViews</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
@@ -376,14 +376,14 @@
                             </td>
                                             </tr>
                                     <tr>
-                        <td><span class="path">Snicco\Bundle\Session\Event\WPLogout</span></td>
+                        <td><span class="path">Snicco\Bundle\Session\Middleware\SaveResponseAttributes</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
                                 0                                </span>
                             </td>
                                                     <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                1                                </span>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.11);">
+                                5                                </span>
                             </td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 1);">
@@ -395,7 +395,26 @@
                             </td>
                                             </tr>
                                     <tr>
-                        <td><span class="path">Snicco\Bundle\Session\Event\WPLogin</span></td>
+                        <td><span class="path">Snicco\Bundle\Session\Option\SessionOption</span></td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                                    <td>
+                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
+                                0                                </span>
+                            </td>
+                                            </tr>
+                                    <tr>
+                        <td><span class="path">Snicco\Bundle\Session\DefuseSessionEncryptor</span></td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
                                 1                                </span>
@@ -407,25 +426,6 @@
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.67);">
                                 0.67                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">
-                                0                                </span>
-                            </td>
-                                            </tr>
-                                    <tr>
-                        <td><span class="path">Snicco\Bundle\Session\ValueObject\SessionErrors</span></td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                1                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.02);">
-                                1                                </span>
-                            </td>
-                                                    <td>
-                                <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0.5);">
-                                0.5                                </span>
                             </td>
                                                     <td>
                                 <span class="badge"  style="background-color: hsla(203, 82%, 76%, 0);">

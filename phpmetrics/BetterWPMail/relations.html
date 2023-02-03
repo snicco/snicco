@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,51 +390,6 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmail",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Throwable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\WP_Error",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\FilesystemRenderer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\AggregateRenderer",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\BetterWPMail\\Transport\\WPMailTransport",
         "size": 3000,
         "relations": []
@@ -465,7 +420,50 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail",
+            "\\WP_Error"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Attachment",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailDefaults",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Countable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\IteratorAggregate",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ArrayIterator",
         "size": 3000,
         "relations": []
     },
@@ -488,6 +486,21 @@
         ]
     },
     {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\FilesystemRenderer",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\AggregateRenderer",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
+            "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\BetterWPMail\\Event\\NullEvents",
         "size": 3000,
         "relations": [
@@ -497,27 +510,11 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailDefaults",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailDefaults",
-            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
-        ]
-    },
-    {
         "name": "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
         "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
-        "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent",
@@ -525,6 +522,18 @@
         "relations": [
             "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Email",
             "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
+        "size": 3000,
+        "relations": [
+            "\\RuntimeException"
         ]
     },
     {
@@ -543,27 +552,27 @@
         "relations": []
     },
     {
-        "name": "\\Countable",
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\IteratorAggregate",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmail",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\ArrayIterator",
+        "name": "\\Throwable",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Attachment",
+        "name": "\\WP_Error",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\InvalidArgumentException",
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },

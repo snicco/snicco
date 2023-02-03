@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -224,6 +224,17 @@
                     </tr>
                     </thead>
                                             <tr>
+                            <td><span class="path">Snicco\Bundle\Session\ValueObject</span></td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0.5</td>
+                            <td>0.5</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
                             <td><span class="path">Snicco\Bundle\Session</span></td>
                             <td>2</td>
                             <td>0</td>
@@ -233,28 +244,6 @@
                             <td>12</td>
                             <td>0</td>
                             <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Session\Option</span></td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td></td>
-                            <td></td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                                            <tr>
-                            <td><span class="path">Snicco\Bundle\Session\Middleware</span></td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>0.95</td>
-                            <td>0.05</td>
-                            <td>19</td>
-                            <td>12</td>
-                            <td>1</td>
-                            <td>1</td>
                         </tr>
                                             <tr>
                             <td><span class="path">Snicco\Bundle\Session\Event</span></td>
@@ -268,15 +257,26 @@
                             <td>1</td>
                         </tr>
                                             <tr>
-                            <td><span class="path">Snicco\Bundle\Session\ValueObject</span></td>
+                            <td><span class="path">Snicco\Bundle\Session\Middleware</span></td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0.95</td>
+                            <td>0.05</td>
+                            <td>19</td>
+                            <td>12</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                                            <tr>
+                            <td><span class="path">Snicco\Bundle\Session\Option</span></td>
                             <td>1</td>
                             <td>0</td>
-                            <td>0.5</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
+                            <td></td>
+                            <td></td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
                         </tr>
                                     </table>
             </div>
@@ -462,20 +462,20 @@
 
     var spots = [
     {
+        "name": "Snicco\\Bundle\\Session\\ValueObject",
+        "abstraction": 0,
+        "instability": 0.5,
+        "distance": 0.35355339059327373,
+        "normalizedDistance": 0.5,
+        "classCount": 1
+    },
+    {
         "name": "Snicco\\Bundle\\Session",
         "abstraction": 0,
         "instability": 1,
         "distance": 0,
         "normalizedDistance": 0,
         "classCount": 2
-    },
-    {
-        "name": "Snicco\\Bundle\\Session\\Middleware",
-        "abstraction": 0,
-        "instability": 0.95,
-        "distance": 0.035355339059327404,
-        "normalizedDistance": 0.050000000000000044,
-        "classCount": 5
     },
     {
         "name": "Snicco\\Bundle\\Session\\Event",
@@ -486,12 +486,12 @@
         "classCount": 2
     },
     {
-        "name": "Snicco\\Bundle\\Session\\ValueObject",
+        "name": "Snicco\\Bundle\\Session\\Middleware",
         "abstraction": 0,
-        "instability": 0.5,
-        "distance": 0.35355339059327373,
-        "normalizedDistance": 0.5,
-        "classCount": 1
+        "instability": 0.95,
+        "distance": 0.035355339059327404,
+        "normalizedDistance": 0.050000000000000044,
+        "classCount": 5
     }
 ];
 

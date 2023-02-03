@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,51 @@
 
     var relations = [
     {
+        "name": "Snicco\\Component\\Kernel\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "Webmozart\\Assert",
+            "global"
+        ]
+    },
+    {
+        "name": "Webmozart\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Kernel",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Kernel\\ValueObject",
+            "global",
+            "Snicco\\Component\\Kernel\\Configuration",
+            "Psr\\Container",
+            "Webmozart\\Assert"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Kernel\\Configuration",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\Kernel\\Exception",
+            "Webmozart\\Assert",
+            "Webimpress\\SafeWriter"
+        ]
+    },
+    {
+        "name": "Psr\\Container",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\Kernel\\Exception",
         "size": 3000,
         "relations": [
@@ -398,59 +443,14 @@
         ]
     },
     {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Psr\\Container",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\Configuration",
-        "size": 3000,
-        "relations": [
-            "Webimpress\\SafeWriter",
-            "Webmozart\\Assert",
-            "Snicco\\Component\\StrArr",
-            "global",
-            "Snicco\\Component\\Kernel\\Exception"
-        ]
-    },
-    {
-        "name": "Webimpress\\SafeWriter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Webmozart\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\StrArr",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Kernel",
+        "name": "Webimpress\\SafeWriter",
         "size": 3000,
-        "relations": [
-            "global",
-            "Psr\\Container",
-            "Webmozart\\Assert",
-            "Snicco\\Component\\Kernel\\ValueObject",
-            "Snicco\\Component\\Kernel\\Configuration"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\ValueObject",
-        "size": 3000,
-        "relations": [
-            "Webmozart\\Assert",
-            "global"
-        ]
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\Kernel\\Testing",

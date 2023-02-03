@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,27 +390,25 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheItem",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Cache\\CacheItemInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\BetterWPCache\\Exception\\Psr6InvalidArgumentException",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\InvalidArgumentException",
+            "\\Psr\\Cache\\InvalidArgumentException"
+        ]
     },
     {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Cache\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "name": "\\DateTime",
         "size": 3000,
         "relations": []
     },
@@ -425,14 +423,20 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheItem",
+        "name": "\\Snicco\\Component\\BetterWPCache\\WPCacheAPI",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\BetterWPCache\\WPCacheItem"
+            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "\\InvalidArgumentException"
         ]
     },
     {
-        "name": "\\Psr\\Cache\\CacheItemInterface",
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Cache\\InvalidArgumentException",
         "size": 3000,
         "relations": []
     },
@@ -469,7 +473,7 @@
         "relations": []
     },
     {
-        "name": "\\DateTime",
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
     }

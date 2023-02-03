@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,17 +390,27 @@
 
     var relations = [
     {
+        "name": "Snicco\\Bundle\\HttpRouting\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Bundle\\HttpRouting",
         "size": 3000,
         "relations": [
             "Snicco\\Component\\StrArr",
             "Webmozart\\Assert",
-            "Snicco\\Component\\EventDispatcher",
-            "Snicco\\Component\\Kernel\\ValueObject",
-            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Psr\\Http\\Message",
             "global",
-            "Webimpress\\SafeWriter",
             "Snicco\\Component\\Kernel",
+            "Snicco\\Component\\Kernel\\ValueObject",
             "Snicco\\Component\\Kernel\\Configuration",
             "Snicco\\Component\\HttpRouting\\Routing\\RouteLoader",
             "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
@@ -411,6 +421,7 @@
             "Snicco\\Component\\Psr7ErrorHandler\\Log",
             "Snicco\\Component\\Psr7ErrorHandler",
             "Snicco\\Component\\HttpRouting",
+            "Snicco\\Component\\HttpRouting\\Middleware",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Nyholm\\Psr7Server",
             "Snicco\\Component\\HttpRouting\\Http",
@@ -420,8 +431,9 @@
             "Snicco\\Component\\Psr7ErrorHandler\\Information",
             "Snicco\\Component\\Psr7ErrorHandler\\Identifier",
             "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
+            "Snicco\\Component\\EventDispatcher",
+            "Webimpress\\SafeWriter",
             "Psr\\EventDispatcher",
-            "Psr\\Http\\Message",
             "Snicco\\Bundle\\HttpRouting\\Event"
         ]
     },
@@ -436,17 +448,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\EventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Kernel\\ValueObject",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "name": "Psr\\Http\\Message",
         "size": 3000,
         "relations": []
     },
@@ -456,12 +458,12 @@
         "relations": []
     },
     {
-        "name": "Webimpress\\SafeWriter",
+        "name": "Snicco\\Component\\Kernel",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Kernel",
+        "name": "Snicco\\Component\\Kernel\\ValueObject",
         "size": 3000,
         "relations": []
     },
@@ -516,7 +518,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "name": "Snicco\\Component\\HttpRouting\\Middleware",
         "size": 3000,
         "relations": []
     },
@@ -544,13 +546,13 @@
         "name": "Snicco\\Bundle\\HttpRouting\\Middleware",
         "size": 3000,
         "relations": [
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Component\\BetterWPAPI",
             "Psr\\Http\\Server",
             "Psr\\Log",
-            "Psr\\Http\\Message",
-            "global",
-            "Snicco\\Component\\HttpRouting\\Middleware",
-            "Snicco\\Component\\BetterWPAPI",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
+            "global"
         ]
     },
     {
@@ -567,11 +569,21 @@
         "name": "Snicco\\Bundle\\HttpRouting\\ResponseEmitter",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Component\\EventDispatcher",
             "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Laminas\\HttpHandlerRunner\\Emitter"
         ]
+    },
+    {
+        "name": "Snicco\\Component\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Webimpress\\SafeWriter",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Psr\\EventDispatcher",
@@ -579,19 +591,7 @@
         "relations": []
     },
     {
-        "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\Event",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
-        ]
-    },
-    {
-        "name": "Snicco\\Bundle\\HttpRouting\\Option",
+        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
@@ -606,7 +606,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\BetterWPAPI",
+        "name": "Snicco\\Bundle\\HttpRouting\\Option",
         "size": 3000,
         "relations": []
     },

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,44 +390,13 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\Templating\\ViewFactory",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Templating\\Context",
-            "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\Templating",
-            "global",
-            "Snicco\\Component\\Templating\\Exception",
-            "Webmozart\\Assert",
-            "Snicco\\Component\\StrArr"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\Templating\\Context",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\StrArr",
             "global",
-            "Snicco\\Component\\Templating\\Exception"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\ValueObject",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Templating\\Exception"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Templating",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Snicco\\Component\\Templating\\ViewFactory",
+            "Snicco\\Component\\Templating\\Exception",
             "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\Templating\\Exception"
+            "Snicco\\Component\\StrArr"
         ]
     },
     {
@@ -443,12 +412,43 @@
         ]
     },
     {
-        "name": "Webmozart\\Assert",
+        "name": "Snicco\\Component\\Templating\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Templating\\Exception"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\StrArr",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\StrArr",
+        "name": "Snicco\\Component\\Templating",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Templating\\ViewFactory",
+            "global",
+            "Snicco\\Component\\Templating\\ValueObject",
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\Templating\\Exception"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\ViewFactory",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Templating\\Context",
+            "Snicco\\Component\\Templating\\ValueObject",
+            "Snicco\\Component\\Templating",
+            "global",
+            "Snicco\\Component\\Templating\\Exception",
+            "Webmozart\\Assert",
+            "Snicco\\Component\\StrArr"
+        ]
+    },
+    {
+        "name": "Webmozart\\Assert",
         "size": 3000,
         "relations": []
     }

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,106 +390,102 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
+        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\AbstractBrowser",
+        "name": "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\HttpKernel",
+        "name": "\\Snicco\\Component\\Kernel\\Kernel",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Psr17FactoryDiscovery",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\ApiRequestDetector",
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\History",
+        "name": "\\RecursiveDirectoryIterator",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\CookieJar",
+        "name": "\\RecursiveIteratorIterator",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
+        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTestHelpers",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
+            "\\Snicco\\Component\\Kernel\\DIContainer",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Snicco\\Bundle\\Testing\\Functional\\AssertableDOM",
         "size": 3000,
-        "relations": [
-            "\\Symfony\\Component\\DomCrawler\\Crawler",
-            "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
-            "\\PHPUnit\\Framework\\Assert",
-            "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
-            "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
-            "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
-            "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
-            "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame"
-        ]
+        "relations": []
     },
     {
-        "name": "\\LogicException",
+        "name": "\\Symfony\\Component\\DomCrawler\\Crawler",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\BadMethodCallException",
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Webmozart\\Assert\\Assert",
+        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\Response",
+        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\Request",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\StrArr\\Str",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ServerRequestInterface",
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame",
         "size": 3000,
         "relations": []
     },
@@ -532,17 +528,17 @@
         "relations": []
     },
     {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
         "size": 3000,
         "relations": []
     },
@@ -557,7 +553,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\Kernel",
+        "name": "\\Webmozart\\Assert\\Assert",
         "size": 3000,
         "relations": []
     },
@@ -567,7 +563,36 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
+        "size": 3000,
+        "relations": [
+            "\\Symfony\\Component\\BrowserKit\\AbstractBrowser",
+            "\\Snicco\\Bundle\\HttpRouting\\HttpKernel",
+            "\\Snicco\\Bundle\\HttpRouting\\Psr17FactoryDiscovery",
+            "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
+            "\\Snicco\\Bundle\\HttpRouting\\ApiRequestDetector",
+            "\\Symfony\\Component\\BrowserKit\\History",
+            "\\Symfony\\Component\\BrowserKit\\CookieJar",
+            "\\Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
+            "\\Snicco\\Bundle\\Testing\\Functional\\AssertableDOM",
+            "\\LogicException",
+            "\\BadMethodCallException",
+            "\\Webmozart\\Assert\\Assert",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "\\Symfony\\Component\\BrowserKit\\Response",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Symfony\\Component\\BrowserKit\\Request",
+            "\\Snicco\\Component\\StrArr\\Str",
+            "\\Psr\\Http\\Message\\ServerRequestInterface"
+        ]
+    },
+    {
         "name": "\\WP_UnitTest_Factory_For_User",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\BrowserKit\\CookieJar",
         "size": 3000,
         "relations": []
     },
@@ -577,42 +602,72 @@
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\DomCrawler\\Crawler",
+        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
+        "name": "\\Symfony\\Component\\BrowserKit\\AbstractBrowser",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\PHPUnit\\Framework\\Assert",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\HttpKernel",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Psr17FactoryDiscovery",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\ApiRequestDetector",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
+        "name": "\\Symfony\\Component\\BrowserKit\\History",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
+        "name": "\\Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame",
+        "name": "\\BadMethodCallException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\BrowserKit\\Response",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\BrowserKit\\Request",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\StrArr\\Str",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ServerRequestInterface",
         "size": 3000,
         "relations": []
     },
@@ -637,59 +692,6 @@
         "relations": [
             "\\PHPUnit\\Framework\\Assert"
         ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTestHelpers",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
-            "\\Snicco\\Component\\Kernel\\DIContainer",
-            "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
-            "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
-            "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
-            "\\RuntimeException",
-            "\\RecursiveDirectoryIterator",
-            "\\RecursiveIteratorIterator"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RecursiveDirectoryIterator",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RecursiveIteratorIterator",
-        "size": 3000,
-        "relations": []
     }
 ];
 

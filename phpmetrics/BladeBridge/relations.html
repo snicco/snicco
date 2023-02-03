@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,7 +390,99 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Bridge\\Blade\\BladeStandalone",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+            "\\Snicco\\Bridge\\Blade\\BladeViewComposer",
+            "\\Illuminate\\Container\\Container",
+            "\\Illuminate\\Support\\Facades\\Facade",
+            "\\Snicco\\Bridge\\Blade\\BladeViewFactory",
+            "\\Illuminate\\Support\\Fluent",
+            "\\Illuminate\\Filesystem\\Filesystem",
+            "\\Illuminate\\Events\\Dispatcher",
+            "\\Snicco\\Bridge\\Blade\\DummyApplication",
+            "\\Illuminate\\View\\ViewServiceProvider",
+            "\\Snicco\\Bridge\\Blade\\Exception\\UnsupportedDirective",
+            "\\Illuminate\\Support\\Facades\\Blade"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\Blade\\BladeViewComposer",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+            "\\RuntimeException",
+            "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
+            "\\Snicco\\Component\\Templating\\ValueObject\\View"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\Container\\Container",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Support\\Facades\\Facade",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\Blade\\BladeViewFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
+            "\\Illuminate\\View\\Factory",
+            "\\Snicco\\Component\\Templating\\ValueObject\\View",
+            "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
+            "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound",
+            "\\Snicco\\Component\\Templating\\Exception\\ViewCantBeRendered",
+            "\\Illuminate\\Support\\Str"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\Support\\Fluent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Filesystem\\Filesystem",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Events\\Dispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\Blade\\DummyApplication",
+        "size": 3000,
+        "relations": [
+            "\\Illuminate\\Contracts\\Foundation\\Application",
+            "\\BadMethodCallException",
+            "\\Closure"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\View\\ViewServiceProvider",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bridge\\Blade\\Exception\\UnsupportedDirective",
+        "size": 3000,
+        "relations": [
+            "\\BadMethodCallException"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\Support\\Facades\\Blade",
         "size": 3000,
         "relations": []
     },
@@ -400,47 +492,14 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bridge\\Blade\\DummyApplication",
+        "name": "\\Snicco\\Bridge\\Blade\\BladeComponent",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Illuminate\\View\\Component"
+        ]
     },
     {
-        "name": "\\Illuminate\\Contracts\\Foundation\\Application",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Closure",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\Blade\\BladeViewComposer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\Blade\\BladeViewFactory",
+        "name": "\\Illuminate\\View\\Component",
         "size": 3000,
         "relations": []
     },
@@ -451,6 +510,16 @@
     },
     {
         "name": "\\Illuminate\\View\\Factory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
         "size": 3000,
         "relations": []
     },
@@ -470,67 +539,17 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bridge\\Blade\\BladeComponent",
-        "size": 3000,
-        "relations": [
-            "\\Illuminate\\View\\Component"
-        ]
-    },
-    {
-        "name": "\\Illuminate\\View\\Component",
+        "name": "\\Illuminate\\Contracts\\Foundation\\Application",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bridge\\Blade\\BladeStandalone",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
-            "\\Snicco\\Bridge\\Blade\\BladeViewComposer",
-            "\\Illuminate\\Container\\Container",
-            "\\Illuminate\\Support\\Facades\\Facade",
-            "\\Snicco\\Bridge\\Blade\\BladeViewFactory",
-            "\\Illuminate\\Support\\Fluent",
-            "\\Illuminate\\Filesystem\\Filesystem",
-            "\\Illuminate\\Events\\Dispatcher",
-            "\\Snicco\\Bridge\\Blade\\DummyApplication",
-            "\\Illuminate\\View\\ViewServiceProvider",
-            "\\Snicco\\Bridge\\Blade\\Exception\\UnsupportedDirective",
-            "\\Illuminate\\Support\\Facades\\Blade"
-        ]
-    },
-    {
-        "name": "\\Illuminate\\Container\\Container",
+        "name": "\\Closure",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Illuminate\\Support\\Facades\\Facade",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Support\\Fluent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Filesystem\\Filesystem",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Events\\Dispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\View\\ViewServiceProvider",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Support\\Facades\\Blade",
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     }

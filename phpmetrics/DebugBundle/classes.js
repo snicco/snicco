@@ -1,5 +1,191 @@
 var classes = [
     {
+        "name": "Snicco\\Bundle\\Debug\\Displayer\\WhoopsJsonDisplayer",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": "setter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "display",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "supportedContentType",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "isVerbose",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "canDisplay",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 5,
+        "nbMethods": 4,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 4,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 1,
+        "wmc": 4,
+        "ccn": 1,
+        "ccnMethodMax": 1,
+        "externals": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+            "Whoops\\Run",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
+        "lcom": 4,
+        "length": 13,
+        "vocabulary": 6,
+        "volume": 33.6,
+        "difficulty": 2,
+        "effort": 67.21,
+        "level": 0.5,
+        "bugs": 0.01,
+        "time": 4,
+        "intelligentContent": 16.8,
+        "number_operators": 5,
+        "number_operands": 8,
+        "number_operators_unique": 2,
+        "number_operands_unique": 4,
+        "cloc": 0,
+        "loc": 25,
+        "lloc": 25,
+        "mi": 58.68,
+        "mIwoC": 58.68,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 4,
+        "relativeDataComplexity": 1.53,
+        "relativeSystemComplexity": 5.53,
+        "totalStructuralComplexity": 20,
+        "totalDataComplexity": 7.67,
+        "totalSystemComplexity": 27.67,
+        "package": "Snicco\\Bundle\\Debug\\Displayer\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 3,
+        "instability": 0.75,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bundle\\Debug\\Displayer\\WhoopsHtmlDisplayer",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": "setter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "display",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "supportedContentType",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "isVerbose",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "canDisplay",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 5,
+        "nbMethods": 4,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 4,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 1,
+        "wmc": 4,
+        "ccn": 1,
+        "ccnMethodMax": 1,
+        "externals": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+            "Whoops\\Run",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
+        ],
+        "lcom": 4,
+        "length": 13,
+        "vocabulary": 6,
+        "volume": 33.6,
+        "difficulty": 2,
+        "effort": 67.21,
+        "level": 0.5,
+        "bugs": 0.01,
+        "time": 4,
+        "intelligentContent": 16.8,
+        "number_operators": 5,
+        "number_operands": 8,
+        "number_operators_unique": 2,
+        "number_operands_unique": 4,
+        "cloc": 0,
+        "loc": 25,
+        "lloc": 25,
+        "mi": 58.68,
+        "mIwoC": 58.68,
+        "commentWeight": 0,
+        "kanDefect": 0.15,
+        "relativeStructuralComplexity": 4,
+        "relativeDataComplexity": 1.53,
+        "relativeSystemComplexity": 5.53,
+        "totalStructuralComplexity": 20,
+        "totalDataComplexity": 7.67,
+        "totalSystemComplexity": 27.67,
+        "package": "Snicco\\Bundle\\Debug\\Displayer\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 3,
+        "instability": 0.75,
+        "violations": {}
+    },
+    {
         "name": "Snicco\\Bundle\\Debug\\FilterablePrettyPageHandler",
         "interface": false,
         "abstract": false,
@@ -251,192 +437,6 @@ var classes = [
         "afferentCoupling": 0,
         "efferentCoupling": 12,
         "instability": 1,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Bundle\\Debug\\Displayer\\WhoopsJsonDisplayer",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": "setter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "display",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "supportedContentType",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "isVerbose",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "canDisplay",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 5,
-        "nbMethods": 4,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 4,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 1,
-        "wmc": 4,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "Whoops\\Run",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ],
-        "parents": [],
-        "implements": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
-        ],
-        "lcom": 4,
-        "length": 13,
-        "vocabulary": 6,
-        "volume": 33.6,
-        "difficulty": 2,
-        "effort": 67.21,
-        "level": 0.5,
-        "bugs": 0.01,
-        "time": 4,
-        "intelligentContent": 16.8,
-        "number_operators": 5,
-        "number_operands": 8,
-        "number_operators_unique": 2,
-        "number_operands_unique": 4,
-        "cloc": 0,
-        "loc": 25,
-        "lloc": 25,
-        "mi": 58.68,
-        "mIwoC": 58.68,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 1.53,
-        "relativeSystemComplexity": 5.53,
-        "totalStructuralComplexity": 20,
-        "totalDataComplexity": 7.67,
-        "totalSystemComplexity": 27.67,
-        "package": "Snicco\\Bundle\\Debug\\Displayer\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 3,
-        "instability": 0.75,
-        "violations": {}
-    },
-    {
-        "name": "Snicco\\Bundle\\Debug\\Displayer\\WhoopsHtmlDisplayer",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": "setter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "display",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "supportedContentType",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "isVerbose",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "canDisplay",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 5,
-        "nbMethods": 4,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 4,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 1,
-        "wmc": 4,
-        "ccn": 1,
-        "ccnMethodMax": 1,
-        "externals": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "Whoops\\Run",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ],
-        "parents": [],
-        "implements": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer"
-        ],
-        "lcom": 4,
-        "length": 13,
-        "vocabulary": 6,
-        "volume": 33.6,
-        "difficulty": 2,
-        "effort": 67.21,
-        "level": 0.5,
-        "bugs": 0.01,
-        "time": 4,
-        "intelligentContent": 16.8,
-        "number_operators": 5,
-        "number_operands": 8,
-        "number_operators_unique": 2,
-        "number_operands_unique": 4,
-        "cloc": 0,
-        "loc": 25,
-        "lloc": 25,
-        "mi": 58.68,
-        "mIwoC": 58.68,
-        "commentWeight": 0,
-        "kanDefect": 0.15,
-        "relativeStructuralComplexity": 4,
-        "relativeDataComplexity": 1.53,
-        "relativeSystemComplexity": 5.53,
-        "totalStructuralComplexity": 20,
-        "totalDataComplexity": 7.67,
-        "totalSystemComplexity": 27.67,
-        "package": "Snicco\\Bundle\\Debug\\Displayer\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 3,
-        "instability": 0.75,
         "violations": {}
     }
 ]

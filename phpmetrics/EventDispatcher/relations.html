@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2022-12-06 17:16:38        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-02-03 21:44:21        , with PHPMetrics v2.8.1 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,17 +390,27 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsName",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\LogicException",
+        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\PsrListenerFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
+            "\\Psr\\Container\\ContainerInterface",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
+        "name": "\\Psr\\Container\\ContainerInterface",
         "size": 3000,
         "relations": []
     },
@@ -411,6 +421,20 @@
     },
     {
         "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener",
+        "size": 3000,
+        "relations": [
+            "\\RuntimeException",
+            "\\Throwable",
+            "\\Psr\\Container\\ContainerExceptionInterface"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\listener_class",
         "size": 3000,
         "relations": []
     },
@@ -430,32 +454,32 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\listener_class",
+        "name": "\\LogicException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\PsrListenerFactory",
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
-            "\\Psr\\Container\\ContainerInterface",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
-        ]
+        "relations": []
     },
     {
-        "name": "\\Psr\\Container\\ContainerInterface",
+        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Event",
         "size": 3000,
         "relations": []
     },
@@ -471,21 +495,6 @@
     },
     {
         "name": "\\ReflectionFunction",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsName",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Event",
         "size": 3000,
         "relations": []
     },
@@ -511,11 +520,6 @@
     },
     {
         "name": "\\ReflectionClass",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
         "size": 3000,
         "relations": []
     },
