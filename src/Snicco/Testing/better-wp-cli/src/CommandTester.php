@@ -125,7 +125,7 @@ final class CommandTester
                 $command::synopsis(),
                 $positional_args,
                 $associative_args,
-                $this->getInMemoryStream('r+', $this->options['input'] ?? []),
+                $this->getInMemoryStream('r+', $options['input'] ?? []),
                 $options[self::INTERACTIVE] ?? false,
             );
 

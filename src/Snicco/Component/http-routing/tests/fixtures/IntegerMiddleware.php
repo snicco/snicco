@@ -22,8 +22,11 @@ final class IntegerMiddleware extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()
-            ->write(':' . $this->val);
+        $body = $response->getBody();
+
+        $body->seek(0, SEEK_END);
+
+        $body->write(':' . $this->val);
 
         return $response;
     }

@@ -18,6 +18,8 @@ use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+use const SEEK_END;
+
 /**
  * @internal
  */
@@ -159,8 +161,11 @@ final class MiddlewareWithClassAndParamDependencies extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()
-            ->write(':' . $this->foo->value . $this->bar->value . $this->baz . $this->biz);
+        $body = $response->getBody();
+
+        $body->seek(0, SEEK_END);
+
+        $body->write(':' . $this->foo->value . $this->bar->value . $this->baz . $this->biz);
 
         return $response;
     }

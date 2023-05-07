@@ -15,8 +15,11 @@ final class MiddlewareTwo extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()
-            ->write(':middleware_two');
+        $body = $response->getBody();
+
+        $body->seek(0, SEEK_END);
+
+        $body->write(':middleware_two');
 
         return $response;
     }

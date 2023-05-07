@@ -28,6 +28,8 @@ use Snicco\Component\HttpRouting\Tests\helpers\CreateHttpErrorHandler;
 use Snicco\Component\HttpRouting\Tests\helpers\CreateTestPsr17Factories;
 use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 
+use const SEEK_END;
+
 /**
  * @internal
  */
@@ -177,10 +179,11 @@ final class MiddlewarePipelineTest extends TestCase
      */
     public function middleware_can_be_resolved_from_the_container(): void
     {
-        $this->pimple[MiddlewareWithDependencies::class] = fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
-            new Foo('FOO'),
-            new Bar('BAR')
-        );
+        $this->pimple[MiddlewareWithDependencies::class] =
+            fn (): MiddlewareWithDependencies => new MiddlewareWithDependencies(
+                new Foo('FOO'),
+                new Bar('BAR')
+            );
 
         $response = $this->pipeline
             ->send($this->request)
@@ -348,8 +351,12 @@ final class PipelineTestMiddleware1 extends Middleware
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request->withAttribute(self::ATTRIBUTE, $this->value_to_add));
-        $response->getBody()
-            ->write(':pm1');
+
+        $body = $response->getBody();
+
+        $body->seek(0, SEEK_END);
+
+        $body->write(':pm1');
 
         return $response;
     }
@@ -372,8 +379,12 @@ final class PipelineTestMiddleware2 extends Middleware
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next->process($request->withAttribute(self::ATTRIBUTE, $this->value_to_add), $next);
-        $response->getBody()
-            ->write(':pm2');
+
+        $body = $response->getBody();
+
+        $body->seek(0, SEEK_END);
+
+        $body->write(':pm2');
 
         return $response;
     }
