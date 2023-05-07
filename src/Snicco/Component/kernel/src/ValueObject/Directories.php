@@ -7,6 +7,7 @@ namespace Snicco\Component\Kernel\ValueObject;
 use Webmozart\Assert\Assert;
 
 use function sprintf;
+
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -36,7 +37,7 @@ final class Directories
         Assert::writable($cache_dir, sprintf('$cache_dir [%s] is not writable.', $cache_dir));
 
         Assert::readable($log_dir, sprintf('$log_dir [%s] is not readable.', $log_dir));
-        Assert::writable($cache_dir, sprintf('$log_dir [%s] is not writable.', $cache_dir));
+        Assert::writable($log_dir, sprintf('$log_dir [%s] is not writable.', $log_dir));
 
         $this->config_dir = rtrim($config_dir, DIRECTORY_SEPARATOR);
         $this->cache_dir = rtrim($cache_dir, DIRECTORY_SEPARATOR);
