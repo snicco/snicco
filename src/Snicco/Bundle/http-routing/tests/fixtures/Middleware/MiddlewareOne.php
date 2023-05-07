@@ -9,14 +9,19 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Middleware\Middleware;
 use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 
+use const SEEK_END;
+
 final class MiddlewareOne extends Middleware
 {
     protected function handle(Request $request, NextMiddleware $next): ResponseInterface
     {
         $response = $next($request);
 
-        $response->getBody()
-            ->write(':middleware_one');
+        $body = $response->getBody();
+
+        $body->seek(0, SEEK_END);
+
+        $body->write(':middleware_one');
 
         return $response;
     }

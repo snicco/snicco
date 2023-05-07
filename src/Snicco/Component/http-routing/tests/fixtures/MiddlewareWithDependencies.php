@@ -11,6 +11,8 @@ use Snicco\Component\HttpRouting\Middleware\NextMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Bar;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Foo;
 
+use const SEEK_END;
+
 final class MiddlewareWithDependencies extends Middleware
 {
     public Foo $foo;
@@ -27,8 +29,9 @@ final class MiddlewareWithDependencies extends Middleware
     {
         $response = $next($request);
 
-        $response->getBody()
-            ->write(':' . $this->foo->value . $this->bar->value);
+        $body = $response->getBody();
+        $body->seek(0, SEEK_END);
+        $body->write(':' . $this->foo->value . $this->bar->value);
 
         return $response;
     }
