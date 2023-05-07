@@ -1,3 +1,11 @@
+## [1.6.1](https://github.com/snicco/snicco/compare/v1.6.0...v1.6.1) (2023-05-07)
+
+
+### Bug Fixes
+
+* **better-wp-cli-testing:** allow stream input as method argument ([36925a8](https://github.com/snicco/snicco/commit/36925a81812aca161f2400b85437a81c2342ff6e)), closes [#178](https://github.com/snicco/snicco/issues/178)
+* **kernel:** assert that log dir is writable ([5d2a5dd](https://github.com/snicco/snicco/commit/5d2a5ddc678c2a4f7c2fd0a3d25883119824b709)), closes [#179](https://github.com/snicco/snicco/issues/179)
+
 # [1.6.0](https://github.com/snicco/snicco/compare/v1.5.0...v1.6.0) (2023-02-03)
 
 
