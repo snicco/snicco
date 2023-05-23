@@ -18,7 +18,6 @@ use function array_shift;
 use function count;
 use function str_replace;
 use function strpos;
-use function strtolower;
 use function substr_count;
 
 final class Query
@@ -87,7 +86,6 @@ final class Query
             );
         }
 
-        $sql = strtolower($sql);
         $this->sorting_column_names = array_keys($deterministic_sorting_columns);
         $this->static_column_bindings = $static_column_bindings;
         $this->batch_size = $batch_size;
