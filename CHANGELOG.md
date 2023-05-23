@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/snicco/snicco/compare/v1.6.1...v1.6.2) (2023-05-23)
+
+
+### Bug Fixes
+
+* **better-wpdb:** don't convert keyset pagination query to lowercase ([3d7e441](https://github.com/snicco/snicco/commit/3d7e441ed24cbe76564f2ae58b52ba6c239c90cf)), closes [#182](https://github.com/snicco/snicco/issues/182)
+
 ## [1.6.1](https://github.com/snicco/snicco/compare/v1.6.0...v1.6.1) (2023-05-07)
 
 
