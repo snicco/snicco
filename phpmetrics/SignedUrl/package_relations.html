@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,36 +390,21 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\SignedUrl\\Testing",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\TestableClock",
-            "PHPUnit\\Framework",
-            "Snicco\\Component\\SignedUrl",
-            "Snicco\\Component\\SignedUrl\\Storage"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\TestableClock",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Component\\SignedUrl",
         "size": 3000,
         "relations": [
+            "global",
             "Snicco\\Component\\SignedUrl\\Storage",
             "Webmozart\\Assert",
             "ParagonIE\\ConstantTime",
-            "global",
             "Snicco\\Component\\TestableClock",
             "Snicco\\Component\\SignedUrl\\Exception"
         ]
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\SignedUrl\\Storage",
@@ -442,7 +427,7 @@
         "relations": []
     },
     {
-        "name": "global",
+        "name": "Snicco\\Component\\TestableClock",
         "size": 3000,
         "relations": []
     },
@@ -452,6 +437,21 @@
         "relations": [
             "global"
         ]
+    },
+    {
+        "name": "Snicco\\Component\\SignedUrl\\Testing",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\TestableClock",
+            "PHPUnit\\Framework",
+            "Snicco\\Component\\SignedUrl",
+            "Snicco\\Component\\SignedUrl\\Storage"
+        ]
+    },
+    {
+        "name": "PHPUnit\\Framework",
+        "size": 3000,
+        "relations": []
     }
 ];
 

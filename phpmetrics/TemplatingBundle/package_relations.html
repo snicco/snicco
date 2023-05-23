@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,48 +390,48 @@
 
     var relations = [
     {
+        "name": "Snicco\\Bundle\\Templating\\Option",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Bundle\\Templating",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-            "Snicco\\Component\\Templating",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information",
-            "Snicco\\Component\\Templating\\ValueObject",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Component\\Templating\\Context",
+            "Psr\\Container",
+            "Snicco\\Component\\Templating\\Exception",
+            "global",
             "Snicco\\Component\\Kernel",
             "Snicco\\Component\\Kernel\\ValueObject",
             "Snicco\\Component\\Kernel\\Configuration",
-            "global",
+            "Snicco\\Component\\Templating",
             "Snicco\\Component\\Templating\\ViewFactory",
-            "Snicco\\Component\\Templating\\Context",
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information",
+            "Snicco\\Component\\Templating\\ValueObject",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Component\\HttpRouting\\Middleware",
-            "Psr\\Http\\Message",
-            "Psr\\Container",
-            "Snicco\\Component\\Templating\\Exception"
+            "Psr\\Http\\Message"
         ]
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "name": "Snicco\\Component\\Templating\\Context",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Templating",
+        "name": "Psr\\Container",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
+        "name": "Snicco\\Component\\Templating\\Exception",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Templating\\ValueObject",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "name": "global",
         "size": 3000,
         "relations": []
     },
@@ -451,7 +451,7 @@
         "relations": []
     },
     {
-        "name": "global",
+        "name": "Snicco\\Component\\Templating",
         "size": 3000,
         "relations": []
     },
@@ -461,7 +461,22 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Templating\\Context",
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Templating\\ValueObject",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
         "size": 3000,
         "relations": []
     },
@@ -472,21 +487,6 @@
     },
     {
         "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Psr\\Container",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Templating\\Exception",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\Templating\\Option",
         "size": 3000,
         "relations": []
     }

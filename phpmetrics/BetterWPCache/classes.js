@@ -340,78 +340,6 @@ var classes = [
         "violations": {}
     },
     {
-        "name": "Snicco\\Component\\BetterWPCache\\WPCacheAPI",
-        "interface": false,
-        "abstract": false,
-        "final": false,
-        "methods": [
-            {
-                "name": "cacheGetMultiple",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "cacheFlush",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 2,
-        "nbMethods": 2,
-        "nbMethodsPrivate": 0,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 5,
-        "ccn": 4,
-        "ccnMethodMax": 4,
-        "externals": [
-            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
-            "InvalidArgumentException"
-        ],
-        "parents": [
-            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
-        ],
-        "implements": [],
-        "lcom": 2,
-        "length": 29,
-        "vocabulary": 12,
-        "volume": 103.96,
-        "difficulty": 3.67,
-        "effort": 381.2,
-        "level": 0.27,
-        "bugs": 0.03,
-        "time": 21,
-        "intelligentContent": 28.35,
-        "number_operators": 7,
-        "number_operands": 22,
-        "number_operators_unique": 3,
-        "number_operands_unique": 9,
-        "cloc": 18,
-        "loc": 40,
-        "lloc": 22,
-        "mi": 99.16,
-        "mIwoC": 56.06,
-        "commentWeight": 43.1,
-        "kanDefect": 0.52,
-        "relativeStructuralComplexity": 0,
-        "relativeDataComplexity": 3.5,
-        "relativeSystemComplexity": 3.5,
-        "totalStructuralComplexity": 0,
-        "totalDataComplexity": 7,
-        "totalSystemComplexity": 7,
-        "package": "Snicco\\Component\\BetterWPCache\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 2,
-        "instability": 0.67,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Component\\BetterWPCache\\WPCacheItem",
         "interface": false,
         "abstract": false,
@@ -525,6 +453,78 @@ var classes = [
         "afferentCoupling": 3,
         "efferentCoupling": 5,
         "instability": 0.63,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Component\\BetterWPCache\\WPCacheAPI",
+        "interface": false,
+        "abstract": false,
+        "final": false,
+        "methods": [
+            {
+                "name": "cacheGetMultiple",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "cacheFlush",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 2,
+        "nbMethods": 2,
+        "nbMethodsPrivate": 0,
+        "nbMethodsPublic": 2,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 5,
+        "ccn": 4,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "InvalidArgumentException"
+        ],
+        "parents": [
+            "Snicco\\Component\\BetterWPAPI\\BetterWPAPI"
+        ],
+        "implements": [],
+        "lcom": 2,
+        "length": 29,
+        "vocabulary": 12,
+        "volume": 103.96,
+        "difficulty": 3.67,
+        "effort": 381.2,
+        "level": 0.27,
+        "bugs": 0.03,
+        "time": 21,
+        "intelligentContent": 28.35,
+        "number_operators": 7,
+        "number_operands": 22,
+        "number_operators_unique": 3,
+        "number_operands_unique": 9,
+        "cloc": 18,
+        "loc": 40,
+        "lloc": 22,
+        "mi": 99.16,
+        "mIwoC": 56.06,
+        "commentWeight": 43.1,
+        "kanDefect": 0.52,
+        "relativeStructuralComplexity": 0,
+        "relativeDataComplexity": 3.5,
+        "relativeSystemComplexity": 3.5,
+        "totalStructuralComplexity": 0,
+        "totalDataComplexity": 7,
+        "totalSystemComplexity": 7,
+        "package": "Snicco\\Component\\BetterWPCache\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 2,
+        "instability": 0.67,
         "violations": {}
     }
 ]

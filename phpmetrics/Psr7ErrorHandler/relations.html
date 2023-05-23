@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -420,46 +420,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\ProductionErrorHandler",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler",
-            "\\Psr\\Http\\Message\\ResponseFactoryInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Throwable",
-            "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer"
-        ]
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ResponseFactoryInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
-        "size": 3000,
-        "relations": [
-            "\\Psr\\Log\\LoggerInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "\\Throwable"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
         "size": 3000,
         "relations": []
     },
@@ -474,30 +435,14 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+        "name": "\\RuntimeException",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
-            "\\RuntimeException"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Identifier\\SplHashIdentifier",
@@ -521,7 +466,36 @@
         ]
     },
     {
-        "name": "\\RuntimeException",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\InformationProviderWithTransformation",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Identifier\\ExceptionIdentifier",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionTransformer",
+            "\\InvalidArgumentException",
+            "\\RuntimeException",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "\\Throwable",
+            "\\Psr\\Http\\Message\\ServerRequestInterface"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionTransformer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
         "size": 3000,
         "relations": []
     },
@@ -532,6 +506,20 @@
     },
     {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestLogContext",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\CanDisplay",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+            "\\Psr\\Http\\Message\\RequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
         "size": 3000,
         "relations": []
     },
@@ -550,6 +538,11 @@
         ]
     },
     {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\Verbosity",
         "size": 3000,
         "relations": [
@@ -559,35 +552,26 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\CanDisplay",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\ProductionErrorHandler",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
-            "\\Psr\\Http\\Message\\RequestInterface",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\InformationProviderWithTransformation",
-        "size": 3000,
-        "relations": [
+            "\\Snicco\\Component\\Psr7ErrorHandler\\HttpErrorHandler",
+            "\\Psr\\Http\\Message\\ResponseFactoryInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Log\\RequestAwareLogger",
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformationProvider",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Identifier\\ExceptionIdentifier",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionTransformer",
-            "\\InvalidArgumentException",
-            "\\RuntimeException",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\DisplayerFilter",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+            "\\Psr\\Http\\Message\\ResponseInterface",
             "\\Throwable",
-            "\\Psr\\Http\\Message\\ServerRequestInterface"
+            "\\Psr\\Http\\Message\\ServerRequestInterface",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\DisplayerFilter\\ContentType",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackHtmlDisplayer",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\FallbackJsonDisplayer"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionTransformer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\InvalidArgumentException",
+        "name": "\\Psr\\Http\\Message\\ResponseFactoryInterface",
         "size": 3000,
         "relations": []
     }

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,54 +390,12 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-            "\\InvalidArgumentException",
-            "\\PHPUnit\\Framework\\Assert",
-            "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-            "\\Closure",
-            "\\LogicException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-        "size": 3000,
-        "relations": [
-            "\\Closure",
-            "\\ReflectionFunction",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
-        ]
-    },
-    {
-        "name": "\\Closure",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\LogicException",
         "size": 3000,
         "relations": []
     },
@@ -448,47 +406,6 @@
     },
     {
         "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsName",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-            "\\Snicco\\Component\\EventDispatcher\\Event",
-            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-            "\\ReflectionClass",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
-            "\\listener_class",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
-        "size": 3000,
-        "relations": [
-            "\\LogicException"
-        ]
-    },
-    {
-        "name": "\\ReflectionClass",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
         "size": 3000,
         "relations": []
     },
@@ -509,6 +426,31 @@
     },
     {
         "name": "\\Psr\\Container\\ContainerExceptionInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
         "size": 3000,
         "relations": []
     },
@@ -538,12 +480,60 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Closure",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\ReflectionFunction",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+            "\\Snicco\\Component\\EventDispatcher\\Event",
+            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+            "\\ReflectionClass",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionClass",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+            "\\InvalidArgumentException",
+            "\\PHPUnit\\Framework\\Assert",
+            "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+            "\\Closure",
+            "\\LogicException"
+        ]
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
         "size": 3000,
         "relations": []
     }

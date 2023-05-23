@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,47 +390,35 @@
 
     var relations = [
     {
-        "name": "Snicco\\Component\\Session\\Testing",
+        "name": "Snicco\\Component\\Session\\Event",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Session\\ValueObject",
-            "PHPUnit\\Framework",
+            "Snicco\\Component\\Session"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session",
+        "size": 3000,
+        "relations": [
             "Snicco\\Component\\Session\\Driver",
-            "global",
             "Snicco\\Component\\Session\\Serializer",
-            "Snicco\\Component\\Session",
-            "Snicco\\Component\\TestableClock"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Session\\ValueObject",
-        "size": 3000,
-        "relations": [
             "global",
-            "Snicco\\Component\\Session",
-            "ParagonIE\\ConstantTime"
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Component\\StrArr",
+            "Snicco\\Component\\Session\\Event",
+            "Snicco\\Component\\Session\\Exception"
         ]
-    },
-    {
-        "name": "PHPUnit\\Framework",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Snicco\\Component\\Session\\Driver",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\TestableClock",
             "Snicco\\Component\\Session\\Exception",
+            "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Component\\Session",
             "global"
         ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Snicco\\Component\\Session\\Serializer",
@@ -440,22 +428,18 @@
         ]
     },
     {
-        "name": "Snicco\\Component\\Session",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Snicco\\Component\\Session\\ValueObject",
-            "Snicco\\Component\\StrArr",
-            "Snicco\\Component\\Session\\Event",
-            "Snicco\\Component\\Session\\Driver",
-            "Snicco\\Component\\Session\\Serializer",
-            "Snicco\\Component\\Session\\Exception"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\TestableClock",
+        "name": "global",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Session\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "ParagonIE\\ConstantTime",
+            "Snicco\\Component\\Session",
+            "global"
+        ]
     },
     {
         "name": "Snicco\\Component\\StrArr",
@@ -463,18 +447,16 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Session\\Event",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Session"
-        ]
-    },
-    {
         "name": "Snicco\\Component\\Session\\Exception",
         "size": 3000,
         "relations": [
             "global"
         ]
+    },
+    {
+        "name": "ParagonIE\\ConstantTime",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\Session\\SessionManager",
@@ -490,12 +472,30 @@
         ]
     },
     {
+        "name": "Snicco\\Component\\TestableClock",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\Session\\EventDispatcher",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "ParagonIE\\ConstantTime",
+        "name": "Snicco\\Component\\Session\\Testing",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\TestableClock",
+            "Snicco\\Component\\Session\\ValueObject",
+            "PHPUnit\\Framework",
+            "global",
+            "Snicco\\Component\\Session\\Driver",
+            "Snicco\\Component\\Session\\Serializer",
+            "Snicco\\Component\\Session"
+        ]
+    },
+    {
+        "name": "PHPUnit\\Framework",
         "size": 3000,
         "relations": []
     }

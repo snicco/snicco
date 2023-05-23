@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,17 +390,32 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Debug\\FilterablePrettyPageHandler",
+        "name": "\\Snicco\\Bundle\\Debug\\Option\\DebugOption",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Whoops\\Handler\\PrettyPageHandler",
+        "name": "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsJsonDisplayer",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Whoops\\Exception\\FrameCollection",
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Whoops\\Run",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsHtmlDisplayer",
         "size": 3000,
         "relations": []
     },
@@ -443,32 +458,17 @@
         "relations": []
     },
     {
-        "name": "\\Whoops\\Run",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsHtmlDisplayer",
+        "name": "\\Snicco\\Bundle\\Debug\\FilterablePrettyPageHandler",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Whoops\\Run",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
+            "\\Whoops\\Handler\\PrettyPageHandler",
+            "\\Whoops\\Exception\\FrameCollection"
         ]
     },
     {
         "name": "\\Whoops\\Handler\\JsonResponseHandler",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Debug\\Displayer\\WhoopsJsonDisplayer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-            "\\Whoops\\Run",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation"
-        ]
     },
     {
         "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
@@ -486,17 +486,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Debug\\Option\\DebugOption",
+        "name": "\\Whoops\\Handler\\PrettyPageHandler",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Displayer\\ExceptionDisplayer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
+        "name": "\\Whoops\\Exception\\FrameCollection",
         "size": 3000,
         "relations": []
     }

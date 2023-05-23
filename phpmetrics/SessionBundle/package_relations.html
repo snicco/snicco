@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -476,16 +476,16 @@
         "relations": [
             "Psr\\Http\\Server",
             "Psr\\Http\\Message",
-            "global",
             "Snicco\\Component\\HttpRouting\\Middleware",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "global",
+            "Snicco\\Bundle\\Session\\ValueObject",
             "Snicco\\Component\\Session\\SessionManager",
             "Psr\\Log",
             "Snicco\\Component\\Session\\ValueObject",
             "Snicco\\Bundle\\Session\\Event",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Component\\Session",
-            "Snicco\\Component\\HttpRouting\\Http",
-            "Snicco\\Bundle\\Session\\ValueObject"
+            "Snicco\\Component\\HttpRouting\\Http"
         ]
     },
     {
@@ -497,6 +497,13 @@
         "name": "Snicco\\Bundle\\Encryption",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "global"
+        ]
     },
     {
         "name": "Psr\\Http\\Server",
@@ -514,12 +521,12 @@
         "relations": []
     },
     {
-        "name": "Psr\\Log",
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "name": "Psr\\Log",
         "size": 3000,
         "relations": []
     },
@@ -527,13 +534,6 @@
         "name": "Snicco\\Component\\HttpRouting\\Http",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\Session\\ValueObject",
-        "size": 3000,
-        "relations": [
-            "global"
-        ]
     }
 ];
 

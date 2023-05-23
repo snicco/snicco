@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-07 20:37:54        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-05-23 12:44:08        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,23 +390,35 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\Testing\\SignedUrlStorageTests",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\TestableClock\\TestClock",
-            "\\PHPUnit\\Framework\\Assert",
-            "\\Snicco\\Component\\SignedUrl\\SignedUrl",
-            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "\\Snicco\\Component\\TestableClock\\Clock"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\TestableClock\\TestClock",
+        "name": "\\Snicco\\Component\\SignedUrl\\HMAC",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\PHPUnit\\Framework\\Assert",
+        "name": "\\Snicco\\Component\\SignedUrl\\Secret",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Secret",
+            "\\Webmozart\\Assert\\Assert",
+            "\\ParagonIE\\ConstantTime\\Binary",
+            "\\ParagonIE\\ConstantTime\\Hex"
+        ]
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\NullStorage",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "\\Snicco\\Component\\SignedUrl\\SignedUrl"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
         "size": 3000,
         "relations": []
     },
@@ -416,12 +428,60 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\SessionStorage",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "\\Snicco\\Component\\TestableClock\\Clock",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\TestableClock\\SystemClock",
+            "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
+            "\\Snicco\\Component\\SignedUrl\\SignedUrl"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\TestableClock\\Clock",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\TestableClock\\Clock",
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\TestableClock\\SystemClock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
+            "\\Throwable"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\InMemoryStorage",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "\\Snicco\\Component\\TestableClock\\SystemClock",
+            "\\Snicco\\Component\\SignedUrl\\SignedUrl",
+            "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\GarbageCollector",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "\\Webmozart\\Assert\\Assert"
+        ]
+    },
+    {
+        "name": "\\Webmozart\\Assert\\Assert",
         "size": 3000,
         "relations": []
     },
@@ -439,84 +499,12 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\HMAC",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Webmozart\\Assert\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\ParagonIE\\ConstantTime\\Base64UrlSafe",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Secret",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ParagonIE\\ConstantTime\\Hex",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ParagonIE\\ConstantTime\\Binary",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Throwable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlExpired",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\InvalidSignature",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\UnavailableStorage",
-        "size": 3000,
-        "relations": [
-            "\\RuntimeException"
-        ]
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlUsageExceeded",
         "size": 3000,
         "relations": []
     },
@@ -537,47 +525,73 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\TestableClock\\SystemClock",
+        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\InvalidSignature",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
+        ]
+    },
+    {
+        "name": "\\ParagonIE\\ConstantTime\\Binary",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\GarbageCollector",
+        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlExpired",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "\\Webmozart\\Assert\\Assert"
+            "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\SessionStorage",
+        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlUsageExceeded",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "\\Snicco\\Component\\TestableClock\\Clock",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\TestableClock\\SystemClock",
-            "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier",
-            "\\Snicco\\Component\\SignedUrl\\SignedUrl"
+            "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\NullStorage",
+        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\SignedUrlException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Throwable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\Exception\\UnavailableStorage",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "\\Snicco\\Component\\SignedUrl\\SignedUrl"
+            "\\RuntimeException"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\SignedUrl\\Storage\\InMemoryStorage",
+        "name": "\\ParagonIE\\ConstantTime\\Hex",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\SignedUrl\\Testing\\SignedUrlStorageTests",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
-            "\\Snicco\\Component\\TestableClock\\SystemClock",
+            "\\Snicco\\Component\\TestableClock\\TestClock",
+            "\\PHPUnit\\Framework\\Assert",
             "\\Snicco\\Component\\SignedUrl\\SignedUrl",
-            "\\Snicco\\Component\\SignedUrl\\Exception\\BadIdentifier"
+            "\\Snicco\\Component\\SignedUrl\\Storage\\SignedUrlStorage",
+            "\\Snicco\\Component\\TestableClock\\Clock"
         ]
+    },
+    {
+        "name": "\\Snicco\\Component\\TestableClock\\TestClock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
+        "size": 3000,
+        "relations": []
     }
 ];
 
