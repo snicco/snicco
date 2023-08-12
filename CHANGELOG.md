@@ -1,3 +1,16 @@
+# [1.7.0](https://github.com/snicco/snicco/compare/v1.6.2...v1.7.0) (2023-08-12)
+
+
+### Bug Fixes
+
+* **better-wp-mail:** don't reset global phpmailer if not set ([2a263ec](https://github.com/snicco/snicco/commit/2a263ec4b1f3b629a40828ac6b2aa51c553f6344))
+
+
+### Features
+
+* **http-routing-bundle:** allow any class/interface in log-level map ([41d0f8d](https://github.com/snicco/snicco/commit/41d0f8dd51d364b05231c942307e36376e8c4808)), closes [#181](https://github.com/snicco/snicco/issues/181)
+* **http-routing-bundle:** log warnings if output buffering is enabled ([64fdc40](https://github.com/snicco/snicco/commit/64fdc40bac10c678f6d19c4cf569c643204f672f))
+
 ## [1.6.2](https://github.com/snicco/snicco/compare/v1.6.1...v1.6.2) (2023-05-23)
 
 
