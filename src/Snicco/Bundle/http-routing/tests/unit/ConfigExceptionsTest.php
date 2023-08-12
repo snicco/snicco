@@ -25,6 +25,8 @@ use Snicco\Component\Psr7ErrorHandler\Information\ExceptionTransformer;
 use Snicco\Component\Psr7ErrorHandler\Log\RequestLogContext;
 use stdClass;
 
+use Stringable;
+use Throwable;
 use function dirname;
 
 /**
@@ -408,7 +410,7 @@ final class ConfigExceptionsTest extends TestCase
     public function test_exception_for_invalid_class_in_log_levels(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('[stdClass] is not a valid exception class-string for ');
+        $this->expectExceptionMessage('[bogus-bogus] is not a valid class-string for ');
 
         $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
 
@@ -416,7 +418,29 @@ final class ConfigExceptionsTest extends TestCase
             $config->set('http_error_handling', [
                 HttpErrorHandlingOption::LOG_LEVELS => [
                     HttpException::class => LogLevel::ERROR,
-                    stdClass::class => LogLevel::CRITICAL,
+                    Throwable::class => LogLevel::ERROR,
+                    Stringable::class => LogLevel::ERROR,
+                    'bogus-bogus' => LogLevel::CRITICAL,
+                ],
+            ]);
+        });
+        $kernel->boot();
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_for_invalid_non_string_in_log_levels(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('string');
+
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('http_error_handling', [
+                HttpErrorHandlingOption::LOG_LEVELS => [
+                    1 => LogLevel::ERROR,
                 ],
             ]);
         });
