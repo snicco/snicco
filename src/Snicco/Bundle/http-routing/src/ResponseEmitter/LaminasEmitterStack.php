@@ -7,7 +7,10 @@ namespace Snicco\Bundle\HttpRouting\ResponseEmitter;
 use Laminas\HttpHandlerRunner\Emitter\EmitterStack;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\HttpHandlerRunner\Emitter\SapiStreamEmitter;
+use Psr\Log\LoggerInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
+
+use function ob_get_level;
 
 /**
  * This emitter wraps the laminas/http-handler-runner package.
@@ -20,8 +23,22 @@ use Snicco\Component\HttpRouting\Http\Psr7\Response;
  */
 final class LaminasEmitterStack implements ResponseEmitter
 {
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function emit(Response $response): void
     {
+        if (ob_get_level() > 0) {
+            $this->logger->warning(
+                'Output buffering is turned on while sending a response. WordPress (plugins) might be modifying the final response.'
+            );
+            $response = $response->withoutHeader('Content-Length');
+        }
+
         $stack = new EmitterStack();
         $stack->push(new SapiEmitter());
 

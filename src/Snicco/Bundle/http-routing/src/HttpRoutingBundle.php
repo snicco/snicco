@@ -77,6 +77,7 @@ use function dirname;
 use function gettype;
 use function implode;
 use function in_array;
+use function interface_exists;
 use function is_array;
 use function is_file;
 use function is_string;
@@ -364,13 +365,12 @@ final class HttpRoutingBundle implements Bundle
             foreach (
                 $config->getArray('http_error_handling.' . HttpErrorHandlingOption::LOG_LEVELS) as $class => $level
             ) {
-                if (! is_string($class)
-                    || ! class_exists($class)
-                    || ! in_array(Throwable::class, (array) class_implements($class), true)) {
-                    $class = (string) $class;
+                $is_valid_class_string = is_string($class)
+                    && (class_exists($class) || interface_exists($class));
 
+                if (! $is_valid_class_string) {
                     throw new InvalidArgumentException(
-                        sprintf('[%s] is not a valid exception class-string for ', $class) . 'http_error_handling.' .
+                        sprintf('[%s] is not a valid class-string for ', $class) . 'http_error_handling.' .
                         HttpErrorHandlingOption::LOG_LEVELS
                     );
                 }
@@ -734,7 +734,9 @@ final class HttpRoutingBundle implements Bundle
             return new TestEmitter($dispatcher);
         }
 
-        return $kernel->container()[ResponseEmitter::class] ?? new LaminasEmitterStack();
+        $container = $kernel->container();
+
+        return $container[ResponseEmitter::class] ?? new LaminasEmitterStack($container->make(LoggerInterface::class));
     }
 
     private function copyDefaultConfig(Kernel $kernel, string $namespace): void
