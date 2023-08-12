@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,83 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\AssertableDOM",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Crawler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\AuthenticateWithWordPress",
+        "size": 3000,
+        "relations": [
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\CreateWordPressUsers",
+        "size": 3000,
+        "relations": [
+            "\\WP_UnitTest_Factory_For_User",
+            "\\WP_User",
+            "\\Webmozart\\Assert\\Assert",
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\WP_UnitTest_Factory_For_User",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\WP_User",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webmozart\\Assert\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bundle\\Testing\\Functional\\WebTestCase",
         "size": 3000,
         "relations": [
@@ -458,11 +535,6 @@
         "relations": []
     },
     {
-        "name": "\\Webmozart\\Assert\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Kernel\\Kernel",
         "size": 3000,
         "relations": []
@@ -497,11 +569,6 @@
         ]
     },
     {
-        "name": "\\WP_UnitTest_Factory_For_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Symfony\\Component\\BrowserKit\\CookieJar",
         "size": 3000,
         "relations": []
@@ -513,73 +580,6 @@
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\CreateWordPressUsers",
-        "size": 3000,
-        "relations": [
-            "\\WP_UnitTest_Factory_For_User",
-            "\\WP_User",
-            "\\Webmozart\\Assert\\Assert",
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\WP_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\AuthenticateWithWordPress",
-        "size": 3000,
-        "relations": [
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\AssertableDOM",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Crawler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalNot",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextContains",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\PHPUnit\\Framework\\Constraint\\LogicalAnd",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorTextSame",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorAttributeValueSame",
         "size": 3000,
         "relations": []
     },

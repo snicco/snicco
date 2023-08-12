@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -393,27 +393,12 @@
         "name": "Snicco\\Component\\SignedUrl",
         "size": 3000,
         "relations": [
-            "global",
-            "Snicco\\Component\\SignedUrl\\Storage",
             "Webmozart\\Assert",
             "ParagonIE\\ConstantTime",
+            "Snicco\\Component\\SignedUrl\\Storage",
             "Snicco\\Component\\TestableClock",
-            "Snicco\\Component\\SignedUrl\\Exception"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\SignedUrl\\Storage",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\SignedUrl",
-            "Snicco\\Component\\TestableClock",
-            "global",
-            "Snicco\\Component\\SignedUrl\\Exception"
+            "Snicco\\Component\\SignedUrl\\Exception",
+            "global"
         ]
     },
     {
@@ -427,6 +412,16 @@
         "relations": []
     },
     {
+        "name": "Snicco\\Component\\SignedUrl\\Storage",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\TestableClock",
+            "global",
+            "Snicco\\Component\\SignedUrl\\Exception",
+            "Snicco\\Component\\SignedUrl"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\TestableClock",
         "size": 3000,
         "relations": []
@@ -437,6 +432,11 @@
         "relations": [
             "global"
         ]
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\SignedUrl\\Testing",

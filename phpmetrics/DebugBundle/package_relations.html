@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,47 +390,28 @@
 
     var relations = [
     {
-        "name": "Snicco\\Bundle\\Debug\\Option",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Bundle\\Debug\\Displayer",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-            "Whoops",
-            "Snicco\\Component\\Psr7ErrorHandler\\Information"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Whoops",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bundle\\Debug",
         "size": 3000,
         "relations": [
+            "Whoops\\Handler",
+            "Whoops\\Exception",
             "Snicco\\Component\\Kernel",
             "Snicco\\Component\\Kernel\\ValueObject",
             "Snicco\\Component\\Kernel\\Configuration",
             "Whoops",
             "Snicco\\Bundle\\Debug\\Displayer",
-            "Whoops\\Handler",
-            "global",
-            "Whoops\\Exception"
+            "global"
         ]
+    },
+    {
+        "name": "Whoops\\Handler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Whoops\\Exception",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\Kernel",
@@ -448,9 +429,18 @@
         "relations": []
     },
     {
-        "name": "Whoops\\Handler",
+        "name": "Whoops",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Debug\\Displayer",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+            "Whoops",
+            "Snicco\\Component\\Psr7ErrorHandler\\Information"
+        ]
     },
     {
         "name": "global",
@@ -458,7 +448,17 @@
         "relations": []
     },
     {
-        "name": "Whoops\\Exception",
+        "name": "Snicco\\Bundle\\Debug\\Option",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Displayer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler\\Information",
         "size": 3000,
         "relations": []
     }

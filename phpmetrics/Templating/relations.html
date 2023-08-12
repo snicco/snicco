@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,87 +390,21 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext",
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\ArrayAccess",
+        "name": "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\StrArr\\Arr",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\BadMethodCallException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\NewableInstanceViewComposerFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\composer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
+        "name": "\\Snicco\\Component\\Templating\\Exception\\InvalidFile",
         "size": 3000,
         "relations": [
             "\\InvalidArgumentException"
         ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\View",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\ValueObject\\FilePath"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\StrArr\\Str",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ClosureViewComposer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
-            "\\Closure",
-            "\\Snicco\\Component\\Templating\\ValueObject\\View"
-        ]
-    },
-    {
-        "name": "\\Closure",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
@@ -492,6 +426,18 @@
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\ViewFactory",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewContextResolver",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext",
+            "\\Snicco\\Component\\Templating\\Context\\NewableInstanceViewComposerFactory",
+            "\\Snicco\\Component\\StrArr\\Arr",
+            "\\Snicco\\Component\\Templating\\ValueObject\\View",
+            "\\Snicco\\Component\\StrArr\\Str",
+            "\\Snicco\\Component\\Templating\\Context\\ClosureViewComposer"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFinder",
@@ -536,7 +482,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\ValueObject\\FilePath",
+        "name": "\\Snicco\\Component\\StrArr\\Str",
         "size": 3000,
         "relations": []
     },
@@ -546,6 +492,11 @@
         "relations": [
             "\\Snicco\\Component\\Templating\\Exception\\ViewNotFound"
         ]
+    },
+    {
+        "name": "\\Closure",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
@@ -570,12 +521,62 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\StrArr\\Arr",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\InvalidFile",
+        "name": "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\NewableInstanceViewComposerFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\composer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ClosureViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\GlobalViewContext",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ArrayAccess",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\BadMethodCallException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\",
         "size": 3000,
         "relations": []
     }

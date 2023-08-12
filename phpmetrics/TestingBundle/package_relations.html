@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -393,6 +393,10 @@
         "name": "Snicco\\Bundle\\Testing\\Functional",
         "size": 3000,
         "relations": [
+            "Symfony\\Component\\DomCrawler",
+            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+            "PHPUnit\\Framework",
+            "PHPUnit\\Framework\\Constraint",
             "Snicco\\Component\\HttpRouting\\Middleware",
             "Psr\\Http\\Message",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
@@ -407,14 +411,30 @@
             "Snicco\\Component\\Kernel\\ValueObject",
             "Symfony\\Component\\BrowserKit",
             "Snicco\\Component\\HttpRouting\\Routing\\Admin",
-            "Symfony\\Component\\DomCrawler",
-            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
-            "PHPUnit\\Framework",
-            "PHPUnit\\Framework\\Constraint",
             "Snicco\\Bundle\\HttpRouting",
             "Snicco\\Component\\HttpRouting\\Testing",
             "Snicco\\Component\\StrArr"
         ]
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "PHPUnit\\Framework",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "PHPUnit\\Framework\\Constraint",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Snicco\\Component\\HttpRouting\\Middleware",
@@ -487,26 +507,6 @@
         "relations": []
     },
     {
-        "name": "Symfony\\Component\\DomCrawler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework\\Constraint",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bundle\\HttpRouting",
         "size": 3000,
         "relations": []
@@ -525,9 +525,9 @@
         "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
         "size": 3000,
         "relations": [
+            "PHPUnit\\Framework",
             "global",
-            "Webmozart\\Assert",
-            "PHPUnit\\Framework"
+            "Webmozart\\Assert"
         ]
     },
     {

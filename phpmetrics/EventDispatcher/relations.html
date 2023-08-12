@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,21 +390,6 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Event",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsName",
         "size": 3000,
         "relations": []
@@ -430,16 +415,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
         "size": 3000,
         "relations": []
@@ -450,7 +425,76 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClassAsPayload",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Event",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+            "\\Snicco\\Component\\EventDispatcher\\Event",
+            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+            "\\ReflectionClass",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\ListenerFactory",
+            "\\listener_class",
+            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantCreateListener"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionClass",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Closure",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionFunction",
         "size": 3000,
         "relations": []
     },
@@ -476,46 +520,6 @@
     },
     {
         "name": "\\Psr\\Container\\ContainerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Closure",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ReflectionFunction",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "\\Snicco\\Component\\EventDispatcher\\ListenerFactory\\NewableListenerFactory",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\CantRemoveListener",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\EventDispatcher\\ClosureTypeHint",
-            "\\Snicco\\Component\\EventDispatcher\\Event",
-            "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-            "\\ReflectionClass",
-            "\\Snicco\\Component\\EventDispatcher\\Exception\\InvalidListener"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ReflectionClass",
         "size": 3000,
         "relations": []
     },

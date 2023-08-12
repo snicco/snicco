@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,106 +390,17 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\Eloquent\\WPEloquentStandalone",
-        "size": 3000,
-        "relations": [
-            "\\Illuminate\\Container\\Container",
-            "\\RuntimeException",
-            "\\Illuminate\\Support\\Facades\\Facade",
-            "\\Faker\\Factory",
-            "\\Illuminate\\Database\\Eloquent\\Factories\\Factory",
-            "\\Illuminate\\Contracts\\Events\\Dispatcher",
-            "\\Snicco\\Component\\Eloquent\\Illuminate\\WPConnectionResolver",
-            "\\Illuminate\\Database\\Eloquent\\Model",
-            "\\Illuminate\\Support\\Fluent",
-            "\\Illuminate\\Database\\DatabaseTransactionsManager",
-            "\\Illuminate\\Database\\Connectors\\ConnectionFactory",
-            "\\Illuminate\\Database\\DatabaseManager",
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
-            "\\Illuminate\\Database\\ConnectionResolverInterface"
-        ]
-    },
-    {
-        "name": "\\Illuminate\\Container\\Container",
+        "name": "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\RuntimeException",
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Illuminate\\Support\\Facades\\Facade",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Faker\\Factory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\Eloquent\\Factories\\Factory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Contracts\\Events\\Dispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPConnectionResolver",
-        "size": 3000,
-        "relations": [
-            "\\Illuminate\\Database\\ConnectionResolverInterface",
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
-            "\\Illuminate\\Database\\ConnectionInterface"
-        ]
-    },
-    {
-        "name": "\\Illuminate\\Database\\Eloquent\\Model",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Support\\Fluent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\DatabaseTransactionsManager",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\Connectors\\ConnectionFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\DatabaseManager",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\ConnectionResolverInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Closure",
+        "name": "\\wpdb",
         "size": 3000,
         "relations": []
     },
@@ -499,7 +410,47 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\MysqliConnection",
+        "size": 3000,
+        "relations": [
+            "\\Illuminate\\Database\\MySqlConnection",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
+            "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
+            "\\Generator",
+            "\\Closure",
+            "\\Illuminate\\Database\\QueryException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
+            "\\mysqli",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
+            "\\Illuminate\\Database\\QueryException",
+            "\\mysqli_result",
+            "\\mysqli_stmt",
+            "\\mysqli_sql_exception"
+        ]
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Closure",
         "size": 3000,
         "relations": []
     },
@@ -529,29 +480,22 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\MysqliConnection",
-        "size": 3000,
-        "relations": [
-            "\\Illuminate\\Database\\MySqlConnection",
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
-            "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
-            "\\Generator",
-            "\\Closure",
-            "\\Illuminate\\Database\\QueryException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
+        "name": "\\Illuminate\\Database\\MySqlConnection",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "name": "\\Generator",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\wpdb",
+        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPConnectionResolver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Database\\ConnectionResolverInterface",
         "size": 3000,
         "relations": []
     },
@@ -568,6 +512,11 @@
         ]
     },
     {
+        "name": "\\Illuminate\\Database\\Eloquent\\Model",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WithFactory",
         "size": 3000,
         "relations": [
@@ -575,6 +524,11 @@
             "\\Illuminate\\Support\\Str",
             "\\factory"
         ]
+    },
+    {
+        "name": "\\Illuminate\\Database\\Eloquent\\Factories\\Factory",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Illuminate\\Support\\Str",
@@ -587,12 +541,62 @@
         "relations": []
     },
     {
-        "name": "\\Illuminate\\Database\\MySqlConnection",
+        "name": "\\Snicco\\Component\\Eloquent\\WPEloquentStandalone",
+        "size": 3000,
+        "relations": [
+            "\\Illuminate\\Container\\Container",
+            "\\RuntimeException",
+            "\\Illuminate\\Support\\Facades\\Facade",
+            "\\Faker\\Factory",
+            "\\Illuminate\\Database\\Eloquent\\Factories\\Factory",
+            "\\Illuminate\\Contracts\\Events\\Dispatcher",
+            "\\Snicco\\Component\\Eloquent\\Illuminate\\WPConnectionResolver",
+            "\\Illuminate\\Database\\Eloquent\\Model",
+            "\\Illuminate\\Support\\Fluent",
+            "\\Illuminate\\Database\\DatabaseTransactionsManager",
+            "\\Illuminate\\Database\\Connectors\\ConnectionFactory",
+            "\\Illuminate\\Database\\DatabaseManager",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
+            "\\Illuminate\\Database\\ConnectionResolverInterface"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\Container\\Container",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Generator",
+        "name": "\\Illuminate\\Support\\Facades\\Facade",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Faker\\Factory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Contracts\\Events\\Dispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Support\\Fluent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Database\\DatabaseTransactionsManager",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Database\\Connectors\\ConnectionFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Database\\DatabaseManager",
         "size": 3000,
         "relations": []
     }

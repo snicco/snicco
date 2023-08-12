@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,51 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\LeftOff",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\Lock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\Query",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\ResultSet",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Countable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPDB\\MysqliFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionProperty",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\BetterWPDB\\BetterWPDB",
         "size": 3000,
         "relations": [
@@ -411,22 +456,9 @@
         ]
     },
     {
-        "name": "\\mysqli",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\MysqliFactory",
-        "size": 3000,
-        "relations": [
-            "\\mysqli",
-            "\\ReflectionProperty"
-        ]
     },
     {
         "name": "\\mysqli_stmt",
@@ -436,7 +468,10 @@
     {
         "name": "\\Snicco\\Component\\BetterWPDB\\Exception\\QueryException",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\RuntimeException",
+            "\\mysqli_sql_exception"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\BetterWPDB\\QueryInfo",
@@ -450,11 +485,6 @@
     },
     {
         "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\InvalidArgumentException",
         "size": 3000,
         "relations": []
     },
@@ -476,49 +506,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\Query",
-        "size": 3000,
-        "relations": [
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\ResultSet",
-            "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\LeftOff"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\ResultSet",
-        "size": 3000,
-        "relations": [
-            "\\Countable",
-            "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\LeftOff"
-        ]
-    },
-    {
         "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
     {
         "name": "\\mysqli_sql_exception",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\LeftOff",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPDB\\KeysetPagination\\Lock",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Countable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ReflectionProperty",
         "size": 3000,
         "relations": []
     }

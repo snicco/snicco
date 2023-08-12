@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,15 +390,30 @@
 
     var relations = [
     {
-        "name": "Snicco\\Bundle\\Session\\Event",
+        "name": "Snicco\\Bundle\\Session\\Middleware",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\BetterWPHooks\\EventMapping",
-            "global"
+            "Psr\\Http\\Server",
+            "Psr\\Http\\Message",
+            "global",
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Bundle\\Session\\ValueObject",
+            "Snicco\\Component\\Session\\SessionManager",
+            "Psr\\Log",
+            "Snicco\\Component\\Session\\ValueObject",
+            "Snicco\\Bundle\\Session\\Event",
+            "Snicco\\Component\\Session",
+            "Snicco\\Component\\HttpRouting\\Http"
         ]
     },
     {
-        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
+        "name": "Psr\\Http\\Server",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\Http\\Message",
         "size": 3000,
         "relations": []
     },
@@ -408,7 +423,52 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\Session\\Option",
+        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\ValueObject",
+        "size": 3000,
+        "relations": [
+            "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session\\SessionManager",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Psr\\Log",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Session\\ValueObject",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Session\\Event",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\BetterWPHooks\\EventMapping",
+            "global"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Session",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Http",
         "size": 3000,
         "relations": []
     },
@@ -451,16 +511,6 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Session\\SessionManager",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Session\\ValueObject",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bridge\\SessionWP",
         "size": 3000,
         "relations": []
@@ -471,67 +521,17 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\Session\\Middleware",
-        "size": 3000,
-        "relations": [
-            "Psr\\Http\\Server",
-            "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Middleware",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "global",
-            "Snicco\\Bundle\\Session\\ValueObject",
-            "Snicco\\Component\\Session\\SessionManager",
-            "Psr\\Log",
-            "Snicco\\Component\\Session\\ValueObject",
-            "Snicco\\Bundle\\Session\\Event",
-            "Snicco\\Component\\Session",
-            "Snicco\\Component\\HttpRouting\\Http"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Session",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bundle\\Encryption",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\Session\\ValueObject",
-        "size": 3000,
-        "relations": [
-            "global"
-        ]
-    },
-    {
-        "name": "Psr\\Http\\Server",
+        "name": "Snicco\\Bundle\\Session\\Option",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Middleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Psr\\Log",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\HttpRouting\\Http",
+        "name": "Snicco\\Component\\BetterWPHooks\\EventMapping",
         "size": 3000,
         "relations": []
     }

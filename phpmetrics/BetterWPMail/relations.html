@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-05-23 12:45:13        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-08-12 13:45:38        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,17 +390,22 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Transport\\WPMailTransport",
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Transport\\Transport",
+        "name": "\\InvalidArgumentException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\WPMailAPI",
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Attachment",
         "size": 3000,
         "relations": []
     },
@@ -410,50 +415,37 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail",
-            "\\WP_Error"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEventsUsingWPHooks",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
-            "\\Snicco\\Component\\BetterWPMail\\WPMailAPI",
-            "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
-            "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
+        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailDefaults",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent",
+        "name": "\\Snicco\\Component\\BetterWPMail\\WPMailAPI",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\NullEvents",
+        "name": "\\Countable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\IteratorAggregate",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ArrayIterator",
         "size": 3000,
         "relations": []
     },
@@ -476,6 +468,18 @@
         ]
     },
     {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Transport\\WPMailTransport",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPMail\\Transport\\Transport",
+            "\\Snicco\\Component\\BetterWPMail\\WPMailAPI",
+            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Email",
+            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Envelope",
+            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailboxList",
+            "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\BetterWPMail\\Renderer\\FilesystemRenderer",
         "size": 3000,
         "relations": [
@@ -491,25 +495,26 @@
         ]
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailDefaults",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\NullEvents",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\MailDefaults",
-            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox"
+            "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
+            "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
+            "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ]
     },
     {
-        "name": "\\LogicException",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Mailbox",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Exception\\CantSendEmailWithWPMail",
         "size": 3000,
         "relations": []
     },
@@ -544,36 +549,27 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Attachment",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Transport\\Transport",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEventsUsingWPHooks",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Attachment",
-            "\\InvalidArgumentException",
-            "\\LogicException"
+            "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
+            "\\Snicco\\Component\\BetterWPMail\\WPMailAPI",
+            "\\Snicco\\Component\\BetterWPMail\\Event\\SendingEmail",
+            "\\Snicco\\Component\\BetterWPMail\\Event\\EmailWasSent"
         ]
     },
     {
-        "name": "\\InvalidArgumentException",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Event\\MailEvents",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Countable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\IteratorAggregate",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ArrayIterator",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Testing\\WPMail",
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
@@ -597,6 +593,13 @@
         "name": "\\PHPUnit\\Framework\\Assert",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPMail\\Testing\\WPMail",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\BetterWPMail\\ValueObject\\Email"
+        ]
     },
     {
         "name": "\\Closure",
