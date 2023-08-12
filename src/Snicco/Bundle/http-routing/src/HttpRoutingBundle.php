@@ -734,7 +734,9 @@ final class HttpRoutingBundle implements Bundle
             return new TestEmitter($dispatcher);
         }
 
-        return $kernel->container()[ResponseEmitter::class] ?? new LaminasEmitterStack();
+        $container = $kernel->container();
+
+        return $container[ResponseEmitter::class] ?? new LaminasEmitterStack($container->make(LoggerInterface::class));
     }
 
     private function copyDefaultConfig(Kernel $kernel, string $namespace): void
