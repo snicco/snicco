@@ -24,10 +24,10 @@ module.exports = {
         'scope-case': [2, 'always', 'lower-case'],
         'scope-enum': [2, 'always', scopes],
         'scope-empty': [2, 'never'],
-        'header-max-length': [2, 'always', 100],
-        'body-max-line-length': [2, 'always', 100],
+        'header-max-length': [2, 'always', 120],
+        'body-max-line-length': [2, 'always', 200],
         'body-case': [2, 'always', 'sentence-case'],
-        'footer-max-line-length': [2, 'always', 100],
+        'footer-max-line-length': [2, 'always', 200],
     },
     prompt: {
         messages: {
