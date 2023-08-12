@@ -33,6 +33,7 @@ final class WPMailTransport implements Transport
     {
         $failure_callable = $this->handleFailure();
         $just_in_time_callable = $this->justInTimeConfiguration($email);
+        $php_mailer_count_pre = did_action('phpmailer_init');
 
         $to = $this->getTo($email, $envelope);
 
@@ -72,9 +73,18 @@ final class WPMailTransport implements Transport
         } catch (Exception $e) {
             throw new CantSendEmailWithWPMail('wp_mail() failure.', $e->getMessage(), $e);
         } finally {
-            $this->resetPHPMailer();
             $this->wp->removeFilter('wp_mail_failed', $failure_callable, 99999);
             $this->wp->removeFilter('phpmailer_init', $just_in_time_callable, 99999);
+
+            $php_mailer_count_post = did_action('phpmailer_init');
+
+            if ($php_mailer_count_post > $php_mailer_count_pre) {
+                // We only modify PHPMailer on the phpmailer_init hook.
+                // So if it did not fire, we can't/don't have to reset it.
+                $this->resetPHPMailer();
+            }
+            // @todo Warnings/Exceptions: https://github.com/snicco/enterprise/issues/68
+            // @todo If we add warnings, how to handle the scenario where wp_mail failed for other reasons, but phpmailer_init would have fired.
         }
     }
 
@@ -100,6 +110,9 @@ final class WPMailTransport implements Transport
      * php mailer. SMTP plugins should also include this filter in order to not
      * break plugins that need it. Here we directly configure the underlying
      * PHPMailer instance which has all the options we need.
+     *
+     * It's up to the SMTP plugin to properly use the values from PHPMailer:
+     * https://github.com/snicco/enterprise/issues/68
      */
     private function justInTimeConfiguration(Email $mail): callable
     {

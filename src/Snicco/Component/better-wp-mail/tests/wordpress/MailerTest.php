@@ -497,7 +497,7 @@ final class MailerTest extends WPTestCase
     /**
      * @test
      */
-    public function the_alt_body_and_body_will_be_reset_on_the_php_mailer_instance_if_an_exception_occurs(): void
+    public function the_alt_body_and_body_will_be_not_be_reset_on_the_php_mailer_instance_phpmailer_init_does_not_fire(): void
     {
         global $phpmailer;
         $phpmailer->AltBody = 'foobar';
@@ -522,8 +522,9 @@ final class MailerTest extends WPTestCase
             $mailer->send((new TestMail())->withTo('calvin@web.de'));
             $this->fail('No exception thrown.');
         } catch (CantSendEmailWithWPMail $e) {
-            $this->assertSame('', $phpmailer->AltBody);
-            $this->assertSame('', $phpmailer->Body);
+            // We don't want to alter any pre-existing global state. Who knows what plugins might be doing.
+            $this->assertSame('foobar', $phpmailer->AltBody);
+            $this->assertSame('baz', $phpmailer->Body);
         }
     }
 
