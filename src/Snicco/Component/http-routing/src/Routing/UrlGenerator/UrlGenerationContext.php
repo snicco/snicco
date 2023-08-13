@@ -50,9 +50,18 @@ final class UrlGenerationContext
 
         /** @var array{host: string, scheme: string, port?: int} $parts */
         $host = $host ?? $parts['host'];
-        $https_port = $https_port ?? $parts['port'] ?? 443;
-        $http_port = $http_port ?? $https_port;
-        $https_by_default = $https_by_default ?? 'https' === $parts['scheme'];
+
+        $scheme_https = 'https' === $parts['scheme'];
+
+        if ($scheme_https) {
+            $https_port = $https_port ?? $parts['port'] ?? 443;
+            $http_port = $http_port ?? 80;
+        } else {
+            $https_port = $https_port ?? 443;
+            $http_port = $http_port ?? $parts['port'] ?? 80;
+        }
+
+        $https_by_default = $https_by_default ?? $scheme_https;
 
         return new self(
             $host,

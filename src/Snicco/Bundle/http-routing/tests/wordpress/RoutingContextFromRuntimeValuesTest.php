@@ -31,7 +31,7 @@ final class RoutingContextFromRuntimeValuesTest extends WPTestCase
     /**
      * @test
      */
-    public function test_url_generation_context_can_be_parsed_entirely_from_runtime(): void
+    public function test_url_generation_context_can_be_parsed_entirely_from_runtime_with_https_as_scheme(): void
     {
         add_filter('home_url', function () {
             return 'https://snicco.io:8443';
@@ -61,8 +61,130 @@ final class RoutingContextFromRuntimeValuesTest extends WPTestCase
             $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL)
         );
         $this->assertSame(
-            'http://snicco.io:8443/baz',
+            'http://snicco.io/baz',
             $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, false)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_url_generation_context_can_be_parsed_entirely_from_runtime_with_https_as_scheme_and_explicit_http_port(): void
+    {
+        add_filter('home_url', function () {
+            return 'https://snicco.io:8443';
+        });
+
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing', [
+                RoutingOption::HOST => null,
+                RoutingOption::USE_HTTPS => null,
+                RoutingOption::HTTP_PORT => 8080,
+                RoutingOption::HTTPS_PORT => null,
+                RoutingOption::ROUTE_DIRECTORIES => [],
+                RoutingOption::API_ROUTE_DIRECTORIES => [],
+                RoutingOption::API_PREFIX => '/test',
+            ]);
+        });
+
+        $kernel->boot();
+
+        $url_generator = $kernel->container()
+            ->make(UrlGenerator::class);
+
+        $this->assertSame(
+            'https://snicco.io:8443/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL)
+        );
+        $this->assertSame(
+            'http://snicco.io:8080/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, false)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_url_generation_context_can_be_parsed_entirely_from_runtime_with_http_as_scheme(): void
+    {
+        add_filter('home_url', function () {
+            return 'http://snicco.io:8080';
+        });
+
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing', [
+                RoutingOption::HOST => null,
+                RoutingOption::USE_HTTPS => null,
+                RoutingOption::HTTP_PORT => null,
+                RoutingOption::HTTPS_PORT => null,
+                RoutingOption::ROUTE_DIRECTORIES => [],
+                RoutingOption::API_ROUTE_DIRECTORIES => [],
+                RoutingOption::API_PREFIX => '/test',
+            ]);
+        });
+
+        $kernel->boot();
+
+        $url_generator = $kernel->container()
+            ->make(UrlGenerator::class);
+
+        $this->assertSame(
+            'http://snicco.io:8080/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL)
+        );
+        $this->assertSame(
+            'http://snicco.io:8080/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, false)
+        );
+        $this->assertSame(
+            'https://snicco.io/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, true)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function test_url_generation_context_can_be_parsed_entirely_from_runtime_with_http_as_scheme_and_https_port_specific(): void
+    {
+        add_filter('home_url', function () {
+            return 'http://snicco.io:8080';
+        });
+
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing', [
+                RoutingOption::HOST => null,
+                RoutingOption::USE_HTTPS => null,
+                RoutingOption::HTTP_PORT => null,
+                RoutingOption::HTTPS_PORT => 8443,
+                RoutingOption::ROUTE_DIRECTORIES => [],
+                RoutingOption::API_ROUTE_DIRECTORIES => [],
+                RoutingOption::API_PREFIX => '/test',
+            ]);
+        });
+
+        $kernel->boot();
+
+        $url_generator = $kernel->container()
+            ->make(UrlGenerator::class);
+
+        $this->assertSame(
+            'http://snicco.io:8080/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL)
+        );
+        $this->assertSame(
+            'http://snicco.io:8080/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, false)
+        );
+        $this->assertSame(
+            'https://snicco.io:8443/baz',
+            $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, true)
         );
     }
 
