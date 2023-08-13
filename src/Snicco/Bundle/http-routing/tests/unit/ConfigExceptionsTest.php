@@ -128,6 +128,29 @@ final class ConfigExceptionsTest extends TestCase
     /**
      * @test
      */
+    public function test_exception_if_relative_route_directory_is_not_readable(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, [__DIR__, 'routes', 'bogus']);
+        });
+
+        try {
+            $kernel->boot();
+            $this->fail('Test should have failed here');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringStartsWith(
+                'routing.route_directories must be a list of readable directories',
+                $e->getMessage()
+            );
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+    }
+
+    /**
+     * @test
+     */
     public function test_exception_if_api_route_directory_is_not_readable(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -141,6 +164,30 @@ final class ConfigExceptionsTest extends TestCase
         });
 
         $kernel->boot();
+    }
+
+    /**
+     * @test
+     */
+    public function test_exception_if_relative_api_route_directory_is_not_readable(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing.' . RoutingOption::API_ROUTE_DIRECTORIES, [__DIR__, 'routes', 'bogus']);
+            $config->set('routing.' . RoutingOption::API_PREFIX, 'snicco');
+        });
+
+        try {
+            $kernel->boot();
+            $this->fail('Test should have failed here');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringStartsWith(
+                'routing.api_route_directories must be a list of readable directories',
+                $e->getMessage()
+            );
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
     }
 
     /**

@@ -49,6 +49,7 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\MinimalLogger\StdErrLogger;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
@@ -80,6 +81,7 @@ use function in_array;
 use function interface_exists;
 use function is_array;
 use function is_file;
+use function is_readable;
 use function is_string;
 use function sprintf;
 
@@ -146,7 +148,9 @@ final class HttpRoutingBundle implements Bundle
 
         $this->copyDefaultConfig($kernel, 'routing');
 
-        $kernel->afterConfiguration(function (WritableConfig $config) {
+        $kernel_dirs = $kernel->directories();
+
+        $kernel->afterConfiguration(function (WritableConfig $config) use ($kernel_dirs) {
             // quick type checks.
             $config->getInteger('routing.' . RoutingOption::HTTP_PORT);
             $config->getInteger('routing.' . RoutingOption::HTTPS_PORT);
@@ -167,12 +171,20 @@ final class HttpRoutingBundle implements Bundle
                 'routing.' . RoutingOption::WP_LOGIN_PATH . ' must be a non-empty string.'
             );
 
-            Assert::allReadable(
+            $route_dirs = $this->maybeAbsolutizeDirectories(
                 $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
+                $kernel_dirs
+            );
+            Assert::allReadable(
+                $route_dirs,
                 'routing.' . RoutingOption::ROUTE_DIRECTORIES . " must be a list of readable directories.\nThe path %s is not readable.",
             );
 
-            $api_route_dirs = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
+            $api_route_dirs = $this->maybeAbsolutizeDirectories(
+                $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES),
+                $kernel_dirs
+            );
+
             $early_route_prefixes = $config->getListOfStrings('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES);
 
             if (count($api_route_dirs)) {
@@ -398,8 +410,7 @@ final class HttpRoutingBundle implements Bundle
             ->shared(PHPFileRouteLoader::class, function () use ($kernel): PHPFileRouteLoader {
                 $container = $kernel->container();
                 $config = $kernel->config();
-
-                $api_routes = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
+                $kernel_dirs = $kernel->directories();
 
                 if ($container->has(RouteLoadingOptions::class)) {
                     $options = $container[RouteLoadingOptions::class];
@@ -410,8 +421,14 @@ final class HttpRoutingBundle implements Bundle
                 }
 
                 return new PHPFileRouteLoader(
-                    $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
-                    $api_routes,
+                    $this->maybeAbsolutizeDirectories(
+                        $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
+                        $kernel_dirs
+                    ),
+                    $this->maybeAbsolutizeDirectories(
+                        $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES),
+                        $kernel_dirs
+                    ),
                     $options
                 );
             });
@@ -759,5 +776,17 @@ final class HttpRoutingBundle implements Bundle
             throw new RuntimeException(sprintf('Could not copy default routing.php config to path %s', $destination));
             // @codeCoverageIgnoreEnd
         }
+    }
+
+    /**
+     * @param string[] $directories
+     *
+     * @return string[]
+     */
+    private function maybeAbsolutizeDirectories(array $directories, Directories $kernel_directories): array
+    {
+        $base_dir = $kernel_directories->baseDir();
+
+        return array_map(fn (string $dir) => is_readable($dir) ? $dir : "{$base_dir}/{$dir}", $directories);
     }
 }
