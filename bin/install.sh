@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 
-if ! command -v composer &> /dev/null
-then
-    printf "composer could not be found\n"
-    printf "Make sure composer is globally available on your machine https://getcomposer.org/doc/00-intro.md\n"
-    exit 1
+# Install WordPress Files
+if [ -d ./wp ]; then
+    rm -rf ./wp
 fi
 
-if ! command -v npm &> /dev/null
-then
-    printf "npm could not be found\n"
-    printf "Make sure npm is globally available on your machine https://docs.npmjs.com/downloading-and-installing-node-js-and-npm\n"
-    exit 1
-fi
+mkdir ./wp
 
-composer install --no-interaction
-npm install
+docker run --rm -v ./wp:/var/www/html -u $(id -u):$(id -g) wordpress:cli wp core download --path=/var/www/html
 
-# Todo: add option to install wordpress here.
+rm -rf ./wp/wp-content/plugins/*
+
+bash ./bin/up.sh
+
