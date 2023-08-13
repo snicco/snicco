@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/snicco/snicco/compare/v1.8.0...v1.8.1) (2023-08-13)
+
+
+### Bug Fixes
+
+* **http-routing,http-routing-bundle:** fix http/https port parsing from url ([2de9973](https://github.com/snicco/snicco/commit/2de9973337db6de7440714b123e07e45cdc30555))
+
 # [1.8.0](https://github.com/snicco/snicco/compare/v1.7.0...v1.8.0) (2023-08-13)
 
 
