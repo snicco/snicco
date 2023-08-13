@@ -4,6 +4,8 @@
     "Faker\\Factory",
     "Faker\\Generator",
     "__________WORDPRESS_FUNCTIONS__________",
+    "home_url",
+    "wp_login_url",
     "wp_cache_delete",
     "wp_cache_flush",
     "wp_cache_get",

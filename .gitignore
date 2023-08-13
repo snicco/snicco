@@ -9,6 +9,7 @@ codeception.yml
 _output
 node_modules
 package-lock.json
+wp
 
 # temporary
 /bin/change-packages

@@ -11,6 +11,7 @@ use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\Templating\Context\GlobalViewContext;
 use Snicco\Component\Templating\Context\ViewComposer;
@@ -44,13 +45,9 @@ final class TemplatingBundle implements Bundle
 
         $this->copyConfiguration($kernel);
 
-        $kernel->afterConfiguration(function (WritableConfig $config) {
+        $kernel->afterConfiguration(function (WritableConfig $config) use ($kernel) {
             foreach ($config->getListOfStrings('templating.directories') as $directory) {
-                if (! is_readable($directory)) {
-                    throw new InvalidArgumentException(
-                        sprintf('templating.directories: Directory [%s] is not readable.', $directory)
-                    );
-                }
+                $this->relativeToAbsDirPath($directory, $kernel->directories());
             }
         });
     }
@@ -120,12 +117,16 @@ final class TemplatingBundle implements Bundle
     private function bindPHPViewFactory(Kernel $kernel): void
     {
         $config = $kernel->config();
+        $dirs = $kernel->directories();
 
         $kernel->container()
             ->shared(PHPViewFactory::class, fn (): PHPViewFactory => new PHPViewFactory(
                 $kernel->container()
                     ->make(ViewContextResolver::class),
-                $config->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES),
+                array_map(
+                    fn (string $dir) => $this->relativeToAbsDirPath($dir, $dirs),
+                    $config->getListOfStrings('templating.' . TemplatingOption::DIRECTORIES)
+                ),
                 $config->getInteger('templating.' . TemplatingOption::PARENT_VIEW_PARSE_LENGTH)
             ));
     }
@@ -189,5 +190,26 @@ final class TemplatingBundle implements Bundle
 
                 return $context;
             });
+    }
+
+    private function relativeToAbsDirPath(string $directory_initial, Directories $kernel_directories): string
+    {
+        if (is_readable($directory_initial)) {
+            return $directory_initial;
+        }
+
+        $directory_absolute = "{$kernel_directories->baseDir()}/{$directory_initial}";
+
+        if (! is_readable($directory_absolute)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'templating.directories: Directory is not readable. Tried: [%s] and [%s]',
+                    $directory_initial,
+                    $directory_absolute
+                )
+            );
+        }
+
+        return $directory_absolute;
     }
 }

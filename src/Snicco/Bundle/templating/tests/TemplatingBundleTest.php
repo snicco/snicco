@@ -290,6 +290,48 @@ final class TemplatingBundleTest extends TestCase
     /**
      * @test
      */
+    public function directories_can_be_relative_to_the_base_dir(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('templating.directories', ['templates']);
+        });
+
+        $kernel->boot();
+
+        $this->assertCanBeResolved(TemplateEngine::class, $kernel);
+
+        $template_engine = $kernel->container()
+            ->make(TemplateEngine::class);
+
+        $view = $template_engine->render('foo', [
+            'foo' => 'foo',
+        ]);
+
+        $this->assertSame('foo', $view);
+    }
+
+    /**
+     * @test
+     */
+    public function invalid_relative_directories_throw_an_exception(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::testing(), $this->directories);
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('templating.directories', ['bogus']);
+        });
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "templating.directories: Directory is not readable. Tried: [bogus] and [{$this->directories->baseDir()}/bogus"
+        );
+
+        $kernel->boot();
+    }
+
+    /**
+     * @test
+     */
     public function the_default_configuration_is_copied_to_the_config_directory_if_it_does_not_exist(): void
     {
         $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);

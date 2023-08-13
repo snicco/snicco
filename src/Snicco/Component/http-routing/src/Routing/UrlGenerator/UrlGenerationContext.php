@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\UrlGenerator;
 
 use Webmozart\Assert\Assert;
+use function parse_url;
 
 final class UrlGenerationContext
 {
@@ -33,6 +34,32 @@ final class UrlGenerationContext
         Assert::positiveInteger($http_port);
         $this->http_port = $http_port;
         $this->https_by_default = $https_by_default;
+    }
+
+    public static function fromUrlAndParts(
+        string $url,
+        ?string $host = null,
+        ?int $https_port = null,
+        ?int $http_port = null,
+        ?bool $https_by_default = null
+    ): self {
+        $parts = parse_url($url);
+        Assert::isArray($parts, "{$url} is not a valid url.");
+        Assert::keyExists($parts, 'host', "{$url} is not a valid url. 'host' is missing.");
+        Assert::keyExists($parts, 'scheme', "{$url} is not a valid url. 'scheme' is missing.");
+
+        /** @var array{host: string, scheme: string, port?: int} $parts */
+        $host = $host ?? $parts['host'];
+        $https_port = $https_port ?? $parts['port'] ?? 443;
+        $http_port = $http_port ?? $https_port;
+        $https_by_default = $https_by_default ?? 'https' === $parts['scheme'];
+
+        return new self(
+            $host,
+            $https_port,
+            $http_port,
+            $https_by_default
+        );
     }
 
     public function host(): string

@@ -429,6 +429,66 @@ final class WritableConfigTest extends TestCase
     /**
      * @test
      */
+    public function test_get_boolean_or_null(): void
+    {
+        $config = WritableConfig::fromArray([
+            'foo' => true,
+            'baz' => 1,
+        ]);
+
+        $this->assertTrue($config->getBooleanOrNull('foo'));
+        $this->assertFalse($config->getBooleanOrNull('bogus', false));
+        $this->assertNull($config->getBooleanOrNull('bogus'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected a boolean or null for config key [baz]');
+
+        $config->getBooleanOrNull('baz');
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_string_or_null(): void
+    {
+        $config = WritableConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => 1,
+        ]);
+
+        $this->assertSame('bar', $config->getStringOrNull('foo'));
+        $this->assertSame('default', $config->getStringOrNull('bogus', 'default'));
+        $this->assertNull($config->getStringOrNull('non-existing'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected a string or null for config key [baz]');
+
+        $config->getStringOrNull('baz');
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_int_or_null(): void
+    {
+        $config = WritableConfig::fromArray([
+            'foo' => 'bar',
+            'baz' => 1,
+        ]);
+
+        $this->assertSame(1, $config->getIntegerOrNull('baz'));
+        $this->assertSame(2, $config->getIntegerOrNull('bogus', 2));
+        $this->assertNull($config->getIntegerOrNull('bogus'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected an integer or null for config key [foo]');
+
+        $config->getIntegerOrNull('foo');
+    }
+
+    /**
+     * @test
+     */
     public function test_get_list_of_string(): void
     {
         $config = WritableConfig::fromArray([

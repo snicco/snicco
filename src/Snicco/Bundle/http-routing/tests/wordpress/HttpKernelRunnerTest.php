@@ -723,6 +723,119 @@ final class HttpKernelRunnerTest extends WPTestCase
         $dispatcher->assertNotDispatched(ResponseSent::class);
     }
 
+    /**
+     * @test
+     */
+    public function test_frontend_requests_with_relative_routing_file_configuration(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/frontend';
+
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, ['routes']);
+        });
+
+        $this->httpKernelRunner()
+            ->listen(false);
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        do_action('wp_loaded');
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(fn (ResponseSent $event): bool => $event->body_sent);
+
+        $dispatcher->assertDispatched(
+            'test_emitter',
+            fn (Response $response): bool => RoutingBundleTestController::class === (string) $response->getBody()
+                && ! $response instanceof DelegatedResponse
+        );
+        $dispatcher->assertDispatched(TerminatedResponse::class);
+    }
+
+    /**
+     * @test
+     */
+    public function test_admin_requests_with_relative_routing_file_configuration(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=foo';
+
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::ROUTE_DIRECTORIES, ['routes']);
+        });
+
+        $this->httpKernelRunner()
+            ->listen(true);
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        do_action('wp_loaded');
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        do_action('admin_init');
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(ResponseSent::class);
+        $dispatcher->assertNotDispatched(TerminatedResponse::class);
+    }
+
+    /**
+     * @test
+     */
+    public function test_api_requests_with_relative_routing_file_configuration(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/snicco/auth/register';
+
+        $this->kernel->afterConfigurationLoaded(function (WritableConfig $config) {
+            $config->set('routing.' . RoutingOption::API_ROUTE_DIRECTORIES, ['routes/api']);
+        });
+
+        $this->httpKernelRunner()
+            ->listen(false);
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        do_action('init');
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(fn (ResponseSent $event): bool => $event->body_sent);
+
+        $dispatcher->assertDispatched('test_emitter', function (Response $response): bool {
+            $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
+            $this->assertNotEmpty($response->getHeaders());
+            $this->assertTrue($response->hasHeader('content-length'));
+
+            return true;
+        });
+        $dispatcher->assertDispatched(TerminatedResponse::class);
+    }
+
     protected function fixturesDir(): string
     {
         return dirname(__DIR__) . '/fixtures';

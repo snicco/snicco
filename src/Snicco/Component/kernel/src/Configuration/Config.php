@@ -23,6 +23,14 @@ abstract class Config
         return $val;
     }
 
+    final public function getStringOrNull(string $key, ?string $default = null): ?string
+    {
+        $val = $this->get($key, $default);
+        Assert::nullOrstring($val, "Expected a string or null for config key [{$key}].\nGot: [%s]");
+
+        return $val;
+    }
+
     final public function getInteger(string $key, ?int $default = null): int
     {
         $val = $this->get($key, $default);
@@ -31,10 +39,26 @@ abstract class Config
         return $val;
     }
 
+    final public function getIntegerOrNull(string $key, ?int $default = null): ?int
+    {
+        $val = $this->get($key, $default);
+        Assert::nullOrInteger($val, "Expected an integer or null for config key [{$key}].\nGot: [%s]");
+
+        return $val;
+    }
+
     final public function getBoolean(string $key, ?bool $default = null): bool
     {
         $val = $this->get($key, $default);
         Assert::boolean($val, "Expected a boolean for config key [{$key}].\nGot: [%s]");
+
+        return $val;
+    }
+
+    final public function getBooleanOrNull(string $key, ?bool $default = null): ?bool
+    {
+        $val = $this->get($key, $default);
+        Assert::nullOrBoolean($val, "Expected a boolean or null for config key [{$key}].\nGot: [%s]");
 
         return $val;
     }

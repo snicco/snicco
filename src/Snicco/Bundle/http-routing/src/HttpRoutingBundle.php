@@ -49,6 +49,7 @@ use Snicco\Component\Kernel\Bundle;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\DIContainer;
 use Snicco\Component\Kernel\Kernel;
+use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use Snicco\Component\MinimalLogger\StdErrLogger;
 use Snicco\Component\Psr7ErrorHandler\Displayer\ExceptionDisplayer;
@@ -75,13 +76,16 @@ use function copy;
 use function count;
 use function dirname;
 use function gettype;
+use function home_url;
 use function implode;
 use function in_array;
 use function interface_exists;
 use function is_array;
 use function is_file;
+use function is_readable;
 use function is_string;
 use function sprintf;
+use function wp_login_url;
 
 final class HttpRoutingBundle implements Bundle
 {
@@ -146,33 +150,46 @@ final class HttpRoutingBundle implements Bundle
 
         $this->copyDefaultConfig($kernel, 'routing');
 
-        $kernel->afterConfiguration(function (WritableConfig $config) {
-            // quick type checks.
-            $config->getInteger('routing.' . RoutingOption::HTTP_PORT);
-            $config->getInteger('routing.' . RoutingOption::HTTPS_PORT);
-            $config->getBoolean('routing.' . RoutingOption::USE_HTTPS);
+        $kernel_dirs = $kernel->directories();
 
-            Assert::stringNotEmpty(
-                $config->getString('routing.' . RoutingOption::HOST),
+        $kernel->afterConfiguration(function (WritableConfig $config) use ($kernel_dirs) {
+            // quick type checks.
+            Assert::nullOrPositiveInteger(
+                $config->getIntegerOrNull('routing.' . RoutingOption::HTTP_PORT)
+            );
+            Assert::nullOrPositiveInteger(
+                $config->getIntegerOrNull('routing.' . RoutingOption::HTTPS_PORT)
+            );
+            Assert::nullOrBoolean(
+                $config->getBooleanOrNull('routing.' . RoutingOption::USE_HTTPS)
+            );
+            Assert::nullOrstringNotEmpty(
+                $config->getStringOrNull('routing.' . RoutingOption::HOST),
                 'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
             );
-
             Assert::stringNotEmpty(
                 $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
                 'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string.'
             );
-
-            Assert::stringNotEmpty(
-                $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH),
+            Assert::nullOrstringNotEmpty(
+                $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH),
                 'routing.' . RoutingOption::WP_LOGIN_PATH . ' must be a non-empty string.'
             );
 
-            Assert::allReadable(
+            $route_dirs = $this->maybeAbsolutizeDirectories(
                 $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
+                $kernel_dirs
+            );
+            Assert::allReadable(
+                $route_dirs,
                 'routing.' . RoutingOption::ROUTE_DIRECTORIES . " must be a list of readable directories.\nThe path %s is not readable.",
             );
 
-            $api_route_dirs = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
+            $api_route_dirs = $this->maybeAbsolutizeDirectories(
+                $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES),
+                $kernel_dirs
+            );
+
             $early_route_prefixes = $config->getListOfStrings('routing.' . RoutingOption::EARLY_ROUTES_PREFIXES);
 
             if (count($api_route_dirs)) {
@@ -398,8 +415,7 @@ final class HttpRoutingBundle implements Bundle
             ->shared(PHPFileRouteLoader::class, function () use ($kernel): PHPFileRouteLoader {
                 $container = $kernel->container();
                 $config = $kernel->config();
-
-                $api_routes = $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES);
+                $kernel_dirs = $kernel->directories();
 
                 if ($container->has(RouteLoadingOptions::class)) {
                     $options = $container[RouteLoadingOptions::class];
@@ -410,8 +426,14 @@ final class HttpRoutingBundle implements Bundle
                 }
 
                 return new PHPFileRouteLoader(
-                    $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
-                    $api_routes,
+                    $this->maybeAbsolutizeDirectories(
+                        $config->getListOfStrings('routing.' . RoutingOption::ROUTE_DIRECTORIES),
+                        $kernel_dirs
+                    ),
+                    $this->maybeAbsolutizeDirectories(
+                        $config->getListOfStrings('routing.' . RoutingOption::API_ROUTE_DIRECTORIES),
+                        $kernel_dirs
+                    ),
                     $options
                 );
             });
@@ -422,22 +444,40 @@ final class HttpRoutingBundle implements Bundle
                 $config = $kernel->config();
                 $env = $kernel->env();
 
-                $context = new UrlGenerationContext(
-                    $config->getString('routing.' . RoutingOption::HOST),
-                    $config->getInteger('routing.' . RoutingOption::HTTPS_PORT),
-                    $config->getInteger('routing.' . RoutingOption::HTTP_PORT),
-                    $config->getBoolean('routing.' . RoutingOption::USE_HTTPS)
-                );
+                $host = $config->getStringOrNull('routing.' . RoutingOption::HOST);
+                $https_port = $config->getIntegerOrNull('routing.' . RoutingOption::HTTPS_PORT);
+                $http_port = $config->getIntegerOrNull('routing.' . RoutingOption::HTTP_PORT);
+                $https_by_default = $config->getBooleanOrNull('routing.' . RoutingOption::USE_HTTPS);
+
+                if (isset($host, $https_port, $http_port, $https_by_default)) {
+                    $context = new UrlGenerationContext(
+                        $host,
+                        $https_port,
+                        $http_port,
+                        $https_by_default
+                    );
+                } else {
+                    $context = UrlGenerationContext::fromUrlAndParts(
+                        home_url(),
+                        $host,
+                        $https_port,
+                        $http_port,
+                        $https_by_default,
+                    );
+                }
 
                 $loader = $container[RouteLoader::class] ?? $container[PHPFileRouteLoader::class];
 
                 $cache = ($env->isStaging() || $env->isProduction())
-                ? new FileRouteCache($kernel->directories()->cacheDir() . '/prod.routes-generated.php')
-                : new NullCache();
+                    ? new FileRouteCache($kernel->directories()->cacheDir() . '/prod.routes-generated.php')
+                    : new NullCache();
+
+                $admin_dashboard_url_prefix = $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX);
+                $login_path = $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH);
 
                 $admin_area = new WPAdminArea(
-                    $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
-                    $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH)
+                    $admin_dashboard_url_prefix,
+                    $login_path ?? fn (): string => wp_login_url(),
                 );
 
                 return new Router($context, $loader, $cache, $admin_area);
@@ -759,5 +799,17 @@ final class HttpRoutingBundle implements Bundle
             throw new RuntimeException(sprintf('Could not copy default routing.php config to path %s', $destination));
             // @codeCoverageIgnoreEnd
         }
+    }
+
+    /**
+     * @param string[] $directories
+     *
+     * @return string[]
+     */
+    private function maybeAbsolutizeDirectories(array $directories, Directories $kernel_directories): array
+    {
+        $base_dir = $kernel_directories->baseDir();
+
+        return array_map(fn (string $dir) => is_readable($dir) ? $dir : "{$base_dir}/{$dir}", $directories);
     }
 }

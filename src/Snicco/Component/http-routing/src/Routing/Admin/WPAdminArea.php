@@ -4,26 +4,42 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Routing\Admin;
 
+use Closure;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Routing\UrlPath;
 use Webmozart\Assert\Assert;
 
 use function explode;
+use function is_string;
 use function ltrim;
+use function parse_url;
 use function rtrim;
 use function trim;
+
+use const PHP_URL_PATH;
 
 final class WPAdminArea implements AdminArea
 {
     private string $prefix;
 
-    private string $login_path;
+    /**
+     * @var non-empty-string|Closure():string
+     */
+    private $login_path;
 
-    public function __construct(string $admin_dashboard_url_prefix, string $login_path)
+    /**
+     * @param string|Closure():string $login_path
+     */
+    public function __construct(string $admin_dashboard_url_prefix, $login_path)
     {
         Assert::stringNotEmpty($admin_dashboard_url_prefix);
-        Assert::stringNotEmpty($login_path);
         $this->prefix = '/' . ltrim($admin_dashboard_url_prefix, '/');
-        $this->login_path = $login_path;
+        if (is_string($login_path)) {
+            Assert::stringNotEmpty($login_path);
+            $this->login_path = '/' . ltrim($login_path, '/');
+        } else {
+            $this->login_path = $login_path;
+        }
     }
 
     public static function fromDefaults(): WPAdminArea
@@ -67,6 +83,23 @@ final class WPAdminArea implements AdminArea
 
     public function loginPath(): string
     {
-        return $this->login_path;
+        $login_path = is_string($this->login_path)
+            ? $this->login_path
+            : $this->callbackToPath($this->login_path);
+
+        return UrlPath::fromString($login_path)->asString();
+    }
+
+    private function callbackToPath(Closure $callback): string
+    {
+        $url = ($callback)();
+
+        Assert::stringNotEmpty($url);
+
+        $path = parse_url($url, PHP_URL_PATH);
+
+        Assert::stringNotEmpty($path, "URL '{$url}' is not valid. 'path' is missing.");
+
+        return $path;
     }
 }
