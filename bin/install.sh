@@ -11,5 +11,3 @@ docker run --rm -v ./wp:/var/www/html -u $(id -u):$(id -g) wordpress:cli wp core
 
 rm -rf ./wp/wp-content/plugins/*
 
-bash ./bin/up.sh
-
