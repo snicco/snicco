@@ -19,6 +19,8 @@ use function dirname;
  * @internal
  *
  * @psalm-internal Snicco
+ *
+ * @psalm-suppress UnnecessaryVarAnnotation
  */
 final class RoutingContextFromRuntimeValuesTest extends WPTestCase
 {
@@ -51,7 +53,8 @@ final class RoutingContextFromRuntimeValuesTest extends WPTestCase
 
         $kernel->boot();
 
-        $url_generator = $kernel->container()->make(UrlGenerator::class);
+        $url_generator = $kernel->container()
+            ->make(UrlGenerator::class);
 
         $this->assertSame(
             'https://snicco.io:8443/baz',
@@ -88,7 +91,8 @@ final class RoutingContextFromRuntimeValuesTest extends WPTestCase
 
         $kernel->boot();
 
-        $url_generator = $kernel->container()->make(UrlGenerator::class);
+        $url_generator = $kernel->container()
+            ->make(UrlGenerator::class);
 
         $this->assertSame(
             'https://snicco.io:8443/baz',
@@ -98,6 +102,37 @@ final class RoutingContextFromRuntimeValuesTest extends WPTestCase
             'http://snicco.io:8080/baz',
             $url_generator->to('/baz', [], UrlGenerator::ABSOLUTE_URL, false)
         );
+    }
+
+    /**
+     * @test
+     */
+    public function the_login_url_can_be_entirely_parsed_from_the_runtime(): void
+    {
+        add_filter('login_url', function () {
+            return 'https://snicco.io/login';
+        });
+
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing.host', 'snicco.io');
+            $config->set('routing.wp_login_path', null);
+        });
+
+        $kernel->boot();
+
+        /** @var UrlGenerator $url_generator */
+        $url_generator = $kernel->container()
+            ->make(UrlGenerator::class);
+
+        $this->assertSame('/login', $url_generator->toLogin());
+
+        add_filter('login_url', function () {
+            return 'https://snicco.io/login-2';
+        });
+
+        $this->assertSame('/login-2', $url_generator->toLogin());
     }
 
     protected function fixturesDir(): string

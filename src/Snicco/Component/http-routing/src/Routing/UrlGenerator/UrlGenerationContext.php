@@ -38,10 +38,10 @@ final class UrlGenerationContext
 
     public static function fromUrlAndParts(
         string $url,
-        ?string $host,
-        ?int $https_port,
-        ?int $http_port,
-        ?bool $https_by_default
+        ?string $host = null,
+        ?int $https_port = null,
+        ?int $http_port = null,
+        ?bool $https_by_default = null
     ): self {
         $parts = parse_url($url);
         Assert::isArray($parts, "{$url} is not a valid url.");

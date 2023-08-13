@@ -76,4 +76,41 @@ final class UrlGenerationContextTest extends TestCase
 
         new UrlGenerationContext('https://foo.com');
     }
+
+    /**
+     * @test
+     */
+    public function test_from_url_parts(): void
+    {
+        $context = UrlGenerationContext::fromUrlAndParts(
+            'https://snicco.io'
+        );
+
+        $this->assertSame('snicco.io', $context->host());
+        $this->assertSame(443, $context->httpPort());
+        $this->assertSame(443, $context->httpsPort());
+        $this->assertTrue($context->httpsByDefault());
+
+        $context = UrlGenerationContext::fromUrlAndParts(
+            'http://snicco.io:8443'
+        );
+
+        $this->assertSame('snicco.io', $context->host());
+        $this->assertSame(8443, $context->httpPort());
+        $this->assertSame(8443, $context->httpsPort());
+        $this->assertFalse($context->httpsByDefault());
+
+        $context = UrlGenerationContext::fromUrlAndParts(
+            'http://snicco.io:8443',
+            null,
+            null,
+            80,
+            true,
+        );
+
+        $this->assertSame('snicco.io', $context->host());
+        $this->assertSame(80, $context->httpPort());
+        $this->assertSame(8443, $context->httpsPort());
+        $this->assertTrue($context->httpsByDefault());
+    }
 }

@@ -85,6 +85,7 @@ use function is_file;
 use function is_readable;
 use function is_string;
 use function sprintf;
+use function wp_login_url;
 
 final class HttpRoutingBundle implements Bundle
 {
@@ -166,14 +167,12 @@ final class HttpRoutingBundle implements Bundle
                 $config->getStringOrNull('routing.' . RoutingOption::HOST),
                 'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
             );
-
             Assert::stringNotEmpty(
                 $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
                 'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string.'
             );
-
-            Assert::stringNotEmpty(
-                $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH),
+            Assert::nullOrstringNotEmpty(
+                $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH),
                 'routing.' . RoutingOption::WP_LOGIN_PATH . ' must be a non-empty string.'
             );
 
@@ -473,9 +472,12 @@ final class HttpRoutingBundle implements Bundle
                     ? new FileRouteCache($kernel->directories()->cacheDir() . '/prod.routes-generated.php')
                     : new NullCache();
 
+                $admin_dashboard_url_prefix = $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX);
+                $login_path = $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH);
+
                 $admin_area = new WPAdminArea(
-                    $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
-                    $config->getString('routing.' . RoutingOption::WP_LOGIN_PATH)
+                    $admin_dashboard_url_prefix,
+                    $login_path ?? fn (): string => wp_login_url(),
                 );
 
                 return new Router($context, $loader, $cache, $admin_area);
