@@ -87,7 +87,7 @@ final class UrlGenerationContextTest extends TestCase
         );
 
         $this->assertSame('snicco.io', $context->host());
-        $this->assertSame(443, $context->httpPort());
+        $this->assertSame(80, $context->httpPort());
         $this->assertSame(443, $context->httpsPort());
         $this->assertTrue($context->httpsByDefault());
 
@@ -97,11 +97,11 @@ final class UrlGenerationContextTest extends TestCase
 
         $this->assertSame('snicco.io', $context->host());
         $this->assertSame(8443, $context->httpPort());
-        $this->assertSame(8443, $context->httpsPort());
+        $this->assertSame(443, $context->httpsPort());
         $this->assertFalse($context->httpsByDefault());
 
         $context = UrlGenerationContext::fromUrlAndParts(
-            'http://snicco.io:8443',
+            'https://snicco.io:8443',
             null,
             null,
             80,
