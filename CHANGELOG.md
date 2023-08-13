@@ -1,3 +1,14 @@
+# [1.8.0](https://github.com/snicco/snicco/compare/v1.7.0...v1.8.0) (2023-08-13)
+
+
+### Features
+
+* **http-routing-bundle:** add support for relative route directories ([7d54bd2](https://github.com/snicco/snicco/commit/7d54bd26e00c1aa357668319a1c02cb7e92e09a2))
+* **http-routing,http-routing-bundle:** allow login path to be dynamic for url generation ([8de8c9e](https://github.com/snicco/snicco/commit/8de8c9e4a739663bb0ac941b7205d5f4c17237e0))
+* **http-routing,http-routing-bundle:** allow url generation context from runtime values ([6411cd5](https://github.com/snicco/snicco/commit/6411cd5c1e9854ed17dae625d01bc32cd7e42084))
+* **kernel:** add get_xxx_or_null methods to config classes ([b4c1f2a](https://github.com/snicco/snicco/commit/b4c1f2afbfbeb7ed7d412fa6f2a6cf72403f26f4))
+* **templating-bundle:** allow relative directories in configuration ([a1db921](https://github.com/snicco/snicco/commit/a1db921132e39916d16e9abf8e1b1463c07e8c35))
+
 # [1.7.0](https://github.com/snicco/snicco/compare/v1.6.2...v1.7.0) (2023-08-12)
 
 
