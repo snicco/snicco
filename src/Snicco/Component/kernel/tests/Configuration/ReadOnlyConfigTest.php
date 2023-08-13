@@ -121,4 +121,106 @@ final class ReadOnlyConfigTest extends TestCase
 
         $config->getBoolean('biz');
     }
+
+    /**
+     * @test
+     */
+    public function test_get_boolean_or_null(): void
+    {
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => true,
+            'baz' => 1,
+        ]);
+
+        $this->assertTrue($config->getBooleanOrNull('foo'));
+
+        try {
+            $config->getBooleanOrNull('bogus', false);
+            $this->fail('Test should have failed here');
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+
+        try {
+            $config->getBooleanOrNull('bogus');
+            $this->fail('Test should have failed here');
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+
+        try {
+            $config->getBooleanOrNull('baz');
+            $this->fail('Test should have failed here');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringContainsString('baz', $e->getMessage());
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_string_or_null(): void
+    {
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => 'foo',
+            'baz' => 1,
+        ]);
+
+        $this->assertSame('foo', $config->getStringOrNull('foo'));
+
+        try {
+            $config->getStringOrNull('bogus', 'foo');
+            $this->fail('Test should have failed here');
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+
+        try {
+            $config->getStringOrNull('bogus');
+            $this->fail('Test should have failed here');
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+
+        try {
+            $config->getStringOrNull('baz');
+            $this->fail('Test should have failed here');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringContainsString('baz', $e->getMessage());
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function test_get_int_or_null(): void
+    {
+        $config = ReadOnlyConfig::fromArray([
+            'foo' => 1,
+            'baz' => 'BAZ',
+        ]);
+
+        $this->assertSame(1, $config->getIntegerOrNull('foo'));
+
+        try {
+            $config->getIntegerOrNull('bogus', 1);
+            $this->fail('Test should have failed here');
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+
+        try {
+            $config->getIntegerOrNull('bogus');
+            $this->fail('Test should have failed here');
+        } catch (MissingConfigKey $e) {
+            $this->assertStringContainsString('bogus', $e->getMessage());
+        }
+
+        try {
+            $config->getIntegerOrNull('baz');
+            $this->fail('Test should have failed here');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringContainsString('baz', $e->getMessage());
+        }
+    }
 }
