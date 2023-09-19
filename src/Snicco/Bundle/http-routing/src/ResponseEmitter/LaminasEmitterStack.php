@@ -10,6 +10,8 @@ use Laminas\HttpHandlerRunner\Emitter\SapiStreamEmitter;
 use Psr\Log\LoggerInterface;
 use Snicco\Component\HttpRouting\Http\Psr7\Response;
 
+use function ini_get;
+use function is_numeric;
 use function ob_get_level;
 
 /**
@@ -32,10 +34,13 @@ final class LaminasEmitterStack implements ResponseEmitter
 
     public function emit(Response $response): void
     {
-        if (ob_get_level() > 0) {
-            $this->logger->warning(
-                'Output buffering is turned on while sending a response. WordPress (plugins) might be modifying the final response.'
-            );
+        $ob_level = ob_get_level();
+
+        if ($ob_level > 0) {
+            if ($ob_level > 1 || ! $this->hasOutputBufferingEnabledInIni()) {
+                $this->warn($ob_level);
+            }
+
             $response = $response->withoutHeader('Content-Length');
         }
 
@@ -47,5 +52,21 @@ final class LaminasEmitterStack implements ResponseEmitter
         }
 
         $stack->emit($response);
+    }
+
+    private function hasOutputBufferingEnabledInIni(): bool
+    {
+        // "On/Off" are returned as "1" and "0" respectively.
+        // See: https://www.php.net/manual/en/outcontrol.configuration.php#ini.output-buffering
+        $buffering_in_ini = (string) @ini_get('output_buffering');
+
+        return is_numeric($buffering_in_ini) && (int) $buffering_in_ini > 0;
+    }
+
+    private function warn(int $level): void
+    {
+        $this->logger->warning(
+            "Output buffering is turned (ob_get_level={$level}) on while sending a response. WordPress (plugins) might be modifying the final response."
+        );
     }
 }
