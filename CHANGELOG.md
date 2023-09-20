@@ -1,3 +1,15 @@
+# [1.9.0](https://github.com/snicco/snicco/compare/v1.8.1...v1.9.0) (2023-09-20)
+
+
+### Bug Fixes
+
+* **http-routing-bundle:** don't warn for .ini output buffering ([7591992](https://github.com/snicco/snicco/commit/75919924e12a070668cfcb3f3be268b1b51a8e59)), closes [#188](https://github.com/snicco/snicco/issues/188)
+
+
+### Features
+
+* **http-routing-bundle:** allow customizing admin hooks ([6682c7f](https://github.com/snicco/snicco/commit/6682c7fe10cec1ee05bd6668765805b82c4f5745))
+
 ## [1.8.1](https://github.com/snicco/snicco/compare/v1.8.0...v1.8.1) (2023-08-13)
 
 
