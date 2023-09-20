@@ -64,8 +64,12 @@ final class HttpKernelRunner
      * @note Unless you are 100% sure what you are doing you should not change the hooks.
      * You have been warned.
      */
-    public function listen(bool $is_admin, string $frontend_hook = 'wp_loaded', string $api_hook = 'init'): void
-    {
+    public function listen(
+        bool $is_admin_area,
+        string $frontend_hook = 'wp_loaded',
+        string $api_hook = 'init',
+        string $admin_hook = 'admin_init'
+    ): void {
         $this->assertNoMagicQuotesAdded();
 
         $psr_request = $this->request_creator->fromGlobals();
@@ -74,8 +78,8 @@ final class HttpKernelRunner
             add_action($api_hook, function () use ($psr_request): void {
                 $this->dispatchFrontendRequest(Request::fromPsr($psr_request, Request::TYPE_API));
             }, PHP_INT_MIN);
-        } elseif ($is_admin) {
-            add_action('admin_init', function () use ($psr_request): void {
+        } elseif ($is_admin_area) {
+            add_action($admin_hook, function () use ($psr_request): void {
                 $this->dispatchAdminRequest($psr_request);
             }, PHP_INT_MIN);
         } else {

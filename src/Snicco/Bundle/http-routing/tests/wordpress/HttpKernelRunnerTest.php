@@ -224,6 +224,39 @@ final class HttpKernelRunnerTest extends WPTestCase
     /**
      * @test
      */
+    public function test_admin_requests_with_custom_hook(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/wp-admin/admin.php?page=foo';
+
+        $this->httpKernelRunner()
+            ->listen(true, 'wp_loaded', 'init', 'init');
+
+        /** @var TestableEventDispatcher $dispatcher */
+        $dispatcher = $this->kernel->container()
+            ->make(TestableEventDispatcher::class);
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        do_action('admin_init');
+
+        $dispatcher->assertNotDispatched(HandlingRequest::class);
+        $dispatcher->assertNotDispatched(HandledRequest::class);
+        $dispatcher->assertNotDispatched(ResponseSent::class);
+
+        do_action('init');
+
+        $dispatcher->assertDispatched(HandlingRequest::class);
+        $dispatcher->assertDispatched(HandledRequest::class);
+        $dispatcher->assertDispatched(ResponseSent::class);
+        $dispatcher->assertNotDispatched(TerminatedResponse::class);
+    }
+
+    /**
+     * @test
+     */
     public function test_admin_request_only_emits_headers_right_away(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
