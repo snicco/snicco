@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-08-13 16:18:44        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-09-20 12:37:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -393,10 +393,23 @@
         "name": "Snicco\\Component\\EventDispatcher",
         "size": 3000,
         "relations": [
-            "Psr\\EventDispatcher",
-            "Snicco\\Component\\EventDispatcher\\ListenerFactory",
+            "global",
             "Snicco\\Component\\EventDispatcher\\Exception",
-            "global"
+            "Psr\\EventDispatcher",
+            "Snicco\\Component\\EventDispatcher\\ListenerFactory"
+        ]
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\EventDispatcher\\Exception",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Psr\\Container"
         ]
     },
     {
@@ -408,23 +421,10 @@
         "name": "Snicco\\Component\\EventDispatcher\\ListenerFactory",
         "size": 3000,
         "relations": [
+            "Psr\\Container",
             "global",
-            "Snicco\\Component\\EventDispatcher\\Exception",
-            "Psr\\Container"
+            "Snicco\\Component\\EventDispatcher\\Exception"
         ]
-    },
-    {
-        "name": "Snicco\\Component\\EventDispatcher\\Exception",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Psr\\Container"
-        ]
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Psr\\Container",

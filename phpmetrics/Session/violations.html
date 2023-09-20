@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-08-13 16:18:44        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-09-20 12:37:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -251,39 +251,10 @@
                     
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-64d902641579b0.51464219');">
-                                        <span class="path">Snicco\Component\Session\ValueObject\SessionConfig</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-64d902641579b0.51464219">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too complex method code                                                    <span
-                                                        class="badge level level-error">error</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks really complex.<br />
-<br />
-* Algorithms are complex (Max cyclomatic complexity of class methods is 15)<br />
-<br />
-Maybe you should delegate some code to other objects or split complex method.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-error"> Too complex method code</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-64d90264157af2.67211424');">
+                                    <a onclick="return toggle('bloc-650ae786845ca5.26377079');">
                                         <span class="path">Snicco\Component\Session\ReadWriteSession</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-64d90264157af2.67211424">
+                                    <div class="violation-list" id="bloc-650ae786845ca5.26377079">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Too complex class code                                                    <span
@@ -345,10 +316,39 @@ Maybe your class should not exceed 200 lines of logical code</div>
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-64d90264157c05.23234163');">
+                                    <a onclick="return toggle('bloc-650ae786845de0.40629941');">
+                                        <span class="path">Snicco\Component\Session\ValueObject\SessionConfig</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-650ae786845de0.40629941">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too complex method code                                                    <span
+                                                        class="badge level level-error">error</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks really complex.<br />
+<br />
+* Algorithms are complex (Max cyclomatic complexity of class methods is 15)<br />
+<br />
+Maybe you should delegate some code to other objects or split complex method.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-error"> Too complex method code</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-650ae786845e57.51013890');">
                                         <span class="path">Snicco\Component\Session\Testing\UserSessionDriverTests</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-64d90264157c05.23234163">
+                                    <div class="violation-list" id="bloc-650ae786845e57.51013890">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Probably bugged                                                    <span
@@ -393,10 +393,71 @@ Maybe you should check your unit tests for this class.</div>
                     
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-64d90264157c6');">
+                                    <a onclick="return toggle('bloc-650ae786845ea');">
+                                        <span class="path">Snicco\Component\Session\Driver</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-650ae786845ea">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Stable Dependencies Principle                                                    <span
+                                                            class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                        class="description">Packages should depend in the direction of stability.<br />
+<br />
+This package is more stable (0.438) than 2 package(s) that it depends on.<br />
+The packages that are more stable are<br />
+<br />
+* Snicco\Component\Session (0.6)<br />
+* Snicco\Component\Session\Exception (0.5)</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                                class="badge level level-warning"> Stable Dependencies Principle</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-650ae786845f7');">
+                                        <span class="path">Snicco\Component\Session\Event</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-650ae786845f7">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Stable Dependencies Principle                                                    <span
+                                                            class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                        class="description">Packages should depend in the direction of stability.<br />
+<br />
+This package is more stable (0.5) than 1 package(s) that it depends on.<br />
+The packages that are more stable are<br />
+<br />
+* Snicco\Component\Session (0.6)</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                                class="badge level level-warning"> Stable Dependencies Principle</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-650ae786845fd');">
                                         <span class="path">Snicco\Component\Session\ValueObject</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-64d90264157c6">
+                                    <div class="violation-list" id="bloc-650ae786845fd">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Stable Abstractions Principle                                                    <span
@@ -437,71 +498,10 @@ The packages that are more stable are<br />
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-64d90264157da');">
-                                        <span class="path">Snicco\Component\Session\Driver</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-64d90264157da">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Stable Dependencies Principle                                                    <span
-                                                            class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                        class="description">Packages should depend in the direction of stability.<br />
-<br />
-This package is more stable (0.438) than 2 package(s) that it depends on.<br />
-The packages that are more stable are<br />
-<br />
-* Snicco\Component\Session (0.6)<br />
-* Snicco\Component\Session\Exception (0.5)</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                                class="badge level level-warning"> Stable Dependencies Principle</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-64d90264157e4');">
-                                        <span class="path">Snicco\Component\Session\Event</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-64d90264157e4">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Stable Dependencies Principle                                                    <span
-                                                            class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                        class="description">Packages should depend in the direction of stability.<br />
-<br />
-This package is more stable (0.5) than 1 package(s) that it depends on.<br />
-The packages that are more stable are<br />
-<br />
-* Snicco\Component\Session (0.6)</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                                class="badge level level-warning"> Stable Dependencies Principle</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-64d90264157e9');">
+                                    <a onclick="return toggle('bloc-650ae78684606');">
                                         <span class="path">Snicco\Component\Session\Testing</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-64d90264157e9">
+                                    <div class="violation-list" id="bloc-650ae78684606">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Stable Abstractions Principle                                                    <span

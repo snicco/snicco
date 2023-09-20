@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-08-13 16:18:44        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2023-09-20 12:37:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -410,86 +410,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\MysqliConnection",
-        "size": 3000,
-        "relations": [
-            "\\Illuminate\\Database\\MySqlConnection",
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
-            "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
-            "\\Generator",
-            "\\Closure",
-            "\\Illuminate\\Database\\QueryException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
-            "\\mysqli",
-            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
-            "\\Illuminate\\Database\\QueryException",
-            "\\mysqli_result",
-            "\\mysqli_stmt",
-            "\\mysqli_sql_exception"
-        ]
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Closure",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\QueryException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_result",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_stmt",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\mysqli_sql_exception",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Illuminate\\Database\\MySqlConnection",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Generator",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPConnectionResolver",
         "size": 3000,
         "relations": []
@@ -500,19 +420,48 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Eloquent\\Illuminate\\MysqliConnection",
+            "\\Snicco\\Component\\Eloquent\\WPDatabaseSettingsAPI",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
+            "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
+            "\\RuntimeException"
+        ]
+    },
+    {
         "name": "\\Illuminate\\Database\\ConnectionInterface",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPModel",
+        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\MysqliConnection",
         "size": 3000,
-        "relations": [
-            "\\Illuminate\\Database\\Eloquent\\Model"
-        ]
+        "relations": []
     },
     {
-        "name": "\\Illuminate\\Database\\Eloquent\\Model",
+        "name": "\\Illuminate\\Database\\MySqlConnection",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriverInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Generator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Closure",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Illuminate\\Database\\QueryException",
         "size": 3000,
         "relations": []
     },
@@ -541,6 +490,18 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Eloquent\\Illuminate\\WPModel",
+        "size": 3000,
+        "relations": [
+            "\\Illuminate\\Database\\Eloquent\\Model"
+        ]
+    },
+    {
+        "name": "\\Illuminate\\Database\\Eloquent\\Model",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Eloquent\\WPEloquentStandalone",
         "size": 3000,
         "relations": [
@@ -562,6 +523,11 @@
     },
     {
         "name": "\\Illuminate\\Container\\Container",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
@@ -597,6 +563,31 @@
     },
     {
         "name": "\\Illuminate\\Database\\DatabaseManager",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliReconnect",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Eloquent\\Mysqli\\MysqliDriver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_result",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_stmt",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\mysqli_sql_exception",
         "size": 3000,
         "relations": []
     }
