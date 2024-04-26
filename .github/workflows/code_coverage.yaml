@@ -40,10 +40,11 @@ jobs:
           path: phpunit-coverage.xml
 
       - name: 'Upload coverage to codecov.io'
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f phpunit-coverage.xml -Z
+        uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: phpunit-coverage.xml
+          fail_ci_if_error: true
 
 
   codeception_coverage:
@@ -109,7 +110,8 @@ jobs:
           path: _output/codeception-coverage.xml
 
       - name: 'Upload coverage to codecov.io'
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f codeception-coverage.xml -Z
+        uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: codeception-coverage.xml
+          fail_ci_if_error: true
