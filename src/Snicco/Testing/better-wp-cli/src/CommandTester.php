@@ -116,8 +116,8 @@ final class CommandTester
         try {
             putenv('COLUMNS=144');
 
-            $this->std_out = $this->getInMemoryStream('w');
-            $this->std_err = $this->getInMemoryStream('w');
+            $this->std_out = $this->getStream('w', 'php://memory');
+            $this->std_err = $this->getStream('w', 'php://memory');
             $options = array_replace($this->options, $options);
             $command = $this->getCommand();
 
@@ -125,7 +125,8 @@ final class CommandTester
                 $command::synopsis(),
                 $positional_args,
                 $associative_args,
-                $this->getInMemoryStream('r+', $options['input'] ?? []),
+                // @see CommandTesterTest::that_stdin_stream_is_a_pipe_even_if_no_input_is_passed()
+                $this->getStream('r+', 'php://temp', $options['input'] ?? []),
                 $options[self::INTERACTIVE] ?? false,
             );
 
@@ -253,19 +254,19 @@ final class CommandTester
      *
      * @return resource
      */
-    private function getInMemoryStream(string $mode, array $inputs = [])
+    private function getStream(string $mode, string $type, array $inputs = [])
     {
-        $stream = fopen('php://memory', $mode);
+        $stream = fopen($type, $mode);
         // @codeCoverageIgnoreStart
         if (false === $stream) {
-            throw new RuntimeException('Could not open in memory stream.');
+            throw new RuntimeException("Could not open in {$type} stream.");
         }
         // @codeCoverageIgnoreEnd
 
         foreach ($inputs as $input) {
             // @codeCoverageIgnoreStart
             if (false === fwrite($stream, $input . PHP_EOL)) {
-                throw new RuntimeException('Could not write to in memory stream.');
+                throw new RuntimeException("Could not write to in {$type} stream.");
             }
             // @codeCoverageIgnoreEnd
         }

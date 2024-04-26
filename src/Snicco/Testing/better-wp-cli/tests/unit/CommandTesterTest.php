@@ -14,6 +14,7 @@ use Snicco\Component\BetterWPCLI\Tests\Testing\fixtures\ColorsCommand;
 use Snicco\Component\BetterWPCLI\Tests\Testing\fixtures\FooCommand;
 use Snicco\Component\BetterWPCLI\Tests\Testing\fixtures\PositionalCommand;
 use Snicco\Component\BetterWPCLI\Tests\Testing\fixtures\PromptCommand;
+use Snicco\Component\BetterWPCLI\Tests\Testing\fixtures\STDINTestCommand;
 use Snicco\Component\BetterWPCLI\Tests\Testing\fixtures\VerboseCommand;
 use Snicco\Component\BetterWPCLI\Verbosity;
 
@@ -395,6 +396,47 @@ final class CommandTesterTest extends TestCase
         $tester = new CommandTester(new VerboseCommand());
 
         $tester->assertCommandIsSuccessful();
+    }
+
+    /**
+     * @test
+     */
+    public function that_stdin_stream_is_a_pipe_if_input_is_passed(): void
+    {
+        $tester = new CommandTester(new STDINTestCommand(), [
+            'input' => ['foo'],
+        ]);
+        $tester->run();
+        $tester->seeInStdout('PIPE');
+        $tester->seeInStdout('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function that_stdin_stream_is_a_pipe_if_input_empty_input_is_passed(): void
+    {
+        $tester = new CommandTester(new STDINTestCommand(), [
+            'input' => [''],
+        ]);
+        $tester->run();
+        $tester->seeInStdout('PIPE');
+    }
+
+    /**
+     * @test
+     */
+    public function that_stdin_stream_is_a_pipe_even_if_no_input_is_passed(): void
+    {
+        // This is not the desired behavior, but there is no way to make an in-memory stream
+        // which will not crash select_stream on PHP8+
+        // It should have been a tmp stream from the beginning, they are identical with the
+        // only meaningful difference being that tmp will work with stream_select (always returns 1).
+        $tester = new CommandTester(new STDINTestCommand(), [
+            'input' => [],
+        ]);
+        $tester->run();
+        $tester->seeInStdout('PIPE');
     }
 
     private function expectFailure(string $message, Closure $test): void

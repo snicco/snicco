@@ -92,11 +92,9 @@ interface Input
     public function isInteractive(): bool;
 
     /**
-     * @internal
+     * Returns the input stream - presumably STDIN.
      *
      * @return resource
-     *
-     * @psalm-internal Snicco\Component\BetterWPCLI
      */
     public function getStream();
 }
