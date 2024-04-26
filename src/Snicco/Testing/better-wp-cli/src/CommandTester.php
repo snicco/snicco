@@ -144,7 +144,9 @@ final class CommandTester
             $this->exit_code = $command->execute($input, $output);
         } finally {
             if ($env) {
+                // @codeCoverageIgnoreStart
                 putenv("COLUMNS={$env}");
+            // @codeCoverageIgnoreEnd
             } else {
                 putenv('COLUMNS');
             }

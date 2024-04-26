@@ -19,7 +19,7 @@ final class Lock
     public string $type;
 
     /**
-     * @param "for share"|"for update" $type
+     * @param "lock in share mode"|"for update" $type
      */
     private function __construct(string $type)
     {

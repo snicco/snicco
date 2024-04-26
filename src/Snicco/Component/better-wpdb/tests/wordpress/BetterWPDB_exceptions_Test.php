@@ -96,11 +96,10 @@ final class BetterWPDB_exceptions_Test extends BetterWPDBTestCase
     /**
      * @test
      *
-     * @psalm-suppress MixedPropertyFetch
-     * @psalm-suppress PossiblyInvalidArrayAccess
      * @psalm-suppress PossiblyUndefinedIntArrayOffset
      * @psalm-suppress PossiblyNullPropertyFetch
      * @psalm-suppress PossiblyNullArrayAccess
+     * @psalm-suppress PossiblyInvalidPropertyFetch
      */
     public function exceptions_related_to_wpdb_loose_mysql_mode_are_thrown(): void
     {
