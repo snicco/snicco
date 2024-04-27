@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-09-20 12:38:14        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-04-27 12:20:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,71 +390,6 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Container\\ContainerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ReflectionClass",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Templating\\TemplatingMiddleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ResponseInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Bundle\\Templating\\TemplatingBundle",
         "size": 3000,
         "relations": [
@@ -500,9 +435,26 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Templating\\TemplateEngine",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Templating\\ViewFactory\\PHPViewFactory",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\TemplatingMiddleware",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "\\Snicco\\Component\\Templating\\TemplateEngine"
+        ]
     },
     {
         "name": "\\Snicco\\Bundle\\Templating\\TemplatingExceptionDisplayer",
@@ -513,6 +465,17 @@
             "\\Snicco\\Component\\Psr7ErrorHandler\\Information\\ExceptionInformation",
             "\\Snicco\\Component\\Templating\\ValueObject\\View",
             "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Templating\\PsrViewComposerFactory",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
+            "\\Psr\\Container\\ContainerInterface",
+            "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
+            "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
+            "\\ReflectionClass"
         ]
     },
     {
@@ -532,6 +495,56 @@
     },
     {
         "name": "\\InvalidArgumentException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ResponseInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposerFactory",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Container\\ContainerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Context\\ViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Templating\\Exception\\CantCreateViewComposer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ReflectionClass",
         "size": 3000,
         "relations": []
     },

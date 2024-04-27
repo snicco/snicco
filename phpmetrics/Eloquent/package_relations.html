@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-09-20 12:38:14        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-04-27 12:20:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,12 +390,59 @@
 
     var relations = [
     {
+        "name": "Snicco\\Component\\Eloquent\\Illuminate",
+        "size": 3000,
+        "relations": [
+            "Illuminate\\Database\\Eloquent",
+            "Illuminate\\Database\\Eloquent\\Factories",
+            "Illuminate\\Support",
+            "global",
+            "Illuminate\\Database",
+            "Snicco\\Component\\Eloquent\\Mysqli",
+            "Snicco\\Component\\Eloquent"
+        ]
+    },
+    {
+        "name": "Illuminate\\Database\\Eloquent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Illuminate\\Database\\Eloquent\\Factories",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Illuminate\\Support",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "global",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Illuminate\\Database",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Eloquent\\Mysqli",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Illuminate\\Database",
+            "Snicco\\Component\\Eloquent\\Illuminate",
+            "Snicco\\Component\\Eloquent"
+        ]
+    },
+    {
         "name": "Snicco\\Component\\Eloquent",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\BetterWPAPI",
-            "global",
             "Illuminate\\Container",
+            "global",
             "Illuminate\\Support\\Facades",
             "Faker",
             "Illuminate\\Database\\Eloquent\\Factories",
@@ -405,18 +452,9 @@
             "Illuminate\\Support",
             "Illuminate\\Database",
             "Illuminate\\Database\\Connectors",
-            "Snicco\\Component\\Eloquent\\Mysqli"
+            "Snicco\\Component\\Eloquent\\Mysqli",
+            "Snicco\\Component\\BetterWPAPI"
         ]
-    },
-    {
-        "name": "Snicco\\Component\\BetterWPAPI",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "global",
-        "size": 3000,
-        "relations": []
     },
     {
         "name": "Illuminate\\Container",
@@ -434,40 +472,7 @@
         "relations": []
     },
     {
-        "name": "Illuminate\\Database\\Eloquent\\Factories",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Illuminate\\Contracts\\Events",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Snicco\\Component\\Eloquent\\Illuminate",
-        "size": 3000,
-        "relations": [
-            "Illuminate\\Database",
-            "Snicco\\Component\\Eloquent\\Mysqli",
-            "Snicco\\Component\\Eloquent",
-            "global",
-            "Illuminate\\Database\\Eloquent\\Factories",
-            "Illuminate\\Support",
-            "Illuminate\\Database\\Eloquent"
-        ]
-    },
-    {
-        "name": "Illuminate\\Database\\Eloquent",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Illuminate\\Support",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Illuminate\\Database",
         "size": 3000,
         "relations": []
     },
@@ -477,14 +482,9 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\Eloquent\\Mysqli",
+        "name": "Snicco\\Component\\BetterWPAPI",
         "size": 3000,
-        "relations": [
-            "global",
-            "Illuminate\\Database",
-            "Snicco\\Component\\Eloquent\\Illuminate",
-            "Snicco\\Component\\Eloquent"
-        ]
+        "relations": []
     }
 ];
 

@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-09-20 12:38:14        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-04-27 12:20:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -402,15 +402,15 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Middleware\\WPNonce\\Middleware",
+        "name": "Snicco\\Middleware\\WPNonce",
         "size": 3000,
         "relations": [
             "Snicco\\Component\\HttpRouting\\Middleware",
             "Snicco\\Component\\BetterWPAPI",
+            "Snicco\\Middleware\\WPNonce\\Middleware",
             "Psr\\Http\\Message",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Middleware\\WPNonce\\Exception",
-            "Snicco\\Middleware\\WPNonce"
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator"
         ]
     },
     {
@@ -424,6 +424,18 @@
         "relations": []
     },
     {
+        "name": "Snicco\\Middleware\\WPNonce\\Middleware",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Snicco\\Component\\BetterWPAPI",
+            "Psr\\Http\\Message",
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
+            "Snicco\\Middleware\\WPNonce\\Exception",
+            "Snicco\\Middleware\\WPNonce"
+        ]
+    },
+    {
         "name": "Psr\\Http\\Message",
         "size": 3000,
         "relations": []
@@ -432,18 +444,6 @@
         "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "Snicco\\Middleware\\WPNonce",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
-            "Snicco\\Component\\BetterWPAPI",
-            "Snicco\\Component\\HttpRouting\\Middleware",
-            "Snicco\\Middleware\\WPNonce\\Middleware",
-            "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
-        ]
     },
     {
         "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",

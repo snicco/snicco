@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-09-20 12:38:14        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-04-27 12:20:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -400,7 +400,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Middleware\\WPNonce\\Middleware\\CheckWPNonce",
+        "name": "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce",
         "size": 3000,
         "relations": []
     },
@@ -413,6 +413,18 @@
         "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Middleware\\WPNonce\\Middleware\\CheckWPNonce",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Middleware\\WPNonce\\Exception\\InvalidWPNonce"
+        ]
     },
     {
         "name": "\\Psr\\Http\\Message\\ResponseInterface",
@@ -432,34 +444,24 @@
     {
         "name": "\\Snicco\\Middleware\\WPNonce\\Middleware\\AddWPNonceToView",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Middleware\\WPNonce\\WPNonce"
+        ]
     },
     {
         "name": "\\Snicco\\Middleware\\WPNonce\\WPNonce",
         "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
-            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
-            "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce"
-        ]
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
-            "\\Snicco\\Middleware\\WPNonce\\Middleware\\CheckWPNonce",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\Snicco\\Middleware\\WPNonce\\Middleware\\AddWPNonceToView"
-        ]
     }
 ];
 

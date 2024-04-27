@@ -1,124 +1,5 @@
 var classes = [
     {
-        "name": "Snicco\\Bundle\\Encryption\\EncryptionBundle",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "shouldRun",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "configure",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "register",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "bootstrap",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "alias",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "validateKey",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "copyConfiguration",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 7,
-        "nbMethods": 7,
-        "nbMethodsPrivate": 2,
-        "nbMethodsPublic": 5,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 0,
-        "wmc": 12,
-        "ccn": 6,
-        "ccnMethodMax": 4,
-        "externals": [
-            "Snicco\\Component\\Kernel\\Bundle",
-            "Snicco\\Component\\Kernel\\ValueObject\\Environment",
-            "Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
-            "Snicco\\Component\\Kernel\\Kernel",
-            "InvalidArgumentException",
-            "InvalidArgumentException",
-            "Snicco\\Component\\Kernel\\Kernel",
-            "Defuse\\Crypto\\Key",
-            "Snicco\\Bundle\\Encryption\\DefuseEncryptor",
-            "Snicco\\Component\\Kernel\\Kernel",
-            "Snicco\\Component\\Kernel\\Configuration\\Config",
-            "Defuse\\Crypto\\Key",
-            "Snicco\\Component\\Kernel\\Kernel",
-            "RuntimeException"
-        ],
-        "parents": [],
-        "implements": [
-            "Snicco\\Component\\Kernel\\Bundle"
-        ],
-        "lcom": 5,
-        "length": 61,
-        "vocabulary": 22,
-        "volume": 272.03,
-        "difficulty": 6.47,
-        "effort": 1760.16,
-        "level": 0.15,
-        "bugs": 0.09,
-        "time": 98,
-        "intelligentContent": 42.04,
-        "number_operators": 17,
-        "number_operands": 44,
-        "number_operators_unique": 5,
-        "number_operands_unique": 17,
-        "cloc": 9,
-        "loc": 61,
-        "lloc": 52,
-        "mi": 72.74,
-        "mIwoC": 44.71,
-        "commentWeight": 28.03,
-        "kanDefect": 0.43,
-        "relativeStructuralComplexity": 225,
-        "relativeDataComplexity": 0.32,
-        "relativeSystemComplexity": 225.32,
-        "totalStructuralComplexity": 1575,
-        "totalDataComplexity": 2.25,
-        "totalSystemComplexity": 1577.25,
-        "package": "Snicco\\Bundle\\Encryption\\",
-        "pageRank": 0,
-        "afferentCoupling": 0,
-        "efferentCoupling": 9,
-        "instability": 1,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Bundle\\Encryption\\DefuseEncryptor",
         "interface": false,
         "abstract": false,
@@ -252,6 +133,125 @@ var classes = [
         "afferentCoupling": 0,
         "efferentCoupling": 0,
         "instability": 0,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bundle\\Encryption\\EncryptionBundle",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "shouldRun",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "configure",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "register",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "bootstrap",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "alias",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "validateKey",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "copyConfiguration",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 7,
+        "nbMethods": 7,
+        "nbMethodsPrivate": 2,
+        "nbMethodsPublic": 5,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 0,
+        "wmc": 12,
+        "ccn": 6,
+        "ccnMethodMax": 4,
+        "externals": [
+            "Snicco\\Component\\Kernel\\Bundle",
+            "Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+            "Snicco\\Component\\Kernel\\Kernel",
+            "InvalidArgumentException",
+            "InvalidArgumentException",
+            "Snicco\\Component\\Kernel\\Kernel",
+            "Defuse\\Crypto\\Key",
+            "Snicco\\Bundle\\Encryption\\DefuseEncryptor",
+            "Snicco\\Component\\Kernel\\Kernel",
+            "Snicco\\Component\\Kernel\\Configuration\\Config",
+            "Defuse\\Crypto\\Key",
+            "Snicco\\Component\\Kernel\\Kernel",
+            "RuntimeException"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\Kernel\\Bundle"
+        ],
+        "lcom": 5,
+        "length": 61,
+        "vocabulary": 22,
+        "volume": 272.03,
+        "difficulty": 6.47,
+        "effort": 1760.16,
+        "level": 0.15,
+        "bugs": 0.09,
+        "time": 98,
+        "intelligentContent": 42.04,
+        "number_operators": 17,
+        "number_operands": 44,
+        "number_operators_unique": 5,
+        "number_operands_unique": 17,
+        "cloc": 9,
+        "loc": 61,
+        "lloc": 52,
+        "mi": 72.74,
+        "mIwoC": 44.71,
+        "commentWeight": 28.03,
+        "kanDefect": 0.43,
+        "relativeStructuralComplexity": 225,
+        "relativeDataComplexity": 0.32,
+        "relativeSystemComplexity": 225.32,
+        "totalStructuralComplexity": 1575,
+        "totalDataComplexity": 2.25,
+        "totalSystemComplexity": 1577.25,
+        "package": "Snicco\\Bundle\\Encryption\\",
+        "pageRank": 0,
+        "afferentCoupling": 0,
+        "efferentCoupling": 9,
+        "instability": 1,
         "violations": {}
     }
 ]

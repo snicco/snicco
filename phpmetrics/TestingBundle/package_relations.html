@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2023-09-20 12:38:14        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-04-27 12:20:26        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -393,26 +393,21 @@
         "name": "Snicco\\Bundle\\Testing\\Bundle",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\Kernel",
-            "PHPUnit\\Framework",
             "Snicco\\Bridge\\Pimple",
+            "Snicco\\Component\\Kernel",
             "Snicco\\Component\\Psr7ErrorHandler",
             "Snicco\\Component\\Kernel\\ValueObject",
-            "global"
+            "global",
+            "PHPUnit\\Framework"
         ]
     },
     {
-        "name": "Snicco\\Component\\Kernel",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Bridge\\Pimple",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\Kernel",
         "size": 3000,
         "relations": []
     },
@@ -432,16 +427,7 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
-        "size": 3000,
-        "relations": [
-            "global",
-            "Webmozart\\Assert",
-            "PHPUnit\\Framework"
-        ]
-    },
-    {
-        "name": "Webmozart\\Assert",
+        "name": "PHPUnit\\Framework",
         "size": 3000,
         "relations": []
     },
@@ -449,6 +435,10 @@
         "name": "Snicco\\Bundle\\Testing\\Functional",
         "size": 3000,
         "relations": [
+            "Symfony\\Component\\DomCrawler",
+            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+            "PHPUnit\\Framework",
+            "PHPUnit\\Framework\\Constraint",
             "Symfony\\Component\\BrowserKit",
             "Snicco\\Bundle\\HttpRouting",
             "Snicco\\Component\\HttpRouting\\Routing\\Admin",
@@ -458,10 +448,6 @@
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
             "Snicco\\Component\\StrArr",
             "Psr\\Http\\Message",
-            "Symfony\\Component\\DomCrawler",
-            "Symfony\\Component\\DomCrawler\\Test\\Constraint",
-            "PHPUnit\\Framework",
-            "PHPUnit\\Framework\\Constraint",
             "Snicco\\Component\\HttpRouting\\Middleware",
             "Codeception\\TestCase",
             "Snicco\\Component\\Session\\ValueObject",
@@ -471,6 +457,21 @@
             "Snicco\\Component\\Kernel",
             "Snicco\\Component\\Kernel\\ValueObject"
         ]
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "PHPUnit\\Framework\\Constraint",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "Symfony\\Component\\BrowserKit",
@@ -493,6 +494,11 @@
         "relations": []
     },
     {
+        "name": "Webmozart\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "Snicco\\Component\\HttpRouting\\Http\\Psr7",
         "size": 3000,
         "relations": []
@@ -504,21 +510,6 @@
     },
     {
         "name": "Psr\\Http\\Message",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Symfony\\Component\\DomCrawler",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "Symfony\\Component\\DomCrawler\\Test\\Constraint",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "PHPUnit\\Framework\\Constraint",
         "size": 3000,
         "relations": []
     },
@@ -546,6 +537,15 @@
         "name": "Snicco\\Component\\BetterWPMail\\Testing",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "Snicco\\Bundle\\Testing\\Functional\\Concerns",
+        "size": 3000,
+        "relations": [
+            "global",
+            "Webmozart\\Assert",
+            "PHPUnit\\Framework"
+        ]
     }
 ];
 
