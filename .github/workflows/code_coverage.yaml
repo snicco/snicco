@@ -40,6 +40,8 @@ jobs:
           path: phpunit-coverage.xml
 
       - name: 'Upload coverage to codecov.io'
+        # only upload if this is not a fork
+        if: github.repository == 'snicco/snicco'
         uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -110,6 +112,8 @@ jobs:
           path: _output/codeception-coverage.xml
 
       - name: 'Upload coverage to codecov.io'
+        # only upload if this is not a fork
+        if: github.repository == 'snicco/snicco'
         uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
