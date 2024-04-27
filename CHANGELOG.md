@@ -1,3 +1,12 @@
+## [1.9.1](https://github.com/snicco/snicco/compare/v1.9.0...v1.9.1) (2024-04-27)
+
+
+### Bug Fixes
+
+* **better-wp-cli-testing:** use temp stream instead of memory as test stdin ([4411702](https://github.com/snicco/snicco/commit/4411702b3266a22d3457e42d8065395c0673f345))
+* **better-wp-hooks:** fix edge-case on wp6.4 and php_int_min ([b640af1](https://github.com/snicco/snicco/commit/b640af11743a3b24e5664b0c7f046eef5742a9ad))
+* **better-wpdb:** make read locks compatible with mariadb ([cdf9335](https://github.com/snicco/snicco/commit/cdf93358b85640b270287262e8914fb3e451e731)), closes [#192](https://github.com/snicco/snicco/issues/192)
+
 # [1.9.0](https://github.com/snicco/snicco/compare/v1.8.1...v1.9.0) (2023-09-20)
 
 
