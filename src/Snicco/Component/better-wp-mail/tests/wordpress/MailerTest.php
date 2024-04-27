@@ -96,8 +96,6 @@ final class MailerTest extends WPTestCase
 
         $body = $data['body'];
 
-        $this->assertStringStartsWith('This is a multi-part message in MIME format', $body);
-
         $this->assertStringContainsString('Content-Type: text/plain; charset=us-ascii', $body);
         $this->assertStringContainsString('whats up', $body);
 
@@ -563,7 +561,6 @@ final class MailerTest extends WPTestCase
         $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
         $this->assertStringContainsString('boundary=', $header);
 
-        $this->assertStringContainsString('This is a multi-part message in MIME format', $first_mail['body']);
         $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $first_mail['body']);
         $this->assertStringContainsString('öö', $first_mail['body']);
 

@@ -10,12 +10,16 @@ namespace Snicco\Component\BetterWPDB\KeysetPagination;
 final class Lock
 {
     /**
-     * @var "for share"|"for update"
+     * @var "lock in share mode"|"for update"
+     *
+     * @interal
+     *
+     * @psalm-internal Snicco\Component\BetterWPDB
      */
     public string $type;
 
     /**
-     * @param "for share"|"for update" $type
+     * @param "lock in share mode"|"for update" $type
      */
     private function __construct(string $type)
     {
@@ -24,7 +28,8 @@ final class Lock
 
     public static function forRead(): self
     {
-        return new self('for share');
+        // "for share" is not compatible with MariaDB while for "lock in share mode" is compatible with both.
+        return new self('lock in share mode');
     }
 
     public static function forReadWrite(): self

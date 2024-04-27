@@ -102,7 +102,7 @@ jobs:
         packages: ${{ fromJson(needs.provide_affected_packages.outputs.codeception) }}
         php: [ '7.4' ]
         dependencies: [ highest ]
-        wp: [ '5.9' ]
+        wp: [ 'latest' ]
 
     services:
       mysql:

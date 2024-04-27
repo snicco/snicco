@@ -21,7 +21,7 @@
         "ext-curl": "*",
         "codeception/codeception": "^4.1.29",
         "codeception/module-cli": "^1.1.1",
-        "lucatume/wp-browser": "^3.1.4",
+        "lucatume/wp-browser": "~3.1.4",
         "phpunit/phpunit": "^9.5.13",
         "wp-cli/wp-cli": "^2.6"
     },

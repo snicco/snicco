@@ -222,28 +222,34 @@ final class EventMapper
             return;
         }
 
-        /** @var non-empty-array<int,array<string,array>> $all_callbacks */
+        /** @var non-empty-array<int,array<string,array{function: callable, accepted_args: int}>> $all_callbacks */
         $all_callbacks = $wp_hook->callbacks;
 
         $lowest_priority = array_key_first($all_callbacks);
 
         if ($lowest_priority > PHP_INT_MIN) {
+            // There is no callback at PHP_INT_MIN, so we can just add our mapped event at this priority.
+            // This can only be overruled if a plugin does something similar to this callback.
             $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
 
             return;
         }
 
-        // If other filters are already created with the priority PHP_INT_MIN we remove them and
-        // add them add the new priority which is PHP_INT_MIN+1.
-        $callbacks = $all_callbacks[$lowest_priority];
-        unset($wp_hook->callbacks[$lowest_priority]);
+        $callbacks_at_php_int_min = $all_callbacks[$lowest_priority];
 
+        // Remove all filters that are currently registered at PHP_INT_MIN
+        $wp_hook->remove_all_filters($lowest_priority);
+        // Then add our one that should run first.
         $this->mapValidated($wordpress_hook_name, $map_to, PHP_INT_MIN);
-
-        $wp_hook->callbacks[$lowest_priority + 1] = $callbacks;
-
-        // This is important in order to keep the relative priority.
-        ksort($wp_hook->callbacks, SORT_NUMERIC);
+        // Then add the remaining filters back - they still have the same priority, but will run later.
+        foreach ($callbacks_at_php_int_min as $callback) {
+            $wp_hook->add_filter(
+                $wordpress_hook_name,
+                $callback['function'],
+                PHP_INT_MIN,
+                $callback['accepted_args']
+            );
+        }
     }
 
     /**

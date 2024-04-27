@@ -15,7 +15,7 @@
     },
     "require-dev": {
         "codeception/codeception": "^4.1.29",
-        "lucatume/wp-browser": "^3.1.4",
+        "lucatume/wp-browser": "~3.1.4",
         "phpunit/phpunit": "^9.5.13"
     },
     "autoload": {
