@@ -21,7 +21,7 @@
     "require-dev": {
         "phpunit/phpunit": "^9.5.13",
         "codeception/codeception": "^4.1.29",
-        "lucatume/wp-browser": "^3.1.4",
+        "lucatume/wp-browser": "~3.1.4",
         "snicco/str-arr": "^1.9",
         "illuminate/events": "^8.81",
         "fakerphp/faker": "^1.3.0-stable"

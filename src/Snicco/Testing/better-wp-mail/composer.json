@@ -12,7 +12,7 @@
         "snicco/better-wp-mail": "^1.9",
         "phpunit/phpunit": "^9.5.13",
         "codeception/codeception": "^4.1.29",
-        "lucatume/wp-browser": "^3.1.4"
+        "lucatume/wp-browser": "~3.1.4"
     },
     "autoload": {
         "psr-4": {

@@ -19,7 +19,7 @@
         "snicco/better-wp-hooks-bundle": "^1.9",
         "snicco/templating-bundle": "^1.9",
         "codeception/codeception": "^4.1.29",
-        "lucatume/wp-browser": "^3.1.4",
+        "lucatume/wp-browser": "~3.1.4",
         "snicco/better-wp-mail-testing": "^1.9"
     },
     "autoload": {
