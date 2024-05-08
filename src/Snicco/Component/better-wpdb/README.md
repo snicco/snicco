@@ -424,9 +424,9 @@ $better_wpdb->preparedQuery(
 ✅ // Use a whitelist approach
 
 $order_by = 'desc';
-$_get = strtolower($_GET['order_by']);
+$_get_order_by = strtolower($_GET['order_by']);
 
-if('asc' === $order_by) {
+if('asc' === $_get_order_by) {
     $order_by = 'asc';
 }
 
