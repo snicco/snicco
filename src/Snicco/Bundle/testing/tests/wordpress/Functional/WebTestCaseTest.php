@@ -426,6 +426,23 @@ final class WebTestCaseTest extends WebTestCase
         $browser->lastDOM();
     }
 
+    /**
+     * @test
+     */
+    public function the_default_kernel_environment_is_testing(): void
+    {
+        $this->assertTrue($this->getKernel()->env()->isTesting());
+    }
+
+    /**
+     * @test
+     */
+    public function the_default_kernel_environment_can_be_changed(): void
+    {
+        $this->kernel_env = 'prod';
+        $this->assertTrue($this->getKernel()->env()->isProduction());
+    }
+
     protected function extensions(): array
     {
         return self::EXTENSIONS;
