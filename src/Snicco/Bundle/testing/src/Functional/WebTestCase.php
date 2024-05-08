@@ -44,6 +44,11 @@ abstract class WebTestCase extends WPTestCase
     use CreateWordPressUsers;
     use AuthenticateWithWordPress;
 
+    /**
+     * @var Environment::DEV|Environment::PROD|Environment::STAGING|Environment::TESTING
+     */
+    protected string $kernel_env = 'testing';
+
     private ?Kernel $kernel = null;
 
     private ?Browser $browser = null;
@@ -187,7 +192,7 @@ abstract class WebTestCase extends WPTestCase
     final protected function getKernel(): Kernel
     {
         if (! isset($this->kernel)) {
-            $this->kernel = ($this->createKernel())(Environment::testing());
+            $this->kernel = ($this->createKernel())(Environment::fromString($this->kernel_env));
         }
 
         return $this->kernel;
