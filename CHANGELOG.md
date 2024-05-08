@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/snicco/snicco/compare/v1.9.1...v1.10.0) (2024-05-08)
+
+
+### Features
+
+* **testing-bundle:** allow specifying a default kernel env for all tests ([97f7ed0](https://github.com/snicco/snicco/commit/97f7ed0b5d036a1be28c8933e5fd3ab84ed35bc7))
+
 ## [1.9.1](https://github.com/snicco/snicco/compare/v1.9.0...v1.9.1) (2024-04-27)
 
 
