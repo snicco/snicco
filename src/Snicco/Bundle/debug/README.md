@@ -16,7 +16,7 @@ The DebugBundle configures [`Whoops`](https://github.com/filp/whoops) as the err
 ## Installation
 
 ```shell
-composer install snicco/debug-bundle
+composer require snicco/debug-bundle
 ```
 
 ## Configuration
@@ -38,12 +38,12 @@ config file **in the DEV environment**.
 use Snicco\Bundle\Debug\DebugBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::DEV => [
            DebugBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```

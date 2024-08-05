@@ -61,14 +61,14 @@ This is what you probably find in most **WordPress** plugin code:
 ```php
 
 function my_plugin_send_mail(string $to, string $html_message) {
-    
+
     add_filter('phpmailer_init', 'add_plain_text');
-    
+
     /* Add ten other filters */
     wp_mail($to, $html_message);
-    
+
     remove_filter('phpmailer_init', 'add_plain_text')
-    
+
     /* Remove ten other filters */
 }
 
@@ -190,7 +190,7 @@ $email = $email->withTo('jondoe@snicco.io');
 // The email has one recipient "jondoe@snicco.io"
 ```
 
---- 
+---
 
 ### Sending an email
 
@@ -221,22 +221,22 @@ $email = new Email();
 $admin = new WP_User(1);
 
 $email = $email
-    
+
     // email address is a simple string
     ->addTo('calvin@snicco.io')
-    
+
     // with an explicit display name
     ->addCc('Marlon <marlon@snicco.io>')
-    
+
     // as an array, where the first argument is the email
-    ->addBcc(['Jon Doe', 'jon@snicco.io'])        
-    
-    // as an array with a "name" + "email" key        
+    ->addBcc(['Jon Doe', 'jon@snicco.io'])
+
+    // as an array with a "name" + "email" key
     ->addFrom(['name' => 'Jane Doe', 'email' => 'jane@snicco.io'])
 
     // with an instance of WP_USER
-    ->addFrom($admin)        
-    
+    ->addFrom($admin)
+
     // with an instance of MailBox
     ->addReplyTo(Mailbox::create('no-reply@snicco.io'));
 ```
@@ -291,18 +291,18 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 $email = (new Email())
 
     ->withHtmlTemplate('path/to/email-templates/welcome.php')
-    
+
     ->withContext(['site_name' => 'snicco.io']);
 
 // Important: don't use withContext here or site_name is gone.
 $email1 = $email->addContext('first_name', 'Calvin')
                 ->addTo('calvin@snicco.io');
-                
+
 $mailer->send($email1);
 
 $email2 = $email->addContext('first_name', 'Marlon');
                 ->addTo('marlon@snicco.io');
-                
+
 $mailer->send($email2);
 ```
 
@@ -320,7 +320,7 @@ This will result in the following two emails being sent:
 <p>Thanks for signing up to snicco.io</p>
 ```
 
---- 
+---
 
 ### Adding attachments
 
@@ -330,39 +330,39 @@ Attachments can be added to an instance of [`Email`](src/ValueObject/Email.php) 
 
   ```php
   use Snicco\Component\BetterWPMail\ValueObject\Email;
-  
+
   $email = (new Email())->addTo('calvin@snicco.io');
-  
+
   $email = $email
-  
+
       ->addAttachment('/path/to/documents/terms-of-use.pdf')
-      
+
       // optionally with a custom display name
       ->addAttachment('/path/to/documents/privacy.pdf', 'Privacy Policy')
-      
+
       // optionally with an explicit content-type,
       ->addAttachment('/path/to/documents/contract.doc', 'Contract', 'application/msword');
-  
+
   ```
 
 2. Attaching a binary string or a stream that you already have in memory (a generated PDF for example)
 
   ```php
   use Snicco\Component\BetterWPMail\ValueObject\Email;
-  
+
   $pdf = /* generate pdf */
-  
+
   $email = (new Email())->addTo('calvin@snicco.io');
-  
+
   $email = $email
-  
+
       ->addBinaryAttachment($pdf, 'Your PDF', 'application/pdf')
-  
+
   ```
 
 **BetterWPMail** depends on it's [`Transport` interface](src/Transport/Transport.php) to perform the actual sending
 of emails. For that reason, no mime-type detection is performed if you don't pass an explicit content-type for an
-attachment. This is delegated to the concrete transport implementation. 
+attachment. This is delegated to the concrete transport implementation.
 
 The [`WPMailTransport`](src/Transport/WPMailTransport.php) will delegate this task to `wp_mail`/`PHPMailer`.
 The behaviour of `PHPMailer` is the following:
@@ -391,19 +391,19 @@ In your email content you can then reference the embedded image with the syntax:
 
 ```php
   use Snicco\Component\BetterWPMail\ValueObject\Email;
-  
+
   $email = (new Email())
     ->addTo('calvin@snicco.io')
     ->addContext('first_name', 'Calvin');
-  
+
   $email1 = $email
       ->addEmbed('/path/to/images/logo.png', 'logo', 'image/png')
       ->withHtmlTemplate('path/to/email-templates/welcome-with-image.php');
-  
+
   // or with inline html
   $email2 = $email
       ->addEmbed('/path/to/images/logo.png', 'logo', 'image/png')
-      ->withHtmlBody('<img src="cid:logo">');  
+      ->withHtmlBody('<img src="cid:logo">');
 
   ```
 
@@ -413,7 +413,7 @@ In your email content you can then reference the embedded image with the syntax:
 
 ```php
   use Snicco\Component\BetterWPMail\ValueObject\Email;
-  
+
   $email = (new Email())
     ->addTo('calvin@snicco.io')
     // custom headers are string, string key value pairs.
@@ -446,8 +446,8 @@ $reply_to_email = 'myplugin-reply-to@site.com';
 
 $mail_defaults = new MailDefaults(
     $from_name,
-     $from_email, 
-     $reply_to_name, 
+     $from_email,
+     $reply_to_name,
      $reply_to_email
 );
 
@@ -471,24 +471,24 @@ use Snicco\Component\BetterWPMail\ValueObject\Email;
 use Snicco\Component\BetterWPMail\ValueObject\Mailbox;
 
 class WelcomeEmail extends Email {
-        
+
     // You can configure the protected
-    // priorities of the Email class    
+    // priorities of the Email class
     protected ?int $priority = 5;
-    
+
     protected string $text = 'We would like to welcome you to snicco.io';
-    
+
     protected ?string $html_template = '/path/to/templates/welcome.php';
-    
+
     public function __construct(WP_User $user) {
-    
+
         // configure dynamic properties in the constructor.
         $this->subject = sprintf('Welcome to snicco.io %s', $user->display_name);
-        
+
         $this->to[] = Mailbox::create($user);
-        
+
         $this->context['first_name'] = $user->first_name;
-        
+
     }
 
 }
@@ -576,7 +576,7 @@ First we need a way to convert markdown to HTML.
 
 We will use [`erusev/parsedown`](https://github.com/erusev/parsedown) for this task.
 
-```shell 
+```shell
 composer require erusev/parsedown
 ```
 
@@ -586,29 +586,29 @@ Now let's create a custom `MarkdownMailRenderer`:
 use Snicco\Component\BetterWPMail\Renderer\MailRenderer;
 
 class MarkdownEmailRenderer implements MailRenderer {
-    
+
     // This renderer should only render .md files that exist.
     public function supports(string $template_name,?string $extension = null) : bool{
-        
+
         return 'md' === $extension && is_file($template_name);
-            
+
     }
-    
+
     public function render(string $template_name,array $context = []) : string{
-        
+
         // First, we get the string contents of the template.
         $contents = file_get_contents($template_name);
-        
-        // To allow basic templating, replace placeholders inside {{ }} 
+
+        // To allow basic templating, replace placeholders inside {{ }}
         foreach ($context as $name => $value ) {
             $contents = str_replace('{{'.$name'.}}', $value);
         }
-        
+
         // Convert the markdown to HTML and return it.
         return (new Parsedown())->text($contents);
-                        
+
     }
-    
+
 }
 
 ```
@@ -694,7 +694,7 @@ testing.
 First, install the package as a composer `dev-dependency`:
 
 ```shell
-composer install --dev snicco/better-wp-mail-testing
+composer require --dev snicco/better-wp-mail-testing
 ```
 
 How you wire the `FakeTransport` into your [`Mailer`](src/Mailer.php) instance during testing greatly depends on how

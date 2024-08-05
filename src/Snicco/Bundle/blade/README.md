@@ -12,7 +12,7 @@ This **WordPress** bundle configures the standalone [`snicco/blade-bridge`](http
 ## Installation
 
 ```shell
-composer install snicco/blade-bundle
+composer require snicco/blade-bundle
 ```
 
 ## Configuration
@@ -32,13 +32,13 @@ use Snicco\Bundle\Blade\BladeBundle;
 use Snicco\Bundle\Templating\TemplatingBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
             TemplatingBundle::class,
             BladeBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```

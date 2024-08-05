@@ -12,7 +12,7 @@ This **WordPress** bundle configures the standalone [`snicco/better-wp-hooks`](h
 ## Installation
 
 ```shell
-composer install snicco/better-wp-hooks-bundle
+composer require snicco/better-wp-hooks-bundle
 ```
 
 ## Configuration
@@ -31,12 +31,12 @@ use Snicco\Bundle\BetterWPHooks\BetterWPHooksBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    
+
     'bundles' => [
         Environment::ALL => [
             BetterWPHooksBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```
@@ -63,7 +63,7 @@ var_dump($event_dispatcher === $psr_event_dispatcher); // true
 $event_mapper = $kernel->container()->make(EventMapper::class);
 ```
 
-If the [`snicco/event-dispatcher-testing`](https://github.com/snicco/event-dispatcher-testing) package is installed 
+If the [`snicco/event-dispatcher-testing`](https://github.com/snicco/event-dispatcher-testing) package is installed
 a [`TestableEventDispatcher`](https://github.com/snicco/event-dispatcher-testing) will automatically be used in the testing environment.
 
 ## Contributing

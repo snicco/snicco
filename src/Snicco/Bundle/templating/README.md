@@ -12,7 +12,7 @@ This **WordPress** bundle integrates [`snicco/templating`](https://github.com/sn
 ## Installation
 
 ```shell
-composer install snicco/templating-bundle
+composer require snicco/templating-bundle
 ```
 
 ## Configuration
@@ -32,12 +32,12 @@ config file.
 use Snicco\Bundle\Templating\TemplatingBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
            TemplatingBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 ```
 
@@ -48,7 +48,7 @@ return [
 The [`TemplatingBundle`](src/TemplatingBundle.php) provides a [`TemplatingMiddleware`](src/TemplatingMiddleware.php) that
 renders `ViewResponses` by using the templating engine of the [`snicco/templating`](https://github.com/snicco/templating) library.
 
-It should replace the simpler `SimpleTemplating` middleware of the `http-routing-bundle`. 
+It should replace the simpler `SimpleTemplating` middleware of the `http-routing-bundle`.
 
 ### View context
 
@@ -59,7 +59,7 @@ When resolving the `TemplateEngine` from the booted kernel the following context
 
 ### Error handling
 
-The [`TemplatingBundle`](src/TemplatingBundle.php) will register a [`TemplatingExceptionDisplayer`](src/TemplatingExceptionDisplayer.php) if the `http-routing-bundle` is used. 
+The [`TemplatingBundle`](src/TemplatingBundle.php) will register a [`TemplatingExceptionDisplayer`](src/TemplatingExceptionDisplayer.php) if the `http-routing-bundle` is used.
 
 This exception displayer can be added in your `http_error_handling` configuration.
 

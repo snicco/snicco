@@ -12,7 +12,7 @@ This **WordPress** bundle configures the standalone [`snicco/better-wp-mail`](ht
 ## Installation
 
 ```shell
-composer install snicco/better-wp-mail-bundle
+composer require snicco/better-wp-mail-bundle
 ```
 
 ## Configuration
@@ -33,12 +33,12 @@ Add the [`BetterWPMailBundle`](src/BetterWPMailBundle.php) to your `bundles.php`
 use Snicco\Bundle\BetterWPMail\BetterWPMailBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
             BetterWPMailBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```

@@ -12,7 +12,7 @@ The testing bundle provides a full testing framework for **WordPress** applicati
 ## Installation
 
 ```shell
-composer install snicco/testing-bundle
+composer require snicco/testing-bundle
 ```
 
 ## Usage
@@ -27,31 +27,31 @@ use Snicco\Bundle\Testing\Functional\WebTestCase;
 class SomeTest extends WebTestCase {
 
     protected function extensions() : array{
-        return []; // Return an array of class names implementing TestExtension 
+        return []; // Return an array of class names implementing TestExtension
     }
-    
+
     protected function createKernel(){
         return '/path/to/kernel-bootstrap.php' // Path to kernel bootstrap file (assuming this file returns a closure).
     }
-    
+
     public function testHomePage(){
-        
+
         /** @var Browser $browser */
         $browser = $this->getBrowser();
-              
+
         $browser->request('/');
-                
+
         $browser->lastResponse()
                 ->assertOk()
                 ->assertSeeText('Some text');
-                
+
         $browser->lastDOM()->assertSelectorExists('body > h1');
-        
+
         $browser->reload();
-        
+
         $browser->back();
-        
-    }    
+
+    }
 }
 ```
 
