@@ -9,6 +9,7 @@ use RuntimeException;
 use Snicco\Component\Kernel\Configuration\PHPFileCache;
 
 use function is_file;
+use function sys_get_temp_dir;
 use function unlink;
 
 /**
@@ -80,5 +81,21 @@ final class PHPFileCacheTest extends TestCase
         $this->assertSame([
             'foo' => 'bar',
         ], $res);
+    }
+
+    /**
+     * @test
+     */
+    public function will_create_the_cache_directory_if_not_exists(): void
+    {
+        $cache = new PHPFileCache();
+
+        $file = sys_get_temp_dir() . '/php_file_cache_test_non_existing_dir/test_cache.php';
+
+        $cache->get($file, fn (): array => [
+            'foo' => 'bar',
+        ]);
+
+        $this->assertTrue(is_file($file));
     }
 }
