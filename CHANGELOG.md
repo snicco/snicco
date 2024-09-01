@@ -1,3 +1,24 @@
+# [2.0.0-beta.1](https://github.com/snicco/snicco/compare/v1.10.0...v2.0.0-beta.1) (2024-09-01)
+
+
+### Bug Fixes
+
+* **kernel:** don't check if directories are readable in constructor ([4d136d7](https://github.com/snicco/snicco/commit/4d136d75f82b09195709644ed35a17158edff334))
+
+
+### BREAKING CHANGES
+
+* **kernel:** Previously creating an instance of the kernel class always asserted
+that cache/log/config dirs are
+readable.
+This created a lot of development complexities as these directories
+always had to be pre-created before a kernel instance could be created.
+It also creates runtime overhead for little additional safety.
+There is no way to ensure that a directory did not go missing between
+Directories::__construct(), and the usage of any directory.
+Callers of the Directory class are now responsible for error handling,
+as they should always have.
+
 # [1.10.0](https://github.com/snicco/snicco/compare/v1.9.1...v1.10.0) (2024-05-08)
 
 
