@@ -1,3 +1,10 @@
+# [2.0.0-beta.3](https://github.com/snicco/snicco/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2024-09-01)
+
+
+### Features
+
+* **kernel:** try to create non-existing cache dirs ([a5cba06](https://github.com/snicco/snicco/commit/a5cba0681d93f93993046c5e93898b86102b8afc))
+
 # [2.0.0-beta.2](https://github.com/snicco/snicco/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2024-09-01)
 
 
