@@ -62,7 +62,7 @@ jobs:
             result = github.rest.repos.deleteAdminBranchProtection({
               owner: 'snicco',
               repo: 'snicco',
-              branch: ${{ env.PUSHED_BRANCH }}
+              branch: '${{ env.PUSHED_BRANCH }}'
             })
 
       - name: 'Semantic release'
@@ -87,5 +87,5 @@ jobs:
             result = github.rest.repos.setAdminBranchProtection({
               owner: 'snicco',
               repo: 'snicco',
-              branch: ${{ env.PUSHED_BRANCH }}
+              branch: '${{ env.PUSHED_BRANCH }}'
             })
