@@ -7,7 +7,9 @@ namespace Snicco\Component\Kernel\Configuration;
 use Closure;
 use Webimpress\SafeWriter\FileWriter;
 
+use function dirname;
 use function is_array;
+use function is_dir;
 use function restore_error_handler;
 use function set_error_handler;
 use function var_export;
@@ -31,6 +33,12 @@ final class PHPFileCache implements ConfigCache
         }
 
         $config = $loader();
+
+        $cache_file_parent_dir = dirname($key);
+        if (! is_dir($cache_file_parent_dir)) {
+            // suppress warnings in case multiple requests are trying to create the same directory.
+            @mkdir($cache_file_parent_dir, 0755, true);
+        }
 
         FileWriter::writeFile($key, '<?php return ' . var_export($config, true) . ';', 0644);
 
