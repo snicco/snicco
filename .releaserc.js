@@ -1,6 +1,7 @@
 module.exports = {
     "branches": [
-        "master"
+        "master",
+        "{name: 'beta', prerelease: true}"
     ],
     "repositoryUrl": "https://github.com/snicco/snicco.git",
     "tagFormat": "v${version}",

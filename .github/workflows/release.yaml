@@ -4,10 +4,13 @@ on:
   push:
     branches:
       - master
+      - beta
 
 jobs:
   release:
     name: 'Release'
+    # don't run on forks
+    if: github.repository == 'snicco/snicco'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,6 +20,12 @@ jobs:
           # Commits will then fail due to branch protection rules.
           token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
+
+      - name: Store pushed branch in env
+        run: |
+          PUSHED_BRANCH=${GITHUB_REF#refs/heads/}
+          echo "PUSHED_BRANCH=${PUSHED_BRANCH}" >> $GITHUB_ENV
+          echo "Pushed branch is $PUSHED_BRANCH"
 
       - name: 'Setup Node.js'
         uses: actions/setup-node@v2
@@ -53,7 +62,7 @@ jobs:
             result = github.rest.repos.deleteAdminBranchProtection({
               owner: 'snicco',
               repo: 'snicco',
-              branch: 'master'
+              branch: ${{ env.PUSHED_BRANCH }}
             })
 
       - name: 'Semantic release'
@@ -78,5 +87,5 @@ jobs:
             result = github.rest.repos.setAdminBranchProtection({
               owner: 'snicco',
               repo: 'snicco',
-              branch: 'master'
+              branch: ${{ env.PUSHED_BRANCH }}
             })
