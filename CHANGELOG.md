@@ -1,3 +1,10 @@
+# [2.0.0-beta.2](https://github.com/snicco/snicco/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2024-09-01)
+
+
+### Features
+
+* **http-routing,http-routing-bundle:** try to create non-existing cache dirs ([1ff6fac](https://github.com/snicco/snicco/commit/1ff6fac2cd25119d58b30483181598c4c892be66))
+
 # [2.0.0-beta.1](https://github.com/snicco/snicco/compare/v1.10.0...v2.0.0-beta.1) (2024-09-01)
 
 
