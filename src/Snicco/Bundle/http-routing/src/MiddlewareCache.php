@@ -10,7 +10,10 @@ use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
 
+use function dirname;
 use function is_array;
+use function is_dir;
+use function mkdir;
 use function restore_error_handler;
 use function set_error_handler;
 use function var_export;
@@ -48,6 +51,12 @@ final class MiddlewareCache
         }
 
         $data = $loader();
+
+        $parent_dir = dirname($cache_file);
+        if (! is_dir($parent_dir)) {
+            // suppress warnings in case multiple requests are trying to create the same directory.
+            @mkdir($parent_dir, 0755, true);
+        }
 
         FileWriter::writeFile($cache_file, '<?php return ' . var_export($data, true) . ';', 0644);
 

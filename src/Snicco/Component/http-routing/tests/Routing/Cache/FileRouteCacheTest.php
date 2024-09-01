@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;
 
+use function exec;
 use function is_file;
 use function unlink;
 
@@ -62,6 +63,34 @@ final class FileRouteCacheTest extends TestCase
     /**
      * @test
      */
+    public function will_try_to_create_non_existing_cache_directory(): void
+    {
+        $cache = new FileRouteCache('/tmp/snicco-file-route-cache-test/cache.php');
+
+        $this->assertFalse(is_file('/tmp/snicco-file-route-cache-test/cache.php'));
+
+        $res = $cache->get(fn (): array => [
+            'route_collection' => [
+                'foo' => 'bar',
+            ],
+            'url_matcher' => [],
+            'admin_menu' => [],
+        ]);
+
+        $this->assertSame([
+            'route_collection' => [
+                'foo' => 'bar',
+            ],
+            'url_matcher' => [],
+            'admin_menu' => [],
+        ], $res);
+
+        $this->assertTrue(is_file('/tmp/snicco-file-route-cache-test/cache.php'));
+    }
+
+    /**
+     * @test
+     */
     public function the_loader_callable_is_not_run_if_a_cache_file_exists(): void
     {
         $cache = new FileRouteCache($this->test_cache_file);
@@ -100,5 +129,7 @@ final class FileRouteCacheTest extends TestCase
                 throw new RuntimeException('Cant remove cache file.');
             }
         }
+
+        exec('rm -rf /tmp/snicco-file-route-cache-test');
     }
 }

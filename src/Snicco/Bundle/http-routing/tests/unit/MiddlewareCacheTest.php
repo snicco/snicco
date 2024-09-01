@@ -8,6 +8,7 @@ use Nyholm\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Bridge\Pimple\PimpleContainerAdapter;
+use Snicco\Bundle\HttpRouting\MiddlewareCache;
 use Snicco\Bundle\HttpRouting\Option\MiddlewareOption;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\Middleware\MiddlewareThree;
 use Snicco\Bundle\HttpRouting\Tests\fixtures\RoutingBundleTestController;
@@ -132,6 +133,28 @@ final class MiddlewareCacheTest extends TestCase
             });
 
         $this->assertSame(':middleware_three', (string) $response->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function will_try_to_create_cache_directory_if_missing(): void
+    {
+        $file = $this->directories->cacheDir() . '/new-sub-dir/prod.middleware-map-generated.php';
+
+        MiddlewareCache::get($file, function () {
+            return [
+                'route_map' => [],
+                'request_map' => [
+                    'api' => [],
+                    'frontend' => [],
+                    'admin' => [],
+                    'global' => [],
+                ],
+            ];
+        });
+
+        $this->assertTrue(is_file($file));
     }
 
     protected function fixturesDir(): string

@@ -8,6 +8,7 @@ use Closure;
 use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
 
+use function dirname;
 use function is_array;
 use function var_export;
 
@@ -36,6 +37,13 @@ final class FileRouteCache implements RouteCache
         }
 
         $data = $loader();
+
+        $parent_dir = dirname($this->path);
+        if (! is_dir($parent_dir)) {
+            // suppress warnings in case multiple requests are trying to create the same directory.
+            @mkdir($parent_dir, 0755, true);
+        }
+
         $this->writeToFile($this->path, '<?php return ' . var_export($data, true) . ';');
 
         return $data;
