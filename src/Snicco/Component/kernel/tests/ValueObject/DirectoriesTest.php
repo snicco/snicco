@@ -38,17 +38,6 @@ final class DirectoriesTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_if_base_directory_is_not_readable(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('$base_directory [bogus] is not readable.');
-
-        Directories::fromDefaults('bogus');
-    }
-
-    /**
-     * @test
-     */
     public function test_config_directory(): void
     {
         $dirs = Directories::fromDefaults($this->valid_base_dir);
@@ -79,43 +68,44 @@ final class DirectoriesTest extends TestCase
     /**
      * @test
      */
-    public function test_exception_if_config_dir_not_readable(): void
+    public function exception_if_base_dir_not_absolute(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('$config_dir [%s] is not readable', __DIR__ . '/config'));
+        $this->expectExceptionMessage('The base directory must be an absolute path. Got: "relative/path"');
 
-        new Directories(__DIR__, __DIR__ . '/config', __DIR__ . '/cache', __DIR__ . '/log');
+        Directories::fromDefaults('relative/path');
     }
 
     /**
      * @test
      */
-    public function test_exception_if_cache_dir_not_readable(): void
+    public function exception_if_config_dir_relative(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('$cache_dir [%s] is not readable', __DIR__ . '/cache'));
+        $this->expectExceptionMessage('The config directory must be an absolute path. Got: "relative/path"');
 
-        new Directories(
-            $this->valid_base_dir,
-            $this->valid_base_dir . '/config',
-            __DIR__ . '/cache',
-            __DIR__ . '/log'
-        );
+        new Directories('/base', 'relative/path', '/cache', '/log');
     }
 
     /**
      * @test
      */
-    public function test_exception_if_log_dir_not_readable(): void
+    public function exception_if_cache_dir_relative(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('$log_dir [%s] is not readable', __DIR__ . '/log'));
+        $this->expectExceptionMessage('The cache directory must be an absolute path. Got: "relative/path"');
 
-        new Directories(
-            $this->valid_base_dir,
-            $this->valid_base_dir . '/config',
-            $this->valid_base_dir . '/var/cache',
-            __DIR__ . '/log'
-        );
+        new Directories('/base', '/config', 'relative/path', '/log');
+    }
+
+    /**
+     * @test
+     */
+    public function exception_if_log_dir_relative(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The log directory must be an absolute path. Got: "relative/path"');
+
+        new Directories('/base', '/config', '/cache', 'relative/path');
     }
 }

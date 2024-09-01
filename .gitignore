@@ -10,6 +10,7 @@ _output
 node_modules
 package-lock.json
 wp
+.idea
 
 # temporary
 /bin/change-packages
@@ -20,3 +21,4 @@ wp
 /src/Snicco/*/*/composer.lock
 /src/Snicco/*/*/phpunit.xml
 /src/Snicco/*/*/tests/_output/*
+
