@@ -55,10 +55,10 @@ final class MiddlewareCache
         $parent_dir = dirname($cache_file);
         if (! is_dir($parent_dir)) {
             // suppress warnings in case multiple requests are trying to create the same directory.
-            @mkdir($parent_dir, 0755, true);
+            @mkdir($parent_dir, 0700, true);
         }
 
-        FileWriter::writeFile($cache_file, '<?php return ' . var_export($data, true) . ';', 0644);
+        FileWriter::writeFile($cache_file, '<?php return ' . var_export($data, true) . ';', 0600);
 
         return MiddlewareResolver::fromCache($data['route_map'], $data['request_map']);
     }

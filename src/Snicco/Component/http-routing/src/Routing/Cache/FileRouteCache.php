@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Routing\Cache;
 
 use Closure;
-use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
 
 use function dirname;
@@ -18,14 +17,11 @@ final class FileRouteCache implements RouteCache
 
     private string $path;
 
-    private int $file_permission;
-
-    public function __construct(string $cache_path, int $file_permission = 0644)
+    public function __construct(string $cache_path)
     {
         $this->path = $cache_path;
         $this->empty_error_handler = function (): void {
         };
-        $this->file_permission = $file_permission;
     }
 
     public function get(callable $loader): array
@@ -41,10 +37,10 @@ final class FileRouteCache implements RouteCache
         $parent_dir = dirname($this->path);
         if (! is_dir($parent_dir)) {
             // suppress warnings in case multiple requests are trying to create the same directory.
-            @mkdir($parent_dir, 0755, true);
+            @mkdir($parent_dir, 0700, true);
         }
 
-        $this->writeToFile($this->path, '<?php return ' . var_export($data, true) . ';');
+        FileWriter::writeFile($this->path, '<?php return ' . var_export($data, true) . ';', 0600);
 
         return $data;
     }
@@ -66,13 +62,5 @@ final class FileRouteCache implements RouteCache
 
         /** @var array{url_matcher: array, route_collection: array<string,string>, admin_menu: array<string>} $value */
         return $value;
-    }
-
-    /**
-     * @throws ExceptionInterface
-     */
-    private function writeToFile(string $path, string $content): void
-    {
-        FileWriter::writeFile($path, $content, $this->file_permission);
     }
 }
