@@ -37,10 +37,10 @@ final class PHPFileCache implements ConfigCache
         $cache_file_parent_dir = dirname($key);
         if (! is_dir($cache_file_parent_dir)) {
             // suppress warnings in case multiple requests are trying to create the same directory.
-            @mkdir($cache_file_parent_dir, 0755, true);
+            @mkdir($cache_file_parent_dir, 0700, true);
         }
 
-        FileWriter::writeFile($key, '<?php return ' . var_export($config, true) . ';', 0644);
+        FileWriter::writeFile($key, '<?php return ' . var_export($config, true) . ';', 0600);
 
         return $config;
     }
