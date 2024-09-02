@@ -1,3 +1,17 @@
+# [2.0.0-beta.4](https://github.com/snicco/snicco/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2024-09-02)
+
+
+### Features
+
+* stricter directory permissions for all cache files ([83be859](https://github.com/snicco/snicco/commit/83be8599604e046b06862a77686e95c98faf2af9))
+
+
+### BREAKING CHANGES
+
+* all cache directories are created with 0700
+permissions and all files with 0600.
+Previously, they were created with 0755/0644.
+
 # [2.0.0-beta.3](https://github.com/snicco/snicco/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2024-09-01)
 
 
