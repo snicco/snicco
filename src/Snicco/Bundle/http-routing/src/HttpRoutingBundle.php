@@ -33,8 +33,7 @@ use Snicco\Component\HttpRouting\Middleware\RouteRunner;
 use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminMenu;
 use Snicco\Component\HttpRouting\Routing\Admin\WPAdminArea;
-use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;
-use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
+use Snicco\Component\HttpRouting\Routing\Cache\CallbackRouteCache;
 use Snicco\Component\HttpRouting\Routing\Route\Routes;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader;
@@ -442,7 +441,6 @@ final class HttpRoutingBundle implements Bundle
             ->shared(Router::class, function () use ($kernel): Router {
                 $container = $kernel->container();
                 $config = $kernel->config();
-                $env = $kernel->env();
 
                 $host = $config->getStringOrNull('routing.' . RoutingOption::HOST);
                 $https_port = $config->getIntegerOrNull('routing.' . RoutingOption::HTTPS_PORT);
@@ -468,9 +466,9 @@ final class HttpRoutingBundle implements Bundle
 
                 $loader = $container[RouteLoader::class] ?? $container[PHPFileRouteLoader::class];
 
-                $cache = ($env->isStaging() || $env->isProduction())
-                    ? new FileRouteCache($kernel->directories()->cacheDir() . '/prod.routes-generated.php')
-                    : new NullCache();
+                $cache = new CallbackRouteCache(function (callable $load_routes) use ($kernel) {
+                    return $kernel->bootstrap_cache->getOr(self::alias() . '.routes', $load_routes);
+                });
 
                 $admin_dashboard_url_prefix = $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX);
                 $login_path = $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH);
@@ -572,11 +570,51 @@ final class HttpRoutingBundle implements Bundle
     private function bindRouteRunnerMiddleware(DIContainer $container, Kernel $kernel): void
     {
         $container->shared(RouteRunner::class, function () use ($container, $kernel): RouteRunner {
-            $middleware_resolver = ($kernel->env()->isProduction() || $kernel->env()->isStaging())
-                ? $this->getCachedMiddlewareResolver($kernel)
-                : $this->getMiddlewareResolver($kernel);
+            $middleware_cache = $kernel->bootstrap_cache->getOr(
+                self::ALIAS . '.middleware',
+                function () use ($kernel): array {
+                    $config = $kernel->config();
+                    $container = $kernel->container();
 
-            return new RouteRunner($container->make(MiddlewarePipeline::class), $middleware_resolver, $container);
+                    /**
+                     * @psalm-suppress MixedArgumentTypeCoercion
+                     */
+                    $resolver = new MiddlewareResolver(
+                        $config->getArray('middleware.' . MiddlewareOption::ALWAYS_RUN),
+                        $config->getArray('middleware.' . MiddlewareOption::ALIASES),
+                        $config->getArray('middleware.' . MiddlewareOption::GROUPS),
+                        $config->getArray('middleware.' . MiddlewareOption::PRIORITY_LIST)
+                    );
+
+                    return $resolver->createMiddlewareCache(
+                        $container->make(Routes::class),
+                        $container
+                    );
+                }
+            );
+
+            Assert::true(
+                isset($middleware_cache['route_map'], $middleware_cache['request_map']),
+                'Corrupted middleware cache: middleware map is missing the required keys [route_map, request_map].'
+            );
+            Assert::true(
+                is_array($middleware_cache['route_map']) && is_array($middleware_cache['request_map']),
+                'Corrupted middleware cache: route_map and request_map must be arrays.'
+            );
+
+            /**
+             * @psalm-suppress MixedArgumentTypeCoercion
+             */
+            $middleware_resolver = MiddlewareResolver::fromCache(
+                $middleware_cache['route_map'],
+                $middleware_cache['request_map']
+            );
+
+            return new RouteRunner(
+                $container->make(MiddlewarePipeline::class),
+                $middleware_resolver,
+                $container
+            );
         });
     }
 
@@ -676,35 +714,6 @@ final class HttpRoutingBundle implements Bundle
                 ResponsePostProcessor::class,
                 fn (): ResponsePostProcessor => new ResponsePostProcessor($kernel->env())
             );
-    }
-
-    /**
-     * @psalm-suppress MixedArgumentTypeCoercion
-     */
-    private function getMiddlewareResolver(Kernel $kernel): MiddlewareResolver
-    {
-        $config = $kernel->config();
-
-        return new MiddlewareResolver(
-            $config->getArray('middleware.' . MiddlewareOption::ALWAYS_RUN),
-            $config->getArray('middleware.' . MiddlewareOption::ALIASES),
-            $config->getArray('middleware.' . MiddlewareOption::GROUPS),
-            $config->getArray('middleware.' . MiddlewareOption::PRIORITY_LIST)
-        );
-    }
-
-    private function getCachedMiddlewareResolver(Kernel $kernel): MiddlewareResolver
-    {
-        $cache_file = $kernel->directories()
-            ->cacheDir() . '/prod.middleware-map-generated.php';
-
-        return MiddlewareCache::get($cache_file, function () use ($kernel): array {
-            $resolver = $this->getMiddlewareResolver($kernel);
-            $routes = $kernel->container()
-                ->make(Routes::class);
-
-            return $resolver->createMiddlewareCache($routes, $kernel->container());
-        });
     }
 
     private function bindRoutes(DIContainer $container): void
