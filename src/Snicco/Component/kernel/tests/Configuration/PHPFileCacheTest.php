@@ -5,97 +5,113 @@ declare(strict_types=1);
 namespace Snicco\Component\Kernel\Tests\Configuration;
 
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use Snicco\Component\Kernel\Configuration\PHPFileCache;
+use Snicco\Component\Kernel\Cache\PHPFileCache;
+use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
+use Webmozart\Assert\Assert;
 
-use function is_file;
+use function exec;
+use function is_dir;
+use function mkdir;
+use function rmdir;
 use function sys_get_temp_dir;
-use function unlink;
 
 /**
  * @internal
  */
 final class PHPFileCacheTest extends TestCase
 {
-    private string $cache_file;
+    use CleanDirs;
+
+    /**
+     * @var non-empty-string
+     */
+    private string $cache_dir;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->cache_file = __DIR__ . '/test_cache.php';
-        if (is_file($this->cache_file)) {
-            unlink($this->cache_file);
+
+        $cache_dir = sys_get_temp_dir() . '/php_file_cache_test';
+        if (is_dir($cache_dir)) {
+            $this->cleanDirs([$cache_dir]);
+            rmdir($cache_dir);
         }
+        $this->cache_dir = $cache_dir;
     }
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-        if (is_file($this->cache_file)) {
-            unlink($this->cache_file);
+        if (is_dir($this->cache_dir)) {
+            $this->cleanDirs([$this->cache_dir]);
+            rmdir($this->cache_dir);
         }
+        parent::tearDown();
     }
 
     /**
      * @test
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedOperand
      */
-    public function the_config_is_stored_and_returned(): void
+    public function caching_works_with_the_cache_directory_already_created(): void
     {
-        $cache = new PHPFileCache();
+        mkdir($this->cache_dir);
 
-        $this->assertFalse(is_file($this->cache_file));
+        $cache = new PHPFileCache($this->cache_dir);
 
-        $res = $cache->get($this->cache_file, fn (): array => [
-            'foo' => 'bar',
-        ]);
+        $loader = function (): array {
+            static $count = 0;
+            ++$count;
+
+            return [
+                'count' => $count,
+            ];
+        };
 
         $this->assertSame([
-            'foo' => 'bar',
-        ], $res);
+            'count' => 1,
+        ], $cache->getOr('foo', $loader));
+        $this->assertSame([
+            'count' => 1,
+        ], $cache->getOr('foo', $loader));
 
-        $this->assertTrue(is_file($this->cache_file));
+        exec('rm -rf ' . $this->cache_dir);
 
         $this->assertSame([
-            'foo' => 'bar',
-        ], require $this->cache_file);
+            'count' => 2,
+        ], $cache->getOr('foo', $loader));
     }
 
     /**
      * @test
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedOperand
      */
-    public function the_config_is_not_reloaded_if_loaded_already(): void
+    public function caching_works_with_the_cache_directory_not_already_created(): void
     {
-        $cache = new PHPFileCache();
+        Assert::false(is_dir($this->cache_dir));
 
-        $this->assertFalse(is_file($this->cache_file));
+        $cache = new PHPFileCache($this->cache_dir);
 
-        $cache->get($this->cache_file, fn (): array => [
-            'foo' => 'bar',
-        ]);
+        $loader = function (): array {
+            static $count = 0;
+            ++$count;
 
-        $new = new PHPFileCache();
-        $res = $new->get($this->cache_file, function (): void {
-            throw new RuntimeException('This should never be called.');
-        });
+            return [
+                'count' => $count,
+            ];
+        };
 
         $this->assertSame([
-            'foo' => 'bar',
-        ], $res);
-    }
+            'count' => 1,
+        ], $cache->getOr('foo', $loader));
 
-    /**
-     * @test
-     */
-    public function will_create_the_cache_directory_if_not_exists(): void
-    {
-        $cache = new PHPFileCache();
+        $this->assertTrue(is_dir($this->cache_dir));
 
-        $file = sys_get_temp_dir() . '/php_file_cache_test_non_existing_dir/test_cache.php';
-
-        $cache->get($file, fn (): array => [
-            'foo' => 'bar',
-        ]);
-
-        $this->assertTrue(is_file($file));
+        $this->assertSame([
+            'count' => 1,
+        ], $cache->getOr('foo', $loader));
     }
 }

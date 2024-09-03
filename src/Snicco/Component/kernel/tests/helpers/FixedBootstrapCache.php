@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests\helpers;
 
-use Snicco\Component\Kernel\Configuration\ConfigCache;
+use Snicco\Component\Kernel\Cache\BootstrapCache;
 
-final class FixedConfigCache implements ConfigCache
+/**
+ * @interal
+ *
+ * @psalm-internal Snicco
+ */
+final class FixedBootstrapCache implements BootstrapCache
 {
     private array $config;
 
@@ -18,7 +23,7 @@ final class FixedConfigCache implements ConfigCache
         $this->config = $config;
     }
 
-    public function get(string $key, callable $loader): array
+    public function getOr(string $cache_key, callable $loader): array
     {
         return $this->config;
     }
