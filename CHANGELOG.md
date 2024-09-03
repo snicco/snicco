@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/snicco/snicco/compare/v1.10.0...v1.10.1) (2024-09-03)
+
+
+### Bug Fixes
+
+* remove renamed/deleted files before splitting the package ([555c673](https://github.com/snicco/snicco/commit/555c673cda03d263e1f21bae59d0218c8305d3c5))
+
 # [1.10.0](https://github.com/snicco/snicco/compare/v1.9.1...v1.10.0) (2024-05-08)
 
 
