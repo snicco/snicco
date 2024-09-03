@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:24        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,34 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Middleware\\WPNonce\\WPNonce",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+            "\\Snicco\\Middleware\\WPNonce\\Middleware\\CheckWPNonce",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Middleware\\WPNonce\\Middleware\\AddWPNonceToView"
+        ]
+    },
+    {
         "name": "\\Snicco\\Middleware\\WPNonce\\Exception\\InvalidWPNonce",
         "size": 3000,
         "relations": []
@@ -400,17 +428,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Middleware\\WPNonce\\VerifyWPNonce",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
     },
@@ -452,16 +470,6 @@
             "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
             "\\Snicco\\Middleware\\WPNonce\\WPNonce"
         ]
-    },
-    {
-        "name": "\\Snicco\\Middleware\\WPNonce\\WPNonce",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator\\UrlGenerator",
-        "size": 3000,
-        "relations": []
     }
 ];
 

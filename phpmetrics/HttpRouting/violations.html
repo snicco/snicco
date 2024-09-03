@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:23        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -251,244 +251,10 @@
                     
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a2e1.13890820');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\Router</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a2e1.13890820">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too dependent                                                    <span
-                                                        class="badge level level-information">information</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks use really high number of components.<br />
-<br />
-* Efferent coupling is 23, so this class uses 23 different external components.<br />
-<br />
-Maybe you should check why this class has lot of dependencies.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-information"> Too dependent</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a379.10954896');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\UrlPath</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a379.10954896">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Blob / God object                                                    <span
-                                                        class="badge level level-error">error</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">A blob object (or "god class") does not follow the Single responsibility principle.<br />
-<br />
-* object has lot of public methods  (10, excluding getters and setters)<br />
-* object has a high Lack of cohesion of methods (LCOM=3)<br />
-* object knows everything (and use lot of external classes)<br />
-<br />
-Maybe you should reducing the number of methods splitting this object in many sub objects.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-error"> Blob / God object</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a3c3.76726155');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a3c3.76726155">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Probably bugged                                                    <span
-                                                        class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This component contains in theory 0.47 bugs.<br />
-<br />
-* Calculation is based on number of operators, operands, cyclomatic complexity<br />
-* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
-*  testsuites has dependency to this class.<br />
-<br />
-Maybe you should check your unit tests for this class.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-warning"> Probably bugged</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a422.03278930');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a422.03278930">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Probably bugged                                                    <span
-                                                        class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This component contains in theory 0.9 bugs.<br />
-<br />
-* Calculation is based on number of operators, operands, cyclomatic complexity<br />
-* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
-*  testsuites has dependency to this class.<br />
-<br />
-Maybe you should check your unit tests for this class.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-warning"> Probably bugged</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a467.16775019');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a467.16775019">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too complex method code                                                    <span
-                                                        class="badge level level-error">error</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks really complex.<br />
-<br />
-* Algorithms are complex (Max cyclomatic complexity of class methods is 19)<br />
-<br />
-Maybe you should delegate some code to other objects or split complex method.</div>
-
-                                            </div>
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Probably bugged                                                    <span
-                                                        class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This component contains in theory 0.45 bugs.<br />
-<br />
-* Calculation is based on number of operators, operands, cyclomatic complexity<br />
-* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
-*  testsuites has dependency to this class.<br />
-<br />
-Maybe you should check your unit tests for this class.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-error"> Too complex method code</span>
-                                                                            <span
-                                            class="badge level level-warning"> Probably bugged</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a4c6.25569178');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a4c6.25569178">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too complex class code                                                    <span
-                                                        class="badge level level-error">error</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks really complex.<br />
-<br />
-* Algorithms are complex (Total cyclomatic complexity of class is 36)<br />
-* Component uses 131 operators<br />
-<br />
-Maybe you should delegate some code to other objects.</div>
-
-                                            </div>
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Probably bugged                                                    <span
-                                                        class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This component contains in theory 1.35 bugs.<br />
-<br />
-* Calculation is based on number of operators, operands, cyclomatic complexity<br />
-* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
-*  testsuites has dependency to this class.<br />
-<br />
-Maybe you should check your unit tests for this class.</div>
-
-                                            </div>
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too long                                                    <span
-                                                        class="badge level level-information">information</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks really long.<br />
-<br />
-* Class has 326 logical lines of code<br />
-* Class has 388 lines of code<br />
-<br />
-Maybe your class should not exceed 200 lines of logical code</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-error"> Too complex class code</span>
-                                                                            <span
-                                            class="badge level level-warning"> Probably bugged</span>
-                                                                            <span
-                                            class="badge level level-information"> Too long</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a539.69416134');">
+                                    <a onclick="return toggle('bloc-66d752203dfba5.74546297');">
                                         <span class="path">Snicco\Component\HttpRouting\Routing\Route\Route</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a539.69416134">
+                                    <div class="violation-list" id="bloc-66d752203dfba5.74546297">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Blob / God object                                                    <span
@@ -551,10 +317,322 @@ Maybe your class should not exceed 200 lines of logical code</div>
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a5a2.69531276');">
+                                    <a onclick="return toggle('bloc-66d752203dfc92.75828544');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\Router</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfc92.75828544">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too dependent                                                    <span
+                                                        class="badge level level-information">information</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks use really high number of components.<br />
+<br />
+* Efferent coupling is 23, so this class uses 23 different external components.<br />
+<br />
+Maybe you should check why this class has lot of dependencies.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-information"> Too dependent</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfce2.25500977');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\UrlMatcher\FastRouteDispatcher</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfce2.25500977">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too complex method code                                                    <span
+                                                        class="badge level level-error">error</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks really complex.<br />
+<br />
+* Algorithms are complex (Max cyclomatic complexity of class methods is 19)<br />
+<br />
+Maybe you should delegate some code to other objects or split complex method.</div>
+
+                                            </div>
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Probably bugged                                                    <span
+                                                        class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This component contains in theory 0.45 bugs.<br />
+<br />
+* Calculation is based on number of operators, operands, cyclomatic complexity<br />
+* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
+*  testsuites has dependency to this class.<br />
+<br />
+Maybe you should check your unit tests for this class.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-error"> Too complex method code</span>
+                                                                            <span
+                                            class="badge level level-warning"> Probably bugged</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfd50.35418412');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfd50.35418412">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Probably bugged                                                    <span
+                                                        class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This component contains in theory 0.47 bugs.<br />
+<br />
+* Calculation is based on number of operators, operands, cyclomatic complexity<br />
+* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
+*  testsuites has dependency to this class.<br />
+<br />
+Maybe you should check your unit tests for this class.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-warning"> Probably bugged</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfda3.60716673');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\UrlGenerator\Generator</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfda3.60716673">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Probably bugged                                                    <span
+                                                        class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This component contains in theory 0.9 bugs.<br />
+<br />
+* Calculation is based on number of operators, operands, cyclomatic complexity<br />
+* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
+*  testsuites has dependency to this class.<br />
+<br />
+Maybe you should check your unit tests for this class.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-warning"> Probably bugged</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfdd3.15804511');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\UrlPath</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfdd3.15804511">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Blob / God object                                                    <span
+                                                        class="badge level level-error">error</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">A blob object (or "god class") does not follow the Single responsibility principle.<br />
+<br />
+* object has lot of public methods  (10, excluding getters and setters)<br />
+* object has a high Lack of cohesion of methods (LCOM=3)<br />
+* object knows everything (and use lot of external classes)<br />
+<br />
+Maybe you should reducing the number of methods splitting this object in many sub objects.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-error"> Blob / God object</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfe12.53938136');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\RoutingConfigurator\Configurator</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfe12.53938136">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too complex class code                                                    <span
+                                                        class="badge level level-error">error</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks really complex.<br />
+<br />
+* Algorithms are complex (Total cyclomatic complexity of class is 36)<br />
+* Component uses 131 operators<br />
+<br />
+Maybe you should delegate some code to other objects.</div>
+
+                                            </div>
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Probably bugged                                                    <span
+                                                        class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This component contains in theory 1.35 bugs.<br />
+<br />
+* Calculation is based on number of operators, operands, cyclomatic complexity<br />
+* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
+*  testsuites has dependency to this class.<br />
+<br />
+Maybe you should check your unit tests for this class.</div>
+
+                                            </div>
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too long                                                    <span
+                                                        class="badge level level-information">information</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks really long.<br />
+<br />
+* Class has 326 logical lines of code<br />
+* Class has 388 lines of code<br />
+<br />
+Maybe your class should not exceed 200 lines of logical code</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-error"> Too complex class code</span>
+                                                                            <span
+                                            class="badge level level-warning"> Probably bugged</span>
+                                                                            <span
+                                            class="badge level level-information"> Too long</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfe98.32143862');">
+                                        <span class="path">Snicco\Component\HttpRouting\Http\Cookie</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfe98.32143862">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Blob / God object                                                    <span
+                                                        class="badge level level-error">error</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">A blob object (or "god class") does not follow the Single responsibility principle.<br />
+<br />
+* object has lot of public methods  (8, excluding getters and setters)<br />
+* object has a high Lack of cohesion of methods (LCOM=8)<br />
+* object knows everything (and use lot of external classes)<br />
+<br />
+Maybe you should reducing the number of methods splitting this object in many sub objects.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-error"> Blob / God object</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dfec6.03765324');">
+                                        <span class="path">Snicco\Component\HttpRouting\Http\ResponsePreparation</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203dfec6.03765324">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too complex method code                                                    <span
+                                                        class="badge level level-error">error</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks really complex.<br />
+<br />
+* Algorithms are complex (Max cyclomatic complexity of class methods is 11)<br />
+<br />
+Maybe you should delegate some code to other objects or split complex method.</div>
+
+                                            </div>
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Probably bugged                                                    <span
+                                                        class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This component contains in theory 0.36 bugs.<br />
+<br />
+* Calculation is based on number of operators, operands, cyclomatic complexity<br />
+* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
+*  testsuites has dependency to this class.<br />
+<br />
+Maybe you should check your unit tests for this class.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-error"> Too complex method code</span>
+                                                                            <span
+                                            class="badge level level-warning"> Probably bugged</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203dff26.67587704');">
                                         <span class="path">Snicco\Component\HttpRouting\Http\Psr7\Request</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a5a2.69531276">
+                                    <div class="violation-list" id="bloc-66d752203dff26.67587704">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Blob / God object                                                    <span
@@ -634,10 +712,10 @@ Maybe your class should not exceed 200 lines of logical code</div>
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a621.27026519');">
+                                    <a onclick="return toggle('bloc-66d752203dff99.63087731');">
                                         <span class="path">Snicco\Component\HttpRouting\Http\Psr7\Response</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a621.27026519">
+                                    <div class="violation-list" id="bloc-66d752203dff99.63087731">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Too complex class code                                                    <span
@@ -699,88 +777,10 @@ Maybe your class should not exceed 200 lines of logical code</div>
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a693.26893797');">
-                                        <span class="path">Snicco\Component\HttpRouting\Http\ResponsePreparation</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a693.26893797">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too complex method code                                                    <span
-                                                        class="badge level level-error">error</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks really complex.<br />
-<br />
-* Algorithms are complex (Max cyclomatic complexity of class methods is 11)<br />
-<br />
-Maybe you should delegate some code to other objects or split complex method.</div>
-
-                                            </div>
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Probably bugged                                                    <span
-                                                        class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This component contains in theory 0.36 bugs.<br />
-<br />
-* Calculation is based on number of operators, operands, cyclomatic complexity<br />
-* See more details at https://en.wikipedia.org/wiki/Halstead_complexity_measures<br />
-*  testsuites has dependency to this class.<br />
-<br />
-Maybe you should check your unit tests for this class.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-error"> Too complex method code</span>
-                                                                            <span
-                                            class="badge level level-warning"> Probably bugged</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a6d3.52967034');">
-                                        <span class="path">Snicco\Component\HttpRouting\Http\Cookie</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a6d3.52967034">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Blob / God object                                                    <span
-                                                        class="badge level level-error">error</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">A blob object (or "god class") does not follow the Single responsibility principle.<br />
-<br />
-* object has lot of public methods  (8, excluding getters and setters)<br />
-* object has a high Lack of cohesion of methods (LCOM=8)<br />
-* object knows everything (and use lot of external classes)<br />
-<br />
-Maybe you should reducing the number of methods splitting this object in many sub objects.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-error"> Blob / God object</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a715.44707278');">
+                                    <a onclick="return toggle('bloc-66d752203dfff8.66929512');">
                                         <span class="path">Snicco\Component\HttpRouting\Middleware\MiddlewareResolver</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a715.44707278">
+                                    <div class="violation-list" id="bloc-66d752203dfff8.66929512">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Too complex class code                                                    <span
@@ -842,39 +842,10 @@ Maybe your class should not exceed 200 lines of logical code</div>
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a762.20577803');">
-                                        <span class="path">Snicco\Component\HttpRouting\Testing\MiddlewareTestCase</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a762.20577803">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Too dependent                                                    <span
-                                                        class="badge level level-information">information</span>
-
-                                                </div>
-                                                <div
-                                                    class="description">This class looks use really high number of components.<br />
-<br />
-* Efferent coupling is 24, so this class uses 24 different external components.<br />
-<br />
-Maybe you should check why this class has lot of dependencies.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                            class="badge level level-information"> Too dependent</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a7a2.02788313');">
+                                    <a onclick="return toggle('bloc-66d752203e0070.76124610');">
                                         <span class="path">Snicco\Component\HttpRouting\Testing\AssertableResponse</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a7a2.02788313">
+                                    <div class="violation-list" id="bloc-66d752203e0070.76124610">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Probably bugged                                                    <span
@@ -899,6 +870,35 @@ Maybe you should check your unit tests for this class.</div>
                                             class="badge level level-warning"> Probably bugged</span>
                                                                     </td>
                             </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203e00a6.37045254');">
+                                        <span class="path">Snicco\Component\HttpRouting\Testing\MiddlewareTestCase</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203e00a6.37045254">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Too dependent                                                    <span
+                                                        class="badge level level-information">information</span>
+
+                                                </div>
+                                                <div
+                                                    class="description">This class looks use really high number of components.<br />
+<br />
+* Efferent coupling is 24, so this class uses 24 different external components.<br />
+<br />
+Maybe you should check why this class has lot of dependencies.</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                            class="badge level level-information"> Too dependent</span>
+                                                                    </td>
+                            </tr>
                                             </tbody>
                 </table>
             </div>
@@ -919,10 +919,101 @@ Maybe you should check your unit tests for this class.</div>
                     
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a7e');">
+                                    <a onclick="return toggle('bloc-66d752203e00e');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\Route</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203e00e">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Stable Dependencies Principle                                                    <span
+                                                            class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                        class="description">Packages should depend in the direction of stability.<br />
+<br />
+This package is more stable (0.429) than 1 package(s) that it depends on.<br />
+The packages that are more stable are<br />
+<br />
+* Snicco\Component\HttpRouting\Routing\Condition (0.5)</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                                class="badge level level-warning"> Stable Dependencies Principle</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203e016');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203e016">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Stable Dependencies Principle                                                    <span
+                                                            class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                        class="description">Packages should depend in the direction of stability.<br />
+<br />
+This package is more stable (0.781) than 2 package(s) that it depends on.<br />
+The packages that are more stable are<br />
+<br />
+* Snicco\Component\HttpRouting\Routing\RouteLoader (0.833)<br />
+* Snicco\Component\HttpRouting\Routing\RoutingConfigurator (0.8)</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                                class="badge level level-warning"> Stable Dependencies Principle</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203e01c');">
+                                        <span class="path">Snicco\Component\HttpRouting\Routing\Admin</span>
+                                    </a>
+                                    <div class="violation-list" id="bloc-66d752203e01c">
+                                                                                    <div class="violation">
+                                                <div class="name">
+                                                    Stable Dependencies Principle                                                    <span
+                                                            class="badge level level-warning">warning</span>
+
+                                                </div>
+                                                <div
+                                                        class="description">Packages should depend in the direction of stability.<br />
+<br />
+This package is more stable (0.444) than 1 package(s) that it depends on.<br />
+The packages that are more stable are<br />
+<br />
+* Snicco\Component\HttpRouting\Routing (0.781)</div>
+
+                                            </div>
+                                                                            </div>
+                                </td>
+
+                                <td valign="top">
+                                                                            <span
+                                                class="badge level level-warning"> Stable Dependencies Principle</span>
+                                                                    </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>
+                                    <a onclick="return toggle('bloc-66d752203e021');">
                                         <span class="path">Snicco\Component\HttpRouting\Routing\Exception</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a7e">
+                                    <div class="violation-list" id="bloc-66d752203e021">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Stable Abstractions Principle                                                    <span
@@ -963,24 +1054,20 @@ The packages that are more stable are<br />
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a88');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing</span>
+                                    <a onclick="return toggle('bloc-66d752203e029');">
+                                        <span class="path">Snicco\Component\HttpRouting\Http\Response</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a88">
+                                    <div class="violation-list" id="bloc-66d752203e029">
                                                                                     <div class="violation">
                                                 <div class="name">
-                                                    Stable Dependencies Principle                                                    <span
+                                                    Stable Abstractions Principle                                                    <span
                                                             class="badge level level-warning">warning</span>
 
                                                 </div>
                                                 <div
-                                                        class="description">Packages should depend in the direction of stability.<br />
+                                                        class="description">Packages should be either abstract and stable or concrete and instable.<br />
 <br />
-This package is more stable (0.781) than 2 package(s) that it depends on.<br />
-The packages that are more stable are<br />
-<br />
-* Snicco\Component\HttpRouting\Routing\RouteLoader (0.833)<br />
-* Snicco\Component\HttpRouting\Routing\RoutingConfigurator (0.8)</div>
+This package is instable and abstract.</div>
 
                                             </div>
                                                                             </div>
@@ -988,76 +1075,16 @@ The packages that are more stable are<br />
 
                                 <td valign="top">
                                                                             <span
-                                                class="badge level level-warning"> Stable Dependencies Principle</span>
+                                                class="badge level level-warning"> Stable Abstractions Principle</span>
                                                                     </td>
                             </tr>
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a90');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\Route</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a90">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Stable Dependencies Principle                                                    <span
-                                                            class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                        class="description">Packages should depend in the direction of stability.<br />
-<br />
-This package is more stable (0.429) than 1 package(s) that it depends on.<br />
-The packages that are more stable are<br />
-<br />
-* Snicco\Component\HttpRouting\Routing\Condition (0.5)</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                                class="badge level level-warning"> Stable Dependencies Principle</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a95');">
-                                        <span class="path">Snicco\Component\HttpRouting\Routing\Admin</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a95">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Stable Dependencies Principle                                                    <span
-                                                            class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                        class="description">Packages should depend in the direction of stability.<br />
-<br />
-This package is more stable (0.444) than 1 package(s) that it depends on.<br />
-The packages that are more stable are<br />
-<br />
-* Snicco\Component\HttpRouting\Routing (0.781)</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                                class="badge level level-warning"> Stable Dependencies Principle</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3a9a');">
+                                    <a onclick="return toggle('bloc-66d752203e02b');">
                                         <span class="path">Snicco\Component\HttpRouting\Http\Psr7</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3a9a">
+                                    <div class="violation-list" id="bloc-66d752203e02b">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Stable Abstractions Principle                                                    <span
@@ -1100,37 +1127,10 @@ The packages that are more stable are<br />
                         
                             <tr>
                                 <td>
-                                    <a onclick="return toggle('bloc-663b637bc3aa0');">
-                                        <span class="path">Snicco\Component\HttpRouting\Http\Response</span>
-                                    </a>
-                                    <div class="violation-list" id="bloc-663b637bc3aa0">
-                                                                                    <div class="violation">
-                                                <div class="name">
-                                                    Stable Abstractions Principle                                                    <span
-                                                            class="badge level level-warning">warning</span>
-
-                                                </div>
-                                                <div
-                                                        class="description">Packages should be either abstract and stable or concrete and instable.<br />
-<br />
-This package is instable and abstract.</div>
-
-                                            </div>
-                                                                            </div>
-                                </td>
-
-                                <td valign="top">
-                                                                            <span
-                                                class="badge level level-warning"> Stable Abstractions Principle</span>
-                                                                    </td>
-                            </tr>
-                        
-                            <tr>
-                                <td>
-                                    <a onclick="return toggle('bloc-663b637bc3aa3');">
+                                    <a onclick="return toggle('bloc-66d752203e031');">
                                         <span class="path">Snicco\Component\HttpRouting\Middleware</span>
                                     </a>
-                                    <div class="violation-list" id="bloc-663b637bc3aa3">
+                                    <div class="violation-list" id="bloc-66d752203e031">
                                                                                     <div class="violation">
                                                 <div class="name">
                                                     Stable Dependencies Principle                                                    <span
@@ -1144,12 +1144,12 @@ This package is more stable (0.49) than 7 package(s) that it depends on.<br />
 The packages that are more stable are<br />
 <br />
 * Snicco\Component\HttpRouting\Controller (0.875)<br />
-* Snicco\Component\Psr7ErrorHandler (0.52)<br />
+* Snicco\Component\HttpRouting\Exception (0.667)<br />
 * Snicco\Component\HttpRouting (0.714)<br />
 * Snicco\Component\HttpRouting\Routing\UrlMatcher (0.75)<br />
 * Snicco\Component\HttpRouting\Routing\UrlGenerator (0.5)<br />
 * Snicco\Component\HttpRouting\Http (0.632)<br />
-* Snicco\Component\HttpRouting\Exception (0.667)</div>
+* Snicco\Component\Psr7ErrorHandler (0.52)</div>
 
                                             </div>
                                                                             </div>

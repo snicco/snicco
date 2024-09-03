@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:23        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,17 +390,55 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\WebTestCase",
+        "size": 3000,
+        "relations": [
+            "\\Codeception\\TestCase\\WPTestCase",
+            "\\class",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
+            "\\LogicException",
+            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
+            "\\",
+            "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
+            "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
+            "\\Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
+            "\\Webmozart\\Assert\\Assert",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
+            "\\WP_UnitTest_Factory_For_User",
+            "\\Symfony\\Component\\BrowserKit\\CookieJar",
+            "\\Symfony\\Component\\BrowserKit\\Cookie",
+            "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix"
+        ]
+    },
+    {
+        "name": "\\Codeception\\TestCase\\WPTestCase",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
+        "name": "\\class",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\Kernel",
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\",
         "size": 3000,
         "relations": []
     },
@@ -410,42 +448,71 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
+        "name": "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\RuntimeException",
+        "name": "\\Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\RecursiveDirectoryIterator",
+        "name": "\\Webmozart\\Assert\\Assert",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\RecursiveIteratorIterator",
+        "name": "\\Snicco\\Component\\Kernel\\Kernel",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTestHelpers",
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
-            "\\Snicco\\Component\\Kernel\\DIContainer",
-            "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\PHPUnit\\Framework\\Assert"
+            "\\Symfony\\Component\\BrowserKit\\AbstractBrowser",
+            "\\Snicco\\Bundle\\HttpRouting\\HttpKernel",
+            "\\Snicco\\Bundle\\HttpRouting\\Psr17FactoryDiscovery",
+            "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
+            "\\Snicco\\Bundle\\HttpRouting\\ApiRequestDetector",
+            "\\Symfony\\Component\\BrowserKit\\History",
+            "\\Symfony\\Component\\BrowserKit\\CookieJar",
+            "\\Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
+            "\\Snicco\\Bundle\\Testing\\Functional\\AssertableDOM",
+            "\\LogicException",
+            "\\BadMethodCallException",
+            "\\Webmozart\\Assert\\Assert",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "\\Symfony\\Component\\BrowserKit\\Response",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Symfony\\Component\\BrowserKit\\Request",
+            "\\Snicco\\Component\\StrArr\\Str",
+            "\\Psr\\Http\\Message\\ServerRequestInterface"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
+        "name": "\\WP_UnitTest_Factory_For_User",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\PHPUnit\\Framework\\Assert",
+        "name": "\\Symfony\\Component\\BrowserKit\\CookieJar",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Symfony\\Component\\BrowserKit\\Cookie",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
         "size": 3000,
         "relations": []
     },
@@ -461,6 +528,11 @@
     },
     {
         "name": "\\Symfony\\Component\\DomCrawler\\Test\\Constraint\\CrawlerSelectorExists",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
         "size": 3000,
         "relations": []
     },
@@ -490,43 +562,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\CreateWordPressUsers",
-        "size": 3000,
-        "relations": [
-            "\\WP_UnitTest_Factory_For_User",
-            "\\WP_User",
-            "\\Webmozart\\Assert\\Assert",
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\WP_UnitTest_Factory_For_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\WP_User",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Webmozart\\Assert\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\AuthenticateWithWordPress",
-        "size": 3000,
-        "relations": [
-            "\\PHPUnit\\Framework\\Assert"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Symfony\\Component\\BrowserKit\\AbstractBrowser",
         "size": 3000,
         "relations": []
@@ -542,11 +577,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\ApiRequestDetector",
         "size": 3000,
         "relations": []
@@ -557,17 +587,7 @@
         "relations": []
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\CookieJar",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\HttpRouting\\Testing\\AssertableResponse",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\LogicException",
         "size": 3000,
         "relations": []
     },
@@ -607,70 +627,69 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Testing\\Functional\\WebTestCase",
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\CreateWordPressUsers",
         "size": 3000,
         "relations": [
-            "\\Codeception\\TestCase\\WPTestCase",
-            "\\class",
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
-            "\\LogicException",
-            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
-            "\\",
-            "\\Snicco\\Component\\Psr7ErrorHandler\\TestErrorHandler",
-            "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
-            "\\Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
-            "\\Webmozart\\Assert\\Assert",
-            "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
-            "\\Snicco\\Bundle\\Testing\\Functional\\Browser",
             "\\WP_UnitTest_Factory_For_User",
-            "\\Symfony\\Component\\BrowserKit\\CookieJar",
-            "\\Symfony\\Component\\BrowserKit\\Cookie",
-            "\\Snicco\\Component\\HttpRouting\\Routing\\Admin\\AdminAreaPrefix"
+            "\\WP_User",
+            "\\Webmozart\\Assert\\Assert",
+            "\\PHPUnit\\Framework\\Assert"
         ]
     },
     {
-        "name": "\\Codeception\\TestCase\\WPTestCase",
+        "name": "\\WP_User",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\class",
+        "name": "\\Snicco\\Bundle\\Testing\\Functional\\Concerns\\AuthenticateWithWordPress",
+        "size": 3000,
+        "relations": [
+            "\\PHPUnit\\Framework\\Assert"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
+        "name": "\\Snicco\\Bridge\\Pimple\\PimpleContainerAdapter",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\",
+        "name": "\\RuntimeException",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Testing\\TestableEventDispatcher",
+        "name": "\\RecursiveDirectoryIterator",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPMail\\Testing\\FakeTransport",
+        "name": "\\RecursiveIteratorIterator",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+        "name": "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTestHelpers",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Snicco\\Bundle\\Testing\\Bundle\\BundleTest",
+            "\\Snicco\\Component\\Kernel\\DIContainer",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\PHPUnit\\Framework\\Assert"
+        ]
     },
     {
-        "name": "\\Symfony\\Component\\BrowserKit\\Cookie",
+        "name": "\\Snicco\\Component\\Kernel\\DIContainer",
         "size": 3000,
         "relations": []
     }

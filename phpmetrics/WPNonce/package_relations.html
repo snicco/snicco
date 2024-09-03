@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:24        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,36 +390,29 @@
 
     var relations = [
     {
-        "name": "Snicco\\Middleware\\WPNonce\\Exception",
-        "size": 3000,
-        "relations": [
-            "Snicco\\Component\\Psr7ErrorHandler"
-        ]
-    },
-    {
-        "name": "Snicco\\Component\\Psr7ErrorHandler",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "Snicco\\Middleware\\WPNonce",
         "size": 3000,
         "relations": [
-            "Snicco\\Component\\HttpRouting\\Middleware",
+            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
             "Snicco\\Component\\BetterWPAPI",
+            "Snicco\\Component\\HttpRouting\\Middleware",
             "Snicco\\Middleware\\WPNonce\\Middleware",
             "Psr\\Http\\Message",
-            "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator"
+            "Snicco\\Component\\HttpRouting\\Http\\Psr7"
         ]
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Middleware",
+        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
         "size": 3000,
         "relations": []
     },
     {
         "name": "Snicco\\Component\\BetterWPAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "Snicco\\Component\\HttpRouting\\Middleware",
         "size": 3000,
         "relations": []
     },
@@ -431,8 +424,8 @@
             "Snicco\\Component\\BetterWPAPI",
             "Psr\\Http\\Message",
             "Snicco\\Component\\HttpRouting\\Http\\Psr7",
-            "Snicco\\Middleware\\WPNonce\\Exception",
-            "Snicco\\Middleware\\WPNonce"
+            "Snicco\\Middleware\\WPNonce",
+            "Snicco\\Middleware\\WPNonce\\Exception"
         ]
     },
     {
@@ -446,7 +439,14 @@
         "relations": []
     },
     {
-        "name": "Snicco\\Component\\HttpRouting\\Routing\\UrlGenerator",
+        "name": "Snicco\\Middleware\\WPNonce\\Exception",
+        "size": 3000,
+        "relations": [
+            "Snicco\\Component\\Psr7ErrorHandler"
+        ]
+    },
+    {
+        "name": "Snicco\\Component\\Psr7ErrorHandler",
         "size": 3000,
         "relations": []
     }

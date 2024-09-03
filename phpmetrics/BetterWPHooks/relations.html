@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:23        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,6 +390,36 @@
 
     var relations = [
     {
+        "name": "\\Snicco\\Component\\BetterWPHooks\\WPEventDispatcher",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "\\Snicco\\Component\\BetterWPHooks\\WPHookAPI",
+            "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
+            "\\Snicco\\Component\\EventDispatcher\\GenericEvent"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\BetterWPHooks\\WPHookAPI",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\BetterWPHooks\\Exception\\CantCreateMappedEvent",
         "size": 3000,
         "relations": []
@@ -405,67 +435,12 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\EventMapper",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "\\Snicco\\Component\\BetterWPHooks\\WPHookAPI",
-            "\\Snicco\\Component\\BetterWPHooks\\EventFactory\\ParameterBasedHookFactory",
-            "\\LogicException",
-            "\\InvalidArgumentException",
-            "\\RuntimeException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPHooks\\WPHookAPI",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
-            "\\RuntimeException"
-        ]
     },
     {
         "name": "\\Snicco\\Component\\BetterWPHooks\\EventFactory\\ParameterBasedHookFactory",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\BetterWPHooks\\EventFactory\\MappedHookFactory",
-            "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
-            "\\event_class",
-            "\\Snicco\\Component\\BetterWPHooks\\Exception\\CantCreateMappedEvent"
-        ]
-    },
-    {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\InvalidArgumentException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\BetterWPHooks\\WPEventDispatcher",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-            "\\Snicco\\Component\\BetterWPHooks\\WPHookAPI",
-            "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
-            "\\Snicco\\Component\\EventDispatcher\\GenericEvent"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\BaseEventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
         "size": 3000,
         "relations": []
     },
@@ -485,7 +460,24 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPAPI\\BetterWPAPI",
+        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\EventMapper",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "\\Snicco\\Component\\BetterWPHooks\\WPHookAPI",
+            "\\Snicco\\Component\\BetterWPHooks\\EventFactory\\ParameterBasedHookFactory",
+            "\\LogicException",
+            "\\InvalidArgumentException",
+            "\\RuntimeException"
+        ]
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\InvalidArgumentException",
         "size": 3000,
         "relations": []
     }

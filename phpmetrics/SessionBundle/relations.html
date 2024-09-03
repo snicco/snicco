@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:23        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,7 +390,61 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors",
+        "name": "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\SessionEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\SessionBundle",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Kernel\\Bundle",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+            "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+            "\\Snicco\\Component\\Kernel\\Kernel",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\Session\\Driver\\InMemoryDriver",
+            "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
+            "\\Snicco\\Component\\Session\\Driver\\EncryptedDriver",
+            "\\Snicco\\Component\\Session\\SessionManager\\SessionManger",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
+            "\\Snicco\\Component\\Kernel\\Configuration\\ReadOnlyConfig",
+            "\\Snicco\\Bridge\\SessionWP\\WPDBSessionDriver",
+            "\\Snicco\\Bridge\\SessionWP\\WPObjectCacheDriver",
+            "\\Snicco\\Component\\Session\\Serializer\\Serializer",
+            "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
+            "\\Snicco\\Component\\Session\\Serializer\\PHPSerializer",
+            "\\RuntimeException",
+            "\\Snicco\\Bundle\\Session\\Middleware\\StatefulRequest"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Bundle",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Kernel",
         "size": 3000,
         "relations": []
     },
@@ -400,19 +454,79 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogin",
+        "name": "\\Snicco\\Component\\Session\\Driver\\InMemoryDriver",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
+        "name": "\\Snicco\\Component\\Session\\Driver\\EncryptedDriver",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\WP_User",
+        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManger",
         "size": 3000,
         "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\Configuration\\ReadOnlyConfig",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\SessionWP\\WPDBSessionDriver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bridge\\SessionWP\\WPObjectCacheDriver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Serializer\\Serializer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Serializer\\PHPSerializer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\StatefulRequest",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
+            "\\Psr\\Log\\LoggerInterface",
+            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
+            "\\Snicco\\Bundle\\Session\\Event\\WPLogin",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\Snicco\\Component\\Session\\Session",
+            "\\Snicco\\Component\\Session\\ValueObject\\ReadOnlySession",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionCookie",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Cookie"
+        ]
     },
     {
         "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogout",
@@ -422,32 +536,38 @@
         ]
     },
     {
+        "name": "\\Snicco\\Component\\BetterWPHooks\\EventMapping\\MappedHook",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\Session\\Event\\WPLogin",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\WP_User",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bundle\\Session\\Option\\SessionOption",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\StatefulRequest",
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SaveResponseAttributes",
         "size": 3000,
-        "relations": []
+        "relations": [
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
+            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+            "\\LogicException"
+        ]
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Log\\LoggerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
         "size": 3000,
         "relations": []
     },
@@ -463,6 +583,26 @@
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\LogicException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Log\\LoggerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
         "size": 3000,
         "relations": []
     },
@@ -518,32 +658,6 @@
         "relations": []
     },
     {
-        "name": "\\LogicException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SaveResponseAttributes",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\Middleware",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Request",
-            "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-            "\\LogicException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SessionNoCache",
-        "size": 3000,
-        "relations": [
-            "\\Psr\\Http\\Server\\MiddlewareInterface",
-            "\\Psr\\Http\\Message\\ResponseInterface",
-            "\\Psr\\Http\\Message\\ServerRequestInterface",
-            "\\Psr\\Http\\Server\\RequestHandlerInterface"
-        ]
-    },
-    {
         "name": "\\Snicco\\Bundle\\Session\\Middleware\\ShareSessionWithViews",
         "size": 3000,
         "relations": [
@@ -556,121 +670,21 @@
         ]
     },
     {
-        "name": "\\Snicco\\Bundle\\Session\\SessionBundle",
+        "name": "\\Snicco\\Bundle\\Session\\ValueObject\\SessionErrors",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Kernel\\Bundle",
-            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
-            "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
-            "\\Snicco\\Component\\Kernel\\Kernel",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\Session\\Driver\\InMemoryDriver",
-            "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
-            "\\Snicco\\Component\\Session\\Driver\\EncryptedDriver",
-            "\\Snicco\\Component\\Session\\SessionManager\\SessionManger",
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
-            "\\Snicco\\Component\\Kernel\\Configuration\\ReadOnlyConfig",
-            "\\Snicco\\Bridge\\SessionWP\\WPDBSessionDriver",
-            "\\Snicco\\Bridge\\SessionWP\\WPObjectCacheDriver",
-            "\\Snicco\\Component\\Session\\Serializer\\Serializer",
-            "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
-            "\\Snicco\\Component\\Session\\Serializer\\PHPSerializer",
-            "\\RuntimeException",
-            "\\Snicco\\Bundle\\Session\\Middleware\\StatefulRequest"
+            "\\InvalidArgumentException"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Kernel\\Bundle",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Configuration\\WritableConfig",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Kernel",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Driver\\InMemoryDriver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Session\\DefuseSessionEncryptor",
+        "name": "\\Snicco\\Bundle\\Session\\Middleware\\SessionNoCache",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Session\\SessionEncryptor",
-            "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor"
+            "\\Psr\\Http\\Server\\MiddlewareInterface",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Psr\\Http\\Message\\ServerRequestInterface",
+            "\\Psr\\Http\\Server\\RequestHandlerInterface"
         ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Driver\\EncryptedDriver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManger",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\Configuration\\ReadOnlyConfig",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\SessionWP\\WPDBSessionDriver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bridge\\SessionWP\\WPObjectCacheDriver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Serializer\\Serializer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Serializer\\PHPSerializer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\RuntimeException",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\SessionEncryptor",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\Encryption\\DefuseEncryptor",
-        "size": 3000,
-        "relations": []
     }
 ];
 

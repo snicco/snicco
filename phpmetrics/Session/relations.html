@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:23        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -390,24 +390,12 @@
 
     var relations = [
     {
-        "name": "\\Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent"
-        ]
-    },
-    {
-        "name": "\\RuntimeException",
+        "name": "\\Snicco\\Component\\Session\\EventDispatcher\\NullSessionDispatcher",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Throwable",
+        "name": "\\Snicco\\Component\\Session\\EventDispatcher\\SessionEventDispatcher",
         "size": 3000,
         "relations": []
     },
@@ -418,6 +406,21 @@
             "\\Snicco\\Component\\Session\\Exception\\CouldNotWriteSessionContent",
             "\\Throwable"
         ]
+    },
+    {
+        "name": "\\RuntimeException",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Throwable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Exception\\CouldNotDestroySession",
+        "size": 3000,
+        "relations": []
     },
     {
         "name": "\\Snicco\\Component\\Session\\Exception\\SessionIsLocked",
@@ -440,59 +443,14 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Session\\EventDispatcher\\NullSessionDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\EventDispatcher\\SessionEventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManger",
+        "name": "\\Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent",
         "size": 3000,
         "relations": [
-            "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
-            "\\Snicco\\Component\\Session\\Driver\\SessionDriver",
-            "\\Snicco\\Component\\Session\\Serializer\\Serializer",
-            "\\Snicco\\Component\\TestableClock\\SystemClock",
-            "\\Snicco\\Component\\Session\\EventDispatcher\\NullSessionDispatcher",
-            "\\Snicco\\Component\\Session\\Session",
-            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionCookie",
-            "\\Snicco\\Component\\Session\\ImmutableSession",
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
-            "\\Snicco\\Component\\Session\\ReadWriteSession",
-            "\\RuntimeException"
+            "\\Snicco\\Component\\Session\\Exception\\CouldNotReadSessionContent"
         ]
     },
     {
-        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionLottery"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Driver\\SessionDriver",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Serializer\\Serializer",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\TestableClock\\SystemClock",
+        "name": "\\Snicco\\Component\\Session\\ReadWriteSession",
         "size": 3000,
         "relations": []
     },
@@ -502,32 +460,7 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionCookie",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\ImmutableSession",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
-            "\\ParagonIE\\ConstantTime\\Base64UrlSafe"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\ReadWriteSession",
         "size": 3000,
         "relations": []
     },
@@ -557,37 +490,22 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\Session\\Driver\\SessionDriver",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Serializer\\Serializer",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Session\\ValueObject\\SerializedSession",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionLottery",
-        "size": 3000,
-        "relations": [
-            "\\LogicException"
-        ]
-    },
-    {
-        "name": "\\ParagonIE\\ConstantTime\\Binary",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ParagonIE\\ConstantTime\\Base64UrlSafe",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Serializer\\PHPSerializer",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\Serializer\\Serializer",
-            "\\RuntimeException"
-        ]
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
+        "name": "\\Snicco\\Component\\Session\\ImmutableSession",
         "size": 3000,
         "relations": []
     },
@@ -635,6 +553,102 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\TestableClock\\SystemClock",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Serializer\\PHPSerializer",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\Serializer\\Serializer",
+            "\\RuntimeException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManger",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
+            "\\Snicco\\Component\\Session\\Driver\\SessionDriver",
+            "\\Snicco\\Component\\Session\\Serializer\\Serializer",
+            "\\Snicco\\Component\\TestableClock\\SystemClock",
+            "\\Snicco\\Component\\Session\\EventDispatcher\\NullSessionDispatcher",
+            "\\Snicco\\Component\\Session\\Session",
+            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionCookie",
+            "\\Snicco\\Component\\Session\\ImmutableSession",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionId",
+            "\\Snicco\\Component\\Session\\ReadWriteSession",
+            "\\RuntimeException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\SessionManager\\SessionManagerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionConfig",
+            "\\Snicco\\Component\\Session\\ValueObject\\SessionLottery"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\CookiePool",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\ValueObject\\CookiePool"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionCookie",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ParagonIE\\ConstantTime\\Binary",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ParagonIE\\ConstantTime\\Base64UrlSafe",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\ValueObject\\SessionLottery",
+        "size": 3000,
+        "relations": [
+            "\\LogicException"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Component\\Session\\Testing\\UserSessionDriverTests",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\Session\\ValueObject\\SerializedSession",
+            "\\PHPUnit\\Framework\\Assert",
+            "\\Snicco\\Component\\Session\\Driver\\UserSessionsDriver",
+            "\\InvalidArgumentException",
+            "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
+            "\\Snicco\\Component\\Session\\ReadWriteSession"
+        ]
+    },
+    {
+        "name": "\\PHPUnit\\Framework\\Assert",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Component\\Session\\Testing\\SessionDriverTests",
         "size": 3000,
         "relations": [
@@ -652,26 +666,9 @@
         "relations": []
     },
     {
-        "name": "\\PHPUnit\\Framework\\Assert",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\DateTimeImmutable",
         "size": 3000,
         "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Session\\Testing\\UserSessionDriverTests",
-        "size": 3000,
-        "relations": [
-            "\\Snicco\\Component\\Session\\ValueObject\\SerializedSession",
-            "\\PHPUnit\\Framework\\Assert",
-            "\\Snicco\\Component\\Session\\Driver\\UserSessionsDriver",
-            "\\InvalidArgumentException",
-            "\\Snicco\\Component\\Session\\Serializer\\JsonSerializer",
-            "\\Snicco\\Component\\Session\\ReadWriteSession"
-        ]
     }
 ];
 

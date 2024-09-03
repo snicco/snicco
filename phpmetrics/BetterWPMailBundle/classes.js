@@ -1,91 +1,5 @@
 var classes = [
     {
-        "name": "Snicco\\Bundle\\BetterWPMail\\TemplateEngineMailRenderer",
-        "interface": false,
-        "abstract": false,
-        "final": true,
-        "methods": [
-            {
-                "name": "__construct",
-                "role": "setter",
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "render",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "supports",
-                "role": null,
-                "public": true,
-                "private": false,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            },
-            {
-                "name": "getView",
-                "role": null,
-                "public": false,
-                "private": true,
-                "_type": "Hal\\Metric\\FunctionMetric"
-            }
-        ],
-        "nbMethodsIncludingGettersSetters": 4,
-        "nbMethods": 3,
-        "nbMethodsPrivate": 1,
-        "nbMethodsPublic": 2,
-        "nbMethodsGetter": 0,
-        "nbMethodsSetters": 1,
-        "wmc": 6,
-        "ccn": 4,
-        "ccnMethodMax": 2,
-        "externals": [
-            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
-            "Snicco\\Component\\Templating\\TemplateEngine",
-            "Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
-            "Snicco\\Component\\Templating\\ValueObject\\View"
-        ],
-        "parents": [],
-        "implements": [
-            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
-        ],
-        "lcom": 1,
-        "length": 44,
-        "vocabulary": 12,
-        "volume": 157.74,
-        "difficulty": 8,
-        "effort": 1261.91,
-        "level": 0.13,
-        "bugs": 0.05,
-        "time": 70,
-        "intelligentContent": 19.72,
-        "number_operators": 12,
-        "number_operands": 32,
-        "number_operators_unique": 4,
-        "number_operands_unique": 8,
-        "cloc": 6,
-        "loc": 43,
-        "lloc": 37,
-        "mi": 77.21,
-        "mIwoC": 49.86,
-        "commentWeight": 27.35,
-        "kanDefect": 0.22,
-        "relativeStructuralComplexity": 25,
-        "relativeDataComplexity": 1.08,
-        "relativeSystemComplexity": 26.08,
-        "totalStructuralComplexity": 100,
-        "totalDataComplexity": 4.33,
-        "totalSystemComplexity": 104.33,
-        "package": "Snicco\\Bundle\\BetterWPMail\\",
-        "pageRank": 0,
-        "afferentCoupling": 1,
-        "efferentCoupling": 4,
-        "instability": 0.8,
-        "violations": {}
-    },
-    {
         "name": "Snicco\\Bundle\\BetterWPMail\\BetterWPMailBundle",
         "interface": false,
         "abstract": false,
@@ -368,6 +282,92 @@ var classes = [
         "afferentCoupling": 0,
         "efferentCoupling": 0,
         "instability": 0,
+        "violations": {}
+    },
+    {
+        "name": "Snicco\\Bundle\\BetterWPMail\\TemplateEngineMailRenderer",
+        "interface": false,
+        "abstract": false,
+        "final": true,
+        "methods": [
+            {
+                "name": "__construct",
+                "role": "setter",
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "render",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "supports",
+                "role": null,
+                "public": true,
+                "private": false,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            },
+            {
+                "name": "getView",
+                "role": null,
+                "public": false,
+                "private": true,
+                "_type": "Hal\\Metric\\FunctionMetric"
+            }
+        ],
+        "nbMethodsIncludingGettersSetters": 4,
+        "nbMethods": 3,
+        "nbMethodsPrivate": 1,
+        "nbMethodsPublic": 2,
+        "nbMethodsGetter": 0,
+        "nbMethodsSetters": 1,
+        "wmc": 6,
+        "ccn": 4,
+        "ccnMethodMax": 2,
+        "externals": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer",
+            "Snicco\\Component\\Templating\\TemplateEngine",
+            "Snicco\\Component\\BetterWPMail\\Exception\\CouldNotRenderMailContent",
+            "Snicco\\Component\\Templating\\ValueObject\\View"
+        ],
+        "parents": [],
+        "implements": [
+            "Snicco\\Component\\BetterWPMail\\Renderer\\MailRenderer"
+        ],
+        "lcom": 1,
+        "length": 44,
+        "vocabulary": 12,
+        "volume": 157.74,
+        "difficulty": 8,
+        "effort": 1261.91,
+        "level": 0.13,
+        "bugs": 0.05,
+        "time": 70,
+        "intelligentContent": 19.72,
+        "number_operators": 12,
+        "number_operands": 32,
+        "number_operators_unique": 4,
+        "number_operands_unique": 8,
+        "cloc": 6,
+        "loc": 43,
+        "lloc": 37,
+        "mi": 77.21,
+        "mIwoC": 49.86,
+        "commentWeight": 27.35,
+        "kanDefect": 0.22,
+        "relativeStructuralComplexity": 25,
+        "relativeDataComplexity": 1.08,
+        "relativeSystemComplexity": 26.08,
+        "totalStructuralComplexity": 100,
+        "totalDataComplexity": 4.33,
+        "totalSystemComplexity": 104.33,
+        "package": "Snicco\\Bundle\\BetterWPMail\\",
+        "pageRank": 0,
+        "afferentCoupling": 1,
+        "efferentCoupling": 4,
+        "instability": 0.8,
         "violations": {}
     }
 ]

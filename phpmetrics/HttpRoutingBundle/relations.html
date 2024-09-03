@@ -49,7 +49,7 @@
 <div class="page">
     <div class="content content-first">
         <div class="report-details">
-            Created at 2024-05-08 11:35:23        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
+            Created at 2024-09-03 18:14:56        , with PHPMetrics v2.8.2 (<a href="https://twitter.com/Halleck45">Jean-François Lépine</a>).
         </div>
 
                 <div class="content-full group-tabs">
@@ -480,81 +480,6 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponsePostProcessor",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\Unremovable",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandledRequest",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandlingRequest",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\LaminasEmitterStack",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Log\\LoggerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\EmitterStack",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiEmitter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiStreamEmitter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\TestEmitter",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Message\\ResponseInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
-        "size": 3000,
-        "relations": []
-    },
-    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\HttpRoutingBundle",
         "size": 3000,
         "relations": [
@@ -610,6 +535,11 @@
     },
     {
         "name": "\\Snicco\\Component\\Kernel\\Bundle",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Environment",
         "size": 3000,
         "relations": []
     },
@@ -758,6 +688,14 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponsePostProcessor",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Component\\EventDispatcher\\Unremovable",
+            "\\Snicco\\Component\\Kernel\\ValueObject\\Environment"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\MiddlewareResolver",
         "size": 3000,
         "relations": []
@@ -809,27 +747,54 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\TestEmitter",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\ResponseEmitter",
+            "\\Snicco\\Component\\EventDispatcher\\EventDispatcher",
+            "\\Psr\\Http\\Message\\ResponseInterface",
+            "\\Snicco\\Component\\EventDispatcher\\GenericEvent"
+        ]
+    },
+    {
+        "name": "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\LaminasEmitterStack",
+        "size": 3000,
+        "relations": [
+            "\\Snicco\\Bundle\\HttpRouting\\ResponseEmitter\\ResponseEmitter",
+            "\\Psr\\Log\\LoggerInterface",
+            "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
+            "\\Laminas\\HttpHandlerRunner\\Emitter\\EmitterStack",
+            "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiEmitter",
+            "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiStreamEmitter"
+        ]
+    },
+    {
         "name": "\\Snicco\\Component\\Kernel\\ValueObject\\Directories",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Closure",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandledRequest",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Webimpress\\SafeWriter\\FileWriter",
+        "name": "\\Snicco\\Component\\HttpRouting\\Http\\Psr7\\Response",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Component\\StrArr\\Arr",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Event\\HandlingRequest",
         "size": 3000,
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\MiddlewareOption",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\RoutingOption",
         "size": 3000,
         "relations": []
     },
@@ -839,7 +804,42 @@
         "relations": []
     },
     {
-        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\RoutingOption",
+        "name": "\\Snicco\\Bundle\\HttpRouting\\Option\\MiddlewareOption",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Message\\ResponseInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\EventDispatcher\\GenericEvent",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Log\\LoggerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\EmitterStack",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiEmitter",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Laminas\\HttpHandlerRunner\\Emitter\\SapiStreamEmitter",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Snicco\\Component\\StrArr\\Arr",
         "size": 3000,
         "relations": []
     },
@@ -869,6 +869,36 @@
         "relations": []
     },
     {
+        "name": "\\Snicco\\Component\\EventDispatcher\\Unremovable",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Closure",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Webimpress\\SafeWriter\\FileWriter",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
+        "size": 3000,
+        "relations": []
+    },
+    {
+        "name": "\\ErrorException",
+        "size": 3000,
+        "relations": []
+    },
+    {
         "name": "\\Snicco\\Bundle\\HttpRouting\\Middleware\\SetUserId",
         "size": 3000,
         "relations": [
@@ -891,21 +921,6 @@
     },
     {
         "name": "\\Snicco\\Component\\HttpRouting\\Middleware\\NextMiddleware",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Server\\MiddlewareInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\Psr\\Http\\Server\\RequestHandlerInterface",
-        "size": 3000,
-        "relations": []
-    },
-    {
-        "name": "\\ErrorException",
         "size": 3000,
         "relations": []
     },
