@@ -4,38 +4,62 @@ declare(strict_types=1);
 
 namespace Snicco\Component\HttpRouting\Tests\Routing;
 
-use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;
+use Snicco\Component\HttpRouting\Routing\Cache\CallbackRouteCache;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\AdminRoutingConfigurator;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\Conditions\MaybeRouteCondition;
 use Snicco\Component\HttpRouting\Tests\fixtures\Controller\RoutingTestController;
 use Snicco\Component\HttpRouting\Tests\HttpRunnerTestCase;
 
+use Snicco\Component\Kernel\Cache\PHPFileCache;
+
+use function exec;
+use function is_dir;
 use function is_file;
+use function sys_get_temp_dir;
 
 /**
  * @internal
  */
 final class RouteCachingTest extends HttpRunnerTestCase
 {
+    /**
+     * @var non-empty-string
+     */
+    private string $cache_dir;
+
+    /**
+     * @var non-empty-string
+     */
     private string $route_cache_file;
+
+    private CallbackRouteCache $cache;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->route_cache_file = __DIR__ . '/__generated_snicco_wp_routes.php';
+        $this->cache_dir = sys_get_temp_dir() . '/http_routing_route_caching_test';
+        if (is_dir($this->cache_dir)) {
+            exec("rm -rf {$this->cache_dir}");
+        }
 
-        $this->assertFalse(is_file($this->route_cache_file));
+        $this->route_cache_file = $this->cache_dir . '/test.routes.php';
+
+        $this->cache = new CallbackRouteCache(function (callable $load_routes): array {
+            $cache = new PHPFileCache($this->cache_dir);
+
+            return $cache->getOr('test.routes', $load_routes);
+        });
     }
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
-        if (is_file($this->route_cache_file)) {
-            unlink($this->route_cache_file);
+        if (is_dir($this->cache_dir)) {
+            exec("rm -rf {$this->cache_dir}");
         }
+
+        parent::tearDown();
     }
 
     /**
@@ -45,7 +69,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('foo'));
     }
@@ -57,7 +81,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
     {
         $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         $this->assertResponseBody(RoutingTestController::static, $this->frontendRequest('foo'));
 
@@ -82,14 +106,14 @@ final class RouteCachingTest extends HttpRunnerTestCase
                 MaybeRouteCondition::class,
                 false
             );
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         // Creates the cache file
         $routing->routes();
 
         // Simulate a new request with empty routes.
         $this->webRouting(function (): void {
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         $request = $this->frontendRequest('foo');
         $this->assertResponseBody(RoutingTestController::static, $request);
@@ -118,12 +142,12 @@ final class RouteCachingTest extends HttpRunnerTestCase
         $routing = $this->webRouting(function (WebRoutingConfigurator $configurator): void {
             $configurator->get('foo', '/foo', RoutingTestController::class);
             $configurator->get('bar', '/bar', RoutingTestController::class);
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         // Trigger reload
         $routing->routes();
         $routing = $this->webRouting(function (): void {
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         $this->assertSame('/foo', $routing->urlGenerator()->toRoute('foo'));
         $this->assertSame('/bar', $routing->urlGenerator()->toRoute('bar'));
@@ -138,7 +162,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
             $configurator->page('foo', 'admin.php/foo', RoutingTestController::class);
             $configurator->page('bar', 'admin.php/bar', RoutingTestController::class);
             $configurator->page('baz', 'admin.php/baz', RoutingTestController::class);
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         $admin_menu = $routing->adminMenu();
         $this->assertCount(3, $admin_menu->items(), 'Admin menu wrong pre cache');
@@ -146,7 +170,7 @@ final class RouteCachingTest extends HttpRunnerTestCase
         // Trigger reload
         $routing->routes();
         $routing = $this->webRouting(function (): void {
-        }, new FileRouteCache($this->route_cache_file));
+        }, $this->cache);
 
         $admin_menu = $routing->adminMenu();
         $this->assertCount(3, $admin_menu->items(), 'Admin menu wrong post cache');

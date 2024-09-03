@@ -80,7 +80,8 @@ To instantiate a [`Router`](src/Routing/Router.php) we need the following collab
   a legacy CMS admin area.
 
 ```php
-use Snicco\Component\HttpRouting\Routing\Cache\FileRouteCache;use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
+use Snicco\Component\HttpRouting\Routing\Cache\CallbackRouteCache;
+use Snicco\Component\HttpRouting\Routing\Cache\NullCache;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\DefaultRouteLoadingOptions;
 use Snicco\Component\HttpRouting\Routing\RouteLoader\PHPFileRouteLoader;
 use Snicco\Component\HttpRouting\Routing\Router;
@@ -97,10 +98,19 @@ $route_loader = new PHPFileRouteLoader(
     $route_loading_options,
 );
 
-// during development
+// In development
 $route_cache = new NullCache();
-// during production
-$route_cache = new FileRouteCache('/path/to/cache_dir/route_cache.php');
+// In production
+$route_cache = new CallbackRouteCache(function ($load_routes) {
+    $cached = false; // use your cache here.
+    if ($cached) {
+        return $cached;
+    }
+    
+    $store_me = $load_routes();
+        
+    return $store_me;
+});
 
 $router = new Router(
      $context,
