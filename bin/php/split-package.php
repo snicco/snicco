@@ -63,8 +63,8 @@ function splitPackage(
     ?string $tag
 ): void {
     $clone_dir = sys_get_temp_dir() . '/monorepo_split/clone_directory';
-    $working_dir = getcwd();
-    if (! is_string($working_dir)) {
+    $mono_repo_working_dir = getcwd();
+    if (! is_string($mono_repo_working_dir)) {
         throw new RuntimeException('Could not retrieve current working directory');
     }
 
@@ -78,7 +78,7 @@ function splitPackage(
         sprintf('git clone -- https://%s@github.com/%s/%s.git %s', $access_token, $org_name, $repo_name, $clone_dir)
     );
 
-    info(sprintf('Changing working directory to clone directory %s from %s', $clone_dir, $working_dir));
+    info(sprintf('Changing working directory to clone directory %s from %s', $clone_dir, $mono_repo_working_dir));
     $changed = chdir($clone_dir);
     if (! $changed) {
         throw new RuntimeException('Could not switch to working directory');
@@ -109,8 +109,13 @@ function splitPackage(
     }
 
     execDebug(
-        'Copying contents of monorepo package',
-        sprintf('cp -r %s %s', $working_dir . DIRECTORY_SEPARATOR . $package_dir . DIRECTORY_SEPARATOR . '.', '.'),
+        'rsync contents of monorepo package',
+        // Note: The trailing "/" is important.
+        sprintf(
+            "rsync -avz --delete --exclude='**/.git/' %s %s",
+            "{$mono_repo_working_dir}/{$package_dir}/",
+            '.'
+        ),
     );
 
     $files = execDebug(
@@ -134,6 +139,22 @@ function splitPackage(
             sprintf('git push origin %s', $branch_name)
         );
         success(sprintf('Commit successfully pushed to remote branch %s.', $branch_name));
+
+        // Write to GitHub Actions summary if more than just composer.json was changed.
+        $files = array_values($files);
+        $only_composer_json_changed = 1 === count($files) && false !== strpos($files[0], 'composer.json');
+        if (! $only_composer_json_changed) {
+            $summary_message = sprintf(
+                "Changes (excluding composer.json) detected and pushed to remote branch %s:\n\n%s",
+                $branch_name,
+                implode("\n", $files)
+            );
+
+            $step_summary_file = (string) @getenv('GITHUB_STEP_SUMMARY');
+            if ('' !== $step_summary_file) {
+                @file_put_contents($step_summary_file, $summary_message, FILE_APPEND);
+            }
+        }
     }
 
     if (null !== $tag) {
@@ -148,8 +169,8 @@ function splitPackage(
         success(sprintf('Tag %s successfully pushed to remote.', $tag));
     }
 
-    info(sprintf('Changing back to previous working directory %s', $working_dir));
-    $changed = chdir($working_dir);
+    info(sprintf('Changing back to previous working directory %s', $mono_repo_working_dir));
+    $changed = chdir($mono_repo_working_dir);
     if (! $changed) {
         throw new RuntimeException('chdir returned false');
     }
