@@ -1,3 +1,10 @@
+# [2.0.0-beta.6](https://github.com/snicco/snicco/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2024-09-03)
+
+
+### Bug Fixes
+
+* remove renamed/deleted files before splitting the package ([9df6f27](https://github.com/snicco/snicco/commit/9df6f27e3b77c00c1e95afbee96631c589636399))
+
 # [2.0.0-beta.5](https://github.com/snicco/snicco/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2024-09-03)
 
 
