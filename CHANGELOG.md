@@ -1,3 +1,30 @@
+# [2.0.0-beta.5](https://github.com/snicco/snicco/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2024-09-03)
+
+
+### Bug Fixes
+
+* **http-routing-bundle:** use kernel bootstrap cache for routes and middleware ([611d210](https://github.com/snicco/snicco/commit/611d210246797b4ce8f026473c0dbdc30ce54405))
+* **http-routing:** remove file route cache class ([5677aa2](https://github.com/snicco/snicco/commit/5677aa2c2679743b198bbaf54aa3f78ffbe5e460))
+
+
+### Features
+
+* **kernel:** accept cache keys in bootstrap cache instead of files ([d3162e1](https://github.com/snicco/snicco/commit/d3162e106f8a2335c682ea2c57ba941b6dfeacbd))
+
+
+### BREAKING CHANGES
+
+* **http-routing:** The FileRouteCache class has been removed because
+it's duplicated functionality with snicco/kernel.
+If you use snicco/http-routing-bundle, routes
+will still be cached to a file.
+Otherwise, you can use the new CallbackRouteCache.php
+or implement your own RouteCache.
+* **kernel:** The ConfigCache.php interface
+has been renamed to BootstrapCache.php
+to better reflect its usage and
+has also been marked as @internal
+
 # [2.0.0-beta.4](https://github.com/snicco/snicco/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2024-09-02)
 
 
