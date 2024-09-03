@@ -14,7 +14,7 @@ use function pathinfo;
 use const PATHINFO_FILENAME;
 
 /**
- * @interal
+ * @internal
  * @psalm-internal Snicco\Component\Kernel
  */
 final class ConfigLoader

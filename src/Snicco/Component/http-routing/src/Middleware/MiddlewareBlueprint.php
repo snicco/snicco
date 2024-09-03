@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
  * @psalm-immutable
  * @psalm-internal Snicco\Component\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class MiddlewareBlueprint
 {

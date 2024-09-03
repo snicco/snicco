@@ -10,7 +10,7 @@ use Snicco\Component\Psr7ErrorHandler\HttpErrorHandler;
 use Throwable;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\HttpRouting
  */

@@ -49,7 +49,7 @@ $blade = new BladeStandalone(
 );
 
 
-$blade->boostrap();
+$blade->bootstrap();
 
 /**
 * @var BladeViewFactory

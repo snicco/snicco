@@ -18,7 +18,7 @@ composer require snicco/wp-guest-only-middleware
 
 This middleware should be added on a per-route basis.
 
-If a logged a user is logged in this middleware will try to redirect to a route named `dashbaord` if it exists.
+If a logged a user is logged in this middleware will try to redirect to a route named `dashboard` if it exists.
 Otherwise, the user is redirect to the homepage.
 
 Optionally, a custom redirect path can be set by passing middleware arguments.

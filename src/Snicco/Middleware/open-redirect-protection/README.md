@@ -13,7 +13,7 @@ It inspects the `location` header of the response and disallows any redirects to
 external hosts.
 
 Instead, the user will be redirected to the configured "exit" page.
-The intended redirect location will be available in a `intented_redirect` query variable.
+The intended redirect location will be available in a `intended_redirect` query variable.
 
 ## Installation
 

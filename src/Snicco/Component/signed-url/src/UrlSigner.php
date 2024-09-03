@@ -72,7 +72,7 @@ final class UrlSigner
         $signature = Base64UrlSafe::encode($this->hasher->create($plain_text_signature));
 
         // We append the expires_at and signature timestamp to the path, so that it can be easily validated.
-        // If any of the plain text parts have been tampered validation wil fail.
+        // If any of the plain text parts have been tampered validation will fail.
         $path_with_query =
             $this->appendExpiryQueryParam($path_with_query, $expires_at)
             . '&'

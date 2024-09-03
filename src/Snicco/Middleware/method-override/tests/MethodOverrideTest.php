@@ -76,7 +76,7 @@ final class MethodOverrideTest extends MiddlewareTestCase
     /**
      * @test
      */
-    public function a_post_request_without_any_overrite_stays_untouched(): void
+    public function a_post_request_without_any_override_stays_untouched(): void
     {
         $request = $this->frontendRequest('/', [], 'POST')->withParsedBody([
             'foo' => 'bar',

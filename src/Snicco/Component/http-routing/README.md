@@ -496,7 +496,7 @@ template engine inside a custom middleware to achieve this.
 #### Admin routes
 
 Routes defined in a `admin.php` file are special in a sense that they can be used to create routes to the admin area of
-a CMS like **WordPress** where you usually don't have control ofter the "routing".
+a CMS like **WordPress** where you usually don't have control over the "routing".
 
 You can even create admin menu items directly from your route definitions.
 
@@ -694,7 +694,7 @@ The central piece is the [`MiddlewarePipeline`](src/Middleware/MiddlewarePipelin
 The middleware pipeline needs a [**PSR-11** container](https://www.php-fig.org/psr/psr-11/) to lazily resolve your
 controllers and middleware.
 
-Furthermore, an instance of [`HTTPErrorHanlder`](https://github.com/snicco/psr7-error-handler) is needed to handle
+Furthermore, an instance of [`HTTPErrorHandler`](https://github.com/snicco/psr7-error-handler) is needed to handle
 exceptions for each middleware.
 
 ```php

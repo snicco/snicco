@@ -746,7 +746,7 @@ final class MailerTest extends WPTestCase
     /**
      * @test
      */
-    public function attachments_can_be_embeded_from_memory(): void
+    public function attachments_can_be_embedded_from_memory(): void
     {
         $mailer = new Mailer();
 

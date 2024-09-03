@@ -8,7 +8,7 @@ use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Routing\Admin\AdminArea;
 
 /**
- * @interal
+ * @internal
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class AdminRouteMatcher implements UrlMatcher

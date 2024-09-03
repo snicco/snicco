@@ -19,7 +19,7 @@ use Snicco\Component\Eloquent\Mysqli\MysqliFactory;
  *
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 final class WPConnectionResolver implements IlluminateConnectionResolver
 {

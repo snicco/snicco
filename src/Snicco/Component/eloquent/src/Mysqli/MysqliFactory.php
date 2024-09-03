@@ -13,7 +13,7 @@ use Snicco\Component\Eloquent\WPDatabaseSettingsAPI;
 /**
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 final class MysqliFactory
 {

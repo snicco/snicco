@@ -69,20 +69,20 @@ final class InputOptionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Input option must be either required or optional');
 
-        new InputOption('name', 'description', InputOption::COMMA_SEPERATED, );
+        new InputOption('name', 'description', InputOption::COMMA_SEPARATED, );
     }
 
     /**
      * @test
      */
-    public function is_optional_and_required_and_comma_seperated_throws_exception(): void
+    public function is_optional_and_required_and_comma_separated_throws_exception(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Input option can not be required and optional.');
         new InputOption(
             'name',
             'description',
-            InputOption::OPTIONAL | InputOption::REQUIRED | InputOption::COMMA_SEPERATED,
+            InputOption::OPTIONAL | InputOption::REQUIRED | InputOption::COMMA_SEPARATED,
         );
     }
 
@@ -109,13 +109,13 @@ final class InputOptionTest extends TestCase
     /**
      * @test
      */
-    public function with_comma_seperated_adds_description(): void
+    public function with_comma_separated_adds_description(): void
     {
-        $option = new InputOption('name', 'description', InputOption::REQUIRED | InputOption::COMMA_SEPERATED);
+        $option = new InputOption('name', 'description', InputOption::REQUIRED | InputOption::COMMA_SEPARATED);
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
-            'description' => 'description (supports multiple comma-seperated values)',
+            'description' => 'description (supports multiple comma-separated values)',
             'optional' => false,
             'repeating' => true,
         ], $option->toArray());
@@ -170,13 +170,13 @@ final class InputOptionTest extends TestCase
     /**
      * @test
      */
-    public function is_comma_seperated_and_required(): void
+    public function is_comma_separated_and_required(): void
     {
-        $option = new InputOption('name', 'description', InputOption::COMMA_SEPERATED | InputOption::REQUIRED, );
+        $option = new InputOption('name', 'description', InputOption::COMMA_SEPARATED | InputOption::REQUIRED, );
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
-            'description' => 'description (supports multiple comma-seperated values)',
+            'description' => 'description (supports multiple comma-separated values)',
             'optional' => false,
             'repeating' => true,
         ], $option->toArray());
@@ -187,11 +187,11 @@ final class InputOptionTest extends TestCase
      */
     public function is_optional_and_comma_separated(): void
     {
-        $option = new InputOption('name', 'description', InputOption::OPTIONAL | InputOption::COMMA_SEPERATED, );
+        $option = new InputOption('name', 'description', InputOption::OPTIONAL | InputOption::COMMA_SEPARATED, );
         $this->assertSame([
             'type' => 'assoc',
             'name' => 'name',
-            'description' => 'description (supports multiple comma-seperated values)',
+            'description' => 'description (supports multiple comma-separated values)',
             'optional' => true,
             'repeating' => true,
         ], $option->toArray());

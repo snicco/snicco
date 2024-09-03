@@ -700,7 +700,7 @@ composer install --dev snicco/better-wp-mail-testing
 How you wire the `FakeTransport` into your [`Mailer`](src/Mailer.php) instance during testing greatly depends on how
 your overall codebase is set up. You probably want to do this inside your dependency-injection container.
 
-The `FakeTranport` has the following **phpunit** assertion methods:
+The `FakeTransport` has the following **phpunit** assertion methods:
 
 ```php
 use Snicco\Component\BetterWPMail\Mailer;

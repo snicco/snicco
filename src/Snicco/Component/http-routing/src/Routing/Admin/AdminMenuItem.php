@@ -94,7 +94,7 @@ final class AdminMenuItem
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @param array{
      *     menu_title?: string,

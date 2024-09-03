@@ -10,7 +10,7 @@ use function get_resource_type;
 use function is_resource;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\BetterWPCLI
  */

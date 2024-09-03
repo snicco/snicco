@@ -18,7 +18,7 @@ use function var_export;
 /**
  * @psalm-internal Snicco\Bundle\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class MiddlewareCache
 {

@@ -26,7 +26,7 @@ final class InputOption implements InputDefinition
     /**
      * @var int
      */
-    public const COMMA_SEPERATED = 4;
+    public const COMMA_SEPARATED = 4;
 
     private string $name;
 
@@ -34,7 +34,7 @@ final class InputOption implements InputDefinition
 
     private bool $optional;
 
-    private bool $comma_seperated;
+    private bool $comma_separated;
 
     private ?string $default;
 
@@ -77,7 +77,7 @@ final class InputOption implements InputDefinition
             throw new LogicException('Input option must be either required or optional.');
         }
 
-        $this->comma_seperated = self::COMMA_SEPERATED === (self::COMMA_SEPERATED & $flags);
+        $this->comma_separated = self::COMMA_SEPARATED === (self::COMMA_SEPARATED & $flags);
         $this->optional = $optional;
 
         if (null !== $allowed_values) {
@@ -112,7 +112,7 @@ final class InputOption implements InputDefinition
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return array{type: string, name: string, description: string, optional: bool, repeating?: true, default?:string, options?: string[]}
      *
@@ -127,8 +127,8 @@ final class InputOption implements InputDefinition
             'optional' => $this->optional,
         ];
 
-        if ($this->comma_seperated) {
-            $data['description'] .= ' (supports multiple comma-seperated values)';
+        if ($this->comma_separated) {
+            $data['description'] .= ' (supports multiple comma-separated values)';
             $data['repeating'] = true;
         }
 

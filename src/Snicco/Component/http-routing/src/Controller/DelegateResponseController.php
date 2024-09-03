@@ -9,7 +9,7 @@ use Snicco\Component\HttpRouting\Http\Response\DelegatedResponse;
 /**
  * @psalm-internal Snicco\Component\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class DelegateResponseController extends Controller
 {

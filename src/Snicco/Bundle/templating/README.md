@@ -55,7 +55,7 @@ It should replace the simpler `SimpleTemplating` middleware of the `http-routing
 When resolving the `TemplateEngine` from the booted kernel the following context will be available in all views:
 
 - `url` => an instance of `UrlGenerator`
-- `view` => the `TemplatEngine` instance itself
+- `view` => the `TemplateEngine` instance itself
 
 ### Error handling
 

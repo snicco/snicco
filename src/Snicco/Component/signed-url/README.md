@@ -214,7 +214,7 @@ $storage = new \Snicco\Component\SignedUrl\Storage\SessionStorage($arr);
 The [`NullStorage`](src/Storage/NullStorage.php) does nothing. No signed-urls will be stored
 and no usage limits are enforced. Use this only if your signed-urls should be valid any number of times before expiring.
 
-Validity of a signed-url will be based solely on the correct signature and expriation timestamp.
+Validity of a signed-url will be based solely on the correct signature and expiration timestamp.
 
 ---
 

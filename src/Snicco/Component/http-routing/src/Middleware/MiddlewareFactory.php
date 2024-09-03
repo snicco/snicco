@@ -19,7 +19,7 @@ use function sprintf;
 /**
  * @psalm-internal Snicco\Component\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class MiddlewareFactory
 {

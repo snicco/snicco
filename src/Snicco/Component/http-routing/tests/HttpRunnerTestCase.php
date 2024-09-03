@@ -45,7 +45,7 @@ use function array_merge;
 use function call_user_func;
 
 /**
- * @interal
+ * @internal
  */
 abstract class HttpRunnerTestCase extends TestCase
 {

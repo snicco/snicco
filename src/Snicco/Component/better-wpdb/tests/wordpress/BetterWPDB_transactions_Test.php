@@ -69,7 +69,7 @@ final class BetterWPDB_transactions_Test extends BetterWPDBTestCase
     /**
      * @test
      */
-    public function test_nested_transactions_throw_expection(): void
+    public function test_nested_transactions_throw_exception(): void
     {
         try {
             $this->better_wpdb->transactional(function (BetterWPDB $db): void {

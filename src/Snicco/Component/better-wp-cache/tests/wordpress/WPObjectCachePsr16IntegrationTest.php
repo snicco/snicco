@@ -432,7 +432,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
             } elseif ('key1' === $key) {
                 $this->assertNull($r);
             } else {
-                $this->assertFalse(true, 'This should not happend');
+                $this->assertFalse(true, 'This should not happen');
             }
         }
 
@@ -582,7 +582,7 @@ final class WPObjectCachePsr16IntegrationTest extends WPTestCase
 
         try {
             $this->cache->set($key, 'foobar');
-            $this->fail(sprintf('No expection was thrown for key [%s]', $key));
+            $this->fail(sprintf('No exception was thrown for key [%s]', $key));
         } catch (InvalidArgumentException $e) {
             $this->assertTrue(true);
         }

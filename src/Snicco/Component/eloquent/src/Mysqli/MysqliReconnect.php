@@ -11,7 +11,7 @@ use RuntimeException;
 /**
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 final class MysqliReconnect
 {

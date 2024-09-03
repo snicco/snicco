@@ -17,7 +17,7 @@ use function sprintf;
 /**
  * @psalm-internal Snicco\Component\BetterWPCache
  *
- * @interal
+ * @internal
  */
 final class WPCacheItem implements CacheItemInterface
 {

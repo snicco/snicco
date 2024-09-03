@@ -113,7 +113,7 @@ final class InputArgument implements InputDefinition
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return array{type: string, name: string, description: string, optional: bool, repeating: bool, default?: string, options?: string[]}
      *
@@ -146,7 +146,7 @@ final class InputArgument implements InputDefinition
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Component\BetterWPCLI
      */
@@ -156,7 +156,7 @@ final class InputArgument implements InputDefinition
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Component\BetterWPCLI
      */

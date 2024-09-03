@@ -20,7 +20,7 @@ use function call_user_func_array;
 /**
  * @psalm-internal Snicco\Component\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class ControllerAction
 {

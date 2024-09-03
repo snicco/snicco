@@ -13,7 +13,7 @@ use function array_slice;
 /**
  * @psalm-internal Snicco\Component\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class ViewController extends Controller
 {

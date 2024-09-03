@@ -389,8 +389,8 @@ class DeterminingOrderPrice implements MappedFilter {
     public int $initial_order_total;
     
     public function __construct(int $initial_order_total) {
-        $this->new_total = $intial_order_total;
-        $this->initial_order_total = $intial_order_total;
+        $this->new_total = $initial_order_total;
+        $this->initial_order_total = $initial_order_total;
     }
     
     public function filterableAttribute(){

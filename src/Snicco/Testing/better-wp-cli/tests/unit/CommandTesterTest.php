@@ -62,7 +62,7 @@ final class CommandTesterTest extends TestCase
     /**
      * @test
      */
-    public function that_asser_status_code_can_fail(): void
+    public function that_assert_status_code_can_fail(): void
     {
         $tester = new CommandTester(new FooCommand(12));
 

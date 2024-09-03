@@ -12,7 +12,7 @@ final class Lock
     /**
      * @var "lock in share mode"|"for update"
      *
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Component\BetterWPDB
      */

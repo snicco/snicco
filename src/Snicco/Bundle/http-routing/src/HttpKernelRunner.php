@@ -37,7 +37,7 @@ final class HttpKernelRunner
     private ApiRequestDetector $api_request_detector;
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Bundle\HttpRouting
      */

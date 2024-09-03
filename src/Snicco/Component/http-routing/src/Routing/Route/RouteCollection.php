@@ -15,7 +15,7 @@ use function count;
  * @psalm-immutable
  *
  * @psalm-internal Snicco\Component\HttpRouting
- * @interal
+ * @internal
  */
 final class RouteCollection implements Routes
 {

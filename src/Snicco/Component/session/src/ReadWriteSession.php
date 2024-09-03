@@ -54,7 +54,7 @@ final class ReadWriteSession implements Session
     private array $stored_events = [];
 
     /**
-     * @interal Sessions MUST only be started from a {@see SessionManagerInterface}
+     * @internal Sessions MUST only be started from a {@see SessionManagerInterface}
      *
      * @param mixed[] $data
      */
@@ -413,7 +413,7 @@ final class ReadWriteSession implements Session
     }
 
     /**
-     * @interal
+     * @internal
      */
     public function isDirty(): bool
     {

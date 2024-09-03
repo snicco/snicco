@@ -19,7 +19,7 @@ use const DB_USER;
 /**
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 final class WPDatabaseSettingsAPI extends BetterWPAPI
 {

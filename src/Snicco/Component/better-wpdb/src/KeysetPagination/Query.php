@@ -103,7 +103,7 @@ final class Query
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @param list<array<string,?scalar>> $batch
      */
@@ -136,7 +136,7 @@ final class Query
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return array{0: non-empty-string, 1: array<scalar|null>}
      */

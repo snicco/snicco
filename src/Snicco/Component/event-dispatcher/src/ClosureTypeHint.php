@@ -12,7 +12,7 @@ use ReflectionParameter;
 use Snicco\Component\EventDispatcher\Exception\InvalidListener;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\EventDispatcher
  */

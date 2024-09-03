@@ -34,7 +34,7 @@ final class UnsupportedDirectivesTest extends BladeTestCase
     /**
      * @test
      */
-    public function csrf_directive_throws_expection(): void
+    public function csrf_directive_throws_exception(): void
     {
         $view = $this->view('csrf');
 

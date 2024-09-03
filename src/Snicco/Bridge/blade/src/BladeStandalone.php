@@ -80,7 +80,7 @@ final class BladeStandalone
         return $this->illuminate_container->get(BladeViewFactory::class);
     }
 
-    public function boostrap(): void
+    public function bootstrap(): void
     {
         $this->bindDependencies();
         $this->bootIlluminateViewServiceProvider();

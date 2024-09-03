@@ -38,7 +38,7 @@ Directly interacting with core functions was problematic for us because:
 If you can't relate to these issues, you probably don't need this library.
 
 **Edit:** The scoping problem was solved, by us creating
-a [command-line-programm](https://github.com/snicco/php-scoper-excludes) that can be used to generate
+a [command-line-program](https://github.com/snicco/php-scoper-excludes) that can be used to generate
 a [list of all functions and classes](https://github.com/snicco/php-scoper-wordpress-excludes/blob/master/generated/exclude-wordpress-functions.json)
 in the entire **WordPress** core codebase. For now, the best example on how to use it
 is [the `scoper.inc.php` configuration](https://github.com/GoogleForCreators/web-stories-wp/blob/main/scoper.inc.php#L13)

@@ -18,7 +18,7 @@ use function str_replace;
 use function strlen;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-immutable
  * @psalm-internal Snicco\Component\HttpRouting

@@ -16,7 +16,7 @@ namespace Snicco\Component\Eloquent\Mysqli;
  *
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 interface PDOAdapter
 {

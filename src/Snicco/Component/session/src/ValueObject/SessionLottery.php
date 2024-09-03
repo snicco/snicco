@@ -10,7 +10,7 @@ use LogicException;
 use function random_int;
 
 /**
- * @interal
+ * @internal
  * @psalm-internal Snicco\Component\Session
  */
 final class SessionLottery

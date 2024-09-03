@@ -42,7 +42,7 @@ final class BladeViewFactory implements ViewFactory
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @throws ViewNotFound
      *
@@ -63,7 +63,7 @@ final class BladeViewFactory implements ViewFactory
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @throws ViewCantBeRendered
      *
