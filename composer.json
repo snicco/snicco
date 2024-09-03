@@ -9,6 +9,13 @@
     ],
     "type": "library",
     "license": "LGPL-3.0-only",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/snicco/monorepo-builder",
+            "no-api": true
+        }
+    ],
     "require": {
         "php": "^7.4|^8.0",
         "ext-filter": "*",
@@ -68,7 +75,7 @@
         "php-stubs/wordpress-stubs": "^5.9.0",
         "symfony/finder": "^5.0",
         "symplify/easy-coding-standard": "10.1.2",
-        "symplify/monorepo-builder": "9.4.70",
+        "symplify/monorepo-builder": "dev-master#7797d3703b78aecd8ba7cee7b32f8cfffaf729f7",
         "vimeo/psalm": "4.22.0",
         "vlucas/phpdotenv": "5.4.1",
         "wp-cli/wp-cli": "^2.6"
