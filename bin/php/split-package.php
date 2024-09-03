@@ -139,6 +139,22 @@ function splitPackage(
             sprintf('git push origin %s', $branch_name)
         );
         success(sprintf('Commit successfully pushed to remote branch %s.', $branch_name));
+
+        // Write to GitHub Actions summary if more than just composer.json was changed.
+        $files = array_values($files);
+        $only_composer_json_changed = 1 === count($files) && false !== strpos($files[0], 'composer.json');
+        if (! $only_composer_json_changed) {
+            $summary_message = sprintf(
+                "Changes (excluding composer.json) detected and pushed to remote branch %s:\n\n%s",
+                $branch_name,
+                implode("\n", $files)
+            );
+
+            $step_summary_file = (string) @getenv('GITHUB_STEP_SUMMARY');
+            if ('' !== $step_summary_file) {
+                @file_put_contents($step_summary_file, $summary_message, FILE_APPEND);
+            }
+        }
     }
 
     if (null !== $tag) {
