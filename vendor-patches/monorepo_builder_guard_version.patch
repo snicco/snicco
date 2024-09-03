@@ -1,0 +1,15 @@
+--- packages/Release/Guard/ReleaseGuard.php	2021-10-02 18:07:18.000000000 +0200
++++ packages/Release/Guard/ReleaseGuard.php.old	2024-09-03 20:58:19.538033009 +0200
+@@ -68,11 +68,7 @@
+     }
+     public function guardVersion(\PharIo\Version\Version $version, string $stage) : void
+     {
+-        // stage is set and it doesn't need a validation
+-        if ($stage !== \Symplify\MonorepoBuilder\Release\ValueObject\Stage::MAIN && \in_array($stage, $this->stagesToAllowExistingTag, \true)) {
+-            return;
+-        }
+-        $this->ensureVersionIsNewerThanLastOne($version);
++        // noop: use whatever semantic release tells you!
+     }
+     /**
+      * @return string[]
