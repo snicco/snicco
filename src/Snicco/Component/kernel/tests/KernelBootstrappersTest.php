@@ -13,7 +13,7 @@ use Snicco\Component\Kernel\Exception\ContainerIsLocked;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
-use Snicco\Component\Kernel\Tests\helpers\FixedConfigCache;
+use Snicco\Component\Kernel\Tests\helpers\FixedBootstrapCache;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
@@ -51,7 +51,7 @@ final class KernelBootstrappersTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->fixtures_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bootstrappers' => [Bootstrap1::class],
                     'bundles' => [],
@@ -94,7 +94,7 @@ final class KernelBootstrappersTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->fixtures_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bootstrappers' => [BootstrapperWithExceptionInBoostrap::class],
                     'bundles' => [],

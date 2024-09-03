@@ -8,10 +8,10 @@ use Generator;
 use LogicException;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Snicco\Component\Kernel\Configuration\ConfigCache;
+use Snicco\Component\Kernel\Cache\BootstrapCache;
+use Snicco\Component\Kernel\Cache\NullCache;
+use Snicco\Component\Kernel\Cache\PHPFileCache;
 use Snicco\Component\Kernel\Configuration\ConfigLoader;
-use Snicco\Component\Kernel\Configuration\NullCache;
-use Snicco\Component\Kernel\Configuration\PHPFileCache;
 use Snicco\Component\Kernel\Configuration\ReadOnlyConfig;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\ValueObject\Directories;
@@ -24,13 +24,18 @@ use function sprintf;
 
 final class Kernel
 {
+    /**
+     * @psalm-readonly
+     *
+     * @readonly
+     */
+    public BootstrapCache $bootstrap_cache;
+
     private DIContainer $container;
 
     private Environment $env;
 
     private Directories $dirs;
-
-    private ConfigCache $config_cache;
 
     /**
      * @psalm-suppress PropertyNotSetInConstructor
@@ -74,12 +79,12 @@ final class Kernel
         DIContainer $container,
         Environment $env,
         Directories $dirs,
-        ?ConfigCache $config_cache = null
+        ?BootstrapCache $bootstrap_cache = null
     ) {
         $this->container = $container;
         $this->env = $env;
         $this->dirs = $dirs;
-        $this->config_cache = $config_cache ?: $this->determineCache($this->env);
+        $this->bootstrap_cache = $bootstrap_cache ?? $this->determineDefaultCache($this->env);
         $this->container[ContainerInterface::class] = $this->container;
     }
 
@@ -89,9 +94,9 @@ final class Kernel
             throw new LogicException('The kernel cant be booted twice.');
         }
 
-        $cached_config = $this->config_cache->get($this->configCacheFile(), fn (): array => $this->loadConfiguration());
+        $config = $this->bootstrap_cache->getOr('kernel.config', fn (): array => $this->loadConfiguration());
 
-        $this->read_only_config = ReadOnlyConfig::fromArray($cached_config);
+        $this->read_only_config = ReadOnlyConfig::fromArray($config);
 
         if ($this->loaded_from_cache) {
             $this->setBundlesAndBootstrappers(
@@ -267,11 +272,6 @@ final class Kernel
         }
     }
 
-    private function configCacheFile(): string
-    {
-        return $this->dirs->cacheDir() . '/' . $this->env->asString() . '.config.php';
-    }
-
     /**
      * @param array{all?: class-string<Bundle>[], prod?: class-string<Bundle>[], testing?: class-string<Bundle>[], dev?: class-string<Bundle>[]} $bundles
      *
@@ -340,14 +340,10 @@ final class Kernel
         }
     }
 
-    private function determineCache(Environment $environment): ConfigCache
+    private function determineDefaultCache(Environment $environment): BootstrapCache
     {
-        if ($environment->isProduction()) {
-            return new PHPFileCache();
-        }
-
-        if ($environment->isStaging()) {
-            return new PHPFileCache();
+        if ($environment->isProduction() || $environment->isStaging()) {
+            return new PHPFileCache($this->dirs->cacheDir());
         }
 
         return new NullCache();

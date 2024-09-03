@@ -15,7 +15,7 @@ use Snicco\Component\Kernel\Tests\fixtures\bundles\Bundle2;
 use Snicco\Component\Kernel\Tests\fixtures\bundles\BundleAssertsMethodOrder;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
 use Snicco\Component\Kernel\Tests\helpers\CreateTestContainer;
-use Snicco\Component\Kernel\Tests\helpers\FixedConfigCache;
+use Snicco\Component\Kernel\Tests\helpers\FixedBootstrapCache;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
@@ -126,7 +126,7 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bundles' => [
                         Environment::PROD => [stdClass::class],
@@ -194,7 +194,7 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bundles' => [
                         Environment::ALL => [BundleWithCustomEnv::class],
@@ -215,7 +215,7 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bundles' => [
                         Environment::ALL => [BundleWithCustomEnv::class],
@@ -259,7 +259,7 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bundles' => [
                         Environment::ALL => [BundleDuplicate1::class, BundleDuplicate2::class],
@@ -281,7 +281,7 @@ final class KernelBundlesTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             Directories::fromDefaults($this->base_dir),
-            new FixedConfigCache([
+            new FixedBootstrapCache([
                 'kernel' => [
                     'bundles' => [
                         Environment::ALL => [BundleThatConfigures::class],

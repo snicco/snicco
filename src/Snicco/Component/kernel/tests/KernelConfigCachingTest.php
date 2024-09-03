@@ -6,7 +6,6 @@ namespace Snicco\Component\Kernel\Tests;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Snicco\Component\Kernel\Configuration\ConfigCache;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
 use Snicco\Component\Kernel\Tests\helpers\CleanDirs;
@@ -15,9 +14,7 @@ use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 use stdClass;
 
-use function file_put_contents;
 use function is_file;
-use function var_export;
 
 /**
  * @internal
@@ -54,10 +51,9 @@ final class KernelConfigCachingTest extends TestCase
             $this->createContainer(),
             Environment::prod(),
             $dir = Directories::fromDefaults($this->fixtures_dir),
-            new TestConfigCache()
         );
 
-        $expected_path = $dir->cacheDir() . '/' . 'prod.config.php';
+        $expected_path = $dir->cacheDir() . '/kernel.config.php';
 
         $this->assertFalse(is_file($expected_path));
 
@@ -72,11 +68,11 @@ final class KernelConfigCachingTest extends TestCase
     /**
      * @test
      */
-    public function not_passing_a_cache_instance_will_default_to_file_cache_in_production(): void
+    public function not_passing_a_cache_instance_will_default_to_null_cache_in_non_production(): void
     {
         $app = new Kernel(
             $this->createContainer(),
-            Environment::prod(),
+            Environment::dev(),
             $dir = Directories::fromDefaults($this->fixtures_dir),
         );
 
@@ -86,30 +82,7 @@ final class KernelConfigCachingTest extends TestCase
 
         $app->boot();
 
-        $this->assertTrue(is_file($expected_path), 'configuration file not written.');
-
-        $saved_config = require $expected_path;
-        $this->assertSame($app->config()->toArray(), $saved_config);
-    }
-
-    /**
-     * @test
-     */
-    public function not_passing_a_cache_instance_will_default_to_null_cache_in_non_production(): void
-    {
-        $app = new Kernel(
-            $this->createContainer(),
-            Environment::dev(),
-            $dir = Directories::fromDefaults($this->fixtures_dir),
-        );
-
-        $expected_path = $dir->cacheDir() . '/' . 'dev.config.php';
-
         $this->assertFalse(is_file($expected_path));
-
-        $app->boot();
-
-        $this->assertFalse(is_file($expected_path), 'configuration cache was created in dev env.');
     }
 
     /**
@@ -123,10 +96,9 @@ final class KernelConfigCachingTest extends TestCase
                 $this->createContainer(),
                 Environment::prod(),
                 Directories::fromDefaults($this->fixtures_dir),
-                new TestConfigCache()
             );
             $kernel->afterConfigurationLoaded(function (WritableConfig $config) use (&$run): void {
-                if (true === $run) {
+                if ($run) {
                     throw new RuntimeException('after configuration callback run for cached kernel');
                 }
 
@@ -142,7 +114,7 @@ final class KernelConfigCachingTest extends TestCase
             return $kernel;
         };
 
-        $expected_path = Directories::fromDefaults($this->fixtures_dir)->cacheDir() . '/' . 'prod.config.php';
+        $expected_path = Directories::fromDefaults($this->fixtures_dir)->cacheDir() . '/kernel.config.php';
         $this->assertFalse(is_file($expected_path));
 
         $kernel = $get_kernel();
@@ -156,25 +128,5 @@ final class KernelConfigCachingTest extends TestCase
 
         $this->assertEquals(new stdClass(), $cached_kernel->container()->get(stdClass::class));
         $this->assertSame('bar', $cached_kernel->config()->get('foo_config'));
-    }
-}
-
-final class TestConfigCache implements ConfigCache
-{
-    /**
-     * @psalm-suppress MixedReturnStatement
-     * @psalm-suppress MixedInferredReturnType
-     */
-    public function get(string $key, callable $loader): array
-    {
-        if (is_file($key)) {
-            return require $key;
-        }
-
-        $data = $loader();
-
-        file_put_contents($key, '<?php return ' . var_export($data, true) . ';');
-
-        return $data;
     }
 }
