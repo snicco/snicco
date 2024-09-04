@@ -20,7 +20,10 @@ use const PHP_URL_PATH;
 
 final class WPAdminArea implements AdminArea
 {
-    private string $prefix;
+    /**
+     * @var non-empty-string|Closure():string
+     */
+    private $prefix;
 
     /**
      * @var non-empty-string|Closure():string
@@ -28,17 +31,23 @@ final class WPAdminArea implements AdminArea
     private $login_path;
 
     /**
+     * @param string|Closure():string $admin_dashboard_url_prefix
      * @param string|Closure():string $login_path
      */
-    public function __construct(string $admin_dashboard_url_prefix, $login_path)
+    public function __construct($admin_dashboard_url_prefix, $login_path)
     {
-        Assert::stringNotEmpty($admin_dashboard_url_prefix);
-        $this->prefix = '/' . ltrim($admin_dashboard_url_prefix, '/');
         if (is_string($login_path)) {
             Assert::stringNotEmpty($login_path);
             $this->login_path = '/' . ltrim($login_path, '/');
         } else {
             $this->login_path = $login_path;
+        }
+
+        if (is_string($admin_dashboard_url_prefix)) {
+            Assert::stringNotEmpty($admin_dashboard_url_prefix);
+            $this->prefix = $admin_dashboard_url_prefix;
+        } else {
+            $this->prefix = $admin_dashboard_url_prefix;
         }
     }
 
@@ -49,7 +58,11 @@ final class WPAdminArea implements AdminArea
 
     public function urlPrefix(): AdminAreaPrefix
     {
-        return AdminAreaPrefix::fromString($this->prefix);
+        $admin_area_prefix = is_string($this->prefix)
+            ? $this->prefix
+            : $this->callbackToPath($this->prefix);
+
+        return AdminAreaPrefix::fromString($admin_area_prefix);
     }
 
     public function rewriteForUrlGeneration(string $route_pattern): array

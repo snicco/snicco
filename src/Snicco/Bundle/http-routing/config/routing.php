@@ -18,6 +18,12 @@ return [
     /*
      * You can leave this value as is for default WordPress installs.
      * If you are using Bedrock you would have to set this to /wp/wp-admin.
+     *
+     * You can also set this value to NULL, in which case
+     * it will be determined at boot time based on the admin_url()
+     * method.
+     * However, note that the admin routes will still be in the route cache,
+     * so if the admin path is expected to change, you'll need to clear the cache.
      */
     RoutingOption::WP_ADMIN_PREFIX => '/wp-admin',
 

@@ -5,8 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Bundle\HttpRouting\Tests\wordpress;
 
 use Codeception\TestCase\WPTestCase;
+use Nyholm\Psr7\ServerRequest;
+use RuntimeException;
 use Snicco\Bundle\HttpRouting\Option\RoutingOption;
+use Snicco\Bundle\HttpRouting\Tests\fixtures\Controller\HttpRunnerTestController;
 use Snicco\Bundle\Testing\Bundle\BundleTestHelpers;
+use Snicco\Component\HttpRouting\Http\Psr7\Request;
+use Snicco\Component\HttpRouting\Middleware\MiddlewarePipeline;
+use Snicco\Component\HttpRouting\Middleware\RouteRunner;
+use Snicco\Component\HttpRouting\Middleware\RoutingMiddleware;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\Kernel;
@@ -255,6 +262,66 @@ final class RoutingContextFromRuntimeValuesTest extends WPTestCase
         });
 
         $this->assertSame('/login-2', $url_generator->toLogin());
+    }
+
+    /**
+     * @test
+     */
+    public function the_admin_url_can_be_entirely_parsed_from_the_runtime_with_custom_admin_url(): void
+    {
+        add_filter('admin_url', function () {
+            return 'https://snicco.io/my-custom-admin';
+        });
+
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing.host', 'snicco.io');
+            $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, null);
+        });
+
+        $kernel->boot();
+
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/my-custom-admin/admin.php?page=foo');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request, Request::TYPE_ADMIN_AREA))
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function the_admin_url_can_be_entirely_parsed_from_the_runtime_and_can_use_default_admin_url(): void
+    {
+        $kernel = new Kernel($this->newContainer(), Environment::dev(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('routing.host', 'snicco.io');
+            $config->set('routing.' . RoutingOption::WP_ADMIN_PREFIX, null);
+        });
+
+        $kernel->boot();
+
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/wp-admin/admin.php?page=foo');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request, Request::TYPE_ADMIN_AREA))
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertSame(HttpRunnerTestController::class, (string) $response->getBody());
     }
 
     protected function fixturesDir(): string

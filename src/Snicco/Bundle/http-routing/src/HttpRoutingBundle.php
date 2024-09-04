@@ -68,6 +68,7 @@ use Snicco\Component\Psr7ErrorHandler\ProductionErrorHandler;
 use Throwable;
 use Webmozart\Assert\Assert;
 
+use function admin_url;
 use function array_map;
 use function class_exists;
 use function class_implements;
@@ -166,9 +167,9 @@ final class HttpRoutingBundle implements Bundle
                 $config->getStringOrNull('routing.' . RoutingOption::HOST),
                 'routing.' . RoutingOption::HOST . ' must be a non-empty-string.'
             );
-            Assert::stringNotEmpty(
-                $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX),
-                'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string.'
+            Assert::nullOrstringNotEmpty(
+                $config->getStringOrNull('routing.' . RoutingOption::WP_ADMIN_PREFIX),
+                'routing.' . RoutingOption::WP_ADMIN_PREFIX . ' must be a non-empty string or null'
             );
             Assert::nullOrstringNotEmpty(
                 $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH),
@@ -470,11 +471,11 @@ final class HttpRoutingBundle implements Bundle
                     return $kernel->bootstrap_cache->getOr(self::alias() . '.routes', $load_routes);
                 });
 
-                $admin_dashboard_url_prefix = $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX);
+                $admin_dashboard_url_prefix = $config->getStringOrNull('routing.' . RoutingOption::WP_ADMIN_PREFIX);
                 $login_path = $config->getStringOrNull('routing.' . RoutingOption::WP_LOGIN_PATH);
 
                 $admin_area = new WPAdminArea(
-                    $admin_dashboard_url_prefix,
+                    $admin_dashboard_url_prefix ?? fn (): string => admin_url(),
                     $login_path ?? fn (): string => wp_login_url(),
                 );
 

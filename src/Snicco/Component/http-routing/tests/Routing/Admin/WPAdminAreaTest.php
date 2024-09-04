@@ -44,4 +44,24 @@ final class WPAdminAreaTest extends TestCase
         $this->assertSame('/login/2/', $admin_area->loginPath());
         $this->assertSame('/login/3/', $admin_area->loginPath());
     }
+
+    /**
+     * @test
+     *
+     * @psalm-suppress MixedOperand
+     * @psalm-suppress MixedAssignment
+     */
+    public function the_admin_prefix_can_come_from_a_callback(): void
+    {
+        $admin_area = new WPAdminArea(function () {
+            static $count = 0;
+            ++$count;
+
+            return '/wp-admin/' . (string) $count;
+        }, '/login');
+
+        $this->assertSame('/wp-admin/1', $admin_area->urlPrefix()->asString());
+        $this->assertSame('/wp-admin/2', $admin_area->urlPrefix()->asString());
+        $this->assertSame('/wp-admin/3', $admin_area->urlPrefix()->asString());
+    }
 }
