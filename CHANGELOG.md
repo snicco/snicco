@@ -1,3 +1,12 @@
+# [2.0.0-beta.8](https://github.com/snicco/snicco/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2024-09-04)
+
+
+### Features
+
+* **http-routing,http-routing-bundle:** force reload cache on kernel cache miss ([dc5b7ec](https://github.com/snicco/snicco/commit/dc5b7ec24420b2262ed14de3f7d4fd0df708b093))
+* **kernel:** allow force reloading bootstrap cache via method parameter ([b492c96](https://github.com/snicco/snicco/commit/b492c96a4903d50f7c4525c71a3de91d46958366))
+* **kernel:** expose method to see if config was loaded from cache ([82fc9f2](https://github.com/snicco/snicco/commit/82fc9f2065a5e754621f2fe903c132dc9a35f8e2))
+
 # [2.0.0-beta.7](https://github.com/snicco/snicco/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2024-09-04)
 
 
