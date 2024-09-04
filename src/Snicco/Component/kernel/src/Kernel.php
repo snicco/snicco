@@ -94,7 +94,7 @@ final class Kernel
             throw new LogicException('The kernel cant be booted twice.');
         }
 
-        $config = $this->bootstrap_cache->getOr('kernel.config', fn (): array => $this->loadConfiguration());
+        $config = $this->bootstrap_cache->getOr('snicco/kernel.config', fn (): array => $this->loadConfiguration());
 
         $this->read_only_config = ReadOnlyConfig::fromArray($config);
 
