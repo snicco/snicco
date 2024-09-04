@@ -1,3 +1,10 @@
+# [2.0.0-beta.7](https://github.com/snicco/snicco/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2024-09-04)
+
+
+### Bug Fixes
+
+* **kernel:** use namespaced bootstrap cache key ([ae9b817](https://github.com/snicco/snicco/commit/ae9b817c77de828802581d7559be48dce6bffd2c))
+
 # [2.0.0-beta.6](https://github.com/snicco/snicco/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2024-09-03)
 
 
