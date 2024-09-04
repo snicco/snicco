@@ -1,4 +1,4 @@
-# Snicco - BetterWPCacheBundle 
+# Snicco - BetterWPCacheBundle
 
 [![codecov](https://img.shields.io/badge/Coverage-100%25-success
 )](https://codecov.io/gh/snicco/snicco)
@@ -12,7 +12,7 @@ This **WordPress** bundle configures the standalone [`snicco/better-wp-cache`](h
 ## Installation
 
 ```shell
-composer install snicco/better-wp-cache-bundle
+composer require snicco/better-wp-cache-bundle
 ```
 
 ## Configuration
@@ -33,12 +33,12 @@ use Snicco\Bundle\BetterWPCache\BetterWPCacheBundle;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
 return [
-    
+
     'bundles' => [
         Environment::ALL => [
             BetterWPCacheBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```

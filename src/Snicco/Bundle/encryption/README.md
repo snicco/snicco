@@ -14,7 +14,7 @@ Make sure you have a read the [documentation of `defuse/php-encryption`](https:/
 ## Installation
 
 ```shell
-composer install snicco/encryption-bundle
+composer require snicco/encryption-bundle
 ```
 
 ## Configuration
@@ -49,12 +49,12 @@ config file.
 use Snicco\Bundle\Encryption\EncryptionBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
            EncryptionBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```
@@ -75,11 +75,11 @@ $plaintext = 'snicco.io';
 
 $ciphertext = $defuse->encrypt($plaintext);
 
-var_dump($plaintext === $ciphertext); // false 
+var_dump($plaintext === $ciphertext); // false
 
 $plain2 = $defuse->decrypt($ciphertext);
 
-var_dump($plaintext === $plain2); // true 
+var_dump($plaintext === $plain2); // true
 ```
 
 ## Contributing

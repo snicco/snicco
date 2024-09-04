@@ -13,7 +13,7 @@ library for usage in applications based on [`snicco/kernel`](https://github.com/
 ## Installation
 
 ```shell
-composer install snicco/http-routing-bundle
+composer require snicco/http-routing-bundle
 ```
 
 ## Configuration
@@ -37,12 +37,12 @@ Add the [`HttpRoutingBundle`](src/HttpRoutingBundle.php) to your `bundles.php` c
 use Snicco\Bundle\HttpRouting\HttpRoutingBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
             HttpRoutingBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 ```
 
@@ -67,7 +67,7 @@ use Snicco\Component\Kernel\Kernel;
 // Create kernel
 
 /**
- * @var Kernel $kernel 
+ * @var Kernel $kernel
  */
 $kernel->boot();
 

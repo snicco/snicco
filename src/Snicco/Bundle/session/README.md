@@ -14,7 +14,7 @@ The [`snicco/http-routing-bundle`](https://github.com/snicco/http-routing-bundle
 ## Installation
 
 ```shell
-composer install snicco/session-bundle
+composer require snicco/session-bundle
 ```
 
 ## Configuration
@@ -34,12 +34,12 @@ config file.
 use Snicco\Bundle\Session\SessionBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
            SessionBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 ```
 
@@ -72,7 +72,7 @@ return [
             ShareSessionWithViews::class,
             SaveResponseAttributes::class,
 //            SessionNoCache::class, optional
-        ]   
+        ]
     ],
     MiddlewareOption::ALIASES => [
         'session-allow-write' => AllowMutableSessionForReadVerbs::class,

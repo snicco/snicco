@@ -12,7 +12,7 @@ This **WordPress** bundle configures the standalone [`snicco/better-wpdb`](https
 ## Installation
 
 ```shell
-composer install snicco/better-wpdb-bundle
+composer require snicco/better-wpdb-bundle
 ```
 
 ## Configuration
@@ -30,12 +30,12 @@ Add the [`BetterWPDBBundle`](src/BetterWPDBBundle.php) to your `bundles.php` con
 use Snicco\Bundle\BetterWPDB\BetterWPDBBundle;
 
 return [
-    
+
     'bundles' => [
         Snicco\Component\Kernel\ValueObject\Environment::ALL => [
             BetterWPDBBundle::class
-        ]   
-    ]   
+        ]
+    ]
 ];
 
 ```
