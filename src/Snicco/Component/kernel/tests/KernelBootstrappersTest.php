@@ -96,7 +96,7 @@ final class KernelBootstrappersTest extends TestCase
             Directories::fromDefaults($this->fixtures_dir),
             new FixedConfigCache([
                 'kernel' => [
-                    'bootstrappers' => [BootstrapperWithExceptionInBoostrap::class],
+                    'bootstrappers' => [BootstrapperWithExceptionInBootstrap::class],
                     'bundles' => [],
                 ],
             ])
@@ -215,7 +215,7 @@ final class Bootstrap2 implements Bootstrapper
     }
 }
 
-final class BootstrapperWithExceptionInBoostrap implements Bootstrapper
+final class BootstrapperWithExceptionInBootstrap implements Bootstrapper
 {
     public function shouldRun(Environment $env): bool
     {

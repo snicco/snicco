@@ -44,7 +44,7 @@ final class StreamOutput extends OutputWithVerbosity
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Component\BetterWPCLI\Output
      */

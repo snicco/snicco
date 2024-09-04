@@ -11,7 +11,7 @@ use Snicco\Component\Kernel\ValueObject\Environment;
  * @psalm-external-mutation-free
  * @psalm-internal Snicco\Bundle\HttpRouting
  *
- * @interal
+ * @internal
  */
 final class ResponsePostProcessor implements Unremovable
 {

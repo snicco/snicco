@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\BetterWPCLI\Synopsis;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\BetterWPCLI
  */

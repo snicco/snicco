@@ -13,7 +13,7 @@ use function wp_mail;
 /**
  * @psalm-internal Snicco\Component\BetterWPMail
  *
- * @interal
+ * @internal
  */
 final class WPMailAPI extends BetterWPAPI
 {

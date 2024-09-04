@@ -20,7 +20,7 @@ use function is_string;
 use function sprintf;
 
 /**
- * @interal
+ * @internal
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class Reflector

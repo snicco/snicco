@@ -47,7 +47,7 @@ final class ControllerMiddleware
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-mutation-free
      */
@@ -73,7 +73,7 @@ final class ControllerMiddleware
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return class-string<MiddlewareInterface>[]
      */

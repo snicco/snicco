@@ -28,7 +28,7 @@ final class CookiePool
     }
 
     /**
-     * @interal
+     * @internal
      * @psalm-internal Snicco\Component\Session
      */
     public function has(string $cookie_name): bool
@@ -37,7 +37,7 @@ final class CookiePool
     }
 
     /**
-     * @interal
+     * @internal
      * @psalm-internal Snicco\Component\Session
      */
     public function get(string $cookie_name): ?string

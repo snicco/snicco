@@ -55,7 +55,7 @@ final class BladeStandaloneTest extends BladeTestCase
 
         $this->composers = new ViewContextResolver(new GlobalViewContext(), null);
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
-        $blade->boostrap();
+        $blade->bootstrap();
 
         $this->assertSame('bar', $config['foo']);
     }

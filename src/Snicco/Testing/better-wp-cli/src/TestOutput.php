@@ -9,7 +9,7 @@ use Snicco\Component\BetterWPCLI\Output\Output;
 use Snicco\Component\BetterWPCLI\Output\OutputWithVerbosity;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\BetterWPCLI\Testing
  */

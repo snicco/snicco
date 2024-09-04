@@ -18,7 +18,7 @@ body:
   - type: dropdown
     id: affected-packages
     attributes:
-      label: "Which @snicco/* package(s) have missing/wrong/unclear documenation?"
+      label: "Which @snicco/* package(s) have missing/wrong/unclear documentation?"
       options:
         - monorepo
         - other/dont-know

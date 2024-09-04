@@ -10,7 +10,7 @@ use RuntimeException;
 /**
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 interface MysqliDriverInterface extends PDOAdapter
 {

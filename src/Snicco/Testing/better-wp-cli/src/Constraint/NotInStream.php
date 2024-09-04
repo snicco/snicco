@@ -9,7 +9,7 @@ use PHPUnit\Framework\Constraint\Constraint;
 use function strpos;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\BetterWPCLI\Testing
  */

@@ -27,7 +27,7 @@ final class InputFlag implements InputDefinition
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return array{type: string, name: string, description: string, optional: true}
      *

@@ -8,7 +8,7 @@
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
 This middleware checks if the currently logged-in **WordPress** user has a specified capability
-and will throw a `403 HTTPExcetion` if that's not the case.
+and will throw a `403 HTTPException` if that's not the case.
 
 ## Installation
 

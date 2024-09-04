@@ -59,7 +59,7 @@ final class Secret
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-suppress PossiblyUndefinedIntArrayOffset
      */

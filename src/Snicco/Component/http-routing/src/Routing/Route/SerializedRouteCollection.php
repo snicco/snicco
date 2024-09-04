@@ -19,7 +19,7 @@ use function unserialize;
  * @psalm-external-mutation-free
  *
  * @psalm-internal Snicco\Component\HttpRouting
- * @interal
+ * @internal
  */
 final class SerializedRouteCollection implements Routes
 {

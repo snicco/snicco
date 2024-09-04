@@ -8,7 +8,7 @@
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
 A middleware for the [`snicco/http-routing`](https://github.com/snicco/http-routing) component that allows you
-to override the HTTP method for `POST` requests to either `PATCH|PUT|DELELE` based on the post body.
+to override the HTTP method for `POST` requests to either `PATCH|PUT|DELETE` based on the post body.
 
 
 ## Installation
@@ -24,7 +24,7 @@ This middleware should be added for **globally** in the `MiddlewareResolver`.
 To allow overwriting the HTTP method, either a `_method` must be present in the request body or the `X-HTTP-Method-Override`
 header must be present.
 
-Overwriting the HTTP method only works for `POST` methods. Valid values are `PATCH|PUT|DELELE`.
+Overwriting the HTTP method only works for `POST` methods. Valid values are `PATCH|PUT|DELETE`.
 
 ## Contributing
 

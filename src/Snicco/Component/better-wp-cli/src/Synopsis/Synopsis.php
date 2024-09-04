@@ -52,7 +52,7 @@ final class Synopsis
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return array<string,InputArgument>
      *
@@ -74,7 +74,7 @@ final class Synopsis
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Component\BetterWPCLI
      * @psalm-mutation-free

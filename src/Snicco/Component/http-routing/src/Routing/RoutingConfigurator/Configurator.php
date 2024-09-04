@@ -29,7 +29,7 @@ use function is_string;
 use function trim;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\HttpRouting
  */

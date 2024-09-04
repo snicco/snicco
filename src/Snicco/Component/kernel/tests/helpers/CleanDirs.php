@@ -10,7 +10,7 @@ use SplFileInfo;
 use function unlink;
 
 /**
- * @interal
+ * @internal
  */
 trait CleanDirs
 {

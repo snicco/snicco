@@ -128,7 +128,7 @@ final class StreamOutputTest extends TestCase
     /**
      * @test
      */
-    public function colors_with_hyper_term_programm(): void
+    public function colors_with_hyper_term_program(): void
     {
         try {
             putenv('TERM_PROGRAM=Hyper');

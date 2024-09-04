@@ -20,7 +20,7 @@ use function ucwords;
 final class Cookie
 {
     /**
-     * @interal
+     * @internal
      *
      * @var array{
      *     domain: null|string,
@@ -35,12 +35,12 @@ final class Cookie
     public array $properties;
 
     /**
-     * @interal
+     * @internal
      */
     public string $name;
 
     /**
-     * @interal
+     * @internal
      */
     public string $value;
 

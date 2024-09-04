@@ -8,7 +8,7 @@ use PHPUnit\Framework\Constraint\Constraint;
 use Snicco\Component\BetterWPCLI\Command;
 
 /**
- * @interal
+ * @internal
  *
  * @psalm-internal Snicco\Component\BetterWPCLI\Testing
  */

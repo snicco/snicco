@@ -13,7 +13,7 @@ use function trim;
 /**
  * @psalm-immutable
  *
- * @interal
+ * @internal
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class RouteGroup

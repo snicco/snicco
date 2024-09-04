@@ -3,4 +3,4 @@
 phpunit.dist.xml export-ignore
 README.md export-ignore
 /tests export-ignore
-.github export-ingore
+.github export-ignore

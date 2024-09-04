@@ -8,7 +8,7 @@
 ![PHP-Versions](https://img.shields.io/badge/PHP-%5E7.4%7C%5E8.0%7C%5E8.1-blue)
 
 This middleware checks if a **WordPress** user is logged in
-and will throw a `401 HTTPExcetion` if that's not the case.
+and will throw a `401 HTTPException` if that's not the case.
 
 ## Installation
 

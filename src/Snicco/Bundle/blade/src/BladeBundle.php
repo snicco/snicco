@@ -60,7 +60,7 @@ final class BladeBundle implements Bundle
                 $composers
             );
 
-            $blade->boostrap();
+            $blade->bootstrap();
             $this->bindWordPressBladeDirectives();
 
             return $blade->getBladeViewFactory();

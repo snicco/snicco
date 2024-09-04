@@ -28,21 +28,21 @@ use function sprintf;
 final class Route
 {
     /**
-     * @interal
+     * @internal
      *
      * @var string[]|class-string<DelegateResponseController>[]
      */
     public const DELEGATE = [DelegateResponseController::class, '__invoke'];
 
     /**
-     * @interal
+     * @internal
      *
      * @var string
      */
     public const FALLBACK_NAME = 'snicco_fallback_route';
 
     /**
-     * @interal
+     * @internal
      *
      * @var string[]
      */
@@ -133,7 +133,7 @@ final class Route
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @param array{0: class-string, 1: string}|class-string|string $controller
      * @param string[]                                              $methods

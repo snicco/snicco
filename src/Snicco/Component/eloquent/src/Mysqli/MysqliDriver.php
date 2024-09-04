@@ -21,7 +21,7 @@ use function sprintf;
  *
  * @psalm-internal Snicco\Component\Eloquent
  *
- * @interal
+ * @internal
  */
 final class MysqliDriver implements MysqliDriverInterface
 {

@@ -27,7 +27,7 @@ abstract class Middleware implements MiddlewareInterface
     private ?Request $current_request = null;
 
     /**
-     * @interal
+     * @internal
      *
      * @psalm-internal Snicco\Component\HttpRouting
      */
@@ -55,7 +55,7 @@ abstract class Middleware implements MiddlewareInterface
      * This method can be used to add the container of the current middleware to
      * a (private) middleware that is instantiated from within the current one.
      *
-     * @interal
+     * @internal
      *
      * @experimental
      *

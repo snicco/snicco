@@ -54,7 +54,7 @@ abstract class BladeTestCase extends TestCase
 
         $this->composers = new ViewContextResolver($global_view_context = new GlobalViewContext(), null);
         $blade = new BladeStandalone($this->blade_cache, [$this->blade_views], $this->composers);
-        $blade->boostrap();
+        $blade->bootstrap();
         $this->blade = $blade;
 
         $this->view_engine = new TemplateEngine($blade->getBladeViewFactory());

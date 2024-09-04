@@ -21,7 +21,7 @@ final class WPHookAPI extends BetterWPAPI
     /**
      * @psalm-internal Snicco\Component\BetterWPHooks
      *
-     * @interal
+     * @internal
      */
     public function currentFilter(): ?string
     {
@@ -37,7 +37,7 @@ final class WPHookAPI extends BetterWPAPI
     /**
      * @psalm-internal Snicco\Component\BetterWPHooks
      *
-     * @interal
+     * @internal
      */
     public function getHook(string $hook_name): ?WP_Hook
     {

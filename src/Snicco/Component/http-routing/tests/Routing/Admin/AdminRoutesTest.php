@@ -187,7 +187,7 @@ final class AdminRoutesTest extends HttpRunnerTestCase
     /**
      * @test
      */
-    public function admin_routes_do_not_match_for_non_admin_requests_that_have_the_same_rewritten_url_but_are_not_loaded_from_withing_the_admin_dashboard(
+    public function admin_routes_do_not_match_for_non_admin_requests_that_have_the_same_rewritten_url_but_are_not_loaded_from_within_the_admin_dashboard(
         ): void {
         $this->adminRouting(function (AdminRoutingConfigurator $configurator): void {
             $configurator->page('r1', 'options.php/foo', RoutingTestController::class, [], );

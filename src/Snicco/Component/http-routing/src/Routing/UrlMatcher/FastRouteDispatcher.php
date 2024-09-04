@@ -71,7 +71,7 @@ use function preg_match;
  * {@see \FastRoute\DataGenerator\GroupCountBased}
  * https://github.com/nikic/FastRoute/blob/v1.3.0/src/DataGenerator/GroupCountBased.php.
  *
- * @interal
+ * @internal
  * @psalm-internal Snicco\Component\HttpRouting
  */
 final class FastRouteDispatcher implements UrlMatcher

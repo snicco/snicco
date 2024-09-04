@@ -202,7 +202,7 @@ final class SessionConfig
     }
 
     /**
-     * @interal
+     * @internal
      */
     public function gcLottery(): SessionLottery
     {
