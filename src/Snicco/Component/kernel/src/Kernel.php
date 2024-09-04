@@ -17,6 +17,8 @@ use Snicco\Component\Kernel\Configuration\WritableConfig;
 use Snicco\Component\Kernel\ValueObject\Directories;
 use Snicco\Component\Kernel\ValueObject\Environment;
 
+use Webmozart\Assert\Assert;
+
 use function array_merge;
 use function get_class;
 use function implode;
@@ -54,7 +56,7 @@ final class Kernel
      */
     private array $bootstrappers = [];
 
-    private bool $loaded_from_cache = true;
+    private ?bool $loaded_from_cache = null;
 
     /**
      * @var array<callable(Kernel):void>
@@ -94,7 +96,15 @@ final class Kernel
             throw new LogicException('The kernel cant be booted twice.');
         }
 
-        $config = $this->bootstrap_cache->getOr('snicco/kernel.config', fn (): array => $this->loadConfiguration());
+        $config = $this->bootstrap_cache->getOr(
+            'snicco/kernel.config',
+            fn (): array => $this->loadConfiguration()
+        );
+
+        if (null === $this->loaded_from_cache) {
+            // loadConfiguration() sets it to false if the config was not loaded from cache.
+            $this->loaded_from_cache = true;
+        }
 
         $this->read_only_config = ReadOnlyConfig::fromArray($config);
 
@@ -117,6 +127,13 @@ final class Kernel
     public function booted(): bool
     {
         return $this->booted;
+    }
+
+    public function wasConfigLoadedFromCache(): bool
+    {
+        Assert::boolean($this->loaded_from_cache, 'wasConfigLoadedFromCache() can not be called during configure()');
+
+        return $this->loaded_from_cache;
     }
 
     public function env(): Environment

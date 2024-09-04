@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Component\Kernel\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Snicco\Component\Kernel\Configuration\WritableConfig;
@@ -59,6 +60,7 @@ final class KernelConfigCachingTest extends TestCase
 
         $kernel->boot();
 
+        $this->assertFalse($kernel->wasConfigLoadedFromCache());
         $this->assertTrue(is_file($expected_path));
 
         $saved_config = require $expected_path;
@@ -82,6 +84,7 @@ final class KernelConfigCachingTest extends TestCase
 
         $app->boot();
 
+        $this->assertFalse($app->wasConfigLoadedFromCache());
         $this->assertFalse(is_file($expected_path));
     }
 
@@ -120,13 +123,32 @@ final class KernelConfigCachingTest extends TestCase
         $kernel = $get_kernel();
         $kernel->boot();
 
+        $this->assertFalse($kernel->wasConfigLoadedFromCache());
         $this->assertTrue(is_file($expected_path));
 
         $cached_kernel = $get_kernel();
 
         $cached_kernel->boot();
 
+        $this->assertTrue($cached_kernel->wasConfigLoadedFromCache());
         $this->assertEquals(new stdClass(), $cached_kernel->container()->get(stdClass::class));
         $this->assertSame('bar', $cached_kernel->config()->get('foo_config'));
+    }
+
+    /**
+     * @test
+     */
+    public function exception_if_was_loaded_from_cache_is_called_to_early(): void
+    {
+        $kernel = new Kernel(
+            $this->createContainer(),
+            Environment::prod(),
+            Directories::fromDefaults($this->fixtures_dir),
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('wasConfigLoadedFromCache() can not be called during configure()');
+
+        $kernel->wasConfigLoadedFromCache();
     }
 }

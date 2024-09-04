@@ -203,6 +203,58 @@ final class RoutingFunctionalityTest extends TestCase
     /**
      * @test
      */
+    public function routes_are_not_cache_if_kernel_config_was_not_loaded_from_cache(): void
+    {
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
+        $kernel->boot();
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/frontend');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertSame(RoutingBundleTestController::class, (string) $response->getBody());
+        $this->assertTrue(is_file($this->expected_route_cache_file));
+        $this->assertTrue(is_file($this->expected_middleware_cache_file));
+
+        $kernel = new Kernel(
+            new PimpleContainerAdapter(),
+            Environment::prod(),
+            $this->directories,
+        );
+
+        // This will cause the kernel to reload the config.
+        unlink($this->directories->cacheDir() . '/snicco_kernel.config.php');
+        // and this will load not routes in the routes.php file
+        $_SERVER['TEST_NO_LOAD_ROUTES'] = 1;
+
+        $kernel->boot();
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('no routing performed');
+            });
+
+        $this->assertInstanceOf(
+            DelegatedResponse::class,
+            $response,
+            'routes were cached, even thought kernel config was not'
+        );
+    }
+
+    /**
+     * @test
+     */
     public function route_middleware_is_not_cached_in_non_production(): void
     {
         $kernel = new Kernel(new PimpleContainerAdapter(), Environment::dev(), $this->directories);
@@ -382,6 +434,66 @@ final class RoutingFunctionalityTest extends TestCase
         $this->assertSame(
             RoutingBundleTestController::class,
             $response_body,
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function route_middleware_is_not_cached_in_production_if_kernel_config_not_loaded_from_cache(): void
+    {
+        $kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
+
+        $kernel->afterConfigurationLoaded(function (WritableConfig $config): void {
+            $config->set('middleware', [
+                MiddlewareOption::ALWAYS_RUN => [RoutingConfigurator::FRONTEND_MIDDLEWARE],
+                MiddlewareOption::ALIASES => [],
+                MiddlewareOption::GROUPS => [
+                    'frontend' => [MiddlewareThree::class],
+                ],
+                MiddlewareOption::PRIORITY_LIST => [],
+            ]);
+        });
+
+        $kernel->boot();
+
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $request = new ServerRequest('GET', '/frontend');
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('pipeline exhausted');
+            });
+
+        $this->assertSame(
+            RoutingBundleTestController::class . ':middleware_three',
+            (string) $response->getBody()
+        );
+
+        // Delete the config cache, which must cause a reload.
+        unlink($this->directories->cacheDir() . '/snicco_kernel.config.php');
+
+        $new_kernel = new Kernel(new PimpleContainerAdapter(), Environment::prod(), $this->directories);
+        $new_kernel->boot();
+
+        /** @var MiddlewarePipeline $pipeline */
+        $pipeline = $new_kernel->container()
+            ->make(MiddlewarePipeline::class);
+
+        $response = $pipeline
+            ->send(Request::fromPsr($request))
+            ->through([RoutingMiddleware::class, RouteRunner::class])->then(function (): void {
+                throw new RuntimeException('pipeline exhausted');
+            });
+
+        $this->assertSame(
+            RoutingBundleTestController::class,
+            (string) $response->getBody(),
+            'middleware was loaded from cache despite config cache not loaded from cache.'
         );
     }
 

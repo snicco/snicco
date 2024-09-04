@@ -114,4 +114,33 @@ final class PHPFileCacheTest extends TestCase
             'count' => 1,
         ], $cache->getOr('foo', $loader));
     }
+
+    /**
+     * @test
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedOperand
+     */
+    public function force_reloading_works_even_with_cached_files(): void
+    {
+        mkdir($this->cache_dir);
+
+        $cache = new PHPFileCache($this->cache_dir);
+
+        $loader = function (): array {
+            static $count = 0;
+            ++$count;
+
+            return [
+                'count' => $count,
+            ];
+        };
+
+        $this->assertSame([
+            'count' => 1,
+        ], $cache->getOr('foo', $loader));
+        $this->assertSame([
+            'count' => 2,
+        ], $cache->getOr('foo', $loader, true));
+    }
 }
