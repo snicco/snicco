@@ -40,16 +40,18 @@ final class PHPFileCache implements BootstrapCache
         $this->cache_dir = $cache_dir;
     }
 
-    public function getOr(string $cache_key, callable $loader): array
+    public function getOr(string $cache_key, callable $loader, bool $force_reload = false): array
     {
         $cache_key = str_replace(['/', '-'], '_', $cache_key);
 
         $cache_file = rtrim($this->cache_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $cache_key . '.php';
 
-        $config = $this->readFile($cache_file);
+        if (! $force_reload) {
+            $config = $this->readFile($cache_file);
 
-        if (null !== $config) {
-            return $config;
+            if (null !== $config) {
+                return $config;
+            }
         }
 
         $config = $loader();

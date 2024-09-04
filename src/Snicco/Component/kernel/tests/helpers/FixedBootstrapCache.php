@@ -23,7 +23,7 @@ final class FixedBootstrapCache implements BootstrapCache
         $this->config = $config;
     }
 
-    public function getOr(string $cache_key, callable $loader): array
+    public function getOr(string $cache_key, callable $loader, bool $force_reload = false): array
     {
         return $this->config;
     }
