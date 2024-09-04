@@ -467,7 +467,11 @@ final class HttpRoutingBundle implements Bundle
                 $loader = $container[RouteLoader::class] ?? $container[PHPFileRouteLoader::class];
 
                 $cache = new CallbackRouteCache(function (callable $load_routes) use ($kernel) {
-                    return $kernel->bootstrap_cache->getOr(self::alias() . '.routes', $load_routes);
+                    return $kernel->bootstrap_cache->getOr(
+                        self::alias() . '.routes',
+                        $load_routes,
+                        ! $kernel->wasConfigLoadedFromCache()
+                    );
                 });
 
                 $admin_dashboard_url_prefix = $config->getString('routing.' . RoutingOption::WP_ADMIN_PREFIX);
@@ -590,7 +594,8 @@ final class HttpRoutingBundle implements Bundle
                         $container->make(Routes::class),
                         $container
                     );
-                }
+                },
+                ! $kernel->wasConfigLoadedFromCache()
             );
 
             Assert::true(
