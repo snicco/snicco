@@ -53,7 +53,7 @@ final class KernelConfigCachingTest extends TestCase
             $dir = Directories::fromDefaults($this->fixtures_dir),
         );
 
-        $expected_path = $dir->cacheDir() . '/kernel.config.php';
+        $expected_path = $dir->cacheDir() . '/snicco_kernel.config.php';
 
         $this->assertFalse(is_file($expected_path));
 
@@ -114,7 +114,7 @@ final class KernelConfigCachingTest extends TestCase
             return $kernel;
         };
 
-        $expected_path = Directories::fromDefaults($this->fixtures_dir)->cacheDir() . '/kernel.config.php';
+        $expected_path = Directories::fromDefaults($this->fixtures_dir)->cacheDir() . '/snicco_kernel.config.php';
         $this->assertFalse(is_file($expected_path));
 
         $kernel = $get_kernel();
