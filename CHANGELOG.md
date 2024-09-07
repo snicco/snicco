@@ -1,3 +1,28 @@
+# [2.0.0-beta.9](https://github.com/snicco/snicco/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2024-09-07)
+
+
+### Features
+
+* **http-routing,http-routing-bundle:** make controller middleware a static method ([2af633d](https://github.com/snicco/snicco/commit/2af633df94a6db1d59b31458fc099cc7d52efca5))
+
+
+### BREAKING CHANGES
+
+* **http-routing,http-routing-bundle:** Controllers must now define their middleware via a
+static middleware() method, rather than in the Controller's
+constructor.
+This was a major design mistake that led to
+having to instantiate all Controllers to
+build a middleware cache, which in turn
+means that all Controller dependencies have
+to be constructable without a cache, nor
+previous project setup.
+Furthermore, middleware is a request-level
+concern, instantiating Controllers an "app-level"
+concern.
+For example, tests only instantiate one instance
+of a HttpKernel/Controller, for many requests.
+
 # [2.0.0-beta.8](https://github.com/snicco/snicco/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2024-09-04)
 
 
