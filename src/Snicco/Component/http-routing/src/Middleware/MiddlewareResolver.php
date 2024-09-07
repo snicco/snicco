@@ -7,7 +7,6 @@ namespace Snicco\Component\HttpRouting\Middleware;
 use InvalidArgumentException;
 use LogicException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionException;
 use RuntimeException;
@@ -198,12 +197,12 @@ final class MiddlewareResolver
      *      }
      * }
      */
-    public function createMiddlewareCache(Routes $routes, ContainerInterface $container): array
+    public function createMiddlewareCache(Routes $routes): array
     {
         $route_map = [];
 
         foreach ($routes as $route) {
-            $action = new ControllerAction($route->getController(), $container);
+            $action = new ControllerAction($route->getController());
             $middlewares = $this->resolveForRoute($route, $action);
             $route_map[$name = $route->getName()] = [];
             foreach ($middlewares as $middleware) {

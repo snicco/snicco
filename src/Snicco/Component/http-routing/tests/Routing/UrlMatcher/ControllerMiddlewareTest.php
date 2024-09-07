@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Routing\UrlMatcher;
 
 use Snicco\Component\HttpRouting\Controller\Controller;
+use Snicco\Component\HttpRouting\Controller\ControllerMiddleware;
 use Snicco\Component\HttpRouting\Routing\RoutingConfigurator\WebRoutingConfigurator;
 use Snicco\Component\HttpRouting\Tests\fixtures\BarMiddleware;
 use Snicco\Component\HttpRouting\Tests\fixtures\FoobarMiddleware;
@@ -75,9 +76,11 @@ final class ControllerMiddlewareTest extends HttpRunnerTestCase
 
 final class ArrayMiddlewareController extends Controller
 {
-    public function __construct()
+    public static function middleware()
     {
-        $this->addMiddleware([FooMiddleware::class, BarMiddleware::class]);
+        return [
+            new ControllerMiddleware([FooMiddleware::class, BarMiddleware::class]),
+        ];
     }
 
     public function handle(): string
@@ -88,11 +91,13 @@ final class ArrayMiddlewareController extends Controller
 
 final class MiddlewareController extends Controller
 {
-    public function __construct()
+    public static function middleware()
     {
-        $this->addMiddleware(FoobarMiddleware::class);
-        $this->addMiddleware(FooMiddleware::class)->exceptForMethods(['bar', 'all']);
-        $this->addMiddleware(BarMiddleware::class)->toMethods('bar');
+        yield new ControllerMiddleware(FoobarMiddleware::class);
+
+        yield (new ControllerMiddleware(FooMiddleware::class))->only(['bar', 'all']);
+
+        yield (new ControllerMiddleware(BarMiddleware::class))->except('bar');
     }
 
     public function foo(): string

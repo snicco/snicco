@@ -7,51 +7,28 @@ namespace Snicco\Component\HttpRouting\Controller;
 use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Http\Psr7\ResponseFactory;
 use Snicco\Component\HttpRouting\Http\ResponseUtils;
 use Snicco\Component\HttpRouting\Routing\UrlGenerator\UrlGenerator;
-use Snicco\Component\StrArr\Arr;
 
 use Webmozart\Assert\Assert;
 
-use function array_filter;
-use function array_merge;
 use function sprintf;
 
 abstract class Controller
 {
-    /**
-     * @var ControllerMiddleware[]
-     */
-    private array $middleware = [];
-
     private ContainerInterface $container;
 
     private ?Request $current_request = null;
 
     /**
-     * @return class-string<MiddlewareInterface>[]
-     *
-     * @psalm-mutation-free
-     * @psalm-internal Snicco\Component\HttpRouting
+     * @return iterable<ControllerMiddleware>
      */
-    final public function getMiddleware(string $controller_method): array
+    public static function middleware()
     {
-        $middleware = array_filter(
-            $this->middleware,
-            fn (ControllerMiddleware $m): bool => $m->appliesTo($controller_method)
-        );
-
-        $middleware_for_method = [];
-
-        foreach ($middleware as $controller_middleware) {
-            $middleware_for_method = array_merge($middleware_for_method, $controller_middleware->toArray());
-        }
-
-        return $middleware_for_method;
+        return [];
     }
 
     /**
@@ -105,17 +82,6 @@ abstract class Controller
     final protected function respondWith(): ResponseUtils
     {
         return new ResponseUtils($this->url(), $this->responseFactory(), $this->currentRequest());
-    }
-
-    /**
-     * @param class-string<MiddlewareInterface>|class-string<MiddlewareInterface>[] $middleware_names
-     */
-    final protected function addMiddleware($middleware_names): ControllerMiddleware
-    {
-        $middleware = new ControllerMiddleware(Arr::toArray($middleware_names));
-        $this->middleware[] = $middleware;
-
-        return $middleware;
     }
 
     private function currentRequest(): Request

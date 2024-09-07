@@ -14,7 +14,7 @@ final class ControllerMiddleware
     /**
      * @var class-string<MiddlewareInterface>[]
      */
-    private array $middleware_classes = [];
+    private array $middleware_classes;
 
     /**
      * Methods the middleware applies to.
@@ -31,19 +31,21 @@ final class ControllerMiddleware
     private array $blacklist = [];
 
     /**
-     * @param class-string<MiddlewareInterface>[] $middleware
+     * @param class-string<MiddlewareInterface>|class-string<MiddlewareInterface>[] $middleware
      */
-    public function __construct(array $middleware)
+    public function __construct($middleware)
     {
-        $this->middleware_classes = $middleware;
+        $this->middleware_classes = Arr::toArray($middleware);
     }
 
     /**
      * @param string|string[] $methods
      */
-    public function toMethods($methods): void
+    public function except($methods): self
     {
         $this->whitelist = Arr::toArray($methods);
+
+        return $this;
     }
 
     /**
@@ -67,15 +69,19 @@ final class ControllerMiddleware
     /**
      * @param string|string[] $methods
      */
-    public function exceptForMethods($methods): void
+    public function only($methods): self
     {
         $this->blacklist = Arr::toArray($methods);
+
+        return $this;
     }
 
     /**
-     * @interal
+     * @internal
      *
      * @return class-string<MiddlewareInterface>[]
+     *
+     * @see ControllerAction::middleware()
      */
     public function toArray(): array
     {

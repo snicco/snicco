@@ -49,7 +49,7 @@ final class RouteRunner extends Middleware
             return $this->delegate($request);
         }
 
-        $action = new ControllerAction($route->getController(), $this->container, );
+        $action = new ControllerAction($route->getController());
 
         $middleware = $this->middleware_resolver->resolveForRoute($route, $action);
 
@@ -61,7 +61,11 @@ final class RouteRunner extends Middleware
                 /** @var Routing\Route\Route $route */
                 $route = $result->route();
 
-                $response = $action->execute($request, array_merge($segments, $route->getDefaults()));
+                $response = $action->execute(
+                    $request,
+                    array_merge($segments, $route->getDefaults()),
+                    $this->container
+                );
 
                 return $this->responseFactory()
                     ->toResponse($response);

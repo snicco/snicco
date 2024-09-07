@@ -592,7 +592,6 @@ final class HttpRoutingBundle implements Bundle
 
                     return $resolver->createMiddlewareCache(
                         $container->make(Routes::class),
-                        $container
                     );
                 },
                 ! $kernel->wasConfigLoadedFromCache()
