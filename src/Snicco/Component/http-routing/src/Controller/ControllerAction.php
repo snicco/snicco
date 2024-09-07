@@ -13,9 +13,15 @@ use ReflectionException;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Reflector;
 
+use Webmozart\Assert\Assert;
+
+use function array_merge;
 use function array_unshift;
 use function array_values;
+use function call_user_func;
 use function call_user_func_array;
+use function class_parents;
+use function in_array;
 
 /**
  * @psalm-internal Snicco\Component\HttpRouting
@@ -24,20 +30,20 @@ use function call_user_func_array;
  */
 final class ControllerAction
 {
-    private object $controller_instance;
+    /**
+     * @var class-string
+     */
+    private string $controller_class;
 
     private string $controller_method;
 
     /**
      * @param array{0: class-string, 1:string} $class_callable
-     *
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
      */
-    public function __construct(array $class_callable, ContainerInterface $container)
+    public function __construct(array $class_callable)
     {
         [$class, $method] = $class_callable;
-        $this->controller_instance = $this->instantiateController($class, $container);
+        $this->controller_class = $class;
         $this->controller_method = $method;
     }
 
@@ -46,16 +52,18 @@ final class ControllerAction
      *
      * @return mixed
      */
-    public function execute(Request $request, array $captured_args_decoded)
+    public function execute(Request $request, array $captured_args_decoded, ContainerInterface $container)
     {
-        $callable = [$this->controller_instance, $this->controller_method];
+        $instance = $this->instantiateController($this->controller_class, $container);
+
+        $callable = [$instance, $this->controller_method];
 
         if (Request::class === Reflector::firstParameterType($callable)) {
             array_unshift($captured_args_decoded, $request);
         }
 
-        if ($this->controller_instance instanceof Controller) {
-            $this->controller_instance->setCurrentRequest($request);
+        if ($instance instanceof Controller) {
+            $instance->setCurrentRequest($request);
         }
 
         return call_user_func_array($callable, array_values($captured_args_decoded));
@@ -68,11 +76,28 @@ final class ControllerAction
      */
     public function middleware(): array
     {
-        if (! $this->controller_instance instanceof Controller) {
+        $class = $this->controller_class;
+
+        $parents = class_parents($class);
+        if (false === $parents || ! in_array(Controller::class, $parents, true)) {
             return [];
         }
 
-        return $this->controller_instance->getMiddleware($this->controller_method);
+        $middleware_for_method = [];
+
+        foreach (call_user_func([$class, 'middleware']) as $controller_middleware) {
+            Assert::isInstanceOf(
+                $controller_middleware,
+                ControllerMiddleware::class,
+                "Controller {$this->controller_class}::middleware must return ControllerMiddleware::class"
+            );
+
+            if ($controller_middleware->appliesTo($this->controller_method)) {
+                $middleware_for_method = array_merge($middleware_for_method, $controller_middleware->toArray());
+            }
+        }
+
+        return $middleware_for_method;
     }
 
     /**

@@ -871,10 +871,7 @@ use Snicco\Component\HttpRouting\Middleware\MiddlewareResolver;
 
 $middleware_resolver = new MiddlewareResolver();
 
-$store_me = $middleware_resolver->createMiddlewareCache(
-    $router->routes(),
-    $psr_11_container
-);
+$store_me = $middleware_resolver->createMiddlewareCache( $router->routes());
 
 file_put_contents('/path/to/cache-dir/middleware-cache.php', '<?php return ' . var_export($store_me, true) . ';');
 

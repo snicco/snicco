@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\Middleware;
 
 use LogicException;
-use Pimple\Container;
 use Snicco\Component\HttpRouting\Controller\ControllerAction;
 use Snicco\Component\HttpRouting\Exception\MiddlewareRecursion;
 use Snicco\Component\HttpRouting\Middleware\MiddlewareBlueprint;
@@ -44,7 +43,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
         $route = Route::create('/', Route::DELEGATE, 'r1');
         $route->middleware(BazMiddleware::class);
 
-        $controller_action = new ControllerAction(Route::DELEGATE, $this->psr_container);
+        $controller_action = new ControllerAction(Route::DELEGATE);
 
         // BazMiddleware is not present since It's loaded from cache.
         $this->assertEquals([$blueprint1, $blueprint2], $resolver->resolveForRoute($route, $controller_action));
@@ -106,7 +105,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The middleware resolver is cached but has no entry for route [r1].');
-        $resolver->resolveForRoute($route, new ControllerAction(Route::DELEGATE, $this->psr_container));
+        $resolver->resolveForRoute($route, new ControllerAction(Route::DELEGATE));
     }
 
     /**
@@ -134,10 +133,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
             [BarMiddleware::class]
         );
 
-        $pimple = new Container();
-        $psr = new \Pimple\Psr11\Container($pimple);
-
-        $cache = $resolver->createMiddlewareCache($routes, $psr);
+        $cache = $resolver->createMiddlewareCache($routes);
 
         $this->assertTrue(isset($cache['route_map']));
         $this->assertTrue(isset($cache['route_map']));
@@ -218,10 +214,7 @@ final class CachedMiddlewareResolverTest extends HttpRunnerTestCase
             [BarMiddleware::class]
         );
 
-        $pimple = new Container();
-        $psr = new \Pimple\Psr11\Container($pimple);
-
-        $cache = $resolver->createMiddlewareCache(new RouteCollection(), $psr);
+        $cache = $resolver->createMiddlewareCache(new RouteCollection());
 
         $request_map = $cache['request_map'];
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Component\HttpRouting\Tests\fixtures\Controller;
 
 use Snicco\Component\HttpRouting\Controller\Controller;
+use Snicco\Component\HttpRouting\Controller\ControllerMiddleware;
 use Snicco\Component\HttpRouting\Http\Psr7\Request;
 use Snicco\Component\HttpRouting\Tests\fixtures\MiddlewareWithDependencies;
 use Snicco\Component\HttpRouting\Tests\fixtures\TestDependencies\Baz;
@@ -20,13 +21,16 @@ final class ControllerWithMiddleware extends Controller
 
     public function __construct(Baz $baz)
     {
-        $this->addMiddleware(MiddlewareWithDependencies::class);
-
         $this->baz = $baz;
 
         $count = $GLOBALS['test'][self::CONSTRUCTED_KEY] ?? 0;
         ++$count;
         $GLOBALS['test'][self::CONSTRUCTED_KEY] = $count;
+    }
+
+    public static function middleware()
+    {
+        yield new ControllerMiddleware(MiddlewareWithDependencies::class);
     }
 
     public function handle(Request $request): string
